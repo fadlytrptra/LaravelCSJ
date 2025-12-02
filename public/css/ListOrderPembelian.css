@@ -1,0 +1,36 @@
+.acs-form {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    gap: 5px;
+    padding: 10px;
+    align-items: flex-end;
+}
+.acs-form1 {
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    gap: 5px;
+    padding: 10px;
+    border: 1px solid grey;
+}
+.acs-form3 {
+    gap: 5px;
+    padding: 10px;
+    overflow: auto;
+}
+.acs-filter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+.acs-filter1 {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+.scrollmenu{
+    overflow: auto;
+}
