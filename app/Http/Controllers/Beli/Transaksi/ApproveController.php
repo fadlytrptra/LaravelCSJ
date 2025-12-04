@@ -18,21 +18,35 @@ class ApproveController extends Controller
     public function index(Request $request)
     {
         $kdUser = trim(Auth::user()->NomorUser);
+    
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Approve');
-
-        if ($result <= 0)
-            abort(403);
-
-        $status = $request->get('status', 'ACC'); // Default ACC
-        $sp = $status === 'BATAL'
-            ? 'EXEC dbo.SP_1273_PRG_Select_BatalAcc @kd_user = ?'
-            : 'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @kd_user = ?';
-
-        $data = DB::connection('ConnPurchase')->select($sp, [$kdUser]);
-
+        if ($result <= 0) abort(403);
+    
+        // status dari UI: ACC / BATAL / ALL (default ACC)
+        $status = strtoupper($request->get('status', 'ALL'));
+    
+        // mapping status UI -> mode SP
+        switch ($status) {
+            case 'BATAL':
+                $mode = 'BATAL';
+                break;
+            case 'ALL':
+                $mode = 'ALL';
+                break;
+            case 'ACC':
+            default:
+                $mode = 'BELUM';  
+                break;
+        }
+    
+        $sp   = 'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @kd_user = ?, @mode = ?';
+        $data = DB::connection('ConnPurchase')->select($sp, [$kdUser, $mode]);
+    
         return view('Beli.Transaksi.Approve.List', compact('data', 'access', 'status'));
     }
+    
+
 
 
     public function store(Request $request)
@@ -49,19 +63,18 @@ class ApproveController extends Controller
             case 'Approve':
                 foreach ($Checked as $item) {
                     TransBL::where('No_trans', $item)->update([
-                        'Tgl_acc' => $date,
-                        'Manager' => trim(Auth::user()->NomorUser),
-                        'StatusOrder' => '2',
+                        'Tgl_acc'  => $date,
+                        'Manager'  => trim(Auth::user()->NomorUser),
+                        // Status UI hanya diturunkan dari kolom-kolom ini, tidak perlu StatusOrder
                     ]);
                 }
                 return back();
-
+            
             case 'Reject':
                 foreach ($Checked as $item) {
                     TransBL::where('No_trans', $item)->update([
                         'Tgl_Batal_acc' => $date,
-                        'Batal_acc' => trim(Auth::user()->NomorUser),
-                        'StatusOrder' => '0',
+                        'Batal_acc'     => trim(Auth::user()->NomorUser),
                     ]);
                 }
                 return back();
@@ -121,15 +134,13 @@ class ApproveController extends Controller
                 TransBL::where('No_trans', $id)->update([
                     'Tgl_acc' => $date,
                     'Manager' => trim(Auth::user()->NomorUser),
-                    'StatusOrder' => '2',
                 ]);
                 return back();
-
+            
             case 'Reject':
                 TransBL::where('No_trans', $id)->update([
                     'Tgl_Batal_acc' => $date,
-                    'Batal_acc' => trim(Auth::user()->NomorUser),
-                    'StatusOrder' => '0',
+                    'Batal_acc'     => trim(Auth::user()->NomorUser),
                 ]);
                 return back();
         }
