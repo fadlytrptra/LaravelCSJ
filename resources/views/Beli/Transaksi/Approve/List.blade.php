@@ -4,18 +4,6 @@
 @include('Beli/Transaksi/Approve/modalDetailApprove')
 <script src="{{ asset('js/OrderPembelian/Approve/Approve.js') }}"></script>
 
-<script>
-    $(document).ready(function() {
-        $('#table_Approve').DataTable({
-            searching: true,
-            order: [[2, 'desc']],
-            columnDefs: [{
-                orderable: false,
-                targets: 0
-            }]
-        });
-    });
-</script>
 
 <style>
 .table-striped>tbody>tr:nth-child(even)>td,
@@ -49,11 +37,12 @@
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <select id="filterStatus" class="form-control" onchange="window.location='?status=' + this.value">
-                                    <option value="ACC" {{ $status == 'ACC' ? 'selected' : '' }}>ACC PERMOHONAN</option>
-                                    <option value="BATAL" {{ $status == 'BATAL' ? 'selected' : '' }}>DIBATALKAN</option>
+                                <select id="filterStatus" class="form-control"
+                                        onchange="window.location='?status=' + this.value">
+                                    <option value="ALL"   {{ $status == 'ALL'   ? 'selected' : '' }}>Semua</option>
+                                    <option value="BELUM" {{ $status == 'BELUM' ? 'selected' : '' }}>Belum ACC</option>
+                                    {{-- <option value="BATAL" {{ $status == 'BATAL' ? 'selected' : '' }}>Sudah Dibatalkan</option> --}}
                                 </select>
-
                             </div>
                         </div>
 
@@ -66,7 +55,7 @@
                                         <input type="checkbox" name="CheckedAll" id="CheckedAll" class="RDZCheckBoxSize" />
                                     </th>
                                     <th>Divisi</th>
-                                    <th style="display:none;">No Trans</th>      {{-- kolom hidden --}}
+                                    <th style="display:none;">No Trans</th>      
                                     <th class="RDZCenterTable">Tanggal<br><label style="font-size: 10px">(MM - DD - YYYY)</label></th>
                                     <th>Jenis Barang</th>
                                     <th>Type</th>
@@ -92,7 +81,7 @@
 
                                     <td class="RDZPaddingTable">{{ $item->Divisi }}</td>
 
-                                    <td style="display:none;">{{ $item->No_trans }}</td>  {{-- hidden untuk Select All bekerja --}}
+                                    <td style="display:none;">{{ $item->No_trans }}</td>  
 
                                     <td class="RDZPaddingTable RDZCenterTable">{{ date('m-d-Y', strtotime($item->Tanggal)) }}</td>
                                     <td class="RDZPaddingTable">{{ $item->{'Jenis Barang'} }}</td>
@@ -110,7 +99,7 @@
                     </div>
 
                     <div class="card-footer RDZApproveRejectButton">
-                        <button type="submit" class="btn btn-md btn-primary" name="action" value="Approve">Approve</button>
+                        <button type="submit" class="btn btn-md btn-primary" name="action" value="Approve">Proses</button>
                         <button type="submit" class="btn btn-md btn-danger" name="action" value="Reject">Reject</button>
                     </div>
                 </form>
@@ -119,58 +108,81 @@
     </div>
 </div>
 
-
 <script>
-$(".DetailApprove").on('auxclick', function(e) {
-    if (e.button === 1) e.preventDefault();
-});
+$(document).ready(function () {
 
-function x(No_trans) {
-    let item = document.getElementById(No_trans);
-    let add = document.getElementById("DataCheckbox");
-    if (item.checked) {
-        add.innerHTML += "<input type='text' id='ID"+No_trans+"' name='checkedBOX[]' value='"+No_trans+"' style='display:none;'>";
-    } else {
-        let Input = document.getElementById("ID"+No_trans);
-        if (Input) Input.remove();
-    }
-}
+    const table = $('#table_Approve').DataTable({
+        searching: true,
+        order: [[2, 'desc']],
+        columnDefs: [{
+            orderable: false,
+            targets: 0
+        }]
+    });
 
-$('#CheckedAll').on('click', function() {
-    let table = $('#table_Approve').DataTable();
-    let rows = table.rows({'search':'applied'}).nodes();
-    $('input[type="checkbox"]', rows).prop('checked', this.checked);
-    let add = document.getElementById("DataCheckbox");
-    let Data = {!! json_encode($data, JSON_HEX_TAG) !!};
-    if (this.checked) {
-        Data.forEach(row => {
-            add.innerHTML += "<input type='text' id='ID"+row.No_trans+"' name='checkedBOX[]' value='"+row.No_trans+"' style='display:none;'>";
-        });
-    } else {
-        Data.forEach(row => {
-            let Input = document.getElementById("ID"+row.No_trans);
+    
+    $(document).on('auxclick', '.DetailApprove', function (e) {
+        if (e.button === 1) e.preventDefault();
+    });
+
+    // --- FUNGSI UNTUK CHECKBOX PER BARIS 
+    window.x = function (No_trans) {
+        const item = document.getElementById(No_trans);
+        const add  = document.getElementById("DataCheckbox");
+
+        if (!item) return;
+
+        if (item.checked) {
+            if (!document.getElementById("ID" + No_trans)) {
+                add.insertAdjacentHTML(
+                    'beforeend',
+                    "<input type='text' id='ID" + No_trans +
+                    "' name='checkedBOX[]' value='" + No_trans +
+                    "' style='display:none;'>"
+                );
+            }
+        } else {
+            const Input = document.getElementById("ID" + No_trans);
             if (Input) Input.remove();
-        });
-    }
+        }
+    };
+
+    // --- CHECKBOX "SELECT ALL" ---
+    $('#CheckedAll').on('click', function () {
+        const rows = table.rows({ search: 'applied' }).nodes();
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+
+        const add  = document.getElementById("DataCheckbox");
+        const Data = {!! json_encode($data, JSON_HEX_TAG) !!};
+
+        if (this.checked) {
+            Data.forEach(row => {
+                const id = "ID" + row.No_trans;
+                if (!document.getElementById(id)) {
+                    add.insertAdjacentHTML(
+                        'beforeend',
+                        "<input type='text' id='" + id +
+                        "' name='checkedBOX[]' value='" + row.No_trans +
+                        "' style='display:none;'>"
+                    );
+                }
+            });
+        } else {
+            Data.forEach(row => {
+                const Input = document.getElementById("ID" + row.No_trans);
+                if (Input) Input.remove();
+            });
+        }
+    });
+
+    // --- FILTER STATUS ---
+    // Sekarang dikosongkan supaya tidak error "originalData is not defined".
+    // Kalau mau pakai filter client-side, bisa diisi logic DataTable di sini.
+    $('#filterStatus').on('change', function () {
+        // saat ini select sudah punya onchange="window.location='?status=' + this.value"
+        // jadi di sini tidak perlu apa-apa.
+    });
 });
-
-let originalData = $('#table_Approve').DataTable();
-
-$('#filterStatus').on('change', function () {
-    let value = $(this).val();
-
-    if (value === "ACC") {
-        originalData.column(0).search('').draw();
-        originalData.column(0).nodes().to$().each(function() {});
-        originalData.draw();
-    }
-
-    if (value === "BATAL") {
-        originalData.column(0).search('').draw();
-        originalData.draw();
-    }
-});
-
 </script>
-
+    
 @endsection
