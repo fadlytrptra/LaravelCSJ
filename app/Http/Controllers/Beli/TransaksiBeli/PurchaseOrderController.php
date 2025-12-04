@@ -21,13 +21,18 @@ class PurchaseOrderController extends Controller
     //Show the form for creating a new resource.
     public function create()
     {
-        $divisi = db::connection('ConnPurchase')->select('exec spSelect_UserDivisi_dotNet @kd = ?, @Operator = ?', [1, trim(Auth::user()->NomorUser)]);
+        $divisi = DB::connection('ConnPurchase')->select(
+            'EXEC SP_1273_PRG_USER_DIVISI @Operator = ?',
+            [trim(Auth::user()->NomorUser)]
+        );
+    
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
-        // dd($divisi,Auth::user()->NomorUser);
+    
         return view('Beli.TransaksiBeli.PurchaseOrder.Create', compact('divisi', 'access'));
     }
+    
 
-    public function getPermohonanDivisi($stBeli, $Kd_Div)
+    public function getPermohonanDivisi($stBeli, $Kd_Div): JsonResponse
     {
         if ($Kd_Div == 'ALL') {
             $data = db::connection('ConnPurchase')->table('Ytransbl')->select(
