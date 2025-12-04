@@ -45,7 +45,7 @@
                                                         @php
                                                             $IDCust = trim(substr($data->IDCust, strpos($data->IDCust, '-') + 1));
                                                         @endphp
-                                                        <option value="{{ $IDCust }}">{{ $data->NamaCust }}</option>
+                                                        <option value="{{ $IDCust }}">{{ $data->NAMACUST }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -106,7 +106,7 @@
                                             </div>
                                             <div class="acs-div-filter1">
                                                 <label for="kelompok_utama">Kelompok Utama</label>
-                                                <select name="kelompok_utama" id="kelompok_utama" class="input" style="width: 270%">
+                                                <select name="kelompok_utama" id="kelompok_utama" class="input" style="width: 100%%">
                                                     <option disabled selected>--Pilih Kelompok Utama--</option>
                                                 </select>
                                             </div>
@@ -196,7 +196,7 @@
                                             <div class="acs-div-filter1">
                                                 <label for="divisi">Divisi</label>
                                                 <input type="text" name="divisi" id="divisi" placeholder="Divisi"
-                                                    class="input">
+                                                    class="input" readonly>
                                             </div>
                                         </div>
                                     </div>

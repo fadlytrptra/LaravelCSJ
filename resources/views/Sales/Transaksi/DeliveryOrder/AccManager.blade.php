@@ -27,7 +27,6 @@
                     <div style="overflow: auto;padding: 10px">
                         <table id="table_DO" class="table table-bordered table-striped SP_datatable" style="width:100%">
                             <thead class="thead-light">
-
                                 <tr>
                                     <th>Nomor DO</th>
                                     <th>Tanggal </th>
@@ -40,19 +39,11 @@
                                     <th>Primer</th>
                                     <th>Sekunder</th>
                                     <th>Tritier</th>
-                                    {{-- <th>Action</th> --}}
-
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($data as $item)
                                     <tr>
-                                        {{--
-                                            @php
-                                                $NamaType = trim(substr($item->Uraian, 0, strrpos($item->Uraian, '|') - 1));
-                                                $IDSuratPesanan = trim(explode('|', $item->Uraian)[1]);
-                                            @endphp
-                                        --}}
                                         <td class="RDZPaddingTable RDZCenterTable">
                                             <div style="display: flex; align-items: center;gap:5px">
                                                 <input type="checkbox" name="selected[]" id="id_do"
@@ -70,15 +61,6 @@
                                         <td class="RDZPaddingTable RDZCenterTable">{{ (float) $item->QtyPrimer }}</td>
                                         <td class="RDZPaddingTable RDZCenterTable">{{ (float) $item->QtySekunder }}</td>
                                         <td class="RDZPaddingTable RDZCenterTable">{{ (float) $item->QtyTritier }}</td>
-                                        {{-- <td class="acs-td-button">
-                                                <form onsubmit="return confirm('Apakah Anda Yakin ?');"
-                                                    action="{{ url('DeliveryOrderManager/' . $item->IDDO . '/up') }}"
-                                                    method="POST" enctype="multipart/form-data">
-                                                    {{ csrf_field() }}
-                                                    <button type="submit" class="btn btn-sm btn-success"><span>&#x2713;</span>
-                                                        Setujui</button>
-                                                </form>
-                                            </td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>

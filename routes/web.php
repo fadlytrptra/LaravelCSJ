@@ -178,6 +178,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/SuratJalanManager/up', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanManagerController@update')->name('suratjalanmanager.update');
     Route::get('/options/suratpesanan/{customer}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getSuratPesanan');
     Route::get('/options/deliveryorder/{suratpesanan}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDeliveryOrder');
+    Route::get('/options/selecteddeliveryorder/{deliveryorder}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDataDeliveryOrder');
+    Route::get('/options/getdatadeliveryorder/{idtransaksi}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDetailDataDeliveryOrder');
     Route::get('/options/customer/{id}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getCustomer');
     Route::get('/options/pascakirimsp/{customer}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\PascaKirimController@getSuratPesanan');
     Route::get('/options/barangpesanan/{suratpesanan}/{suratjalan}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\PascaKirimController@getBarangPesanan');

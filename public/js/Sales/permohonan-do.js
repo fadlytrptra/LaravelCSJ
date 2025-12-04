@@ -104,7 +104,9 @@ setInputFilter(
 //#region enter-enter
 
 document.addEventListener("DOMContentLoaded", function () {
-    const buttons = document.querySelectorAll(".permohonan-do-container27 .button");
+    const buttons = document.querySelectorAll(
+        ".permohonan-do-container27 .button"
+    );
 
     buttons.forEach((button, index) => {
         button.addEventListener("keydown", function (e) {
@@ -155,8 +157,8 @@ min_kirim.addEventListener("keypress", function (event) {
 
 alamat_kirim.addEventListener("keydown", function (event) {
     if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();      // Cegah enter default hanya jika tanpa shift
-        isi_button.focus();           // Pindah fokus ke tombol
+        event.preventDefault(); // Cegah enter default hanya jika tanpa shift
+        isi_button.focus(); // Pindah fokus ke tombol
     }
     // Jika shift+enter, tidak dicegah dan akan membuat baris baru
 });
@@ -513,16 +515,16 @@ nomor_doSelect.addEventListener("change", function () {
                                 });
                         });
                 });
-            qty_primer.value = data[0].QtyPrimer;
-            qty_sekunder.value = data[0].QtySekunder;
-            qty_tritier.value = data[0].QtyTritier;
-            qty_kirim.value = data[0].TerKirim;
-            qty_order.value = data[0].Qty;
+            qty_primer.value = numeral(data[0].QtyPrimer).format("0,0");
+            qty_sekunder.value = numeral(data[0].QtySekunder).format("0,0");
+            qty_tritier.value = numeral(data[0].QtyTritier).format("0,0");
+            qty_kirim.value = numeral(data[0].TerKirim).format("0,0");
+            qty_order.value = numeral(data[0].Qty).format("0,0");
             max_kirim.value = data[0].MaxKirimDO;
             min_kirim.value = data[0].MinKirimDO;
-            qty_primerGudang.value = data[0].SaldoPrimer;
-            qty_sekunderGudang.value = data[0].SaldoSekunder;
-            qty_tritierGudang.value = data[0].SaldoTritier;
+            qty_primerGudang.value = numeral(data[0].SaldoPrimer).format("0,0"); // prettier-ignore
+            qty_sekunderGudang.value = numeral(data[0].SaldoSekunder).format("0,0"); // prettier-ignore
+            qty_tritierGudang.value = numeral(data[0].SaldoTritier).format("0,0"); // prettier-ignore
             satuan_primer.value = data[0].SatPrimer;
             satuan_sekunder.value = data[0].SatSekunder;
             satuan_tritier.value = data[0].SatTritier;
@@ -559,7 +561,7 @@ id_pesananSelect.addEventListener("change", function () {
             kode_barang.readOnly = true;
             uraian.readOnly = true;
             qty_kirim.readOnly = true;
-            qty_kirim.value = data[0].TerKirim;
+            qty_kirim.value = numeral(data[0].TerKirim).format("0,0");
             qty_order.readOnly = true;
             qty_order.value = data[0].Qty;
             satuan_primer.readOnly = true;
@@ -646,9 +648,9 @@ sub_kelompok.addEventListener("change", function () {
             id_typeBarang.style.display = "block";
             id_typeBarang.readOnly = true;
             id_typeBarang.value = data[0].IdType;
-            qty_primerGudang.value = data[0].SaldoPrimer;
-            qty_sekunderGudang.value = data[0].SaldoSekunder;
-            qty_tritierGudang.value = data[0].SaldoTritier;
+            qty_primerGudang.value = numeral(data[0].SaldoPrimer).format("0,0");
+            qty_sekunderGudang.value = numeral(data[0].SaldoSekunder).format("0,0"); // prettier-ignore
+            qty_tritierGudang.value = numeral(data[0].SaldoTritier).format("0,0"); // prettier-ignore
             max_kirim.focus();
             qty_primer.value = 0;
             qty_sekunder.value = 0;
@@ -714,7 +716,7 @@ edit_button.addEventListener("click", function (event) {
         listSP_button.disabled = false;
         listDO_button.disabled = false;
         listBarang_button.disabled = false;
-        tgl_do.focus();
+        nomor_doText.focus();
         fetch("/options/nomorDO/")
             .then((response) => response.json())
             .then((options) => {
@@ -747,7 +749,7 @@ hapus_button.addEventListener("click", function (event) {
         isi_button.innerHTML = "Proses";
         this.style.display = "none";
         listDO_button.disabled = false;
-        tgl_do.focus();
+        nomor_doText.focus();
         fetch("/options/nomorDO/")
             .then((response) => response.json())
             .then((options) => {

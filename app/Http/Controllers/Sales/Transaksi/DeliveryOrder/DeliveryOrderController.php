@@ -24,14 +24,14 @@ class DeliveryOrderController extends Controller
 
     public function create()
     {
-        $customer = DB::connection('ConnSales')->select('exec SP_1486_SLS_LIST_ALL_CUSTOMER @Kode = ?', [1]);
+        $customer = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_ALL_CUSTOMER @Kode = ?', [1]);
         $access = (new HakAksesController)->HakAksesFiturMaster('Sales');
         return view('Sales.Transaksi.DeliveryOrder.Create', compact('customer', 'access'));
     }
 
     public function getSuratPesanan($customer)
     {
-        $suratPesanan = DB::connection('ConnSales')->select('exec SP_1486_SLS_LIST_SP_DO @IdCust = ?', [$customer]);
+        $suratPesanan = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SP_DO @IdCust = ?', [$customer]);
         return response()->json($suratPesanan);
     }
 
@@ -39,10 +39,10 @@ class DeliveryOrderController extends Controller
     {
         if (strstr($nomor_sp, '.')) {
             $no_spValue = str_replace('.', '/', $nomor_sp);
-            $idPesanan = DB::connection('ConnSales')->select('exec SP_1486_SLS_LIST_TYPE_DO1 @IDSuratPesanan = ?, @Kode = ?', [$no_spValue, 1]);
+            $idPesanan = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_TYPE_DO1 @IDSuratPesanan = ?, @Kode = ?', [$no_spValue, 1]);
         } else {
             $no_spValue = $nomor_sp;
-            $idPesanan = DB::connection('ConnSales')->select('exec SP_1486_SLS_LIST_TYPE_DO1 @IDSuratPesanan = ?', [$no_spValue]);
+            $idPesanan = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_TYPE_DO1 @IDSuratPesanan = ?', [$no_spValue]);
         }
         return response()->json($idPesanan);
     }
@@ -51,26 +51,26 @@ class DeliveryOrderController extends Controller
     {
         if (strstr($idPesanan, '.Ekspor')) {
             $idPesananValue = str_replace('.Ekspor','',$idPesanan);
-            $data = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_SALDO_TYPE_DO1 @IDPesanan = ?, @Kode = ?', [$idPesananValue, 1]);
+            $data = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SALDO_TYPE_DO1 @IDPesanan = ?, @Kode = ?', [$idPesananValue, 1]);
         } else {
-            $data = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_SALDO_TYPE_DO1 @IDPesanan = ?', [$idPesanan]);
+            $data = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SALDO_TYPE_DO1 @IDPesanan = ?', [$idPesanan]);
         }
         return response()->json($data);
     }
     public function getKelompokUtama($kodeBarang)
     {
         // dd($kodeBarang);
-        $kelompokUtama = db::connection('ConnInventory')->select('exec SP_1486_SLS_LIST_TYPEBARANG1 @KodeBarang = ?', [$kodeBarang]);
+        $kelompokUtama = db::connection('ConnInventory')->select('exec SP_1273_SLS_LIST_TYPEBARANG1 @KodeBarang = ?', [$kodeBarang]);
         return response()->json($kelompokUtama);
     }
     public function getKelompok($kelompokUtama, $kodeBarang)
     {
-        $kelompok = db::connection('ConnInventory')->select('exec SP_1486_SLS_LIST_KELOMPOK1 @idKelUt = ?, @KodeBarang = ?', [$kelompokUtama, $kodeBarang]);
+        $kelompok = db::connection('ConnInventory')->select('exec SP_1273_SLS_LIST_KELOMPOK1 @idKelUt = ?, @KodeBarang = ?', [$kelompokUtama, $kodeBarang]);
         return response()->json($kelompok);
     }
     public function getSubKelompok($kelompok, $kodeBarang)
     {
-        $subKelompok = db::connection('ConnInventory')->select('exec SP_1486_SLS_LIST_SUBKEL1 @idKel = ?, @KodeBarang = ?', [$kelompok, $kodeBarang]);
+        $subKelompok = db::connection('ConnInventory')->select('exec SP_1273_SLS_LIST_SUBKEL1 @idKel = ?, @KodeBarang = ?', [$kelompok, $kodeBarang]);
         return response()->json($subKelompok);
     }
     public function getSaldo($subKelompok, $kodeBarang)
@@ -80,11 +80,11 @@ class DeliveryOrderController extends Controller
     }
     public function getNomorDeliveryOrder()
     {
-        $data = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_DO_BLM_ACC1');
+        $data = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_DO_BLM_ACC1');
         return response()->json($data);
     }
     public function indexInputPEB(){
-        
+
     }
     //Store a newly created resource in storage.
     public function store(Request $request)
@@ -102,7 +102,7 @@ class DeliveryOrderController extends Controller
         $AlamatKirim = $request->alamat_kirim ?? NULL;
         $KotaKirim = $request->kota_kirim;
         $IdType = $request->id_typeBarang;
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_MAINT_DO1 @MyType = ?,
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_MAINT_DO1 @MyType = ?,
         @Tanggal = ?,
         @IDPesanan = ?,
         @QtyPrimer = ?,
@@ -144,7 +144,7 @@ class DeliveryOrderController extends Controller
     public function edit($id)
     {
         // $customer = DB::connection('sqlsrv2')->select('exec SP_1486_SLS_LIST_ALL_CUSTOMER @Kode = ?', [1]);
-        $detail = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_DETAIL_DO1 @IDDO = ?', [$id]);
+        $detail = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_DETAIL_DO1 @IDDO = ?', [$id]);
         // $data = [$customer,$detail];
         // dd($data);
         return response()->json($detail);
@@ -169,7 +169,7 @@ class DeliveryOrderController extends Controller
         $KotaKirim = $request->kota_kirim;
         $IdType = $request->id_typeBarang;
         $IdDO = $id;
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_MAINT_DO1 @MyType = ?,
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_MAINT_DO1 @MyType = ?,
         @IdDO = ?,
         @Tanggal = ?,
         @IDPesanan = ?,
@@ -205,7 +205,7 @@ class DeliveryOrderController extends Controller
     public function destroy($id)
     {
         // dd("DELETE");
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_MAINT_DO1 @MyType = ?, @IdDO = ? ', [3, $id]);
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_MAINT_DO1 @MyType = ?, @IdDO = ? ', [3, $id]);
         // return redirect()->route('DeliveryOrder.index');
         return redirect()->back()->with('success', 'Delivery Order Sudah Dihapus!');
     }

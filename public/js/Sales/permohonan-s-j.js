@@ -12,9 +12,13 @@ let isi_button = document.getElementById("isi_button");
 let jenis_pengiriman = document.getElementById("jenis_pengiriman");
 let keterangan = document.getElementById("keterangan");
 let list_view = document.getElementById("list_view");
-let nomor_container = document.getElementById("nomor_container");
 let nomor_do = document.getElementById("nomor_do");
+let hidden_kodeBarang = document.getElementById("hidden_kodeBarang");
+let hidden_transTmp = document.getElementById("hidden_transTmp");
+let hidden_qty = document.getElementById("hidden_qty");
+let nomor_container = document.getElementById("nomor_container");
 let nomor_seal = document.getElementById("nomor_seal");
+let nomor_bl = document.getElementById("nomor_bl");
 let proses = 0;
 let id_kirimSelect = document.getElementById("id_kirimSelect");
 let id_kirimText = document.getElementById("id_kirimText");
@@ -23,9 +27,8 @@ let remove_item = document.getElementById("remove_item");
 let surat_jalan = document.getElementById("surat_jalan");
 let surat_pesanan = document.getElementById("surat_pesanan");
 let tanggal = document.getElementById("tanggal");
-let tanggal_actual = document.getElementById("tanggal_actual");
 let truk_nopol = document.getElementById("truk_nopol");
-let uraian = document.getElementById("uraian");
+// let uraian = document.getElementById("uraian");
 let form_suratJalan = document.getElementById("form_suratJalan");
 
 //#endregion
@@ -46,8 +49,6 @@ setInputFilter(
 
 isi_button.focus();
 tanggal.valueAsDate = new Date();
-tanggal.setAttribute("readonly", true);
-tanggal_actual.valueAsDate = new Date();
 div_suratJalan.classList.toggle("disabled");
 
 //#endregion
@@ -80,6 +81,8 @@ surat_pesanan.addEventListener("change", function () {
     fetch("/options/deliveryorder/" + surat_pesanan)
         .then((response) => response.json())
         .then((options) => {
+            console.log(options);
+
             nomor_do.innerHTML =
                 "<option disabled selected>-- Pilih Delivery Order --</option>";
             options.forEach((option) => {
@@ -88,7 +91,7 @@ surat_pesanan.addEventListener("change", function () {
                 // let string = option.Uraian;
                 // let NamaBarang = string.substring(0, string.indexOf(" Qty Primer"));
                 // optionTag.text = NamaBarang;
-                optionTag.text = option.Uraian;
+                optionTag.text = option.IDDO;
                 nomor_do.appendChild(optionTag);
             });
         });
@@ -100,9 +103,14 @@ nomor_do.addEventListener("change", function () {
 
     // Get the text content of the selected option
     var selectedText = selectedOption.textContent;
-
-    // Set the value of the textarea to the selected text
-    uraian.value = selectedText;
+    fetch("/options/selecteddeliveryorder/" + selectedText)
+        .then((response) => response.json())
+        .then((options) => {
+            console.log(options);
+            hidden_kodeBarang.value = options[0].IDBarang;
+            hidden_transTmp.value = options[0].IdTransTmp;
+            hidden_qty.value = numeral(options[0].QtyTritier).format("0,0");
+        });
 });
 
 id_kirimSelect.addEventListener("change", function (event) {
@@ -197,7 +205,7 @@ id_kirimText.addEventListener("keypress", function (event) {
 
                 for (let i = 0; i < data[1].length; i++) {
                     arrayDetail.push(data[1][i].IDDO);
-                    arrayDetail.push(data[1][i].Uraian);
+                    arrayDetail.push("");
                     arrayDetail.push(data[1][i].IDDetailKirim);
                     arrayDetail.push(data[1][i].IDSuratPesanan);
                 }
@@ -218,63 +226,49 @@ truk_nopol.addEventListener("change", function () {
 surat_pesanan.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        // nomor_do.focus();
+        nomor_do.focus();
     }
 });
 
 nomor_do.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        // add_item.focus();
+        add_item.focus();
     }
 });
 
 jenis_pengiriman.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        // surat_jalan.focus();
-    }
-});
-
-tanggal.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        // customer.focus();
-    }
-});
-
-tanggal_actual.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        // customer.focus();
-    }
-});
-
-customer.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        // keterangan.focus();
-    }
-});
-
-expeditor.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        // surat_pesanan.focus();
+        surat_jalan.focus();
     }
 });
 
 surat_jalan.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        // tanggal.focus();
+        tanggal.focus();
     }
 });
 
-tanggal_actual.addEventListener("keypress", function (event) {
+tanggal.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        // expeditor.focus();
+        expeditor.focus();
+    }
+});
+
+expeditor.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        customer.focus();
+    }
+});
+
+customer.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        keterangan.focus();
     }
 });
 
@@ -289,42 +283,54 @@ truk_nopol.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
         // biaya.focus();
+        nomor_container.focus();
     }
 });
 
 biaya.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        // tanggal_actual.focus();
+        nomor_container.focus();
     }
 });
 
-// nomor_container.addEventListener("keypress", function (event) {
-//     if (event.key === "Enter") {
-//         event.preventDefault();
-//         nomor_seal.focus();
-//     }
-// });
+nomor_container.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        nomor_seal.focus();
+    }
+});
 
-// nomor_seal.addEventListener("keypress", function (event) {
-//     if (event.key === "Enter") {
-//         event.preventDefault();
-//         surat_pesanan.focus();
-//     }
-// });
+nomor_seal.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        nomor_bl.focus();
+    }
+});
+
+nomor_bl.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        surat_pesanan.focus();
+    }
+});
 //#endregion
 
 //#region Table-table
 
 add_item.addEventListener("click", function () {
-    if (uraian.value === "" || nomor_do.selectedIndex === 0) {
+    if (nomor_do.selectedIndex === 0) {
         alert("Isi DO dulu!");
+        return;
     } else {
         const arraydata = [
             nomor_do.options[nomor_do.selectedIndex].value,
-            uraian.value,
+            // uraian.value,
             "",
             surat_pesanan.options[surat_pesanan.selectedIndex].text,
+            hidden_kodeBarang.value,
+            hidden_transTmp.value,
+            hidden_qty.value,
         ];
         funcInsertRow(arraydata);
         funcClearDataInput();
@@ -381,6 +387,18 @@ function funcInsertRow(array) {
             // highlight current row
             newRow.classList.add("highlighted");
             // add the "highlighted" class to all input elements in the row
+
+            let selectedRow = table.querySelector("tr.highlighted");
+            let selectedOption = selectedRow.cells[4].querySelector("input");
+
+            // Get the text content of the selected option
+            var selectedText = selectedOption.value;
+
+            fetch("/options/getdatadeliveryorder/" + selectedText)
+                .then((response) => response.json())
+                .then((options) => {
+                    console.log(options);
+                });
         });
     }
 }
@@ -388,7 +406,7 @@ function funcInsertRow(array) {
 function funcClearDataInput() {
     // surat_pesanan.selectedIndex = 0;
     nomor_do.selectedIndex = 0;
-    uraian.value = "";
+    // uraian.value = "";
 }
 
 remove_item.addEventListener("click", function (event) {

@@ -22,9 +22,9 @@ class SuratJalanController extends Controller
     //Show the form for creating a new resource.
     public function create()
     {
-        $jenisPengiriman = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_JENIS_SJ');
-        $customer = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_CUSTOMER_KIRIM');
-        $expeditor = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_EXPEDITOR @Kode = ?', [1]);
+        $jenisPengiriman = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_JENIS_SJ');
+        $customer = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_CUSTOMER_KIRIM');
+        $expeditor = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_EXPEDITOR @Kode = ?', [1]);
         $access = (new HakAksesController)->HakAksesFiturMaster('Sales');
         // dd($customer);
         return view('Sales.Transaksi.SuratJalan.Create', compact('jenisPengiriman', 'customer', 'expeditor', 'access'));
@@ -32,7 +32,7 @@ class SuratJalanController extends Controller
 
     public function getSuratPesanan($customer)
     {
-        $suratPesanan = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_SP_KIRIM @IdCust = ?', [$customer]);
+        $suratPesanan = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SP_KIRIM @IdCust = ?', [$customer]);
         return response()->json($suratPesanan);
     }
 
@@ -40,13 +40,27 @@ class SuratJalanController extends Controller
     {
         if (strstr($suratPesanan, '.')) { //ekspor
             $no_spValue = str_replace('.', '/', $suratPesanan);
-            $deliveryOrder = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_DO_KIRIM @IdSP = ?', [$no_spValue]);
+            $deliveryOrder = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_DO_KIRIM @IdSP = ?', [$no_spValue]);
         } else { //lokal
             $no_spValue = $suratPesanan;
-            $deliveryOrder = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_DO_KIRIM @IdSP = ?', [$no_spValue]);
+            $deliveryOrder = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_DO_KIRIM @IdSP = ?', [$no_spValue]);
         }
         return response()->json($deliveryOrder);
     }
+
+    public function getDataDeliveryOrder($deliveryOrder)
+    {
+        $dataDeliveryOrder = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_KODEBARANG_DO @IdDO = ?', [$deliveryOrder]);
+        return response()->json($dataDeliveryOrder);
+    }
+
+    public function getDetailDataDeliveryOrder($idtransaksi)
+    {
+        $user = trim(Auth::user()->NomorUser);
+        $dataDeliveryOrder = db::connection('ConnInventory')->select('exec SP_1273_PRG_LIST_JUAL_TMPTRANSAKSI @IDTransaksi = ?, @User = ?', [$idtransaksi, $user]);
+        return response()->json($dataDeliveryOrder);
+    }
+
     public function getNomorSuratJalan(Request $request)
     {
         $suratJalan = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_KIRIM_BLM_ACC');
@@ -83,7 +97,7 @@ class SuratJalanController extends Controller
         $TglActual = $request->tanggal_actual;
         $IdDO = $request->barang0;
         $IDSuratPesanan = $request->barang3;
-        $AccMgr = Auth::user()->NomorUser;
+        $AccMgr = trim(Auth::user()->NomorUser);
         // dd($IdDO[0]);
         //save data header duluu
         db::connection('ConnSales')->statement(

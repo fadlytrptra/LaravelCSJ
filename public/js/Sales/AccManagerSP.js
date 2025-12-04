@@ -5,6 +5,11 @@ let form_submitSelected = document.getElementById("form_submitSelected");
 let checkbox_all = document.getElementById("checkbox_all");
 let btn_edit = document.getElementById("btn_edit");
 let btn_hapus = document.getElementById("btn_hapus");
+let namaBarang = document.getElementById("namaBarang");
+let jenisSP = document.getElementById("jenisSP");
+let quantitySP = document.getElementById("quantitySP");
+let satuanSP = document.getElementById("satuanSP");
+let discountSP = document.getElementById("discountSP");
 // let tgl_pesan = document.getElementById("tgl_pesan");
 let array_nomorSP = [];
 // let table_SP = $('#table_SP').DataTable();
@@ -16,6 +21,17 @@ let array_nomorSP = [];
 // tgl_pesan.valueAsDate = new Date();
 
 $(document).ready(function () {
+    $.ajaxSetup({
+        beforeSend: function () {
+            // Show the loading screen before the AJAX request
+            $("#loading-screen").css("display", "flex");
+        },
+        complete: function () {
+            // Hide the loading screen after the AJAX request completes
+            $("#loading-screen").css("display", "none");
+        },
+    });
+
     // Hapus DataTables yang sudah ada sebelumnya jika ada
     if ($.fn.DataTable.isDataTable("#table_SP")) {
         $("#table_SP").DataTable().destroy(); // Menghancurkan instance DataTable yang ada
@@ -29,6 +45,43 @@ $(document).ready(function () {
         searching: false, // Optional: nonaktifkan pencarian
         info: false, // Optional: nonaktifkan informasi jumlah data
         ordering: false, // Optional: nonaktifkan pengurutan
+    });
+
+    $(document).on("click", ".DetailSP", function (e) {
+        let no_spValue = $(this).data("id");
+        $.ajax({
+            url: "/SuratPesananManager/getDetailSP",
+            type: "GET",
+            data: {
+                _token: csrfToken,
+                no_spValue: no_spValue,
+            },
+            success: function (response) {
+                if (response.message) {
+                    $("#detailSPModal").modal("show");
+                    namaBarang.value = response[0].NamaBarang;
+                    jenisSP.value = response[0].NamaJnsBrg;
+                    quantitySP.value = numeral(response[0].Qty).format(
+                        "0,0"
+                    );
+                    satuanSP.value = response[0].Satuan;
+                    discountSP.value = numeral(response[0].Discount).format(
+                        "0,0.00"
+                    );
+                } else if (response.error) {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Info!",
+                        text: response.error,
+                        showConfirmButton: false,
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+            },
+        });
     });
 
     btn_hapus.addEventListener("click", async function (event) {
@@ -112,9 +165,7 @@ $(document).ready(function () {
             lbl_sp.style.display = "block";
             no_spText.style.display = "block";
             lbl_lunas.style.display = "block";
-            lbl_informasi.style.display = "block";
             lunas.style.display = "block";
-            informasi_tambahan.style.display = "block";
 
             let no_spValue = rowDataArray[0].nomorSP;
 
@@ -122,8 +173,8 @@ $(document).ready(function () {
                 url: "SuratPesananManager/Copy?no_sp=" + no_spValue,
                 type: "GET",
                 success: function (response) {
-                    console.log(response);
-                    console.log(response.length > 0);
+                    // console.log(response);
+                    // console.log(response.length > 0);
 
                     tgl_pesan.value = formatDate(response[0].Tgl_Pesan);
                     jenis_sp.value = response[0].IDJnsSuratPesanan;
@@ -149,7 +200,7 @@ $(document).ready(function () {
                             no_spValue,
                         type: "GET",
                         success: function (data) {
-                            console.log(data);
+                            // console.log(data);
 
                             // Initialize arrayTabel
                             var arrayTabel = [];
@@ -166,33 +217,8 @@ $(document).ready(function () {
                                     formatDate(item.TglRencanaKirim),
                                     item.Lunas,
                                     item.PPN,
-                                    item.BERAT_KARUNG3,
-                                    item.INDEX_KARUNG,
-                                    item.HARGA_KARUNG,
-                                    item.BERAT_INNER3,
-                                    item.INDEX_INNER,
-                                    item.HARGA_INNER,
-                                    item.BERAT_LAMI3,
-                                    item.INDEX_LAMI,
-                                    item.HARGA_LAMI,
-                                    item.BERAT_OPP3 ?? ".00",
-                                    item.INDEX_OPP ?? ".00",
-                                    item.HARGA_OPP ?? ".00",
-                                    item.BERAT_KERTAS3,
-                                    item.INDEX_KERTAS,
-                                    item.HARGA_KERTAS,
-                                    item.HARGA_LAIN2,
-                                    item.BERAT_TOTAL3,
-                                    item.HARGA_TOTAL,
-                                    item.BERAT_KARUNG,
-                                    item.BERAT_INNER,
-                                    item.BERAT_LAMI,
-                                    item.BERAT_OPP ?? ".00",
-                                    item.BERAT_CONDUCTIVE,
-                                    item.BERAT_TOTAL,
                                     item.IDJnsBarang,
                                     item.IDPesanan,
-                                    item.UraianPesanan,
                                 ]);
                             });
 
@@ -242,30 +268,10 @@ $(document).ready(function () {
     });
 
     let add_button = document.getElementById("add_button");
-    let berat_indexInner = document.getElementById("berat_indexInner");
-    let berat_indexKarung = document.getElementById("berat_indexKarung");
-    let berat_indexKertas = document.getElementById("berat_indexKertas");
-    let berat_indexLami = document.getElementById("berat_indexLami");
-    let berat_indexOpp = document.getElementById("berat_indexOpp");
-    let berat_inner = document.getElementById("berat_inner");
-    let berat_innerMeter = document.getElementById("berat_innerMeter");
-    let berat_karung = document.getElementById("berat_karung");
-    let berat_karungMeter = document.getElementById("berat_karungMeter");
-    let berat_kertas = document.getElementById("berat_kertas");
-    let berat_kertasMeter = document.getElementById("berat_kertasMeter");
-    let berat_lami = document.getElementById("berat_lami");
-    let berat_lamiMeter = document.getElementById("berat_lamiMeter");
-    let berat_opp = document.getElementById("berat_opp");
-    let berat_oppMeter = document.getElementById("berat_oppMeter");
-    let div_beratStandardMeter = document.getElementById("div_beratStandardMeter"); //prettier-ignore
-    let berat_standardTotal = document.getElementById("berat_standardTotal");
-    let berat_standardTotalMeter = document.getElementById("berat_standardTotalMeter"); //prettier-ignore
     let csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    let biaya_lain = document.getElementById("biaya_lain");
     let delete_button = document.getElementById("delete_button");
-    let div_beratStandard = document.getElementById("div_beratStandard");
     let div_detailSuratPesanan = document.getElementById("div_detailSuratPesanan"); //prettier-ignore
     let div_headerSuratPesanan = document.getElementById("div_headerSuratPesanan"); //prettier-ignore
     let div_tabelSuratPesanan = document.getElementById("div_tabelSuratPesanan"); //prettier-ignore
@@ -324,9 +330,7 @@ $(document).ready(function () {
     let createSPModal = document.getElementById("createSPModal");
     let btn_tambahModal = document.getElementById("btn_tambahModal");
     let lbl_lunas = document.getElementById("lbl_lunas");
-    let lbl_informasi = document.getElementById("lbl_informasi");
     let lunas = document.getElementById("lunas");
-    let informasi_tambahan = document.getElementById("informasi_tambahan");
 
     edit_button.style.display = "none";
 
@@ -369,8 +373,6 @@ $(document).ready(function () {
     div_headerSuratPesanan.classList.toggle("disabled");
     div_tabelSuratPesanan.classList.toggle("disabled");
     div_detailSuratPesanan.classList.toggle("disabled");
-    div_beratStandard.classList.toggle("disabled");
-    div_saldoInventory.classList.toggle("disabled");
 
     //#endregion
 
@@ -442,57 +444,6 @@ $(document).ready(function () {
         }
     });
 
-    berat_karungMeter.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_innerMeter.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                berat_innerMeter.selectionStart = 0;
-            });
-            berat_innerMeter.focus();
-        }
-    });
-
-    berat_innerMeter.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_lamiMeter.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                berat_lamiMeter.selectionStart = 0;
-            });
-            berat_lamiMeter.focus();
-        }
-    });
-
-    berat_lamiMeter.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_oppMeter.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                berat_oppMeter.selectionStart = 0;
-            });
-            berat_oppMeter.focus();
-        }
-    });
-
-    berat_oppMeter.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_kertasMeter.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                berat_kertasMeter.selectionStart = 0;
-            });
-            berat_kertasMeter.focus();
-        }
-    });
-
-    berat_kertasMeter.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            add_button.focus();
-        }
-    });
-
     qty_pesan.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -526,140 +477,6 @@ $(document).ready(function () {
                 berat_karung.selectionStart = 0;
             });
             berat_karung.focus();
-        }
-    });
-
-    berat_karung.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_inner.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                berat_inner.selectionStart = 0;
-            });
-            berat_inner.focus();
-        }
-    });
-
-    berat_inner.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_lami.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                berat_lami.selectionStart = 0;
-            });
-            berat_lami.focus();
-        }
-    });
-
-    berat_lami.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_opp.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                berat_opp.selectionStart = 0;
-            });
-            berat_opp.focus();
-        }
-    });
-
-    berat_opp.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_kertas.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                berat_kertas.selectionStart = 0;
-            });
-            berat_kertas.focus();
-        }
-    });
-
-    berat_kertas.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            index_karung.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                index_karung.selectionStart = 0;
-            });
-            index_karung.focus();
-        }
-    });
-
-    index_karung.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            index_inner.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                index_inner.selectionStart = 0;
-            });
-            index_inner.focus();
-        }
-    });
-
-    index_inner.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            index_lami.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                index_lami.selectionStart = 0;
-            });
-            index_lami.focus();
-        }
-    });
-
-    index_lami.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            index_kertas.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                index_kertas.selectionStart = 0;
-            });
-            index_kertas.focus();
-        }
-    });
-
-    index_kertas.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            biaya_lain.addEventListener("focus", function (event) {
-                // Set the cursor position to the start of the value
-                biaya_lain.selectionStart = 0;
-            });
-            biaya_lain.focus();
-        }
-    });
-
-    berat_indexKarung.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_indexInner.focus();
-        }
-    });
-
-    berat_indexInner.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_indexLami.focus();
-        }
-    });
-
-    berat_indexLami.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            berat_indexKertas.focus();
-        }
-    });
-
-    berat_indexKertas.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            biaya_lain.focus();
-        }
-    });
-
-    biaya_lain.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            add_button.focus();
         }
     });
 
@@ -705,103 +522,13 @@ $(document).ready(function () {
         }
     });
 
-    // $.ajaxSetup({
-    //     beforeSend: function () {
-    //         // Show the loading screen before the AJAX request
-    //         $("#loading-screen").css("display", "flex");
-    //     },
-    //     complete: function () {
-    //         // Hide the loading screen after the AJAX request completes
-    //         $("#loading-screen").css("display", "none");
-    //     },
-    // });
-
     //#endregion
 
     //#region Add Event Listener
 
-    // isi_button.addEventListener("click", function (event) {
-    //     // console.log(proses);
-    //     event.preventDefault();
-    //     console.log(proses);
-
-    //     if (proses == 0) {
-    //         edit_button.style.display = "block";
-    //         div_tabelSuratPesanan.classList.toggle("disabled");
-    //         div_detailSuratPesanan.classList.toggle("disabled");
-    //         div_beratStandard.classList.toggle("disabled");
-    //         div_saldoInventory.classList.toggle("disabled");
-    //         div_headerSuratPesanan.classList.toggle("disabled");
-    //         // enableElements();
-    //         proses = 1;
-    //         this.innerHTML = "Proses";
-    //         edit_button.innerHTML = "Batal";
-    //         hapus_button.style.display = "none";
-    //         mata_uang.value = "IDR";
-    //         jenis_sp.selectedIndex = 1;
-    //         tgl_pesan.focus();
-    //         list_noSP.disabled = true;
-    //     } else if (proses == 1) {
-    //         //isi
-    //         funcDatatablesIntoInput();
-    //         form_suratPesanan.submit();
-    //         div_tabelSuratPesanan.classList.toggle("disabled");
-    //         div_detailSuratPesanan.classList.toggle("disabled");
-    //         div_beratStandard.classList.toggle("disabled");
-    //         div_saldoInventory.classList.toggle("disabled");
-    //         div_headerSuratPesanan.classList.toggle("disabled");
-    //         // disableElements();
-    //         proses = 0;
-    //         this.innerHTML = "Isi";
-    //         edit_button.innerHTML = "Koreksi";
-    //         hapus_button.style.display = "block";
-    //     } else if (proses == 2) {
-    //         //edit
-    //         funcDatatablesIntoInput();
-    //         form_suratPesanan.action = "/SuratPesanan/" + no_spText.value + "/up";
-    //         form_suratPesanan.submit();
-
-    //         funcClearHeaderPesanan();
-    //         funcClearInputBarang();
-    //         // const table = document.getElementById("list_view");
-    //         // for (let i = 1; i < table.rows.length; i++) {
-    //         //     table.deleteRow(i);
-    //         // }
-    //         list_view.clear().draw();
-    //         div_headerSuratPesanan.classList.toggle("disabled");
-    //         div_tabelSuratPesanan.classList.toggle("disabled");
-    //         div_detailSuratPesanan.classList.toggle("disabled");
-    //         div_beratStandard.classList.toggle("disabled");
-    //         div_saldoInventory.classList.toggle("disabled");
-    //         // disableElements();
-    //         proses = 0;
-    //         edit_button.innerHTML = "Koreksi";
-    //         this.innerHTML = "Isi";
-    //         hapus_button.style.display = "block";
-    //     } else if (proses == 3) {
-    //         //delete
-    //         form_suratPesanan.action = "/SuratPesanan/" + no_spText.value;
-    //         form_suratPesanan.submit();
-    //         list_view.clear().draw();
-    //         div_headerSuratPesanan.classList.toggle("disabled");
-    //         div_tabelSuratPesanan.classList.toggle("disabled");
-    //         div_detailSuratPesanan.classList.toggle("disabled");
-    //         div_beratStandard.classList.toggle("disabled");
-    //         div_saldoInventory.classList.toggle("disabled");
-    //         // disableElements();
-    //         proses = 0;
-    //         edit_button.innerHTML = "Koreksi";
-    //         this.innerHTML = "Isi";
-    //         hapus_button.style.display = "block";
-    //     }
-
-    // });
-
     edit_button.style.display = "block";
     div_tabelSuratPesanan.classList.toggle("disabled");
     div_detailSuratPesanan.classList.toggle("disabled");
-    div_beratStandard.classList.toggle("disabled");
-    div_saldoInventory.classList.toggle("disabled");
     div_headerSuratPesanan.classList.toggle("disabled");
     // enableElements();
     proses = 1;
@@ -832,9 +559,7 @@ $(document).ready(function () {
             lbl_sp.style.display = "none";
             no_spText.style.display = "none";
             lbl_lunas.style.display = "none";
-            lbl_informasi.style.display = "none";
             lunas.style.display = "none";
-            informasi_tambahan.style.display = "none";
             createSPModalLabel.innerHTML = "Tambah Surat Pesanan";
             $("#createSPModal").modal("show");
         });
@@ -864,9 +589,7 @@ $(document).ready(function () {
         lbl_sp.style.display = "block";
         no_spText.style.display = "block";
         lbl_lunas.style.display = "none";
-        lbl_informasi.style.display = "none";
         lunas.style.display = "none";
-        informasi_tambahan.style.display = "none";
 
         let no_spValue = $(this).data("nosp");
 
@@ -913,30 +636,6 @@ $(document).ready(function () {
                                 formatDate(item.TglRencanaKirim),
                                 item.Lunas,
                                 item.PPN,
-                                item.BERAT_KARUNG3,
-                                item.INDEX_KARUNG,
-                                item.HARGA_KARUNG,
-                                item.BERAT_INNER3,
-                                item.INDEX_INNER,
-                                item.HARGA_INNER,
-                                item.BERAT_LAMI3,
-                                item.INDEX_LAMI,
-                                item.HARGA_LAMI,
-                                item.BERAT_OPP3,
-                                item.INDEX_OPP,
-                                item.HARGA_OPP,
-                                item.BERAT_KERTAS3,
-                                item.INDEX_KERTAS,
-                                item.HARGA_KERTAS,
-                                item.HARGA_LAIN2,
-                                item.BERAT_TOTAL3,
-                                item.HARGA_TOTAL,
-                                item.BERAT_KARUNG,
-                                item.BERAT_INNER,
-                                item.BERAT_LAMI,
-                                item.BERAT_OPP,
-                                item.BERAT_CONDUCTIVE,
-                                item.BERAT_TOTAL,
                                 item.IDJnsBarang,
                                 item.IDPesanan,
                                 item.Informasi,
@@ -978,9 +677,7 @@ $(document).ready(function () {
         lbl_sp.style.display = "block";
         no_spText.style.display = "block";
         lbl_lunas.style.display = "block";
-        lbl_informasi.style.display = "block";
         lunas.style.display = "block";
-        informasi_tambahan.style.display = "block";
 
         let no_spValue = $(this).data("nosp");
 
@@ -1097,167 +794,7 @@ $(document).ready(function () {
 
     isi_button.addEventListener("click", function (event) {
         event.preventDefault();
-        if (createSPModalLabel.innerHTML == "Tambah Surat Pesanan") {
-            funcDatatablesIntoInput();
-            // Ambil form data menggunakan FormData
-            var formData = new FormData(form_suratPesanan);
-
-            $.ajax({
-                url: "SuratPesanan",
-                type: "POST",
-                data: formData,
-                processData: false, // Jangan proses data karena FormData sudah ter-serialize
-                contentType: false, // Biarkan jQuery menentukan content type
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken, // Kirim token CSRF secara manual
-                },
-                success: function (response) {
-                    console.log(response);
-
-                    if (response.message) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Success!",
-                            text: response.message,
-                            showConfirmButton: true,
-                        }).then(() => {
-                            funcClearHeaderPesanan();
-                            funcClearInputBarang();
-                            list_view.clear().draw();
-                            removeHiddenInputsWithoutToken();
-                            // Lakukan tindakan setelah sukses
-                        });
-                    } else if (response.error) {
-                        Swal.fire({
-                            icon: "info",
-                            title: "Info!",
-                            text: response.error,
-                            showConfirmButton: false,
-                        }).then(() => {
-                            removeHiddenInputsWithoutToken();
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error!",
-                        text: "Something went wrong.",
-                        showConfirmButton: true,
-                    }).then(() => {
-                        removeHiddenInputsWithoutToken();
-                    });
-                },
-            });
-        } else if (
-            createSPModalLabel.innerHTML == "Penyesuaian Surat Pesanan"
-        ) {
-            funcDatatablesIntoInput();
-            // Ambil form data menggunakan FormData
-            var formData = new FormData(form_suratPesanan);
-
-            $.ajax({
-                // url: "/SuratPesanan/" + no_spText.value + "/up",
-                url: "/penyesuaiansp/koreksi",
-                type: "POST",
-                data: formData,
-                processData: false, // Jangan proses data karena FormData sudah ter-serialize
-                contentType: false, // Biarkan jQuery menentukan content type
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken, // Kirim token CSRF secara manual
-                },
-                success: function (response) {
-                    console.log(response);
-
-                    if (response.message) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Success!",
-                            text: response.message,
-                            showConfirmButton: true,
-                        }).then(() => {
-                            funcClearHeaderPesanan();
-                            funcClearInputBarang();
-                            list_view.clear().draw();
-                            removeHiddenInputsWithoutToken();
-                            // Lakukan tindakan setelah sukses
-                        });
-                    } else if (response.error) {
-                        Swal.fire({
-                            icon: "info",
-                            title: "Info!",
-                            text: response.error,
-                            showConfirmButton: false,
-                        }).then(() => {
-                            removeHiddenInputsWithoutToken();
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error!",
-                        text: "Something went wrong.",
-                        showConfirmButton: true,
-                    }).then(() => {
-                        removeHiddenInputsWithoutToken();
-                    });
-                },
-            });
-        } else if (createSPModalLabel.innerHTML == "Salin Surat Pesanan") {
-            funcDatatablesIntoInput();
-            // Ambil form data menggunakan FormData
-            var formData = new FormData(form_suratPesanan);
-            console.log(formData);
-
-            $.ajax({
-                url: "SuratPesanan",
-                type: "POST",
-                data: formData,
-                processData: false, // Jangan proses data karena FormData sudah ter-serialize
-                contentType: false, // Biarkan jQuery menentukan content type
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken, // Kirim token CSRF secara manual
-                },
-                success: function (response) {
-                    console.log(response);
-
-                    if (response.message) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Success!",
-                            text: response.message,
-                            showConfirmButton: true,
-                        }).then(() => {
-                            funcClearHeaderPesanan();
-                            funcClearInputBarang();
-                            list_view.clear().draw();
-                            removeHiddenInputsWithoutToken();
-                            // Lakukan tindakan setelah sukses
-                        });
-                    } else if (response.error) {
-                        Swal.fire({
-                            icon: "info",
-                            title: "Info!",
-                            text: response.error,
-                            showConfirmButton: false,
-                        }).then(() => {
-                            removeHiddenInputsWithoutToken();
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error!",
-                        text: "Something went wrong.",
-                        showConfirmButton: true,
-                    }).then(() => {
-                        removeHiddenInputsWithoutToken();
-                    });
-                },
-            });
-        } else if (createSPModalLabel.innerHTML == "Edit Surat Pesanan") {
+        if (createSPModalLabel.innerHTML == "Edit Surat Pesanan") {
             funcDatatablesIntoInput();
             // Ambil form data menggunakan FormData
             var formData = new FormData(form_suratPesanan);
@@ -1297,6 +834,7 @@ $(document).ready(function () {
                             funcClearInputBarang();
                             list_view.clear().draw();
                             removeHiddenInputsWithoutToken();
+                            $("#createSPModal").modal("hide");
                             // Lakukan tindakan setelah sukses
                         });
                     } else if (response.error) {
@@ -1333,22 +871,6 @@ $(document).ready(function () {
         }
     });
 
-    // isi_button.addEventListener("click", function (event) {
-    //     event.preventDefault();
-    //     funcDatatablesIntoInput();
-    //     form_suratPesanan.submit();
-    //     div_tabelSuratPesanan.classList.toggle("disabled");
-    //     div_detailSuratPesanan.classList.toggle("disabled");
-    //     div_beratStandard.classList.toggle("disabled");
-    //     div_saldoInventory.classList.toggle("disabled");
-    //     div_headerSuratPesanan.classList.toggle("disabled");
-    //     // disableElements();
-    //     proses = 0;
-    //     // this.innerHTML = "Isi";
-    //     // edit_button.innerHTML = "Koreksi";
-    //     // hapus_button.style.display = "block";
-    // });
-
     edit_button.addEventListener("click", function (event) {
         event.preventDefault();
         if (proses == 0) {
@@ -1367,28 +889,11 @@ $(document).ready(function () {
             no_spText.readOnly = false;
             funcHeaderDisabled(true);
         } else {
-            // no_spSelect.style.display = "none";
-            // no_spText.style.display = "block";
-            // no_spText.readOnly = true;
-            // no_spSelect.disabled = true;
             funcClearHeaderPesanan();
             funcClearInputBarang();
-            // funcHeaderDisabled(false);
             list_view.clear().draw();
             $("#createSPModal").modal("hide");
-            // div_headerSuratPesanan.classList.toggle("disabled");
-            // div_tabelSuratPesanan.classList.toggle("disabled");
-            // div_tabelSuratPesanan.classList.add("disabled");
-            // div_detailSuratPesanan.classList.add("disabled");
-            // div_beratStandard.classList.add("disabled");
-            // div_saldoInventory.classList.add("disabled");
-            // disableElements();
             proses = 1;
-            // this.innerHTML = "Koreksi";
-            // isi_button.innerHTML = "Isi";
-            // hapus_button.style.display = "none";
-            // edit_button.style.display = "none";
-            // jenis_brg.selectedIndex = 0;
         }
     });
 
@@ -1400,8 +905,6 @@ $(document).ready(function () {
             div_headerSuratPesanan.classList.toggle("disabled");
             div_tabelSuratPesanan.classList.toggle("disabled");
             div_detailSuratPesanan.classList.toggle("disabled");
-            div_beratStandard.classList.toggle("disabled");
-            div_saldoInventory.classList.toggle("disabled");
             no_spText.readOnly = false;
             no_spText.focus();
             funcHeaderDisabled(true);
@@ -1792,8 +1295,6 @@ $(document).ready(function () {
             tgl_pesan.focus();
             div_tabelSuratPesanan.classList.toggle("disabled");
             div_detailSuratPesanan.classList.toggle("disabled");
-            div_beratStandard.classList.toggle("disabled");
-            div_saldoInventory.classList.toggle("disabled");
             if (proses == 3) {
                 isi_button.focus();
             }
@@ -1909,58 +1410,7 @@ $(document).ready(function () {
             rowData[6] = rencana_kirim.value;
             rowData[7] = lunas.value;
             rowData[8] = "EXCLUDE";
-            rowData[9] = numeral(parseFloat(berat_karung.value)).format("0.00");
-            rowData[10] = numeral(parseFloat(index_karung.value)).format(
-                "0.00"
-            );
-            rowData[11] = numeral(parseFloat(berat_indexKarung.value)).format("0.00"); //prettier-ignore
-            rowData[12] = numeral(parseFloat(berat_inner.value)).format("0.00");
-            rowData[13] = numeral(parseFloat(index_inner.value)).format("0.00");
-            rowData[14] = numeral(parseFloat(berat_indexInner.value)).format("0.00"); //prettier-ignore
-            rowData[15] = numeral(parseFloat(berat_lami.value)).format("0.00");
-            rowData[16] = numeral(parseFloat(index_lami.value)).format("0.00");
-            rowData[17] = numeral(parseFloat(berat_indexLami.value)).format("0.00"); //prettier-ignore
-            rowData[18] = numeral(parseFloat(berat_opp.value)).format("0.00");
-            rowData[19] = numeral(parseFloat(index_opp.value)).format("0.00");
-            rowData[20] = numeral(parseFloat(berat_indexOpp.value)).format("0.00"); //prettier-ignore
-            rowData[21] = numeral(parseFloat(berat_kertas.value)).format("0.00"); //prettier-ignore
-            rowData[22] = numeral(parseFloat(index_kertas.value)).format("0.00"); //prettier-ignore
-            rowData[23] = numeral(parseFloat(berat_indexKertas.value)).format("0.00"); //prettier-ignore
-            rowData[24] = numeral(parseFloat(biaya_lain.value)).format("0.00");
-            rowData[25] = numeral(parseFloat(berat_standardTotal.value)).format("0.00"); //prettier-ignore
-            rowData[26] = numeral(parseFloat(total_cost.value)).format("0.00");
-            rowData[27] = numeral(
-                !isNaN(parseFloat(berat_karungMeter.value))
-                    ? parseFloat(berat_karungMeter.value)
-                    : 0
-            ).format("0.00");
-            rowData[28] = numeral(
-                !isNaN(parseFloat(berat_innerMeter.value))
-                    ? parseFloat(berat_innerMeter.value)
-                    : 0
-            ).format("0.00");
-            rowData[29] = numeral(
-                !isNaN(parseFloat(berat_lamiMeter.value))
-                    ? parseFloat(berat_lamiMeter.value)
-                    : 0
-            ).format("0.00");
-            rowData[30] = numeral(
-                !isNaN(parseFloat(berat_oppMeter.value))
-                    ? parseFloat(berat_oppMeter.value)
-                    : 0
-            ).format("0.00");
-            rowData[31] = numeral(
-                !isNaN(parseFloat(berat_kertasMeter.value))
-                    ? parseFloat(berat_kertasMeter.value)
-                    : 0
-            ).format("0.00");
-            rowData[32] = numeral(
-                !isNaN(parseFloat(berat_standardTotalMeter.value))
-                    ? parseFloat(berat_standardTotalMeter.value)
-                    : 0
-            ).format("0.00");
-            rowData[33] = jenis_brg.value;
-            rowData[35] = informasi_tambahan.value;
+            rowData[9] = jenis_brg.value;
             console.log(rowData);
 
             // Update the data in the DataTable
@@ -1983,8 +1433,6 @@ $(document).ready(function () {
             jenis_brg.focus();
             // Update the table display
             $("#list_view").DataTable().draw();
-            div_beratStandardMeter.style.visibility = "hidden";
-            div_beratStandardMeter.disabled = false;
         }
     });
 
@@ -2060,8 +1508,6 @@ $(document).ready(function () {
         qty_pesan.value = "";
         harga_satuan.value = "";
         jenis_brg.focus();
-        div_beratStandardMeter.style.visibility = "hidden";
-        div_beratStandardMeter.disabled = false;
     });
 
     jenis_brg.addEventListener("change", function () {
@@ -2118,49 +1564,7 @@ $(document).ready(function () {
         satuan_tritier.value = "";
         kode_barang.readOnly = true;
         kode_barang.value = "";
-        berat_karung.value = "";
-        berat_karung.readOnly = true;
-        berat_inner.value = "";
-        berat_inner.readOnly = true;
-        berat_lami.value = "";
-        berat_lami.readOnly = true;
-        berat_opp.value = "";
-        berat_opp.readOnly = true;
-        berat_kertas.value = "";
-        berat_kertas.readOnly = true;
-        index_karung.value = "";
-        index_karung.readOnly = true;
-        index_inner.value = "";
-        index_inner.readOnly = true;
-        index_lami.value = "";
-        index_lami.readOnly = true;
-        index_opp.value = "";
-        index_opp.readOnly = true;
-        index_kertas.value = "";
-        index_kertas.readOnly = true;
-        berat_indexKarung.value = "";
-        berat_indexKarung.readOnly = true;
-        berat_indexInner.value = "";
-        berat_indexInner.readOnly = true;
-        berat_indexLami.value = "";
-        berat_indexLami.readOnly = true;
-        berat_indexOpp.value = "";
-        berat_indexOpp.readOnly = true;
-        berat_indexKertas.value = "";
-        berat_indexKertas.readOnly = true;
-        biaya_lain.value = "";
-        biaya_lain.readOnly = true;
-        total_cost.value = "";
-        berat_standardTotal.value = "";
-        berat_innerMeter.value = "";
-        berat_karungMeter.value = "";
-        berat_kertasMeter.value = "";
-        berat_lamiMeter.value = "";
-        berat_oppMeter.value = "";
-        table_saldoInventory.clear().draw();
-        div_beratStandardMeter.style.visibility = "hidden";
         lunas.value = "";
-        informasi_tambahan.value = "";
     }
 
     function funcHeaderDisabled(bool) {
@@ -2241,92 +1645,8 @@ $(document).ready(function () {
                 nama_barang.appendChild(optionNamaBarang);
                 kode_barang.value = selectedRows[0][1];
                 kode_barang.readOnly = false;
-                berat_karung.readOnly = false;
-                berat_inner.readOnly = false;
-                berat_lami.readOnly = false;
-                berat_opp.readOnly = false;
-                berat_kertas.readOnly = false;
-                index_karung.readOnly = false;
-                index_inner.readOnly = false;
-                index_lami.readOnly = false;
-                index_opp.readOnly = false;
-                index_kertas.readOnly = false;
-                biaya_lain.readOnly = false;
                 lunas.value = selectedRows[0][7];
                 ppn.value = selectedRows[0][8];
-                berat_karung.value = parseFloat(
-                    selectedRows[0][9].replace(/,/g, "")
-                );
-                index_karung.value = parseFloat(
-                    selectedRows[0][10].replace(/,/g, "")
-                );
-                berat_indexKarung.value = parseFloat(
-                    selectedRows[0][11].replace(/,/g, "")
-                );
-                berat_inner.value = parseFloat(
-                    selectedRows[0][12].replace(/,/g, "")
-                );
-                index_inner.value = parseFloat(
-                    selectedRows[0][13].replace(/,/g, "")
-                );
-                berat_indexInner.value = parseFloat(
-                    selectedRows[0][14].replace(/,/g, "")
-                );
-                berat_lami.value = parseFloat(
-                    selectedRows[0][15].replace(/,/g, "")
-                );
-                index_lami.value = parseFloat(
-                    selectedRows[0][16].replace(/,/g, "")
-                );
-                berat_indexLami.value = parseFloat(
-                    selectedRows[0][17].replace(/,/g, "")
-                );
-                berat_opp.value = parseFloat(
-                    selectedRows[0][18].replace(/,/g, "")
-                );
-                index_opp.value = parseFloat(
-                    selectedRows[0][19].replace(/,/g, "")
-                );
-                berat_indexOpp.value = parseFloat(
-                    selectedRows[0][20].replace(/,/g, "")
-                );
-                berat_kertas.value = parseFloat(
-                    selectedRows[0][21].replace(/,/g, "")
-                );
-                index_kertas.value = parseFloat(
-                    selectedRows[0][22].replace(/,/g, "")
-                );
-                berat_indexKertas.value = parseFloat(
-                    selectedRows[0][23].replace(/,/g, "")
-                );
-                biaya_lain.value = parseFloat(
-                    selectedRows[0][24].replace(/,/g, "")
-                );
-                berat_standardTotal.value = parseFloat(
-                    selectedRows[0][25].replace(/,/g, "")
-                );
-                total_cost.value = parseFloat(
-                    selectedRows[0][26].replace(/,/g, "")
-                );
-                berat_karungMeter.value = parseFloat(
-                    selectedRows[0][27].replace(/,/g, "")
-                );
-                berat_innerMeter.value = parseFloat(
-                    selectedRows[0][28].replace(/,/g, "")
-                );
-                berat_lamiMeter.value = parseFloat(
-                    selectedRows[0][29].replace(/,/g, "")
-                );
-                berat_oppMeter.value = parseFloat(
-                    selectedRows[0][30].replace(/,/g, "")
-                );
-                berat_kertasMeter.value = parseFloat(
-                    selectedRows[0][31].replace(/,/g, "")
-                );
-                berat_standardTotalMeter.value = parseFloat(
-                    selectedRows[0][32].replace(/,/g, "")
-                );
-                informasi_tambahan.value = selectedRows[0][35];
                 funcDisplayDataBrg(selectedRows[0][1]);
                 funcTampilInv(selectedRows[0][1]);
                 funcKolomBeratStandard();
@@ -2367,181 +1687,6 @@ $(document).ready(function () {
                 satuan_sekunder.value = data[0].SatuanSekunder;
                 satuan_tritier.value = data[0].SatuanTritier;
                 funcTampilBeratStandardKGM();
-            });
-    }
-
-    function funcBeratStandard(namaBarang) {
-        // console.log("kategori utama: " + kategoriUtama.value);
-        // console.log('kode barang: ' + namaBarang);
-        fetch("/beratstandard/" + namaBarang)
-            .then((response) => response.json())
-            .then((data) => {
-                div_beratStandard.style.display = "flex";
-                console.log(data);
-                //ambil data dari database masuk ke input text
-                if (Array.isArray(data) && data.length === 0) {
-                    alert("Data berat standard kosong, hubungi EDP.");
-                } else {
-                    berat_karung.value = data[0].BERAT_KARUNG3;
-                    berat_inner.value = data[0].BERAT_INNER3;
-                    berat_lami.value = data[0].BERAT_LAMI3;
-                    berat_opp.value = data[0].BERAT_OPP3;
-                    berat_karungMeter.value = data[0].BERAT_KARUNG2;
-                    berat_innerMeter.value = data[0].BERAT_INNER2;
-                    berat_lamiMeter.value = data[0].BERAT_LAMI2;
-                    berat_oppMeter.value = data[0].BERAT_OPP2;
-                    berat_kertasMeter.value = data[0].BERAT_CONDUCTIVE2;
-                    berat_standardTotalMeter.value = data[0].BERAT_TOTAL2;
-                    berat_kertas.value = data[0].BERAT_KERTAS3;
-                    berat_standardTotal.value = data[0].BERAT_TOTAL3;
-                }
-                berat_karung.readOnly = false;
-                berat_inner.readOnly = false;
-                berat_lami.readOnly = false;
-                berat_opp.readOnly = false;
-                berat_kertas.readOnly = false;
-                index_karung.readOnly = false;
-                index_inner.readOnly = false;
-                index_lami.readOnly = false;
-                index_opp.readOnly = false;
-                index_kertas.readOnly = false;
-                biaya_lain.readOnly = false;
-                index_karung.value = 0;
-                index_inner.value = 0;
-                index_lami.value = 0;
-                index_opp.value = 0;
-                index_kertas.value = 0;
-                biaya_lain.value = 0;
-                berat_indexInner.value = 0;
-                berat_indexKarung.value = 0;
-                berat_indexLami.value = 0;
-                berat_indexOpp.value = 0;
-                berat_indexKertas.value = 0;
-                total_cost.value = 0;
-            });
-    }
-
-    function funcKolomBeratStandard() {
-        [
-            berat_karung,
-            berat_inner,
-            berat_kertas,
-            berat_lami,
-            berat_opp,
-            index_karung,
-            index_inner,
-            index_kertas,
-            index_lami,
-            index_opp,
-            biaya_lain,
-            berat_karungMeter,
-            berat_innerMeter,
-            berat_lamiMeter,
-            berat_oppMeter,
-            berat_kertasMeter,
-        ].forEach(function (element) {
-            element.addEventListener("input", function () {
-                // console.log(trigger == 0);
-                berat_indexKarung.value = (
-                    parseFloat(berat_karung.value) *
-                    parseFloat(index_karung.value)
-                ).toFixed(2);
-
-                berat_indexInner.value = (
-                    parseFloat(berat_inner.value) *
-                    parseFloat(index_inner.value)
-                ).toFixed(2);
-
-                berat_indexLami.value = (
-                    parseFloat(berat_lami.value) * parseFloat(index_lami.value)
-                ).toFixed(2);
-
-                berat_indexOpp.value = (
-                    parseFloat(berat_opp.value) * parseFloat(index_opp.value)
-                ).toFixed(2);
-
-                berat_indexKertas.value = (
-                    parseFloat(berat_kertas.value) *
-                    parseFloat(index_kertas.value)
-                ).toFixed(2);
-
-                berat_standardTotal.value = (
-                    parseFloat(berat_karung.value) +
-                    parseFloat(berat_inner.value) +
-                    parseFloat(berat_lami.value) +
-                    parseFloat(berat_opp.value) +
-                    parseFloat(berat_kertas.value)
-                ).toFixed(2);
-
-                total_cost.value = (
-                    parseFloat(biaya_lain.value) +
-                    parseFloat(berat_indexKarung.value) +
-                    parseFloat(berat_indexInner.value) +
-                    parseFloat(berat_indexKertas.value) +
-                    parseFloat(berat_indexLami.value) +
-                    parseFloat(berat_indexOpp.value)
-                ).toFixed(2);
-
-                berat_standardTotalMeter.value = (
-                    parseFloat(berat_karungMeter.value) +
-                    parseFloat(berat_innerMeter.value) +
-                    parseFloat(berat_lamiMeter.value) +
-                    parseFloat(berat_oppMeter.value) +
-                    parseFloat(berat_kertasMeter.value)
-                ).toFixed(2);
-
-                if (trigger == 0) {
-                    berat_karungMeter.value = parseFloat(
-                        berat_karung.value
-                    ).toFixed(2);
-                    berat_innerMeter.value = parseFloat(
-                        berat_inner.value
-                    ).toFixed(2);
-                    berat_lamiMeter.value = parseFloat(
-                        berat_lami.value
-                    ).toFixed(2);
-                    berat_oppMeter.value = parseFloat(berat_opp.value).toFixed(
-                        2
-                    );
-                    berat_kertasMeter.value = parseFloat(
-                        berat_kertas.value
-                    ).toFixed(2);
-                    berat_standardTotalMeter.value = (
-                        parseFloat(berat_karungMeter.value) +
-                        parseFloat(berat_innerMeter.value) +
-                        parseFloat(berat_lamiMeter.value) +
-                        parseFloat(berat_oppMeter.value) +
-                        parseFloat(berat_kertasMeter.value)
-                    ).toFixed(2);
-                }
-            });
-        });
-    }
-
-    function funcTampilInv(kodeBarang) {
-        fetch("/saldoinventory/" + kodeBarang)
-            .then((response) => response.json())
-            .then((data) => {
-                // console.log(data);
-                const rows = data.map((item) => {
-                    return [
-                        item.NamaDivisi.trim(),
-                        item.SaldoTritier.trim(),
-                        item.satTertier.trim(),
-                        item.SaldoSekunder.trim(),
-                        item.satSekunder.trim(),
-                        item.SaldoPrimer.trim(),
-                        item.satPrimer.trim(),
-                        item.NamaObjek.trim(),
-                        item.NamaKelompokUtama.trim(),
-                        item.NamaKelompok.trim(),
-                        item.NamaSubKelompok.trim(),
-                    ];
-                });
-                // const table = $("#table_saldoInventory").DataTable();
-                table_saldoInventory.clear();
-                table_saldoInventory.rows.add(rows);
-                table_saldoInventory.draw();
             });
     }
 
@@ -2589,22 +1734,6 @@ $(document).ready(function () {
             }
         });
     }
-
-    function funcTampilBeratStandardKGM() {
-        if (
-            satuan_jual.options[satuan_jual.selectedIndex].text !==
-            satuan_sekunder.value.trim()
-        ) {
-            div_beratStandardMeter.style.visibility = "visible";
-            trigger = 1;
-        } else if (
-            satuan_jual.options[satuan_jual.selectedIndex].text ==
-            satuan_sekunder.value.trim()
-        ) {
-            div_beratStandardMeter.style.visibility = "hidden";
-            trigger = 0;
-        }
-    }
 });
 
 checkbox_all.addEventListener("change", function () {
@@ -2634,34 +1763,8 @@ checkbox_all.addEventListener("change", function () {
     console.log(row);
 });
 
-// button_submitAll.addEventListener("click", function (event) {
-//     event.preventDefault();
-//     let table = document.getElementById("table_SP"); // select the table element by its ID
-//     let rows = table.getElementsByTagName("tr"); // get all table rows
-
-//     for (let i = 1; i < rows.length; i++) {
-//         let cells = rows[i].innerText; // get all table cells (columns) in each row
-//         let nomorSP = cells.split("\t")[0]; // get the value of the "Nomor SP" column
-//         // array_nomorSP.push(nomorSP);
-//         let input = document.createElement("input"); // create a new input element
-//         input.type = "hidden"; // set the input type to 'hidden'
-//         input.name = "nomorSPs[]"; // set the input name to 'nomorSPs[]'
-//         input.value = nomorSP; // set the input value to the current nomorSP value
-//         form_submitAll.appendChild(input); // append the input element to the form
-//     }
-//     // console.log(form_submitAll);
-//     form_submitAll.submit();
-// });
-
 button_submitSelected.addEventListener("click", function (event) {
     event.preventDefault();
-
-    // create a new form element to submit the selected surat pesanan
-    // form_submitSelected.method = "POST";
-    // form_submitSelected.action = "{{ url('/SuratPesananManager/upall') }}";
-    // form_submitSelected.enctype = "multipart/form-data";
-    // form_submitSelected.append("_token","{{ csrf_token() }}");
-    // form_submitSelected.style.display = "none"; // hide the form from the user
 
     // loop through all the rows of the table
     let table = document.getElementById("table_SP");
@@ -2687,7 +1790,6 @@ button_submitSelected.addEventListener("click", function (event) {
     }
 
     // append the form to the document and submit it
-    // document.body.appendChild(form_submitSelected);
     form_submitSelected.submit();
 
     console.log(nomorSP);
@@ -2724,26 +1826,17 @@ $("#table_SP tbody").on("change", 'input[name="selected[]"]', function () {
         }
 
         // Tampilkan data di console dan elemen form
-        console.log(rowDataArray);
-        console.log(rowDataPertama, checkbox);
-
-        // Isi input form dengan data terpilih
-        // rincianPembayaran.value = rowDataPertama.ID_Penagihan;
-        // nilaiRincian.value = rowDataPertama.Nilai_Lunas;
-        // idKodePerkiraan.value = rowDataPertama.KodePerkiraan;
+        // console.log(rowDataArray);
+        // console.log(rowDataPertama, checkbox);
     } else {
         // Jika checkbox tidak tercentang, hapus data dari array berdasarkan nomorSP
         let nomorSP = row.find("a.DetailSP").data("id"); // Ambil nomorSP dari baris yang terkait
         rowDataArray = rowDataArray.filter((row) => row.nomorSP !== nomorSP);
-
-        // rincianPembayaran.value = "";
-        // nilaiRincian.value = "";
-        // idKodePerkiraan.value = "";
 
         // Tampilkan data di console setelah dihapus
         console.log(rowDataArray);
     }
 
     // Menampilkan rowDataArray di console
-    console.log(rowDataArray);
+    // console.log(rowDataArray);
 });

@@ -1,7 +1,7 @@
 @extends('layouts.appSales') @section('content')
     @include('Sales.Transaksi.SuratPesanan.DetailSP'){{-- <script type="text/javascript"> $(function() { var table = $('.SP_datatable').DataTable({ processing: true, serverSide: true, ajax: "{{ url('SuratPesanan') }}", column: [{ data: 'IDSuratPesanan', name: 'IDSuratPesanan' }, { data: 'NamaCust', name: 'NamaCust' }, { data: 'JnsSuratPesanan', name: 'JnsSuratPesanan' }, { data: 'Tgl_Pesan', name: 'Tgl_Pesan' }, { data: 'action', name: 'action', orderable: false, searchable: false }, ] }); }); </script> --}} {{-- <script> $(document).ready(function() { $('#search-btn').click(function() { var search = $('#search').val(); $.ajax({ url: 'SuratPesanan', type: 'GET', data: { search: search }, success: function(data) { $('#data').html(data); } }); }); }); </script> --}}
     {{-- @include('Sales.Transaksi.SuratPesanan.ModalTambah') --}}
-@section('title', 'Surat Pesanan Lokal')
+@section('title', 'Surat Pesanan')
 <style>
     .custom-modal-width {
         max-width: 95%;
@@ -12,6 +12,9 @@
     $(document).ready(function() {
         // console.log(dataArray.data);
         $('#table_SP').DataTable({
+            order: [
+                [2, 'desc']
+            ],
             processing: true,
             serverSide: true,
             "ajax": {
