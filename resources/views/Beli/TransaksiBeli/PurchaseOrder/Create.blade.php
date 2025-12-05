@@ -22,12 +22,11 @@
             <div class="card font-weight-bold">
                 <div class="card-header">Maintenance SPPB Pembelian</div>
 
-                {{-- sesuaikan action dengan route penyimpanan --}}
-                <form method="POST" action="{{ url('purchase-order') }}">
-                    @csrf
+                @csrf
 
+                <form method="POST" action="{{ url('purchase-order') }}">
                     <div class="card-body">
-                        {{-- BARIS ATAS: Nama Divisi, No SPPB, Tanggal, No Transaksi + Kode/Nama Barang --}}
+                        {{-- BARIS ATAS --}}
                         <div class="row mb-3">
                             {{-- KIRI --}}
                             <div class="col-md-6">
@@ -40,19 +39,15 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    {{-- <div class="col-sm-2">
-                                        <button type="button" class="btn btn-secondary btn-sm w-100">...</button>
-                                    </div> --}}
                                 </div>
 
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">No SPPB</label>
                                     <div class="col-sm-7">
-                                        <input type="text" name="no_sppb" id="no_sppb" class="form-control">
+                                        <select name="no_sppb" id="no_sppb" class="form-control">
+                                            <option value="">-- Pilih No SPPB --</option>
+                                        </select>
                                     </div>
-                                    {{-- <div class="col-sm-2">
-                                        <button type="button" class="btn btn-secondary btn-sm w-100">...</button>
-                                    </div> --}}
                                 </div>
 
                                 <div class="mb-2 row">
@@ -70,7 +65,7 @@
                                 </div>
                             </div>
 
-                            {{-- KANAN: Barang + Qty / Mata Uang / Harga --}}
+                            {{-- KANAN --}}
                             <div class="col-md-6">
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">Kd. Barang</label>
@@ -142,71 +137,64 @@
                                         <input type="number" step="0.01" name="qty" id="qty" class="form-control text-end">
                                     </div>
                                 </div>
-                            
-                                {{-- MATA UANG + KURS (tanpa tombol lookup) --}}
+
+                                {{-- MATA UANG + KURS --}}
                                 <div class="mb-2 row align-items-center">
                                     <label class="col-sm-3 col-form-label">Mata Uang</label>
-                            
-                                    {{-- dropdown mata uang --}}
+
                                     <div class="col-sm-5">
                                         <select name="mata_uang" id="mata_uang" class="form-control">
                                             <option value="">Pilih Mata Uang</option>
-                                            <option value="IDR">IDR - Rupiah</option>
-                                            <option value="USD">USD - Dollar</option>
-                                            <option value="EUR">EUR - Euro</option>
-                                            <option value="JPY">JPY - Yen</option>
-                                            {{-- kalau nanti di-load dari DB, ganti blok di atas dengan @foreach --}}
+                                            {{-- opsi diisi via JS dari T_MATAUANG --}}
                                         </select>
                                     </div>
-                            
-                                    {{-- label kurs --}}
+
                                     <label class="col-sm-2 col-form-label text-end text-nowrap">Kurs</label>
-                            
-                                    {{-- input kurs --}}
+
                                     <div class="col-sm-2">
-                                        <input type="number" step="1.0000" name="kurs" id="kurs" class="form-control text-end" value="0">
+                                        <input type="text" step="1.0000" name="kurs" id="kurs" class="form-control text-end" value="0">
                                     </div>
                                 </div>
-                            
+
                                 {{-- HARGA SATUAN --}}
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">Harga Satuan</label>
                                     <div class="col-sm-9">
-                                        <input type="number" step="0.01" name="harga_satuan" id="harga_satuan" class="form-control text-end">
+                                        <input type="text" step="0.01" name="harga_satuan" id="harga_satuan" class="form-control text-end">
                                     </div>
                                 </div>
-                            
+
                                 {{-- DISCOUNT + PPN --}}
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">Discount</label>
                                     <div class="col-sm-3">
-                                        <input type="number" step="0.01" name="disc" id="disc" class="form-control text-end">
+                                        <input type="text" step="0.01" name="disc" id="disc" class="form-control text-end">
                                     </div>
                                     <label class="col-sm-1 col-form-label text-center">%</label>
-                            
+
                                     <label class="col-sm-2 col-form-label text-end">PPN (%)</label>
                                     <div class="col-sm-3">
-                                        <input type="number" step="0.1" name="ppn" id="ppn" class="form-control text-end">
+                                        <input type="text" step="0.1" name="ppn" id="ppn" class="form-control text-end">
                                     </div>
                                 </div>
-                            
+
                                 {{-- TOTAL HARGA --}}
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">Total Harga</label>
                                     <div class="col-sm-9">
-                                        <input type="number" step="0.01" name="total_harga" id="total_harga" class="form-control text-end">
+                                        <input type="text" step="0.01" name="total_harga" id="total_harga" class="form-control text-end">
                                     </div>
                                 </div>
-                            
+
                                 {{-- JANGKA WAKTU --}}
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">Jangka Waktu</label>
                                     <div class="col-sm-3">
-                                        <input type="number" name="jangka_waktu" id="jangka_waktu" class="form-control text-end">
+                                        <input type="text" name="jangka_waktu" id="jangka_waktu" class="form-control text-end">
                                     </div>
                                     <label class="col-sm-2 col-form-label">hari</label>
                                 </div>
-                            
+
                                 {{-- PEMBAYARAN --}}
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">Pembayaran</label>
@@ -214,8 +202,7 @@
                                         <input type="text" name="pembayaran" id="pembayaran" class="form-control">
                                     </div>
                                 </div>
-                            
-                                {{-- TOMBOL TAMBAH HARGA --}}
+
                                 <div class="mb-2 row">
                                     <div class="col-sm-12 text-end">
                                         <button type="button" class="btn btn-primary btn-sm">
@@ -224,7 +211,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                         </div>
 
                         {{-- AREA KETERANGAN BESAR --}}
@@ -235,7 +221,7 @@
                             </div>
                         </div>
 
-                        {{-- BARIS BAWAH: Tanggal Datang, Jenis Pembelian, Supplier, Alasan Hapus --}}
+                        {{-- BARIS BAWAH --}}
                         <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label">Tgl. Datang (mm/dd/yyyy)</label>
@@ -254,7 +240,7 @@
                             <div class="col-md-3">
                                 <label class="form-label">Supplier</label>
                                 <select name="supplier" id="supplier" class="form-control">
-                                    {{-- isi dari controller kalau perlu --}}
+                                    {{-- diisi via JS dari SP_1273_PRG_LIST_SUPPLIER --}}
                                 </select>
                             </div>
 
@@ -265,23 +251,154 @@
                         </div>
                     </div>
 
-                    {{-- FOOTER BUTTONS --}}
-                    <div class="card-footer d-flex justify-content-between">
-                        <div>
-                            <button type="button" class="btn btn-secondary">
-                                Lihat Daftar Harga
-                            </button>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-success">
-                                Kirim ke Supplier
-                            </button>
-                        </div>
+                   <div class="card-footer d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary">
+                            Lihat Daftar Harga
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            Kirim ke Supplier
+                        </button>
                     </div>
+
                 </form>
 
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+function loadNoSppbByDivisi() {
+    const kdDiv = document.getElementById('kd_div').value;
+    const noSppbSelect = document.getElementById('no_sppb');
+
+
+    noSppbSelect.innerHTML = '<option value="">-- Pilih No SPPB --</option>';
+
+    if (!kdDiv) return;
+
+    fetch("{{ route('purchaseorder.no_sppb') }}?kd_div=" + encodeURIComponent(kdDiv))
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(row => {
+                const opt = document.createElement('option');
+                opt.value = row.No_sppb;
+                opt.textContent = row.No_sppb;
+                noSppbSelect.appendChild(opt);
+            });
+        })
+        .catch(err => {
+            console.error('Error load No SPPB:', err);
+        });
+}
+
+
+function loadDetailSppb() {
+    const kdDiv  = document.getElementById('kd_div').value;
+    const noSppb = document.getElementById('no_sppb').value;
+
+    if (!kdDiv || !noSppb) return;
+
+    fetch("{{ route('purchaseorder.detail_sppb') }}?kd_div=" + encodeURIComponent(kdDiv) +
+          "&no_sppb=" + encodeURIComponent(noSppb))
+        .then(res => res.json())
+        .then(data => {
+            if (!Array.isArray(data) || data.length === 0) {
+                console.warn('Detail SPPB kosong');
+                return;
+            }
+
+            const row = data[0];
+
+            // tanggal
+            document.getElementById('tgl_sppb').value   = row.Tgl_sppb ? row.Tgl_sppb.substr(0,10) : '';
+            document.getElementById('tgl_datang').value = row.Tgl_dtg  ? row.Tgl_dtg.substr(0,10)  : '';
+
+            // header + barang
+            document.getElementById('no_trans').value      = row.No_trans        ?? '';
+            document.getElementById('kd_brg').value        = row.Kd_brg          ?? '';
+            document.getElementById('nama_brg').value      = row.NAMA_BRG        ?? '';
+            document.getElementById('ket_brg').value       = row.KET             ?? '';
+            document.getElementById('kat_utama').value     = row.nama            ?? '';
+            document.getElementById('kategori').value      = row.nama_kategori   ?? '';
+            document.getElementById('sub_kategori').value  = row.nama_sub_kategori ?? '';
+            document.getElementById('ket_pembelian').value = row.keterangan      ?? '';
+            document.getElementById('satuan').value        = row.Nama_satuan     ?? '';
+            document.getElementById('qty').value           = row.Qty             ?? '';
+
+            // MATA UANG, KURS, DISC, PPN, WAKTU
+
+            const mataUangSelect = document.getElementById('mata_uang');
+
+
+            if (row.IdMataUang && mataUangSelect) {
+                mataUangSelect.value = row.IdMataUang.toString();
+            }
+
+            document.getElementById('kurs').value        = (row.Kurs_Rp   ?? '-') === null ? '-' : row.Kurs_Rp;
+            document.getElementById('disc').value        = row.hrg_disc   ?? '-';
+            document.getElementById('ppn').value         = row.hrg_ppn    ?? '-';
+            document.getElementById('jangka_waktu').value= row.Waktu      ?? '-';
+        })
+        .catch(err => {
+            console.error('Error load detail SPPB:', err);
+        });
+}
+
+function loadMataUang() {
+    const sel = document.getElementById('mata_uang');
+    if (!sel) return;
+
+    fetch("{{ route('purchaseorder.mata_uang') }}")
+        .then(res => res.json())
+        .then(data => {
+            sel.innerHTML = '<option value="">Pilih Mata Uang</option>';
+            data.forEach(row => {
+                const opt = document.createElement('option');
+                opt.value = row.Id_MataUang;              // id utk disimpan
+                opt.textContent = row.Nama_MataUang;      // nama utk ditampilkan
+                sel.appendChild(opt);
+            });
+        })
+        .catch(err => console.error('Error load mata uang:', err));
+}
+
+function loadSupplier() {
+    const sel = document.getElementById('supplier');
+    if (!sel) return;
+
+    fetch("{{ route('purchaseorder.supplier') }}")
+        .then(res => res.json())
+        .then(data => {
+            sel.innerHTML = '<option value="">Pilih Supplier</option>';
+            data.forEach(row => {
+                const opt = document.createElement('option');
+                opt.value = row.NO_SUP ?? row.IdSup ?? '';
+                opt.textContent = (row.NM_SUP || '').trim();
+                sel.appendChild(opt);
+            });
+        })
+        .catch(err => console.error('Error load supplier:', err));
+}
+
+// EVENT
+document.getElementById('kd_div').addEventListener('change', function () {
+    loadNoSppbByDivisi();   // reload daftar SPPB
+});
+
+document.getElementById('no_sppb').addEventListener('change', function () {
+    loadDetailSppb();
+});
+
+// INIT SAAT HALAMAN PERTAMA KALI DIBUKA
+document.addEventListener('DOMContentLoaded', function () {
+    loadMataUang();
+    loadSupplier();
+    loadNoSppbByDivisi();   // <-- penting: langsung load No SPPB utk divisi awal (mis. BAHAN)
+});
+</script>
+
+
 @endsection

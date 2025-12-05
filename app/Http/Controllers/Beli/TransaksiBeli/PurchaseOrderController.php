@@ -8,6 +8,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 
 class PurchaseOrderController extends Controller
 {
@@ -25,12 +26,12 @@ class PurchaseOrderController extends Controller
             'EXEC SP_1273_PRG_USER_DIVISI @Operator = ?',
             [trim(Auth::user()->NomorUser)]
         );
-    
+
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
-    
+
         return view('Beli.TransaksiBeli.PurchaseOrder.Create', compact('divisi', 'access'));
     }
-    
+
 
     public function getPermohonanDivisi($stBeli, $Kd_Div): JsonResponse
     {
@@ -667,17 +668,17 @@ class PurchaseOrderController extends Controller
         // dd($loadHeader, $loadPermohonan);
         return view('Beli.TransaksiBeli.PurchaseOrder.CreateSPPB', compact('access', 'supplier', 'listPayment', 'mataUang', 'ppn', 'No_PO', 'loadPermohonan', 'loadHeader', 'namaDiv'));
     }
-    public function daftarSupplier(Request $request)
-    {
-        $kd = 1;
-        $idsup = $request->input('idsup');
-        try {
-            $supplier = DB::connection('ConnPurchase')->select('exec SP_1273_PBL_LIST_SUPPLIER @kd = ?, @idsup = ?', [$kd, $idsup]);
-            return Response()->json($supplier);
-        } catch (\Throwable $Error) {
-            return Response()->json($Error);
-        }
-    }
+    // public function daftarSupplier(Request $request)
+    // {
+    //     $kd = 1;
+    //     $idsup = $request->input('idsup');
+    //     try {
+    //         $supplier = DB::connection('ConnPurchase')->select('exec SP_1273_PBL_LIST_SUPPLIER @kd = ?, @idsup = ?', [$kd, $idsup]);
+    //         return Response()->json($supplier);
+    //     } catch (\Throwable $Error) {
+    //         return Response()->json($Error);
+    //     }
+    // }
     public function print(Request $request)
     {
         $noPO = $request->input('noPO');
@@ -1053,6 +1054,71 @@ class PurchaseOrderController extends Controller
             return Response()->json('Parameter harus di isi');
         }
     }
+
+    public function getNoSppbByDivisi(Request $request): JsonResponse
+    {
+        $kdDiv = $request->input('kd_div');   // misalnya dikirim '001', '002', dll
+
+        if (!$kdDiv) {
+            return response()->json([], 400);
+        }
+
+        $data = DB::connection('ConnPurchase')->select(
+            'EXEC SP_1273_PRG_LIST_DIVISI_CETAK_PO @kd_div_1 = ?',
+            [$kdDiv]
+        );
+
+        // hasil SP: No_sppb, kd_div
+        return response()->json($data);
+    }
+
+    public function listMataUang(): JsonResponse
+    {
+        $rows = DB::connection('ConnPurchase')
+            ->table('ACCOUNTING.dbo.T_MATAUANG')
+            ->select('Id_MataUang', 'Nama_MataUang')
+            ->orderBy('Id_MataUang')
+            ->get();
+
+        return response()->json($rows);
+    }
+
+
+    public function listSupplier(): JsonResponse
+    {
+        try {
+            $rows = DB::connection('ConnPurchase')
+                ->select('EXEC SP_1273_PRG_LIST_SUPPLIER');
+
+            return response()->json($rows);
+        } catch (\Throwable $e) {
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function getDetailSppb(Request $request): JsonResponse
+    {
+        $kdDiv  = $request->query('kd_div');
+        $noSppb = $request->query('no_sppb');
+
+        if (!$kdDiv || !$noSppb) {
+            return response()->json(['message' => 'kd_div dan no_sppb wajib diisi'], 400);
+        }
+
+        try {
+            $rows = DB::connection('ConnPurchase')->select(
+                'EXEC SP_1273_PRG_LIST_DETAIL_SPPB @MyType = ?, @KdDiv = ?, @NoSPPB = ?',
+                [5, $kdDiv, $noSppb]
+            );
+
+            return response()->json($rows);
+        } catch (\Throwable $e) {
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+
+
     //Show the form for editing the specified resource.
     public function edit($id)
     {

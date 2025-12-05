@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+
+
 $redirectIfAuthenticated = function () {
     if (Auth::guest())
         return view('auth.login');
@@ -27,6 +29,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
     #region Beli
     Route::get('Beli', 'App\Http\Controllers\HomeController@Beli');
+
+
+    Route::get('/PurchaseOrder/no-sppb', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'getNoSppbByDivisi'])->name('purchaseorder.no_sppb');
+    Route::get('/PurchaseOrder/detail-sppb', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'getDetailSppb'])->name('purchaseorder.detail_sppb');
+    Route::get('/PurchaseOrder/mata-uang', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listMataUang'])->name('purchaseorder.mata_uang');
+    Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listSupplier'])->name('purchaseorder.supplier');
+
+
 
     Route::resource('ListOrder', App\Http\Controllers\Beli\Transaksi\ListOrderController::class);
     Route::resource('DaftarHarga', App\Http\Controllers\Beli\Informasi\DaftarHargaController::class);
