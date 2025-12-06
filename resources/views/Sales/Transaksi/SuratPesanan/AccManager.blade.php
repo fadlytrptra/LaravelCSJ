@@ -331,13 +331,13 @@
         </div>
     </div>
 </div>
-<!-- Modal untuk Tambah Mesin ABM -->
+<!-- Modal untuk Lihat detail SP -->
 <div class="modal fade" id="detailSPModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header justify-content-center">
                 <h5 class="modal-title" id="detailSPLabel">Detail SP </h5>
-                <button type="button" class="close" data-dismiss="modal">
+                <button type="button" class="close" data-bs-dismiss="modal">
                     <span>&times;</span>
                 </button>
             </div>

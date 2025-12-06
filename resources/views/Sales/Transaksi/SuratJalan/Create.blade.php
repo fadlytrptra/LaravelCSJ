@@ -2,6 +2,16 @@
 @section('title', 'Create SJ')
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 <link href="{{ asset('css/permohonan-sj.css') }}" rel="stylesheet">
+<style>
+    #table_listStok tbody tr {
+        cursor: pointer;
+    }
+
+    #table_listStok tbody tr.row-selected {
+        background-color: #d2ebff !important;
+        /* light blue */
+    }
+</style>
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-10 RDZMobilePaddingLR0">
@@ -211,16 +221,20 @@
                                         <div style="width: 15%">
                                             <div class="form-group">
                                                 <label for="min_do">Min. DO</label>
-                                                <div class="input-group">
+                                                <div class="input-group" style="gap: 1.5%">
                                                     <input type="text" name="min_do" id="min_do"
-                                                        class="form-control" readonly>
+                                                        style="flex: 0.7" class="form-control" readonly>
+                                                    <input type="text" class="form-control" style="flex: 0.3"
+                                                        id="min_doSatuan" name="min_doSatuan" readonly>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="max_do">Max. DO</label>
-                                                <div class="input-group">
+                                                <div class="input-group" style="gap: 1.5%">
                                                     <input type="text" name="max_do" id="max_do"
-                                                        class="form-control" readonly>
+                                                        style="flex: 0.7" class="form-control" readonly>
+                                                    <input type="text" class="form-control" style="flex: 0.3"
+                                                        id="max_doSatuan" name="max_doSatuan" readonly>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -305,7 +319,7 @@
                                                     name="customerDO" readonly>
                                             </div>
                                         </div>
-                                        <div class="form-group" style="width: 58%">
+                                        <div class="form-group" style="width: 48%">
                                             <label for="nama_barang">Nama Barang</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="nama_barang"
@@ -313,9 +327,11 @@
                                             </div>
                                         </div>
                                         <div class="form-group" style="width: 7%">
-                                            <button id="qty_do" style="float:inline-end"
+                                            <button id="isiQty_button" style="float:inline-end"
                                                 class="btn btn-primary">Isi Qty</button>
                                         </div>
+                                        <input type="hidden" name="hidden_idTypeDO" id="hidden_idTypeDO">
+                                        <input type="hidden" name="hidden_kodeBarangDO" id="hidden_kodeBarangDO">
                                     </div>
                                 </div>
                                 <div class="permohonan-sj-container13">
@@ -334,5 +350,101 @@
         </div>
     </div>
 </div>
+
+<!-- Modal untuk isi qty DO -->
+<div class="modal fade" id="isiQtyModal" tabindex="-1">
+    <div class="modal-dialog" style="min-width: 70%">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title" id="isiQtyLabel">Isi Qty </h5>
+                <button type="button" class="close" data-bs-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="overflow: auto; width: 100%; margin-bottom: 1%;">
+                    Stok Gudang
+                    <table id="table_listStok">
+                        <thead>
+                            <tr style="white-space: nowrap">
+                                <th>No. PIB</th>
+                                <th>Primer</th>
+                                <th>Sekunder</th>
+                                <th>Tritier</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div style="display: flex; flex-direction: row;gap:0.5%;margin-bottom: 1%;">
+                    <div style="width: 33%">
+                        <div class="form-group">
+                            <label for="no_pibQtyDO">No. PIB</label>
+                            <div class="input-group">
+                                <input type="text" name="no_pibQtyDO" id="no_pibQtyDO" class="form-control"
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="primer_qtyDO">Primer</label>
+                            <div class="input-group">
+                                <input type="number" name="primer_qtyDO" id="primer_qtyDO" class="form-control"
+                                    readonly>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="button_isiQtyDO">Isi</button>
+                    </div>
+                    <div style="width: 33%">
+                        <div class="form-group">
+                            <label for="id_typeQtyDO">Id Type</label>
+                            <div class="input-group">
+                                <input type="text" name="id_typeQtyDO" id="id_typeQtyDO" class="form-control"
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sekunder_qtyDO">Sekunder</label>
+                            <div class="input-group">
+                                <input type="number" name="sekunder_qtyDO" id="sekunder_qtyDO" class="form-control"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 33%">
+                        <div class="form-group">
+                            <label for="kode_barangQtyDO">Kode Barang</label>
+                            <div class="input-group">
+                                <input type="text" name="kode_barangQtyDO" id="kode_barangQtyDO"
+                                    class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tritier_qtyDO">Tritier</label>
+                            <div class="input-group">
+                                <input type="number" name="tritier_qtyDO" id="tritier_qtyDO" class="form-control"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="overflow: auto; width: 100%; margin-bottom: 1%;">
+                    Quantity Jual
+                    <table id="table_listJual">
+                        <thead>
+                            <tr style="white-space: nowrap">
+                                <th>No. PIB</th>
+                                <th>Primer</th>
+                                <th>Sekunder</th>
+                                <th>Tritier</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript" src="{{ asset('js/Sales/permohonan-s-j.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/Sales/liveProgrammingTest.js') }}"></script>
 @endsection

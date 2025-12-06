@@ -13,10 +13,10 @@ class SuratJalanManagerController extends Controller
     //Display a listing of the resource.
     public function index()
     {
-        $data = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_HEADERKIRIM_BLMACC');
+        $data = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_HEADERKIRIM_BLMACC');
         $access = (new HakAksesController)->HakAksesFiturMaster('Sales');
         // dd($LoadHeaderPengiriman);
-        return view('Sales.Transaksi.SuratJalan.AccPermohonan', compact('data','access'));
+        return view('Sales.Transaksi.SuratJalan.AccPermohonan', compact('data', 'access'));
     }
 
     //Show the form for creating a new resource.
@@ -32,10 +32,15 @@ class SuratJalanManagerController extends Controller
     }
 
     //Display the specified resource.
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $data = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_DETAILKIRIM_BLMACC @IDHeaderKirim = ?', [$id]);
-        return response()->json($data);
+        if ($id == 'getDataHeader') {
+            $IdHeaderKirim = $request->IdHeaderKirim;
+            $data = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_DETAILKIRIM_BLMACC @IDHeaderKirim = ?', [$IdHeaderKirim]);
+            return response()->json(['message' => $data]);
+        } else if ($id == '') {
+
+        }
     }
 
     //Show the form for editing the specified resource.

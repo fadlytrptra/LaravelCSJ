@@ -1,47 +1,56 @@
 // get all element
-var rows = document.querySelectorAll("#table_SJ tbody tr");
-let modalTitle = document.getElementById("modal-title");
 let button_submitSelected = document.getElementById("button_submitSelected");
+let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content"); // prettier-ignore
+let detailSJLabel = document.getElementById("detailSJLabel");
+let Uraian = document.getElementById("Uraian");
+let QtyPrimer = document.getElementById("QtyPrimer");
+let QtySekunder = document.getElementById("QtySekunder");
+let QtyTritier = document.getElementById("QtyTritier");
+let MinDO = document.getElementById("MinDO");
+let MaxDO = document.getElementById("MaxDO");
 
-// loop through each row and add a click event listener
-rows.forEach(function (row) {
-    // var setujuiBtn = row.querySelector('button[type="submit"]');
-
-    // add a click event listener to the row to show the modal
-    row.addEventListener("dblclick", function () {
-        // call function to show modal and pass row data
-        showModal(this);
-    });
-});
-
-function showModal(row) {
+$(document).on("click", ".DetailKirim", function (e) {
     // get the data from the row
-    let IdHeaderKirim = row.cells[5].textContent;
+    let IdHeaderKirim = $(this).data("id");
+    let IdPengiriman = $(this).data("sj");
+    console.log(IdHeaderKirim);
+    console.log(IdPengiriman);
 
     // populate the modal with the data
     // console.log(row);
-    modalTitle.textContent = "Surat Jalan " + row.cells[0].textContent;
-    fetch("/SuratJalanManager/" + IdHeaderKirim)
-        .then((response) => response.json())
-        .then((data) => {
-            // console.log(data);
-            document.getElementById("Uraian").textContent = data[0].NamaType;
-            document.getElementById("QtyPrimer").textContent =
-                data[0].QtyPrimer;
-            document.getElementById("QtySekunder").textContent =
-                data[0].QtySekunder;
-            document.getElementById("QtyTritier").textContent =
-                data[0].QtyTritier;
-            document.getElementById("MinDO").textContent = data[0].MinKirimDO;
-            document.getElementById("MaxDO").textContent = data[0].MaxKirimDO;
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
-
-    // show the modal
-    document.getElementById("myModal").style.display = "block";
-}
+    detailSJLabel.value = "Surat Jalan " + IdPengiriman;
+    $.ajax({
+        url: "/SuratJalanManager/getDataHeader",
+        type: "GET",
+        data: {
+            _token: csrfToken,
+            IdHeaderKirim: IdHeaderKirim,
+        },
+        success: function (response) {
+            console.log(response);
+            if (response.message) {
+                Uraian.value = response.message[0].NamaType; // prettier-ignore
+                QtyPrimer.value = numeral(response.message[0].QtyPrimer).format('0,0'); // prettier-ignore
+                QtySekunder.value = numeral(response.message[0].QtySekunder).format('0,0'); // prettier-ignore
+                QtyTritier.value = numeral(response.message[0].QtyTritier).format('0,0'); // prettier-ignore
+                MinDO.value = numeral(response.message[0].MinKirimDO).format('0,0'); // prettier-ignore
+                MaxDO.value = numeral(response.message[0].MaxKirimDO).format('0,0'); // prettier-ignore
+                $("#detailSjModal").modal("show");
+            } else if (response.error) {
+                Swal.fire({
+                    icon: "info",
+                    title: "Info!",
+                    text: response.error,
+                    showConfirmButton: false,
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            alert(err.Message);
+        },
+    });
+});
 
 // get the modal element
 var modal = document.getElementById("myModal");
@@ -60,7 +69,7 @@ closeBtn.addEventListener("click", function () {
     modal.style.display = "none";
 });
 
-button_submitSelected.addEventListener("click", function(event){
+button_submitSelected.addEventListener("click", function (event) {
     event.preventDefault();
     let table = document.getElementById("table_SJ");
     let rows = table.getElementsByTagName("tr");
@@ -70,8 +79,7 @@ button_submitSelected.addEventListener("click", function(event){
         // console.log(checkbox.value);
         if (checkbox.checked) {
             // check if the checkbox is checked
-            let nomorDO =
-                checkbox.value; // get the value of the "Nomor SP" column
+            let nomorDO = checkbox.value; // get the value of the "Nomor SP" column
             // console.log(nomorDO);
             let input = document.createElement("input"); // create a new input element
             input.type = "hidden"; // set the input type to 'hidden'

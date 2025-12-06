@@ -180,6 +180,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/options/deliveryorder/{suratpesanan}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDeliveryOrder');
     Route::get('/options/selecteddeliveryorder/{deliveryorder}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDataDeliveryOrder');
     Route::get('/options/getdatadeliveryorder/{idtransaksi}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDetailDataDeliveryOrder');
+    Route::get('/options/loadliststokqtydo/{idtype}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDataListStokQtyDO');
+    Route::get('/options/loadlistjualqtydo/{idtransaksi}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDataListJualQtyDO');
+    Route::get('/options/qtyDO/{idtransaksi}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getDataQtyDeliveryOrder');
+    Route::post('/isi/qtyDO', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@postQtyDO');
     Route::get('/options/customer/{id}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\SuratJalanController@getCustomer');
     Route::get('/options/pascakirimsp/{customer}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\PascaKirimController@getSuratPesanan');
     Route::get('/options/barangpesanan/{suratpesanan}/{suratjalan}', 'App\Http\Controllers\Sales\Transaksi\SuratJalan\PascaKirimController@getBarangPesanan');
