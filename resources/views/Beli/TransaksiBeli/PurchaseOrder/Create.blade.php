@@ -6,6 +6,51 @@
 <link href="{{ asset('css/CreatePurchaseOrder.css') }}" rel="stylesheet">
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
+<style>
+.btn-batal {
+    background: #EEE;
+    border-color: #101010;
+    color: #E67E22;
+}
+.btn-batal:hover {
+    background: #f18203;
+    border-color: #CA6F1E;
+    color: #fff;
+}
+
+/* ---------- TABEL DETAIL: KOMPAK + 1 BARIS HEADER ---------- */
+.table-detail-compact.dataTable thead > tr > th,
+.table-detail-compact.dataTable tbody > tr > td {
+    padding: 2px 6px;        /* header & body tipis */
+    white-space: nowrap;     /* supaya tidak turun baris, jadi 1 baris dan bisa di-scroll */
+    font-size: 0.8rem;
+    vertical-align: middle;
+}
+
+.table-detail-compact.dataTable thead > tr > th {
+    border-bottom-width: 1px;
+}
+
+/* Hilangkan jarak antar head/body scroll wrapper biar seperti grid lama */
+.dataTables_wrapper .dataTables_scrollHead {
+    margin-bottom: 0 !important;
+}
+.dataTables_wrapper .dataTables_scrollBody {
+    border-top: none !important;
+}
+
+/* Jarak vertikal antar blok (form ↔ tabel ↔ form bawah) */
+.section-top-form {
+    margin-bottom: 1.5rem;
+}
+.section-table {
+    margin: 1.5rem 0;
+}
+.section-bottom-form {
+    margin-top: 1.5rem;
+}
+</style>
+
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-11 RDZMobilePaddingLR0">
@@ -20,15 +65,40 @@
             @endif
 
             <div class="card font-weight-bold">
-                <div class="card-header">Maintenance SPPB Pembelian</div>
 
-                @csrf
+                {{-- HEADER + TOMBOL ATAS --}}
+                <div class="card-header">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <div>Maintenance SPPB Pembelian</div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm">
+                                ISI
+                            </button>
+
+                            <button type="button" class="btn btn-outline-secondary btn-sm">
+                                LIHAT
+                            </button>
+
+                            <button type="button" class="btn btn-outline-success btn-sm">
+                                PROSES
+                            </button>
+
+                            <button type="button" class="btn btn-outline-dark btn-sm"
+                                    onclick="window.location.href='{{ url('/Beli') }}'">
+                                KELUAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 <form method="POST" action="{{ url('purchase-order') }}">
+                    @csrf
+
                     <div class="card-body">
-                        {{-- BARIS ATAS --}}
-                        <div class="row mb-3">
-                            {{-- KIRI --}}
+
+                        {{-- FORM ATAS --}}
+                        <div class="row mb-3 section-top-form">
                             <div class="col-md-6">
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">Nama Divisi</label>
@@ -41,12 +111,16 @@
                                     </div>
                                 </div>
 
+                                {{-- No SPPB: INPUT (tetap disabled) --}}
                                 <div class="mb-2 row">
                                     <label class="col-sm-3 col-form-label">No SPPB</label>
-                                    <div class="col-sm-7">
-                                        <select name="no_sppb" id="no_sppb" class="form-control">
-                                            <option value="">-- Pilih No SPPB --</option>
-                                        </select>
+                                    <div class="col-sm-7 d-flex">
+                                        <input type="text"
+                                               name="no_sppb"
+                                               id="no_sppb"
+                                               class="form-control"
+                                               placeholder="-"
+                                               disabled>
                                     </div>
                                 </div>
 
@@ -145,11 +219,10 @@
                                     <div class="col-sm-5">
                                         <select name="mata_uang" id="mata_uang" class="form-control">
                                             <option value="">Pilih Mata Uang</option>
-                                            {{-- opsi diisi via JS dari T_MATAUANG --}}
                                         </select>
                                     </div>
 
-                                    <label class="col-sm-2 col-form-label text-end text-nowrap">Kurs</label>
+                                    <label class="col-sm-2 col-form-label text-end text-nowrap">Kurs Rupiah</label>
 
                                     <div class="col-sm-2">
                                         <input type="text" step="1.0000" name="kurs" id="kurs" class="form-control text-end" value="0">
@@ -213,16 +286,39 @@
                             </div>
                         </div>
 
-                        {{-- AREA KETERANGAN BESAR --}}
-                        <div class="row mb-3">
+                        {{-- TABEL DETAIL ORDER --}}
+                        <div class="row section-table">
                             <div class="col-12">
-                                <label class="form-label">Keterangan Tambahan</label>
-                                <textarea name="keterangan_detail" id="keterangan_detail" rows="5" class="form-control"></textarea>
+                                <table id="tbl-detail-order"
+                                       class="table table-bordered table-striped table-sm w-100 table-detail-compact">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Tgl Order</th>
+                                            <th>Quantity</th>
+                                            <th>Pemesan</th>
+                                            <th>Nama Mesin</th>
+                                            <th>Nama Golongan</th>
+                                            <th>No Trans</th>
+                                            <th>Tgl Datang</th>
+                                            <th>Retur</th>
+                                            <th>Direktur</th>
+                                            <th>Harga Satuan</th>
+                                            <th>Disc</th>
+                                            <th>DPP Nilai Lain</th>
+                                            <th>PPN</th>
+                                            <th>Total Harga</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{-- Data diisi via DataTables --}}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
-                        {{-- BARIS BAWAH --}}
-                        <div class="row mb-3">
+                        {{-- FORM BAWAH --}}
+                        <div class="row mb-3 section-bottom-form">
                             <div class="col-md-3">
                                 <label class="form-label">Tgl. Datang (mm/dd/yyyy)</label>
                                 <input type="date" name="tgl_datang" id="tgl_datang" class="form-control">
@@ -240,7 +336,6 @@
                             <div class="col-md-3">
                                 <label class="form-label">Supplier</label>
                                 <select name="supplier" id="supplier" class="form-control">
-                                    {{-- diisi via JS dari SP_1273_PRG_LIST_SUPPLIER --}}
                                 </select>
                             </div>
 
@@ -251,14 +346,27 @@
                         </div>
                     </div>
 
-                   <div class="card-footer d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary">
-                            Lihat Daftar Harga
-                        </button>
+                    {{-- FOOTER (tanpa ISI/LIHAT/PROSES/KELUAR) --}}
+                    <div class="card-footer">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex justify-content-start gap-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary">CETAK SPPB</button>
+                                    <button type="button" class="btn btn-batal">BATAL SPPB</button>
+                                    <button type="button" class="btn btn-outline-danger">HAPUS SPPB</button>
+                                </div>
+                            </div>
 
-                        <button type="submit" class="btn btn-primary">
-                            Kirim ke Supplier
-                        </button>
+                            <div class="col-md-4 d-flex justify-content-end">
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-secondary">
+                                        Lihat Daftar Harga
+                                    </button>
+
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </form>
@@ -269,54 +377,65 @@
 </div>
 
 <script>
+let detailTable = null;
 
-function loadNoSppbByDivisi() {
-    const kdDiv = document.getElementById('kd_div').value;
-    const noSppbSelect = document.getElementById('no_sppb');
+function clearDetailSppb() {
+    document.getElementById('tgl_sppb').value   = '';
+    document.getElementById('tgl_datang').value = '';
+    document.getElementById('no_trans').value   = '';
+    document.getElementById('kd_brg').value     = '';
+    document.getElementById('nama_brg').value   = '';
+    document.getElementById('ket_brg').value    = '';
+    document.getElementById('kat_utama').value  = '';
+    document.getElementById('kategori').value   = '';
+    document.getElementById('sub_kategori').value  = '';
+    document.getElementById('ket_pembelian').value  = '';
+    document.getElementById('satuan').value     = '';
+    document.getElementById('qty').value        = '';
+    document.getElementById('kurs').value       = '0';
+    document.getElementById('disc').value       = '';
+    document.getElementById('ppn').value        = '';
+    document.getElementById('jangka_waktu').value = '';
+    document.getElementById('total_harga').value   = '';
+    document.getElementById('pembayaran').value    = '';
+    if (document.getElementById('keterangan_detail')) {
+        document.getElementById('keterangan_detail').value = '';
+    }
 
-
-    noSppbSelect.innerHTML = '<option value="">-- Pilih No SPPB --</option>';
-
-    if (!kdDiv) return;
-
-    fetch("{{ route('purchaseorder.no_sppb') }}?kd_div=" + encodeURIComponent(kdDiv))
-        .then(res => res.json())
-        .then(data => {
-            data.forEach(row => {
-                const opt = document.createElement('option');
-                opt.value = row.No_sppb;
-                opt.textContent = row.No_sppb;
-                noSppbSelect.appendChild(opt);
-            });
-        })
-        .catch(err => {
-            console.error('Error load No SPPB:', err);
-        });
+    if (detailTable) {
+        detailTable.clear().draw();
+    }
 }
-
 
 function loadDetailSppb() {
     const kdDiv  = document.getElementById('kd_div').value;
-    const noSppb = document.getElementById('no_sppb').value;
+    const noSppb = document.getElementById('no_sppb').value.trim(); // diisi dari proses lain
 
-    if (!kdDiv || !noSppb) return;
+    if (!kdDiv) {
+        alert('Silakan pilih Nama Divisi terlebih dahulu.');
+        return;
+    }
+
+    if (!noSppb) {
+        alert('No SPPB masih kosong.');
+        return;
+    }
 
     fetch("{{ route('purchaseorder.detail_sppb') }}?kd_div=" + encodeURIComponent(kdDiv) +
           "&no_sppb=" + encodeURIComponent(noSppb))
         .then(res => res.json())
         .then(data => {
             if (!Array.isArray(data) || data.length === 0) {
-                console.warn('Detail SPPB kosong');
+                clearDetailSppb();
+                alert('Data SPPB tidak tersedia.');
                 return;
             }
 
             const row = data[0];
 
-            // tanggal
             document.getElementById('tgl_sppb').value   = row.Tgl_sppb ? row.Tgl_sppb.substr(0,10) : '';
             document.getElementById('tgl_datang').value = row.Tgl_dtg  ? row.Tgl_dtg.substr(0,10)  : '';
 
-            // header + barang
             document.getElementById('no_trans').value      = row.No_trans        ?? '';
             document.getElementById('kd_brg').value        = row.Kd_brg          ?? '';
             document.getElementById('nama_brg').value      = row.NAMA_BRG        ?? '';
@@ -328,22 +447,46 @@ function loadDetailSppb() {
             document.getElementById('satuan').value        = row.Nama_satuan     ?? '';
             document.getElementById('qty').value           = row.Qty             ?? '';
 
-            // MATA UANG, KURS, DISC, PPN, WAKTU
-
             const mataUangSelect = document.getElementById('mata_uang');
-
-
             if (row.IdMataUang && mataUangSelect) {
                 mataUangSelect.value = row.IdMataUang.toString();
             }
 
-            document.getElementById('kurs').value        = (row.Kurs_Rp   ?? '-') === null ? '-' : row.Kurs_Rp;
-            document.getElementById('disc').value        = row.hrg_disc   ?? '-';
-            document.getElementById('ppn').value         = row.hrg_ppn    ?? '-';
-            document.getElementById('jangka_waktu').value= row.Waktu      ?? '-';
+            document.getElementById('kurs').value         = row.Kurs_Rp   ?? '0';
+            document.getElementById('disc').value         = row.hrg_disc  ?? '';
+            document.getElementById('ppn').value          = row.hrg_ppn   ?? '';
+            document.getElementById('jangka_waktu').value = row.Waktu     ?? '';
+
+            // Isi tabel detail
+            if (detailTable) {
+                detailTable.clear();
+
+                data.forEach((item, index) => {
+                    detailTable.row.add([
+                        index + 1,
+                        item.Tgl_sppb ? item.Tgl_sppb.substr(0,10) : '',
+                        item.Qty ?? '',
+                        item.Pemesan ?? '',
+                        item.NamaMesin ?? '',
+                        item.NamaGolongan ?? '',
+                        item.No_trans ?? '',
+                        item.Tgl_dtg ? item.Tgl_dtg.substr(0,10) : '',
+                        item.Retur ?? '',
+                        item.Direktur ?? '',
+                        item.HargaSatuan ?? '',
+                        item.Disc ?? '',
+                        item.DppNilaiLain ?? '',
+                        item.Ppn ?? '',
+                        item.TotalHarga ?? ''
+                    ]);
+                });
+
+                detailTable.draw();
+            }
         })
         .catch(err => {
             console.error('Error load detail SPPB:', err);
+            alert('Terjadi kesalahan saat mengambil data SPPB.');
         });
 }
 
@@ -357,8 +500,8 @@ function loadMataUang() {
             sel.innerHTML = '<option value="">Pilih Mata Uang</option>';
             data.forEach(row => {
                 const opt = document.createElement('option');
-                opt.value = row.Id_MataUang;              // id utk disimpan
-                opt.textContent = row.Nama_MataUang;      // nama utk ditampilkan
+                opt.value = row.Id_MataUang;
+                opt.textContent = row.Nama_MataUang;
                 sel.appendChild(opt);
             });
         })
@@ -383,22 +526,25 @@ function loadSupplier() {
         .catch(err => console.error('Error load supplier:', err));
 }
 
-// EVENT
-document.getElementById('kd_div').addEventListener('change', function () {
-    loadNoSppbByDivisi();   // reload daftar SPPB
-});
-
-document.getElementById('no_sppb').addEventListener('change', function () {
-    loadDetailSppb();
-});
-
-// INIT SAAT HALAMAN PERTAMA KALI DIBUKA
 document.addEventListener('DOMContentLoaded', function () {
     loadMataUang();
     loadSupplier();
-    loadNoSppbByDivisi();   // <-- penting: langsung load No SPPB utk divisi awal (mis. BAHAN)
+
+    // DataTable kompak + scroll horizontal + tanpa icon sorting
+    if (window.jQuery && $.fn.DataTable) {
+        detailTable = $('#tbl-detail-order').DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            ordering: false,      // mirip grid lama, tanpa ikon sort
+            scrollX: true,
+            autoWidth: false,
+            language: {
+                emptyTable: "Tidak ada data detail."
+            }
+        });
+    }
 });
 </script>
-
 
 @endsection

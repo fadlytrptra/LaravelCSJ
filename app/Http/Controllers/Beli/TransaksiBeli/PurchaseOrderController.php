@@ -1057,7 +1057,7 @@ class PurchaseOrderController extends Controller
 
     public function getNoSppbByDivisi(Request $request): JsonResponse
     {
-        $kdDiv = $request->input('kd_div');   // misalnya dikirim '001', '002', dll
+        $kdDiv = $request->input('kd_div');
 
         if (!$kdDiv) {
             return response()->json([], 400);
