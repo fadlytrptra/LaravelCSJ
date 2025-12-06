@@ -484,11 +484,11 @@ class SuratPesananController extends Controller
     //Update the specified resource in storage.
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         // $data = $request->all();
         // dd($request->all());
         $UraianPesanan = null;
         $Lunas = null;
+        $no_spText = $request->no_spText;
         $user = Auth::user()->NomorUser;
         $tgl_pesan = $request->tgl_pesan;
         $jenis_sp = $request->jenis_sp;
@@ -510,37 +510,14 @@ class SuratPesananController extends Controller
         $Satuan = $request->barang5; //satuan
         $HargaSatuan = $request->barang2; //harga satuan
         $TglRencanaKirim = $request->barang6; //rencana kirim
-        $id_pesanan = $request->barang34; //idsuratpesanan
         $ppn = $request->barang8; //ppn
-        $bkarung = $request->barang9; //berat karung
-        $ikarung = $request->barang10; //index karung
-        $hkarung = $request->barang11; //berat index karung
-        $binner = $request->barang12; //berat inner
-        $iinner = $request->barang13; //index inner
-        $hinner = $request->barang14; //berat index inner
-        $blami = $request->barang15; //berat lami
-        $ilami = $request->barang16; //index lami
-        $hlami = $request->barang17; //berat index lami
-        $bopp = $request->barang18; //berat opp
-        $iopp = $request->barang19; //index opp
-        $hopp = $request->barang20; //berat index opp
-        $bkertas = $request->barang21; //berat kertas
-        $ikertas = $request->barang22; //index kertas
-        $hkertas = $request->barang23; //berat index kertas
-        $hlain = $request->barang24; //biaya lain2
-        $BeratStandart = $request->barang25; //berat standard total
-        $htotal = $request->barang26; //total cost
-        $bkarung2 = $request->barang27; //berat karung MTR
-        $binner2 = $request->barang28; //berat inner MTR
-        $blami2 = $request->barang29; //berat lami MTR
-        $bopp2 = $request->barang30; //berat opp MTR
-        $bkertas2 = $request->barang31; //berat kertas MTR
-        $bs2 = $request->barang32; //berat standard total MTR
+        $IdJnsBarang = $request->barang9; //jenis barang
+        $id_pesanan = $request->barang10; //idsuratpesanan
         $kode = 2;
         //update header dulu yaa..
 
         DB::connection('ConnSales')->statement(
-            'exec SP_5409_SLS_MAINT_HEADERPESANAN
+            'exec SP_1273_PRG_MAINT_HEADERPESANAN
         @Kode = ?,
         @IdSuratPesanan = ?,
         @IdJnsSuratPesanan = ?,
@@ -549,144 +526,97 @@ class SuratPesananController extends Controller
         @No_PO = ?,
         @Tgl_PO = ?,
         @No_PI = ?,
-        @IdPembayaran = ?,
-        @IdSales = ?,
-        @IdMataUang = ?,
+        @IDPembayaran = ?,
+        @IdBill = ?,
+        @IDSales = ?,
+        @IDMataUang = ?,
         @SyaratBayar = ?,
         @User_id = ?,
         @Ket = ?,
         @JnsFakturPjk = ?',
-            [$kode, $no_sp, $jenis_sp, $tgl_pesan, $IdCust, $no_po, $tgl_po, $no_pi, $jenis_bayar, $list_sales, $mata_uang, $syarat_bayar, $user, $keterangan, $faktur_pjk],
+            [
+                $kode,
+                $no_spText,
+                $jenis_sp,
+                $tgl_pesan,
+                $IdCust,
+                $no_po,
+                $tgl_po,
+                $no_pi,
+                $jenis_bayar,
+                '0000006',
+                $list_sales,
+                $mata_uang,
+                $syarat_bayar,
+                $user,
+                $keterangan,
+                $faktur_pjk
+            ],
         );
+
         // dd($no_sp);
         for ($i = 0; $i < count($id_pesanan); $i++) {
             // dd($id_pesanan);
             if (is_null($id_pesanan[$i])) {
                 // dd('hehe1');
                 DB::connection('ConnSales')->statement(
-                    'exec SP_1486_SLS_MAINT_DETAILPESANAN1 @Kode = ?,
-                @IDSuratPesanan = ?,
-                @KodeBarang = ?,
-                @IdJnsBarang = ?,
-                @Qty = ?,
-                @Satuan = ?,
-                @HargaSatuan = ?,
-                @Discount = ?,
-                @UraianPesanan = ?,
-                @TglRencanaKirim = ?,
-                @Lunas = ?,
-                @PPN = ?,
-                @indek = ?,
-                @ikarung = ?,
-                @hkarung = ?,
-                @iinner = ?,
-                @hinner = ?,
-                @ilami = ?,
-                @hlami = ?,
-                @ikertas = ?,
-                @hkertas = ?,
-                @hlain = ?,
-                @htotal = ?',
-                    [1, $no_sp, $KodeBarang[$i], $IdJnsBarang[$i], $Qty[$i], $Satuan[$i], $HargaSatuan[$i], 0.0, $UraianPesanan ?? null, $TglRencanaKirim[$i], $Lunas ?? null, $ppn[$i], 0.00, $ikarung[$i], $hkarung[$i], $iinner[$i], $hinner[$i], $ilami[$i], $hlami[$i], $ikertas[$i], $hkertas[$i], $hlain[$i], $htotal[$i]],
+                    'exec SP_1273_PRG_MAINT_DETAILPESANAN1 @Kode = ?,
+            @IDSuratPesanan = ?,
+            @KodeBarang = ?,
+            @IdJnsBarang = ?,
+            @Qty = ?,
+            @Satuan = ?,
+            @HargaSatuan = ?,
+            @Discount = ?,
+            @UraianPesanan = ?,
+            @TglRencanaKirim = ?,
+            @Lunas = ?,
+            @PPN = ?',
+                    [
+                        1,
+                        $no_spText,
+                        $KodeBarang[$i],
+                        $IdJnsBarang[$i],
+                        $Qty[$i],
+                        $Satuan[$i],
+                        $HargaSatuan[$i],
+                        0.0,
+                        $UraianPesanan ?? null,
+                        $TglRencanaKirim[$i],
+                        $Lunas ?? null,
+                        $ppn[$i],
+                    ],
                 );
             } else {
-                // dd($id_pesanan[$i]);
-                // dd('hehe2');
                 DB::connection('ConnSales')->statement(
-                    'exec SP_1486_SLS_MAINT_DETAILPESANAN1
-                @Kode = ?,
-                @IDPesanan = ?,
-                @IDSuratPesanan = ?,
-                @KodeBarang = ?,
-                @IdJnsBarang = ?,
-                @Qty = ?,
-                @Satuan = ?,
-                @HargaSatuan = ?,
-                @Discount = ?,
-                @UraianPesanan = ?,
-                @TglRencanaKirim = ?,
-                @Lunas = ?,
-                @PPN = ?,
-                @ikarung = ?,
-                @hkarung = ?,
-                @iinner = ?,
-                @hinner = ?,
-                @ilami = ?,
-                @hlami = ?,
-                @iopp = ?,
-                @hopp = ?,
-                @ikertas = ?,
-                @hkertas = ?,
-                @hlain = ?,
-                @htotal = ?',
-                    [$kode, $id_pesanan[$i], $no_sp, $KodeBarang[$i], $IdJnsBarang[$i], $Qty[$i], $Satuan[$i], $HargaSatuan[$i], 0.0, $UraianPesanan ?? null, $TglRencanaKirim[$i], $Lunas ?? null, $ppn[$i], $ikarung[$i], $hkarung[$i], $iinner[$i], $hinner[$i], $ilami[$i], $hlami[$i], $iopp[$i], $hopp[$i], $ikertas[$i], $hkertas[$i], $hlain[$i], $htotal[$i]],
+                    'exec SP_1273_PRG_MAINT_DETAILPESANAN1 @Kode = ?,
+            @IDSuratPesanan = ?,
+            @KodeBarang = ?,
+            @IdJnsBarang = ?,
+            @Qty = ?,
+            @Satuan = ?,
+            @HargaSatuan = ?,
+            @Discount = ?,
+            @UraianPesanan = ?,
+            @TglRencanaKirim = ?,
+            @Lunas = ?,
+            @PPN = ?',
+                    [
+                        $kode,
+                        $no_spText,
+                        $KodeBarang[$i],
+                        $IdJnsBarang[$i],
+                        $Qty[$i],
+                        $Satuan[$i],
+                        $HargaSatuan[$i],
+                        0.0,
+                        $UraianPesanan ?? null,
+                        $TglRencanaKirim[$i],
+                        $Lunas ?? null,
+                        $ppn[$i],
+                    ],
                 );
             }
-            // dd(count($bkarung));
-            //     //Simpan BS (Berat Standard)
-
-            DB::connection('ConnPurchase')->statement(
-                'exec SP_5409_SLS_UPDATE_BS
-            @KodeBarang = ?,
-            @bkarung = ?,
-            @binner = ?,
-            @blami = ?,
-            @bopp = ?,
-            @bkertas = ?,
-            @BeratStandart = ?,
-            @bkarung2 = ?,
-            @binner2 = ?,
-            @bopp2 = ?,
-            @blami2 = ?,
-            @bkertas2 = ?,
-            @bs2 = ?,
-            @UserId = ?',
-                [
-                    $KodeBarang[$i],
-                    $bkarung[$i],
-                    $binner[$i],
-                    $blami[$i],
-                    $bopp[$i],
-                    $bkertas[$i],
-                    $BeratStandart[$i],
-                    $bkarung2[$i],
-                    $binner2[$i],
-                    $blami2[$i],
-                    $bopp2[$i],
-                    $bkertas2[$i],
-                    $bs2[$i],
-                    $user
-                ],
-            );
-            // DB::connection('ConnPurchase')->statement(
-            //     'exec SP_5409_SLS_UPDATE_BS
-            //     @KodeBarang = \'?\',
-            //     @bkarung = ?,
-            //     @binner = ?,
-            //     @blami = ?,
-            //     @bkertas = ?,
-            //     @BeratStandart = ?,
-            //     @bkarung2 = ?,
-            //     @binner2 = ?,
-            //     @blami2 = ?,
-            //     @bkertas2 = ?,
-            //     @bs2 = ?,
-            //     @UserId = \'?\'',
-            //     [
-            //         $KodeBarang[$i],
-            //         $bkarung[$i],
-            //         $binner[$i],
-            //         $blami[$i],
-            //         $bkertas[$i],
-            //         $BeratStandart[$i],
-            //         $bkarung[$i],
-            //         $binner[$i],
-            //         $blami[$i],
-            //         $bkertas[$i],
-            //         $BeratStandart[$i],
-            //         $user
-            //     ],
-            // );
         }
         return response()->json(['message' => (string) 'Surat Pesanan ' . $no_sp . ' Sudah Diubah!',]);
         // return redirect()->back()->with('success', 'Surat Pesanan ' . $no_sp . ' Sudah Diubah!');

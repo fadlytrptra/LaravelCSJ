@@ -51,9 +51,9 @@ class DeliveryOrderManagerController extends Controller
         $idManager = Auth::user()->NomorUser;
         $nomorDO = $request->nomorDOs;
         for ($i = 0; $i < count($nomorDO); $i++) {
-            DB::connection('ConnSales')->select('exec SP_1486_SLS_ACC_DO1 @IdManager = ?, @IdDO = ?', [$idManager, $nomorDO[$i]]);
+            DB::connection('ConnSales')->statement('exec SP_1273_PRG_ACC_DO1 @IdManager = ?, @IdDO = ?', [$idManager, $nomorDO[$i]]);
         }
-        return redirect()->back()->with('success', 'Delivery Order dengan Nomor DO' . implode(", ", $nomorDO) . ' Sudah Disetujui!');
+        return redirect()->back()->with('success', 'Delivery Order dengan Nomor DO ' . implode(", ", $nomorDO) . ' Sudah Disetujui!');
     }
 
     public function indexDestroy()
@@ -76,10 +76,10 @@ class DeliveryOrderManagerController extends Controller
         $user = Auth::user()->NomorUser;
         $errors = [];
         for ($i = 0; $i < count($nomorDOs); $i++) {
-            $accManager = DB::connection('ConnSales')->select('exec SP_1486_SLS_DO_BATAL @Kode = ?, @IDDO = ?', [1, $nomorDOs[$i]]);
+            $accManager = DB::connection('ConnSales')->select('exec SP_1273_PRG_DO_BATAL @Kode = ?, @IDDO = ?', [1, $nomorDOs[$i]]);
             // dd($accManager);
-            if ($accManager[0]->AccManager == $user) {
-                DB::connection('ConnSales')->statement('exec SP_1486_SLS_DO_BATAL @Kode = ?, @IdDO = ?, @IDManager = ?, @KetBatal = ?, @IdTransTmp = ?', [2, $nomorDOs[$i], $user, $value, $nomorTransTmps[$i]]);
+            if (trim($accManager[0]->AccManager) == trim($user)) {
+                DB::connection('ConnSales')->statement('exec SP_1273_PRG_DO_BATAL @Kode = ?, @IdDO = ?, @IDManager = ?, @KetBatal = ?, @IdTransTmp = ?', [2, $nomorDOs[$i], $user, $value, $nomorTransTmps[$i]]);
             } else {
                 $errors[] = 'Anda tidak berhak untuk menghapus Delivery Order ' . $nomorDOs[$i] . '. Coba hubungi pemilik login: ' . $accManager[0]->AccManager;
             }

@@ -66,9 +66,12 @@
                                         <td class="RDZPaddingTable RDZCenterTable">{{ $item->NamaCust }}</td>
                                         <td class="RDZPaddingTable RDZCenterTable">{{ $item->IDBarang }}</td>
                                         <td class="RDZPaddingTable RDZCenterTable">{{ $item->NamaBarang }}</td>
-                                        <td class="RDZPaddingTable RDZCenterTable">{{ $item->QtyPrimer }}</td>
-                                        <td class="RDZPaddingTable RDZCenterTable">{{ $item->QtySekunder }}</td>
-                                        <td class="RDZPaddingTable RDZCenterTable">{{ $item->QtyTritier }}</td>
+                                        <td class="RDZPaddingTable RDZCenterTable">
+                                            {{ number_format($item->QtyPrimer) }}</td>
+                                        <td class="RDZPaddingTable RDZCenterTable">
+                                            {{ number_format($item->QtySekunder) }}</td>
+                                        <td class="RDZPaddingTable RDZCenterTable">
+                                            {{ number_format($item->QtyTritier) }}</td>
                                         <td class="RDZPaddingTable RDZCenterTable">{{ $item->IdtransTmp }}</td>
                                         {{-- <td class="acs-td-button">
                                                 <button type="button" class="btn btn-sm btn-danger" id="buttonBatal"
