@@ -1096,20 +1096,29 @@ class PurchaseOrderController extends Controller
         }
     }
 
-    public function getDetailSppb(Request $request): JsonResponse
+   public function getDetailSppb(Request $request): JsonResponse
     {
         $kdDiv  = $request->query('kd_div');
         $noSppb = $request->query('no_sppb');
 
-        if (!$kdDiv || !$noSppb) {
-            return response()->json(['message' => 'kd_div dan no_sppb wajib diisi'], 400);
+        if (!$kdDiv) {
+            return response()->json(['message' => 'kd_div wajib diisi'], 400);
         }
 
         try {
-            $rows = DB::connection('ConnPurchase')->select(
-                'EXEC SP_1273_PRG_LIST_DETAIL_SPPB @MyType = ?, @KdDiv = ?, @NoSPPB = ?',
-                [5, $kdDiv, $noSppb]
-            );
+            if (!empty($noSppb)) {
+                // === MODE LIHAT: 1 SPPB (divisi + no_sppb) ===
+                $rows = DB::connection('ConnPurchase')->select(
+                    'EXEC SP_1273_PRG_LIST_DETAIL_SPPB @MyType = ?, @KdDiv = ?, @NoSPPB = ?',
+                    [5, $kdDiv, $noSppb]
+                );
+            } else {
+                // === MODE ISI: SEMUA transaksi per divisi (MyType=4) ===
+                $rows = DB::connection('ConnPurchase')->select(
+                    'EXEC SP_1273_PRG_LIST_DETAIL_SPPB @MyType = ?, @KdDiv = ?, @NoSPPB = ?',
+                    [4, $kdDiv, '']
+                );
+            }
 
             return response()->json($rows);
         } catch (\Throwable $e) {
