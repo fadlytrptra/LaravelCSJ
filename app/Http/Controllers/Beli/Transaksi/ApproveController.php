@@ -18,14 +18,14 @@ class ApproveController extends Controller
     public function index(Request $request)
     {
         $kdUser = trim(Auth::user()->NomorUser);
-    
+
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Approve');
         if ($result <= 0) abort(403);
-    
+
         // status dari UI: ACC / BATAL / ALL (default ACC)
         $status = strtoupper($request->get('status', 'ALL'));
-    
+
         // mapping status UI -> mode SP
         switch ($status) {
             case 'BATAL':
@@ -36,16 +36,16 @@ class ApproveController extends Controller
                 break;
             case 'ACC':
             default:
-                $mode = 'BELUM';  
+                $mode = 'BELUM';
                 break;
         }
-    
-        $sp   = 'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @kd_user = ?, @mode = ?';
+
+        $sp   = 'EXEC dbo.SP_4384_PBL_Select_AccPermohonan @kd_user = ?, @mode = ?';
         $data = DB::connection('ConnPurchase')->select($sp, [$kdUser, $mode]);
-    
+
         return view('Beli.Transaksi.Approve.List', compact('data', 'access', 'status'));
     }
-    
+
 
 
 
@@ -69,7 +69,7 @@ class ApproveController extends Controller
                     ]);
                 }
                 return back();
-            
+
             case 'Reject':
                 foreach ($Checked as $item) {
                     TransBL::where('No_trans', $item)->update([
@@ -136,7 +136,7 @@ class ApproveController extends Controller
                     'Manager' => trim(Auth::user()->NomorUser),
                 ]);
                 return back();
-            
+
             case 'Reject':
                 TransBL::where('No_trans', $id)->update([
                     'Tgl_Batal_acc' => $date,
