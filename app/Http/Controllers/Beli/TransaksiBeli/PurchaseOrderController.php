@@ -1107,16 +1107,15 @@ class PurchaseOrderController extends Controller
 
         try {
             if (!empty($noSppb)) {
-                // === MODE LIHAT: 1 SPPB (divisi + no_sppb) ===
                 $rows = DB::connection('ConnPurchase')->select(
                     'EXEC SP_1273_PRG_LIST_DETAIL_SPPB @MyType = ?, @KdDiv = ?, @NoSPPB = ?',
-                    [5, $kdDiv, $noSppb]
+                    [2, $kdDiv, $noSppb]
                 );
+
             } else {
-                // === MODE ISI: SEMUA transaksi per divisi (MyType=4) ===
                 $rows = DB::connection('ConnPurchase')->select(
                     'EXEC SP_1273_PRG_LIST_DETAIL_SPPB @MyType = ?, @KdDiv = ?, @NoSPPB = ?',
-                    [4, $kdDiv, '']
+                    [1, $kdDiv, '']
                 );
             }
 
@@ -1125,6 +1124,65 @@ class PurchaseOrderController extends Controller
             return response()->json($e->getMessage(), 500);
         }
     }
+
+    public function updateDetailSppb(Request $request): JsonResponse
+    {
+        // VALIDASI
+        $validated = $request->validate([
+            'no_trans'            => 'required|string',
+            'qty'                 => 'nullable|numeric',
+            'hrg_murni'           => 'required|numeric',
+            'disc'                => 'nullable|numeric',
+            'ppn'                 => 'nullable|numeric',
+            'dpp_nilai_lain'      => 'nullable|numeric',
+            'harga_ppn'           => 'nullable|numeric',
+            'subtotal_harga_jual' => 'nullable|numeric',
+            'total_harga'         => 'nullable|numeric',
+            'mata_uang'           => 'nullable|string',
+            'kurs'                => 'nullable|numeric',
+            'jangka_waktu'        => 'nullable|integer',
+            'pembayaran'          => 'nullable|string',
+            'tgl_datang'          => 'nullable|date',
+            'supplier'            => 'nullable|string',
+            'jenis_pembelian'     => 'nullable|string',
+        ]);
+
+        try {
+            DB::connection('ConnPurchase')
+                ->table('YTRANSBL')
+                ->where('No_trans', $validated['no_trans'])
+                ->update([
+                    'Qty'            => $validated['qty'],
+                    'hrg_murni'      => $validated['hrg_murni'],
+                    'Disc_trm'       => $validated['disc'],
+                    'Ppn_trm'        => $validated['ppn'],
+                    'dpp_nilai_lain' => $validated['dpp_nilai_lain'],
+                    'hrg_ppn'        => $validated['harga_ppn'],
+                    'hrg_nego'       => $validated['subtotal_harga_jual'],
+                    'hrg_nego_rp'    => $validated['total_harga'],
+                    'IdMataUang'     => $validated['mata_uang'],
+                    'Kurs_Rp'        => $validated['kurs'],
+                    'Waktu'          => $validated['jangka_waktu'],
+                    'PersetujuanBayar'     => $validated['pembayaran'],
+                    'Tgl_dtg'        => $validated['tgl_datang'],
+                    'No_sup'         => $validated['supplier'],
+                    'Jenis'          => $validated['jenis_pembelian'],
+                ]);
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail harga berhasil disimpan.',
+            ]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
 
 

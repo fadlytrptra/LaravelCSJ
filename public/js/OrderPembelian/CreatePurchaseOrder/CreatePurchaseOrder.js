@@ -1,1006 +1,799 @@
-//#region Variable
-let backGroup = document.getElementById("backGroup");
-let btn_backCreatePO = document.getElementById("btn_backCreatePO");
-let btn_close = document.getElementById("btn_close");
-let check_nyantol = document.getElementById("check_nyantol");
-let checkbox_centangSemuaBaris = document.getElementById("checkbox_centangSemuaBaris"); // prettier-ignore
-let checkedAll = document.getElementById("CheckedAll");
-let create_po = document.getElementById("create_po");
-let csrfToken = $('meta[name="csrf-token"]').attr("content");
-let div_tablePO = document.getElementById("div_tablePO");
-let divisi_select = document.getElementById("divisi_select");
-let filter_divisiRadioButton1 = document.getElementById("filter_divisiRadioButton1"); // prettier-ignore
-let filter_divisiRadioButton2 = document.getElementById("filter_divisiRadioButton2"); // prettier-ignore
-let filter_radioButton1 = document.getElementById("filter_radioButton1");
-let filter_radioButton2 = document.getElementById("filter_radioButton2");
-let filter_radioButton3 = document.getElementById("filter_radioButton3");
-let filter_radioButtonOrderInput = document.getElementById("filter_radioButtonOrderInput"); // prettier-ignore
-let filter_radioButtonUserInput = document.getElementById("filter_radioButtonUserInput"); // prettier-ignore
-let form_createSPPB = document.getElementById("form_createSPPB");
-let jnsBeli = 0;
-let modeLoad = 0;
-let proses = 0;
-let redisplay = document.getElementById("redisplay");
-let selectedRows = [];
-let table_PurchaseOrder = document.getElementById("table_PurchaseOrder");
+jQuery(function ($) {
+    //#region Variable
+    let detailTable = null;
+    let mode = "";
+    let tgl_sppb = document.getElementById("tgl_sppb");
+    let tgl_datang = document.getElementById("tgl_datang");
+    let no_trans = document.getElementById("no_trans");
+    let kd_brg = document.getElementById("kd_brg");
+    let nama_brg = document.getElementById("nama_brg");
+    let ket_brg = document.getElementById("ket_brg");
+    let kat_utama = document.getElementById("kat_utama");
+    let kategori = document.getElementById("kategori");
+    let sub_kategori = document.getElementById("sub_kategori");
+    let ket_pembelian = document.getElementById("ket_pembelian");
+    let satuan = document.getElementById("satuan");
+    let qty = document.getElementById("qty");
+    let mata_uang = document.getElementById("mata_uang");
+    let hrg_murni = document.getElementById("hrg_murni");
+    let kurs = document.getElementById("kurs");
+    let disc = document.getElementById("disc");
+    let ppn = document.getElementById("ppn");
+    let dpp_nilai_lain = document.getElementById("dpp_nilai_lain");
+    let harga_ppn = document.getElementById("harga_ppn");
+    let subtotal_harga_jual = document.getElementById("subtotal_harga_jual");
+    let jangka_waktu = document.getElementById("jangka_waktu");
+    let total_harga = document.getElementById("total_harga");
+    let pembayaran = document.getElementById("pembayaran");
+    let supplier = document.getElementById("supplier");
+    let jenis_pembelian = document.getElementById("jenis_pembelian");
+    let alasan_hapus = document.getElementById("alasan_hapus");
+    let no_sppb = document.getElementById("no_sppb");
 
-let table = $("#table_PurchaseOrder").DataTable({
-    responsive: true,
-    scrollX: true,
-    searching: false,
-    scrollY: "400px",
-    paging: false,
-    columnDefs: [{ orderable: false, targets: 0 }],
-});
+    //#endregion
 
-//#region Load Form
+    //#region Load Form
 
-backGroup.style.display = "none";
+    //#endregion
 
-//#endregion
+    //#region Function
 
-//#region Function
+    //#region
 
-function LoadPermohonan(proses, stbeli) {
-    if (proses == 1) {
-        fetch(
-            "/get/dataPermohonanDivisi/" +
-                stbeli +
-                "/" +
-                divisi_select.options[divisi_select.selectedIndex].value
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                const rows = data.map((item) => {
-                    const tglDibutuhkan = new Date(item.Tgl_Dibutuhkan);
-                    // Format the date
-                    const tglDibutuhkanformattedDate =
-                        ("0" + tglDibutuhkan.getDate()).slice(-2) +
-                        "-" +
-                        ("0" + (tglDibutuhkan.getMonth() + 1)).slice(-2) +
-                        "-" +
-                        tglDibutuhkan.getFullYear();
+    //#region Event Listener
 
-                    // Modify the item in the data array
-                    item.Tgl_Dibutuhkan = tglDibutuhkanformattedDate;
+    //#endregion
 
-                    const tglDirektur = new Date(item.Tgl_Direktur);
-                    // Format the date
-                    const tglDirekturformattedDate =
-                        ("0" + tglDirektur.getDate()).slice(-2) +
-                        "-" +
-                        ("0" + (tglDirektur.getMonth() + 1)).slice(-2) +
-                        "-" +
-                        tglDirektur.getFullYear() +
-                        " " +
-                        tglDirektur.getHours() +
-                        ":" +
-                        tglDirektur.getMinutes() +
-                        ":" +
-                        tglDirektur.getSeconds();
+    // --- UTILITAS CLEAR FORM + TABLE ---
+    function clearDetailSppb() {
+        tgl_sppb.value = "";
+        tgl_datang.value = "";
+        no_trans.value = "";
+        kd_brg.value = "";
+        nama_brg.value = "";
+        ket_brg.value = "";
+        kat_utama.value = "";
+        kategori.value = "";
+        sub_kategori.value = "";
+        ket_pembelian.value = "";
+        satuan.value = "";
+        qty.value = "";
+        mata_uang.value = "";
+        hrg_murni.value = "";
+        kurs.value = "0";
+        disc.value = "";
+        ppn.value = "";
+        dpp_nilai_lain.value = "";
+        harga_ppn.value = "";
+        subtotal_harga_jual.value = "";
+        jangka_waktu.value = "";
+        total_harga.value = "";
+        pembayaran.value = "";
 
-                    // Modify the item in the data array
-                    item.Tgl_Direktur = tglDirekturformattedDate;
-
-                    return [
-                        `<input type="checkbox" name="checked" value="${item.No_trans.trim()}" id="${item.No_trans.trim()}" style="width: 20px;height: 20px;" />`,
-                        item.NM_SUP.trim(),
-                        item.Kd_div.trim(),
-                        item.NmUser.trim(),
-                        item.StBeli.trim() == 1
-                            ? "Pengadaan Pembelian"
-                            : "Beli Sendiri",
-                        item.No_trans.trim(),
-                        item.Kd_brg.trim(),
-                        item.NAMA_BRG.trim().replace(/</g, "&lt;"),
-                        item.nama_sub_kategori.trim(),
-                        numeral(parseFloat(item.Qty.trim())).format("0,0.00"),
-                        item.Nama_satuan.trim(),
-                        numeral(parseFloat(item.PriceUnit.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PriceSub.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PPN.trim())).format("0,0.0000"),
-                        numeral(
-                            parseFloat((item.PriceExt ?? "0").trim())
-                        ).format("0,0.0000"),
-                        item.Curr.trim(),
-                        item.Tgl_Dibutuhkan.trim(),
-                        item.keterangan == null ? "-" : item.keterangan.trim(),
-                        item.Ket_Internal == null
-                            ? "-"
-                            : item.Ket_Internal.trim(),
-                        item.AppMan.trim(),
-                        item.AppPBL.trim(),
-                        item.AppDir.trim() + " " + item.Tgl_Direktur.trim(),
-                    ];
-                });
-                table.clear();
-                table.rows.add(rows);
-                table.draw();
-                $("#table_PurchaseOrder tbody").off("dblclick", "tr");
-                $("#table_PurchaseOrder tbody").on(
-                    "dblclick",
-                    "tr",
-                    function () {
-                        let checkbox = $(this).find('input[type="checkbox"]');
-                        checkbox.prop("checked", !checkbox.prop("checked"));
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-                $("#table_PurchaseOrder tbody").on(
-                    "click",
-                    'input[type="checkbox"]',
-                    function () {
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-            });
-    } else if (proses == 2) {
-        fetch("/get/dataPermohonanUser/" + filter_radioButtonUserInput.value)
-            .then((response) => response.json())
-            .then((data) => {
-                const rows = data.map((item) => {
-                    return [
-                        `<input type="checkbox" name="checked" value="${item.No_trans.trim()}" id="${item.No_trans.trim()}" style="width: 20px;height: 20px;" />`,
-                        item.NM_SUP.trim(),
-                        item.Kd_div.trim(),
-                        item.NmUser.trim(),
-                        item.StBeli.trim() == 1
-                            ? "Pengadaan Pembelian"
-                            : "Beli Sendiri",
-                        item.No_trans.trim(),
-                        item.Kd_brg.trim(),
-                        item.NAMA_BRG.trim().replace(/</g, "&lt;"),
-                        item.nama_sub_kategori.trim(),
-                        numeral(parseFloat(item.Qty.trim())).format("0,0.00"),
-                        item.Nama_satuan.trim(),
-                        numeral(parseFloat(item.PriceUnit.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PriceSub.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PPN.trim())).format("0,0.0000"),
-                        numeral(parseFloat(item.PriceExt.trim())).format(
-                            "0,0.0000"
-                        ),
-                        item.Curr.trim(),
-                        item.Tgl_Dibutuhkan.trim(),
-                        item.keterangan == null ? "-" : item.keterangan.trim(),
-                        item.Ket_Internal == null
-                            ? "-"
-                            : item.Ket_Internal.trim(),
-                        item.AppMan.trim(),
-                        item.AppPBL.trim(),
-                        item.AppDir.trim() + " " + item.Tgl_Direktur,
-                    ];
-                });
-                table.clear();
-                table.rows.add(rows);
-                table.draw();
-                $("#table_PurchaseOrder tbody").off("dblclick", "tr");
-                $("#table_PurchaseOrder tbody").on(
-                    "dblclick",
-                    "tr",
-                    function () {
-                        let checkbox = $(this).find('input[type="checkbox"]');
-                        checkbox.prop("checked", !checkbox.prop("checked"));
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-                $("#table_PurchaseOrder tbody").on(
-                    "click",
-                    'input[type="checkbox"]',
-                    function () {
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-            });
-    } else if (proses == 3) {
-        fetch("/get/dataPermohonanOrder/" + filter_radioButtonOrderInput.value)
-            .then((response) => response.json())
-            .then((data) => {
-                const rows = data.map((item) => {
-                    return [
-                        `<input type="checkbox" name="checked" value="${item.No_trans.trim()}" id="${item.No_trans.trim()}" style="width: 20px;height: 20px;" />`,
-                        item.NM_SUP.trim(),
-                        item.Kd_div.trim(),
-                        item.NmUser.trim(),
-                        item.StBeli.trim() == 1
-                            ? "Pengadaan Pembelian"
-                            : "Beli Sendiri",
-                        item.No_trans.trim(),
-                        item.Kd_brg.trim(),
-                        item.NAMA_BRG.trim().replace(/</g, "&lt;"),
-                        item.nama_sub_kategori.trim(),
-                        numeral(parseFloat(item.Qty.trim())).format("0,0.00"),
-                        item.Nama_satuan.trim(),
-                        numeral(parseFloat(item.PriceUnit.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PriceSub.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PPN.trim())).format("0,0.0000"),
-                        numeral(parseFloat(item.PriceExt.trim())).format(
-                            "0,0.0000"
-                        ),
-                        item.Curr.trim(),
-                        item.Tgl_Dibutuhkan.trim(),
-                        item.keterangan == null ? "-" : item.keterangan.trim(),
-                        item.Ket_Internal == null
-                            ? "-"
-                            : item.Ket_Internal.trim(),
-                        item.AppMan.trim(),
-                        item.AppPBL.trim(),
-                        item.AppDir.trim() + " " + item.Tgl_Direktur.trim(),
-                    ];
-                });
-                table.clear();
-                table.rows.add(rows);
-                table.draw();
-                $("#table_PurchaseOrder tbody").off("dblclick", "tr");
-                $("#table_PurchaseOrder tbody").on(
-                    "dblclick",
-                    "tr",
-                    function () {
-                        let checkbox = $(this).find('input[type="checkbox"]');
-                        checkbox.prop("checked", !checkbox.prop("checked"));
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-                $("#table_PurchaseOrder tbody").on(
-                    "click",
-                    'input[type="checkbox"]',
-                    function () {
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-            });
-    }
-}
-
-function LoadPermohonanNyantol(proses, stbeli) {
-    if (proses == 1) {
-        fetch(
-            "/get/dataPermohonanDivisiNyantol/" +
-                stbeli +
-                "/" +
-                divisi_select.options[divisi_select.selectedIndex].value
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                //
-                const rows = data.map((item) => {
-                    return [
-                        `<input type="checkbox" name="checked" value="${item.No_trans.trim()}" id="${item.No_trans.trim()}" style="width: 20px;height: 20px;" />`,
-                        item.NM_SUP.trim(),
-                        item.Kd_div.trim(),
-                        item.NmUser.trim(),
-                        item.StBeli.trim() == 1
-                            ? "Pengadaan Pembelian"
-                            : "Beli Sendiri",
-                        item.No_trans.trim(),
-                        item.Kd_brg.trim(),
-                        item.NAMA_BRG.trim().replace(/</g, "&lt;"),
-                        item.nama_sub_kategori.trim(),
-                        numeral(parseFloat(item.Qty.trim())).format("0,0.00"),
-                        item.Nama_satuan.trim(),
-                        numeral(parseFloat(item.PriceUnit.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PriceSub.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PPN.trim())).format("0,0.0000"),
-                        numeral(parseFloat(item.PriceExt.trim())).format(
-                            "0,0.0000"
-                        ),
-                        item.Curr.trim(),
-                        item.Tgl_Dibutuhkan.trim(),
-                        item.keterangan == null ? "-" : item.keterangan.trim(),
-                        item.Ket_Internal == null
-                            ? "-"
-                            : item.Ket_Internal.trim(),
-                        item.AppMan.trim(),
-                        item.AppPBL.trim(),
-                        item.AppDir.trim() + " " + item.Tgl_Direktur.trim(),
-                    ];
-                });
-                table.clear();
-                table.rows.add(rows);
-                table.draw();
-                $("#table_PurchaseOrder tbody").off("dblclick", "tr");
-                $("#table_PurchaseOrder tbody").on(
-                    "dblclick",
-                    "tr",
-                    function () {
-                        let checkbox = $(this).find('input[type="checkbox"]');
-                        checkbox.prop("checked", !checkbox.prop("checked"));
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-                $("#table_PurchaseOrder tbody").on(
-                    "click",
-                    'input[type="checkbox"]',
-                    function () {
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-            });
-    } else if (proses == 2) {
-        fetch(
-            "/get/dataPermohonanUserNyantol/" +
-                filter_radioButtonUserInput.value
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                const rows = data.map((item) => {
-                    return [
-                        `<input type="checkbox" name="checked" value="${item.No_trans.trim()}" id="${item.No_trans.trim()}" style="width: 20px;height: 20px;" />`,
-                        item.NM_SUP.trim(),
-                        item.Kd_div.trim(),
-                        item.NmUser.trim(),
-                        item.StBeli.trim() == 1
-                            ? "Pengadaan Pembelian"
-                            : "Beli Sendiri",
-                        item.No_trans.trim(),
-                        item.Kd_brg.trim(),
-                        item.NAMA_BRG.trim().replace(/</g, "&lt;"),
-                        item.nama_sub_kategori.trim(),
-                        numeral(parseFloat(item.Qty.trim())).format("0,0.00"),
-                        item.Nama_satuan.trim(),
-                        numeral(parseFloat(item.PriceUnit.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PriceSub.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PPN.trim())).format("0,0.0000"),
-                        numeral(parseFloat(item.PriceExt.trim())).format(
-                            "0,0.0000"
-                        ),
-                        item.Curr.trim(),
-                        item.Tgl_Dibutuhkan.trim(),
-                        item.keterangan == null ? "-" : item.keterangan.trim(),
-                        item.Ket_Internal == null
-                            ? "-"
-                            : item.Ket_Internal.trim(),
-                        item.AppMan.trim(),
-                        item.AppPBL.trim(),
-                        item.AppDir.trim() + " " + item.Tgl_Direktur.trim(),
-                    ];
-                });
-                table.clear();
-                table.rows.add(rows);
-                table.draw();
-                $("#table_PurchaseOrder tbody").off("dblclick", "tr");
-                $("#table_PurchaseOrder tbody").on(
-                    "dblclick",
-                    "tr",
-                    function () {
-                        let checkbox = $(this).find('input[type="checkbox"]');
-                        checkbox.prop("checked", !checkbox.prop("checked"));
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-                $("#table_PurchaseOrder tbody").on(
-                    "click",
-                    'input[type="checkbox"]',
-                    function () {
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-
-                        // console.log(selectedRows);
-                    }
-                );
-            });
-    } else if (proses == 3) {
-        fetch(
-            "/get/dataPermohonanOrderNyantol/" +
-                filter_radioButtonOrderInput.value
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                const rows = data.map((item) => {
-                    return [
-                        `<input type="checkbox" name="checked" value="${item.No_trans.trim()}" id="${item.No_trans.trim()}" style="width: 20px;height: 20px;" />`,
-                        item.NM_SUP.trim(),
-                        item.Kd_div.trim(),
-                        item.NmUser.trim(),
-                        item.StBeli.trim() == 1
-                            ? "Pengadaan Pembelian"
-                            : "Beli Sendiri",
-                        item.No_trans.trim(),
-                        item.Kd_brg.trim(),
-                        item.NAMA_BRG.trim().replace(/</g, "&lt;"),
-                        item.nama_sub_kategori.trim(),
-                        numeral(parseFloat(item.Qty.trim())).format("0,0.00"),
-                        item.Nama_satuan.trim(),
-                        numeral(parseFloat(item.PriceUnit.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PriceSub.trim())).format(
-                            "0,0.0000"
-                        ),
-                        numeral(parseFloat(item.PPN.trim())).format("0,0.0000"),
-                        numeral(parseFloat(item.PriceExt.trim())).format(
-                            "0,0.0000"
-                        ),
-                        item.Curr.trim(),
-                        item.Tgl_Dibutuhkan.trim(),
-                        item.keterangan == null ? "-" : item.keterangan.trim(),
-                        item.Ket_Internal == null
-                            ? "-"
-                            : item.Ket_Internal.trim(),
-                        item.AppMan.trim(),
-                        item.AppPBL.trim(),
-                        item.AppDir.trim() + " " + item.Tgl_Direktur.trim(),
-                    ];
-                });
-
-                table.clear();
-                table.rows.add(rows);
-                table.draw();
-                $("#table_PurchaseOrder tbody").off("dblclick", "tr");
-                $("#table_PurchaseOrder tbody").on(
-                    "dblclick",
-                    "tr",
-                    function () {
-                        let checkbox = $(this).find('input[type="checkbox"]');
-                        checkbox.prop("checked", !checkbox.prop("checked"));
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-                $("#table_PurchaseOrder tbody").on(
-                    "click",
-                    'input[type="checkbox"]',
-                    function () {
-                        let checkedCount = $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).length;
-
-                        $("#checkedCount").text(
-                            `Jumlah Data Yang TerCentang ${checkedCount}`
-                        );
-                        selectedRows = [];
-
-                        $(
-                            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-                        ).each(function () {
-                            let row = $(this).closest("tr");
-                            let rowData = table.row(row).data();
-                            selectedRows.push(rowData);
-                        });
-                        // console.log(selectedRows);
-                    }
-                );
-            });
-    }
-}
-
-function handleReload() {
-    if (modeLoad == 1) {
-        proses = 1;
-        jnsBeli = filter_divisiRadioButton1.checked ? 1 : 0;
-        LoadPermohonanNyantol(proses, jnsBeli);
-    } else if (modeLoad == 2) {
-        proses = 2;
-        LoadPermohonanNyantol(proses, 2);
-    } else if (modeLoad == 3) {
-        proses = 3;
-        LoadPermohonanNyantol(proses, 3);
-    } else if (modeLoad == 4) {
-        proses = 1;
-        jnsBeli = filter_divisiRadioButton1.checked ? 1 : 0;
-        LoadPermohonan(proses, jnsBeli);
-    } else if (modeLoad == 5) {
-        proses = 2;
-        LoadPermohonan(proses, 2);
-    } else if (modeLoad == 6) {
-        proses = 3;
-        LoadPermohonan(proses, 3);
-    }
-}
-
-//#region
-
-//#region Event Listener
-
-check_nyantol.addEventListener("click", function (event) {
-    if (check_nyantol.checked == true) {
-        backGroup.style.display = "block";
-        form_createSPPB.style.display = "none";
-    } else {
-        backGroup.style.display = "none";
-        form_createSPPB.style.display = "block";
-    }
-});
-
-checkedAll.addEventListener("click", function (event) {
-    let rows = table
-        .rows({
-            search: "applied",
-        })
-        .nodes();
-    if (checkedAll.checked == true) {
-        $('input[type="checkbox"]', rows).prop("checked", true);
-        let checkbox = $(this).find('input[type="checkbox"]');
-        checkbox.prop("checked", !checkbox.prop("checked"));
-        let checkedCount = $(
-            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-        ).length;
-
-        $("#checkedCount").text(`Jumlah Data Yang TerCentang ${checkedCount}`);
-        selectedRows = table.rows().data().toArray();
-    } else {
-        $('input[type="checkbox"]', rows).prop("checked", false);
-        selectedRows = [];
-        let checkedCount = $(
-            '#table_PurchaseOrder tbody input[type="checkbox"]:checked'
-        ).length;
-
-        $("#checkedCount").text(`Jumlah Data Yang TerCentang ${checkedCount}`);
-    }
-    // console.log(selectedRows, "checkedAll clicked");
-});
-
-btn_backCreatePO.addEventListener("click", function (event) {
-    if (selectedRows.length == 0) {
-        alert("Pilih Dulu Data Yang Mau DiBack Create PO");
-    } else {
-        for (let i = 0; i < selectedRows.length; i++) {
-            $.ajax({
-                url: "/PurchaseOrderr/create/BackCreatePO",
-                type: "PUT",
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken,
-                },
-                data: {
-                    noTrans: selectedRows[i][5].trim(),
-                },
-                beforeSend: function () {
-                    // Show loading screen
-                    $("#loading-screen").css("display", "flex");
-                },
-                success: function (response) {
-                    Swal.fire({
-                        icon: "success",
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: "2000",
-                    });
-                    if (modeLoad == 1) {
-                        proses = 1;
-                        if (filter_divisiRadioButton1.checked == true) {
-                            jnsBeli = 1;
-                        } else if (filter_divisiRadioButton2.checked == true) {
-                            jnsBeli = 0;
-                        }
-                        modeLoad = 1;
-                        LoadPermohonanNyantol(proses, jnsBeli);
-                    } else if (modeLoad == 2) {
-                        proses = 2;
-                        modeLoad = 2;
-                        LoadPermohonanNyantol(proses, 2);
-                    } else if (modeLoad == 3) {
-                        proses = 3;
-                        modeLoad = 3;
-                        LoadPermohonanNyantol(proses, 3);
-                    } else if (modeLoad == 4) {
-                        proses = 1;
-                        if (filter_divisiRadioButton1.checked == true) {
-                            jnsBeli = 1;
-                        } else if (filter_divisiRadioButton2.checked == true) {
-                            jnsBeli = 0;
-                        }
-                        modeLoad = 4;
-                        LoadPermohonan(proses, jnsBeli);
-                    } else if (modeLoad == 5) {
-                        proses = 2;
-                        modeLoad = 5;
-                        LoadPermohonan(proses, 2);
-                    } else if (modeLoad == 6) {
-                        proses = 3;
-                        modeLoad = 6;
-                        LoadPermohonan(proses, 3);
-                    }
-                },
-                error: function (error) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Data Tidak Berhasil DiBack To Create!",
-                        showConfirmButton: false,
-                        timer: "2000",
-                    });
-                    console.error("Error Send Data:", error);
-                },
-                complete: function () {
-                    // Hide loading screen
-                    $("#loading-screen").css("display", "none");
-                },
-            });
+        if (supplier) {
+            supplier.value = "";
+            supplier.disabled = false;
         }
+
+        if (jenis_pembelian) jenis_pembelian.value = "";
+
+        if (alasan_hapus) alasan_hapus.value = "";
+
+        if (no_sppb) {
+            if (mode === "") {
+                no_sppb.innerHTML =
+                    '<option value="">-- Pilih No SPPB --</option>';
+            }
+        }
+
+        if (detailTable) detailTable.clear().draw();
     }
-});
 
-btn_close.addEventListener("click", function (event) {
-    if (selectedRows.length == 0) {
-        alert("Pilih Dulu Data Yang Mau DiClose Order");
-    } else {
-        // Ask for alasan first
-        Swal.fire({
-            title: "Masukkan Alasan",
-            input: "text",
-            inputPlaceholder: "Tulis alasan di sini...",
-            showCancelButton: true,
-            confirmButtonText: "Lanjutkan",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed && result.value.trim() !== "") {
-                let alasan = result.value.trim();
+    /* =========================================================
+           MODE ISI  → semua transaksi per divisi (MyType = 1)
+           ========================================================= */
+    function loadDataByDivisiIsi() {
+        const kdDiv = document.getElementById("kd_div").value;
 
-                for (let i = 0; i < selectedRows.length; i++) {
-                    $.ajax({
-                        url: "/PurchaseOrderr/create/CloseOrder",
-                        type: "PUT",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken,
-                        },
-                        data: {
-                            noTrans: selectedRows[i][5].trim(),
-                            QtyCancel: parseFloat(selectedRows[i][9]),
-                            alasan: alasan,
-                        },
-                        beforeSend: function () {
-                            $("#loading-screen").css("display", "flex");
-                        },
-                        success: function (response) {
-                            Swal.fire({
-                                icon: "success",
-                                title: response.message,
-                                showConfirmButton: false,
-                                timer: 2000,
-                            });
-                            handleReload();
-                        },
-                        error: function (error) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Data Tidak Berhasil DiClose!",
-                                showConfirmButton: false,
-                                timer: 2000,
-                            });
-                            console.error("Error Send Data:", error);
-                        },
-                        complete: function () {
-                            $("#loading-screen").css("display", "none");
-                        },
+        if (!kdDiv || mode !== "ISI") {
+            if (detailTable) detailTable.clear().draw();
+            return;
+        }
+
+        fetch(
+            "{{ route('purchaseorder.detail_sppb') }}" +
+                "?kd_div=" +
+                encodeURIComponent(kdDiv) +
+                "&no_sppb="
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!detailTable) return;
+
+                detailTable.clear();
+
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach((item) => {
+                        // *** PENTING: mapping langsung ke kolom YTRANSBL ***
+                        const checkboxHtml = `
+                        <input type="checkbox"
+                            class="row-select-isi"
+
+                            data-no-trans="${item.No_trans ?? ""}"
+                            data-kd-brg="${item.Kd_brg ?? ""}"
+                            data-nama-brg="${(item.NAMA_BRG ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-ket-brg="${(item.KET ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-kat-utama="${(item.nama ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-kategori="${(item.nama_kategori ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-sub-kategori="${(
+                                item.nama_sub_kategori ?? ""
+                            ).replace(/"/g, "&quot;")}"
+                            data-ket-pembelian="${(
+                                item.keterangan ?? ""
+                            ).replace(/"/g, "&quot;")}"
+                            data-satuan="${(item.Nama_satuan ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-qty="${item.Qty ?? ""}"
+
+                            data-tgl-sppb="${
+                                item.Tgl_sppb ? item.Tgl_sppb.substr(0, 10) : ""
+                            }"
+                            data-no-sppb="${item.No_sppb ?? ""}"
+                            data-tgl-datang="${
+                                item.Tgl_dtg ? item.Tgl_dtg.substr(0, 10) : ""
+                            }"
+
+                            data-id-mata-uang="${
+                                item.IdMataUang ?? item.Id_MataUang ?? ""
+                            }"
+                            data-kurs="${item.Kurs_Rp ?? item.kurs_ppn ?? 0}"
+
+                            data-hrg-murni="${
+                                item.hrg_murni ??
+                                item.Hrg_trm ??
+                                item.PriceUnit ??
+                                0
+                            }"
+
+                            data-disc="${
+                                item.Disc_trm ?? item.hrg_disc ?? item.Disc ?? 0
+                            }"
+
+                            data-ppn="${
+                                item.Ppn_trm ?? item.hrg_ppn ?? item.PPN ?? 0
+                            }"
+
+                            data-dpp-nilai-lain="${
+                                item.dpp_nilai_lain ?? item.DppNilaiLain ?? 0
+                            }"
+
+                            data-harga-ppn="${
+                                item.hrg_ppn ?? item.HargaPpn ?? 0
+                            }"
+
+                            data-subtotal-harga="${
+                                item.hrg_nego ?? item.SubTotalHargaJual ?? 0
+                            }"
+
+                            data-total-harga="${
+                                item.hrg_nego_rp ?? item.TotalHarga ?? 0
+                            }"
+
+                            data-waktu="${item.Waktu ?? 0}"
+
+                            data-no-sup="${
+                                item.No_sup ?? item.IdSup ?? item.Supplier ?? ""
+                            }"
+                            data-pembayaran="${
+                                item.Pembayaran ?? item.PersetujuanBayar ?? ""
+                            }"
+                        />
+                    `;
+
+                        const show = (field) => {
+                            if (
+                                !Object.prototype.hasOwnProperty.call(
+                                    item,
+                                    field
+                                )
+                            )
+                                return "";
+                            const val = item[field];
+                            return val === null || val === "" ? "-" : val;
+                        };
+
+                        detailTable.row.add([
+                            checkboxHtml,
+                            item.Tgl_order ? item.Tgl_order.substr(0, 10) : "",
+                            show("Qty"),
+                            show("Pemesan"),
+                            show("NM_MSN"),
+                            show("NM_GOL"),
+                            show("No_trans"),
+                            item.Tgl_dtg ? item.Tgl_dtg.substr(0, 10) : "",
+                            show("Retur"),
+                            show("Direktur"),
+                            item.hrg_murni ??
+                                item.Hrg_trm ??
+                                item.PriceUnit ??
+                                0,
+                            item.Disc_trm ?? item.hrg_disc ?? item.Disc ?? 0,
+                            item.dpp_nilai_lain ?? item.DppNilaiLain ?? 0,
+                            item.Ppn_trm ?? item.hrg_ppn ?? item.PPN ?? 0,
+                            item.hrg_nego_rp ?? item.TotalHarga ?? 0,
+                        ]);
                     });
                 }
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                Swal.fire("Tidak Dibatalkan", "Order tidak jadi dibatalkan.", "info");
-            }
-        });
-    }
-});
 
-filter_radioButtonOrderInput.addEventListener("change", function (event) {
-    redisplay.focus();
-});
-
-filter_radioButtonUserInput.addEventListener("change", function (event) {
-    redisplay.focus();
-});
-
-redisplay.addEventListener("click", function (event) {
-    event.preventDefault();
-    let nyantol = false;
-    if (check_nyantol.checked == true) {
-        nyantol = true;
-    } else {
-        nyantol = false;
+                detailTable.draw();
+            })
+            .catch((err) => {
+                console.error("Error load data by divisi (ISI):", err);
+            });
     }
-    // console.log(nyantol);
-    $('input[type="checkbox"]:checked').prop("checked", false);
-    $("#checkedCount").text(`Jumlah Data Yang TerCentang 0`);
-    if (nyantol == true) {
-        check_nyantol.checked = true;
-    } else {
-        check_nyantol.checked = false;
-    }
-    if (check_nyantol.checked == true) {
-        if (filter_radioButton1.checked == true) {
-            proses = 1;
-            if (filter_divisiRadioButton1.checked == true) {
-                jnsBeli = 1;
-            } else if (filter_divisiRadioButton2.checked == true) {
-                jnsBeli = 0;
-            }
-            modeLoad = 1;
-            LoadPermohonanNyantol(proses, jnsBeli);
-        } else if (filter_radioButton2.checked == true) {
-            proses = 2;
-            modeLoad = 2;
-            LoadPermohonanNyantol(proses, 2);
-        } else if (filter_radioButton3.checked == true) {
-            proses = 3;
-            modeLoad = 3;
-            LoadPermohonanNyantol(proses, 3);
+
+    /* =========================================================
+           MODE LIHAT  → detail 1 SPPB (MyType = 2)
+           ========================================================= */
+    function loadDetailSppbSingle() {
+        const kdDiv = document.getElementById("kd_div").value;
+        const noSppb = document.getElementById("no_sppb").value.trim();
+
+        if (!kdDiv) {
+            alert("Silakan pilih Nama Divisi terlebih dahulu.");
+            return;
         }
-    } else {
-        if (filter_radioButton1.checked == true) {
-            proses = 1;
-            if (filter_divisiRadioButton1.checked == true) {
-                jnsBeli = 1;
-            } else if (filter_divisiRadioButton2.checked == true) {
-                jnsBeli = 0;
-            }
-            modeLoad = 4;
-            LoadPermohonan(proses, jnsBeli);
-        } else if (filter_radioButton2.checked == true) {
-            proses = 2;
-            modeLoad = 5;
-            LoadPermohonan(proses, 2);
-        } else if (filter_radioButton3.checked == true) {
-            proses = 3;
-            modeLoad = 6;
-            LoadPermohonan(proses, 3);
+        if (!noSppb) {
+            alert("Silakan pilih No SPPB.");
+            return;
         }
-    }
-});
 
-create_po.addEventListener("click", function (event) {
-    event.preventDefault();
-    let isDifferent = false;
-    let totalRows = selectedRows.length;
+        fetch(
+            "{{ route('purchaseorder.detail_sppb') }}" +
+                "?kd_div=" +
+                encodeURIComponent(kdDiv) +
+                "&no_sppb=" +
+                encodeURIComponent(noSppb)
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                clearDetailSppb();
 
-    // Loop untuk memeriksa kolom ke-3 (index 2) dari semua baris
-    let firstValue = selectedRows[0][2]; // Nilai referensi dari array pertama
-
-    // Bandingkan dengan semua baris lainnya
-    for (let row = 1; row < totalRows; row++) {
-        if (selectedRows[row][2] !== firstValue) {
-            isDifferent = true;
-            break;
-        }
-    }
-
-    // Jika ada perbedaan, tampilkan peringatan
-    if (isDifferent) {
-        Swal.fire({
-            icon: "warning",
-            title: "Peringatan",
-            text: "Terdapat data divisi yang tidak sama di antara baris yang dipilih!",
-        });
-    } else {
-        Swal.fire({
-            title: "Yakin akan memproses order ini?",
-            text: "Pastikan kembali bahwa order yang dicentang adalah milik divisi yang sama. 1 PO, 1 Supplier, 1 Divisi.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes",
-            cancelButtonText: "No",
-        }).then((result) => {
-            if (result.isConfirmed && selectedRows.length > 0) {
-                let sameValues = true; // Ensure your condition is correctly set
-                if (sameValues) {
-                    let noTrans = [];
-                    for (let index = 0; index < selectedRows.length; index++) {
-                        noTrans.push(selectedRows[index][5]);
-                        // console.log(noTrans);
-                    }
-                    let input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "noTrans";
-                    input.value = noTrans;
-                    form_createSPPB.target = "_blank";
-                    form_createSPPB.appendChild(input);
-                    // console.log(form_createSPPB);
-                    form_createSPPB.submit();
+                if (!Array.isArray(data) || data.length === 0) {
+                    alert("Data SPPB tidak tersedia.");
+                    return;
                 }
+
+                const row = data[0];
+
+                document.getElementById("tgl_sppb").value = row.Tgl_sppb
+                    ? row.Tgl_sppb.substr(0, 10)
+                    : "";
+
+                document.getElementById("tgl_datang").value = row.Tgl_dtg
+                    ? row.Tgl_dtg.substr(0, 10)
+                    : "";
+
+                if (detailTable) {
+                    detailTable.clear();
+
+                    data.forEach((item) => {
+                        const checkboxHtml = `
+                        <input type="checkbox"
+                            class="row-select-isi"
+
+                            data-no-trans="${item.No_trans ?? ""}"
+                            data-kd-brg="${item.Kd_brg ?? ""}"
+                            data-nama-brg="${(item.NAMA_BRG ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-ket-brg="${(item.KET ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-kat-utama="${(item.nama ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-kategori="${(item.nama_kategori ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-sub-kategori="${(
+                                item.nama_sub_kategori ?? ""
+                            ).replace(/"/g, "&quot;")}"
+                            data-ket-pembelian="${(
+                                item.keterangan ?? ""
+                            ).replace(/"/g, "&quot;")}"
+                            data-satuan="${(item.Nama_satuan ?? "").replace(
+                                /"/g,
+                                "&quot;"
+                            )}"
+                            data-qty="${item.Qty ?? ""}"
+
+                            data-tgl-sppb="${
+                                item.Tgl_sppb ? item.Tgl_sppb.substr(0, 10) : ""
+                            }"
+                            data-no-sppb="${item.No_sppb ?? ""}"
+                            data-tgl-datang="${
+                                item.Tgl_dtg ? item.Tgl_dtg.substr(0, 10) : ""
+                            }"
+
+                            data-id-mata-uang="${
+                                item.IdMataUang ?? item.Id_MataUang ?? ""
+                            }"
+                            data-kurs="${item.Kurs_Rp ?? item.kurs_ppn ?? 0}"
+
+                            data-harga-satuan="${
+                                item.hrg_murni ??
+                                item.Hrg_trm ??
+                                item.PriceUnit ??
+                                0
+                            }"
+
+                            data-disc="${
+                                item.Disc_trm ?? item.hrg_disc ?? item.Disc ?? 0
+                            }"
+
+                            data-ppn="${
+                                item.Ppn_trm ?? item.hrg_ppn ?? item.PPN ?? 0
+                            }"
+
+                            data-dpp-nilai-lain="${
+                                item.dpp_nilai_lain ?? item.DppNilaiLain ?? 0
+                            }"
+
+                            data-harga-ppn="${
+                                item.hrg_ppn ?? item.HargaPpn ?? 0
+                            }"
+
+                            data-subtotal-harga="${
+                                item.hrg_nego ?? item.SubTotalHargaJual ?? 0
+                            }"
+
+                            data-total-harga="${
+                                item.hrg_nego_rp ?? item.TotalHarga ?? 0
+                            }"
+
+                            data-waktu="${item.Waktu ?? 0}"
+
+                            data-no-sup="${
+                                item.No_sup ?? item.IdSup ?? item.Supplier ?? ""
+                            }"
+                            data-pembayaran="${
+                                item.Pembayaran ?? item.PersetujuanBayar ?? ""
+                            }"
+                        />
+                    `;
+
+                        detailTable.row.add([
+                            checkboxHtml,
+                            item.Tgl_order ? item.Tgl_order.substr(0, 10) : "",
+                            item.Qty ?? "",
+                            item.Pemesan ?? "",
+                            item.NM_MSN ?? "",
+                            item.NM_GOL ?? "",
+                            item.No_trans ?? "",
+                            item.Tgl_dtg ? item.Tgl_dtg.substr(0, 10) : "",
+                            item.Retur ?? "",
+                            item.Direktur ?? "",
+                            item.hrg_murni ??
+                                item.Hrg_trm ??
+                                item.PriceUnit ??
+                                0,
+                            item.Disc_trm ?? item.hrg_disc ?? item.Disc ?? 0,
+                            item.dpp_nilai_lain ?? item.DppNilaiLain ?? 0,
+                            item.Ppn_trm ?? item.hrg_ppn ?? item.PPN ?? 0,
+                            item.hrg_nego_rp ?? item.TotalHarga ?? 0,
+                        ]);
+                    });
+
+                    detailTable.draw();
+                }
+            })
+            .catch((err) => {
+                console.error("Error load detail SPPB (LIHAT):", err);
+                alert("Terjadi kesalahan saat mengambil data SPPB.");
+            });
+    }
+
+    // --- REFERENSI ---
+    function loadMataUang() {
+        if (!mata_uang) return;
+
+        fetch("{{ route('purchaseorder.mata_uang') }}")
+            .then((res) => res.json())
+            .then((data) => {
+                sel.innerHTML = '<option value="">Pilih Mata Uang</option>';
+                data.forEach((row) => {
+                    const opt = document.createElement("option");
+                    opt.value = row.Id_MataUang;
+                    opt.textContent = row.Nama_MataUang;
+                    sel.appendChild(opt);
+                });
+            })
+            .catch((err) => console.error("Error load mata uang:", err));
+    }
+
+    function loadSupplier() {
+        const sel = document.getElementById("supplier");
+        if (!sel) return;
+
+        fetch("{{ route('purchaseorder.supplier') }}")
+            .then((res) => res.json())
+            .then((data) => {
+                sel.innerHTML = '<option value="">Pilih Supplier</option>';
+                data.forEach((row) => {
+                    const opt = document.createElement("option");
+                    opt.value = row.NO_SUP ?? row.IdSup ?? "";
+                    opt.textContent = (row.NM_SUP || "").trim();
+                    sel.appendChild(opt);
+                });
+            })
+            .catch((err) => console.error("Error load supplier:", err));
+    }
+
+    // --- MODE HANDLER ---
+    function applyMode() {
+        const isIsi = mode === "ISI";
+        const isLihat = mode === "LIHAT";
+
+        const allowedIsi = [
+            "kd_div",
+            "tgl_sppb",
+            "mata_uang",
+            "kurs",
+            "hrg_murni",
+            "disc",
+            "ppn",
+            "dpp_nilai_lain",
+            "harga_ppn",
+            "subtotal_harga_jual",
+            "total_harga",
+            "jangka_waktu",
+            "pembayaran",
+            "tgl_datang",
+            "jenis_pembelian",
+            "supplier",
+            "alasan_hapus",
+        ];
+
+        const allowedLihat = allowedIsi.concat(["no_sppb"]);
+
+        document
+            .querySelectorAll("form input, form select, form textarea")
+            .forEach((el) => {
+                if (el.closest(".dataTables_wrapper")) {
+                    return;
+                }
+                if (el.type === "hidden") {
+                    el.disabled = false;
+                    return;
+                }
+                if (isIsi) {
+                    el.disabled = !allowedIsi.includes(el.id);
+                } else if (isLihat) {
+                    el.disabled = !allowedLihat.includes(el.id);
+                } else {
+                    el.disabled = el.id !== "kd_div";
+                }
+            });
+
+        if (isIsi || isLihat) {
+            document.getElementById("btn-isi").disabled = true;
+            document.getElementById("btn-lihat").disabled = true;
+        } else {
+            document.getElementById("btn-isi").disabled = false;
+            document.getElementById("btn-lihat").disabled = false;
+        }
+
+        document
+            .getElementById("btn-isi")
+            .classList.toggle("btn-primary", isIsi);
+        document
+            .getElementById("btn-lihat")
+            .classList.toggle("btn-primary", isLihat);
+        document
+            .getElementById("btn-isi")
+            .classList.toggle("btn-outline-secondary", !isIsi);
+        document
+            .getElementById("btn-lihat")
+            .classList.toggle("btn-outline-secondary", !isLihat);
+
+        const btnExitCancel = document.getElementById("btn-exit-cancel");
+        if (btnExitCancel) {
+            btnExitCancel.textContent = isIsi || isLihat ? "BATAL" : "KELUAR";
+        }
+
+        if (isIsi) {
+            loadDataByDivisiIsi();
+        } else if (isLihat) {
+            loadNoSppbByDivisi();
+        } else {
+            clearDetailSppb();
+        }
+    }
+
+    function setMode(newMode) {
+        mode = newMode;
+        clearDetailSppb();
+        applyMode();
+    }
+
+    // --- Auto set Pembayaran dari Jangka Waktu ---
+    function applyPembayaranFromJangkaWaktu() {
+        const jw = document.getElementById("jangka_waktu");
+        const byr = document.getElementById("pembayaran");
+        if (!jw || !byr) return;
+
+        const n = parseInt(jw.value || "0", 10);
+        if (isNaN(n)) {
+            byr.value = "";
+            return;
+        }
+
+        if (n === 0) {
+            byr.value = "KREDIT";
+        } else if (n > 0) {
+            byr.value = "TRANSFER";
+        } else {
+            byr.value = "";
+        }
+    }
+
+    // --- INIT ---
+    document.addEventListener("DOMContentLoaded", function () {
+        loadMataUang();
+        loadSupplier();
+
+        if (window.jQuery && $.fn.DataTable) {
+            detailTable = $("#tbl-detail-order").DataTable({
+                paging: true,
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50, 100],
+                searching: true,
+                info: true,
+                ordering: false,
+                scrollX: true,
+                autoWidth: false,
+                language: {
+                    emptyTable: "Tidak ada data detail.",
+                },
+            });
+
+            $("#tbl-detail-order tbody").on(
+                "change",
+                ".row-select-isi",
+                function () {
+                    if (mode !== "ISI" && mode !== "LIHAT") return;
+
+                    $("#tbl-detail-order tbody .row-select-isi")
+                        .not(this)
+                        .prop("checked", false);
+
+                    if (!this.checked) {
+                        document.getElementById("no_trans").value = "";
+                        document.getElementById("kd_brg").value = "";
+                        document.getElementById("nama_brg").value = "";
+                        document.getElementById("ket_brg").value = "";
+                        document.getElementById("kat_utama").value = "";
+                        document.getElementById("kategori").value = "";
+                        document.getElementById("sub_kategori").value = "";
+                        document.getElementById("ket_pembelian").value = "";
+                        document.getElementById("satuan").value = "";
+                        document.getElementById("qty").value = "";
+                        document.getElementById("hrg_murni").value = "";
+                        document.getElementById("dpp_nilai_lain").value = "";
+                        document.getElementById("harga_ppn").value = "";
+                        document.getElementById("subtotal_harga_jual").value =
+                            "";
+                        document.getElementById("total_harga").value = "";
+                        return;
+                    }
+
+                    const d = this.dataset;
+
+                    document.getElementById("no_trans").value = d.noTrans || "";
+                    document.getElementById("kd_brg").value = d.kdBrg || "";
+                    document.getElementById("nama_brg").value = d.namaBrg || "";
+                    document.getElementById("ket_brg").value = d.ketBrg || "";
+                    document.getElementById("kat_utama").value =
+                        d.katUtama || "";
+                    document.getElementById("kategori").value =
+                        d.kategori || "";
+                    document.getElementById("sub_kategori").value =
+                        d.subKategori || "";
+                    document.getElementById("ket_pembelian").value =
+                        d.ketPembelian || "";
+                    document.getElementById("satuan").value = d.satuan || "";
+                    document.getElementById("qty").value = d.qty || "";
+                    document.getElementById("jangka_waktu").value =
+                        d.waktu || "";
+                    document.getElementById("pembayaran").value =
+                        d.pembayaran || "";
+
+                    if (d.tglDatang) {
+                        document.getElementById("tgl_datang").value =
+                            d.tglDatang;
+                    }
+
+                    if (d.tglSppb) {
+                        document.getElementById("tgl_sppb").value = d.tglSppb;
+                    }
+
+                    if (d.noSppb) {
+                        const noSppbSelect = document.getElementById("no_sppb");
+                        let opt = Array.from(noSppbSelect.options).find(
+                            (o) => o.value === d.noSppb
+                        );
+                        if (!opt) {
+                            opt = new Option(d.noSppb, d.noSppb, true, true);
+                            noSppbSelect.appendChild(opt);
+                        } else {
+                            noSppbSelect.value = d.noSppb;
+                        }
+                    }
+
+                    if (mata_uang) {
+                        mata_uang.value = d.idMataUang || "";
+                    }
+
+                    if (!d.pembayaran) {
+                        applyPembayaranFromJangkaWaktu();
+                    }
+
+                    document.getElementById("kurs").value = d.kurs || "0";
+                    document.getElementById("hrg_murni").value =
+                        d.hrgMurni || "";
+                    document.getElementById("disc").value = d.disc || "";
+                    document.getElementById("ppn").value = d.ppn || "";
+
+                    document.getElementById("dpp_nilai_lain").value =
+                        d.dppNilaiLain || "";
+                    document.getElementById("harga_ppn").value =
+                        d.hargaPpn || "";
+
+                    const qtyVal = parseFloat(d.qty || "0");
+                    const hrgVal = parseFloat(d.hargaSatuan || "0");
+                    const subtotal = qtyVal * hrgVal;
+
+                    const discPct = parseFloat(d.disc || "0");
+                    const ppnPct = parseFloat(d.ppn || "0");
+
+                    let hargaDisc;
+                    if (ppnPct > 0) {
+                        hargaDisc = subtotal - (subtotal * discPct) / 100;
+                    } else {
+                        hargaDisc = subtotal;
+                    }
+
+                    const cbDppEl = document.getElementById("cbDPP");
+                    const cbDppValue = cbDppEl ? cbDppEl.value : "0";
+
+                    let dppNilaiLain;
+                    if (ppnPct === 12 && cbDppValue === "0") {
+                        dppNilaiLain = (hargaDisc * 11) / 12;
+                    } else {
+                        dppNilaiLain = hargaDisc;
+                    }
+
+                    const hargaPpn = dppNilaiLain * (ppnPct / 100);
+                    const totalHarga = hargaDisc + hargaPpn;
+
+                    document.getElementById("subtotal_harga_jual").value =
+                        isFinite(hargaDisc) ? hargaDisc.toFixed(4) : "";
+
+                    document.getElementById("dpp_nilai_lain").value = isFinite(
+                        dppNilaiLain
+                    )
+                        ? dppNilaiLain.toFixed(4)
+                        : "";
+
+                    document.getElementById("harga_ppn").value = isFinite(
+                        hargaPpn
+                    )
+                        ? hargaPpn.toFixed(4)
+                        : "";
+
+                    document.getElementById("total_harga").value = isFinite(
+                        totalHarga
+                    )
+                        ? totalHarga.toFixed(4)
+                        : "";
+
+                    const supplierSelect = document.getElementById("supplier");
+                    if (supplierSelect) {
+                        if (d.noSup) {
+                            supplierSelect.value = d.noSup;
+                            supplierSelect.disabled = true;
+                        } else {
+                            supplierSelect.disabled = false;
+                            supplierSelect.value = "";
+                        }
+                    }
+                }
+            );
+        }
+
+        const btnIsi = document.getElementById("btn-isi");
+        const btnLihat = document.getElementById("btn-lihat");
+        const btnExitCancel = document.getElementById("btn-exit-cancel");
+
+        if (btnIsi) {
+            btnIsi.addEventListener("click", function () {
+                setMode("ISI");
+            });
+        }
+
+        if (btnLihat) {
+            btnLihat.addEventListener("click", function () {
+                setMode("LIHAT");
+            });
+        }
+
+        if (btnExitCancel) {
+            btnExitCancel.addEventListener("click", function () {
+                if (mode === "") {
+                    window.location.href = "{{ url('/Beli') }}";
+                } else {
+                    setMode("");
+                }
+            });
+        }
+
+        const kdDiv = document.getElementById("kd_div");
+        if (kdDiv) {
+            kdDiv.addEventListener("change", function () {
+                if (mode === "ISI") {
+                    loadDataByDivisiIsi();
+                } else if (mode === "LIHAT") {
+                    loadNoSppbByDivisi();
+                }
+            });
+        }
+
+        const noSppbSelect = document.getElementById("no_sppb");
+        if (noSppbSelect) {
+            noSppbSelect.addEventListener("change", function () {
+                if (mode === "LIHAT" && this.value) {
+                    loadDetailSppbSingle();
+                }
+            });
+        }
+
+        const jwInput = document.getElementById("jangka_waktu");
+        if (jwInput) {
+            jwInput.addEventListener("change", applyPembayaranFromJangkaWaktu);
+            jwInput.addEventListener("blur", applyPembayaranFromJangkaWaktu);
+        }
+        setMode("");
+    });
+
+    mata_uang.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            if (this.value == "Rupiah") {
+                kurs.value = "1";
+                hrg_murni.focus();
             } else {
-                return;
+                kurs.value = "0";
+                kurs.focus();
             }
-        });
-    }
-
-    // if (
-    //     confirm(
-    //         "Pastikan kembali bahwa order yang dicentang adalah milik divisi yang sama. 1 PO, 1 Supplier, 1 Divisi. Yakin akan memproses order ini?"
-    //     ) &&
-    //     selectedRows.length > 0
-    // ) {
-    //     let sameValues = true;
-    //     if (sameValues == true) {
-    //         let noTrans = [];
-    //         for (let index = 0; index < selectedRows.length; index++) {
-    //             noTrans.push(selectedRows[index][5]);
-    //             console.log(noTrans);
-    //         }
-    //         let input = document.createElement("input");
-    //         input.type = "hidden";
-    //         input.name = "noTrans";
-    //         input.value = noTrans;
-    //         form_createSPPB.target = "_blank";
-    //         form_createSPPB.appendChild(input);
-    //         console.log(form_createSPPB);
-    //         form_createSPPB.submit();
-    //     }
-    // } else {
-    //     return;
-    // }
+        }
+    });
 });
-
-//#endregion
