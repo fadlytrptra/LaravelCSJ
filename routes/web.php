@@ -36,6 +36,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/purchase-order/detail-sppb/update', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'updateDetailSppb'])->name('purchaseorder.update_detail_sppb');
     Route::get('/PurchaseOrder/mata-uang', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listMataUang'])->name('purchaseorder.mata_uang');
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listSupplier'])->name('purchaseorder.supplier');
+    Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'supplier']);
+    Route::post('/purchaseorder/tambah-harga', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'storeHarga']);
 
 
 

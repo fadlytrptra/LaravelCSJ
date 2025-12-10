@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
+
+
+
 
 class PurchaseOrderController extends Controller
 {
@@ -19,7 +23,7 @@ class PurchaseOrderController extends Controller
         return view('Beli.TransaksiBeli.PurchaseOrder.ListPO.List', compact('access'));
     }
 
-    //Show the form for creating a new resource.
+
     public function create()
     {
         $divisi = DB::connection('ConnPurchase')->select(
@@ -29,7 +33,17 @@ class PurchaseOrderController extends Controller
 
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
 
-        return view('Beli.TransaksiBeli.PurchaseOrder.Create', compact('divisi', 'access'));
+
+        $jenisList = DB::connection('ConnPurchase')
+            ->table('YJN_BL')
+            ->orderBy('NO_JNS')
+            ->get();
+
+        return view('Beli.TransaksiBeli.PurchaseOrder.Create', compact(
+            'divisi',
+            'access',
+            'jenisList'
+        ));
     }
 
 
@@ -638,15 +652,14 @@ class PurchaseOrderController extends Controller
         $No_PO = '000000' . strval($mValue[0]->NO_SPPB);
         $No_PO = 'PO-' . $tahun . substr($No_PO, -6);
         DB::connection('ConnPurchase')->statement('update ycounter set NO_SPPB =' . $mValue[0]->NO_SPPB . '+ 1');
-        // dd($noTrans);
 
         for ($i = 0; $i < count($noTrans); $i++) {
-            db::connection('ConnPurchase')->statement(
+            DB::connection('ConnPurchase')->statement(
                 'exec SP_5409_MAINT_PO
-            @kd = ?,
-            @noTrans = ?,
-            @NoPO = ?,
-            @Operator = ?',
+                @kd = ?,
+                @noTrans = ?,
+                @NoPO = ?,
+                @Operator = ?',
                 [
                     2,
                     $noTrans[$i],
@@ -656,18 +669,40 @@ class PurchaseOrderController extends Controller
             );
         }
 
-        $loadHeader = db::connection('ConnPurchase')->select('exec SP_5409_LIST_ORDER @kd = ?, @noPO = ?', [14, $No_PO]);
-        $loadPermohonan = db::connection('ConnPurchase')->select('exec SP_5409_LIST_ORDER @kd = ?, @noPO = ?', [13, $No_PO]);
-        // dd($loadPermohonan);
-        $namaDiv = db::connection('ConnPurchase')->table("YDIVISI")->select("YDIVISI.NM_DIV")->where("YDIVISI.KD_DIV", trim($loadPermohonan[0]->Kd_div))->get();
-        $supplier = db::connection('ConnPurchase')->select('exec SP_4384_PBL_Maintenance_Supplier @XKode = ?', [0]);
-        // dd($supplier);
-        $listPayment = db::connection('ConnPurchase')->select('exec SP_5409_LIST_PAYMENT');
-        $mataUang = db::connection('ConnPurchase')->select('exec SP_7775_PBL_LIST_MATA_UANG');
-        $ppn = db::connection('ConnPurchase')->select('exec SP_5409_LIST_PPN');
-        // dd($loadHeader, $loadPermohonan);
-        return view('Beli.TransaksiBeli.PurchaseOrder.CreateSPPB', compact('access', 'supplier', 'listPayment', 'mataUang', 'ppn', 'No_PO', 'loadPermohonan', 'loadHeader', 'namaDiv'));
+        $loadHeader = DB::connection('ConnPurchase')->select('exec SP_5409_LIST_ORDER @kd = ?, @noPO = ?', [14, $No_PO]);
+        $loadPermohonan = DB::connection('ConnPurchase')->select('exec SP_5409_LIST_ORDER @kd = ?, @noPO = ?', [13, $No_PO]);
+        $namaDiv = DB::connection('ConnPurchase')->table("YDIVISI")
+                    ->select("YDIVISI.NM_DIV")
+                    ->where("YDIVISI.KD_DIV", trim($loadPermohonan[0]->Kd_div))
+                    ->get();
+
+        // Ambil supplier unik dari YTRANSBL (No_sup) — lalu ambil nama supplier jika tabel supplier ada (mis: MSupplier)
+        $supplierNos = DB::connection('ConnPurchase')->table('YTRANSBL')
+                        ->selectRaw('DISTINCT No_sup')
+                        ->whereNotNull('No_sup')
+                        ->pluck('No_sup')->toArray();
+
+        // jika ada tabel master supplier, ambil detailnya; contoh: MSupplier (ganti nama tabel/kolom sesuai DB Anda)
+        $supplier = [];
+        if (!empty($supplierNos)) {
+            $supplier = DB::connection('ConnPurchase')->table('MSupplier')
+                            ->whereIn('NO_SUP', $supplierNos)
+                            ->select('NO_SUP as id', 'NM_SUP as name')
+                            ->get();
+        }
+
+        $listPayment = DB::connection('ConnPurchase')->select('exec SP_5409_LIST_PAYMENT');
+        $mataUang = DB::connection('ConnPurchase')->select('exec SP_7775_PBL_LIST_MATA_UANG');
+        $ppn = DB::connection('ConnPurchase')->select('exec SP_5409_LIST_PPN');
+
+        return view('Beli.TransaksiBeli.PurchaseOrder.CreateSPPB', compact(
+            'access', 'supplier', 'listPayment', 'mataUang', 'ppn', 'No_PO', 'loadPermohonan', 'loadHeader', 'namaDiv'
+        ));
     }
+
+
+
+
     // public function daftarSupplier(Request $request)
     // {
     //     $kd = 1;
@@ -871,18 +906,21 @@ class PurchaseOrderController extends Controller
     //Store a newly created resource in storage.
     public function store(Request $request)
     {
+
     }
+
     public function show($id)
     {
-        $sup = DB::connection('ConnPurchase')->select('exec SP_4384_PBL_Maintenance_Supplier @XKode = ?', [0]);
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Close / Cancel PO');
         if ($result > 0) {
-            return view('Beli.TransaksiBeli.PurchaseOrder.CancelPO', compact('sup', 'access', 'result'));
+            // jika CancelPO tidak perlu $sup, jangan kirimkan
+            return view('Beli.TransaksiBeli.PurchaseOrder.CancelPO', compact('access', 'result'));
         } else {
             abort(404);
         }
     }
+
 
     public function show1(Request $request)
     {
@@ -1084,17 +1122,45 @@ class PurchaseOrderController extends Controller
     }
 
 
-    public function listSupplier(): JsonResponse
+
+   public function listSupplier(Request $request)
     {
         try {
             $rows = DB::connection('ConnPurchase')
-                ->select('EXEC SP_1273_PRG_LIST_SUPPLIER');
+                ->table('YSUPPLIER as s')
+                ->join('YTRANSBL as t', function($join){
+                    $join->on(DB::raw('LTRIM(RTRIM(s.NO_SUP))'), DB::raw('LTRIM(RTRIM(t.No_sup))'));
+                })
+                ->select(DB::raw('LTRIM(RTRIM(s.NO_SUP)) as No_sup'), DB::raw('LTRIM(RTRIM(s.NM_SUP)) as NM_SUP'))
+                ->whereNotNull('s.NO_SUP')
+                ->where('s.NO_SUP', '!=', '')
+                ->distinct()
+                ->orderBy('s.NM_SUP')
+                ->get();
 
             return response()->json($rows);
         } catch (\Throwable $e) {
-            return response()->json($e->getMessage(), 500);
+            \Log::error('listSupplier error: '.$e->getMessage());
+            return response()->json([], 500);
         }
     }
+
+    public function supplier()
+    {
+        $rows = DB::table('YTRANSBL as t')
+            ->leftJoin('YSUPPLIER as s', 't.No_sup', '=', 's.NO_SUP')
+            ->select(
+                't.No_sup as No_sup',
+                's.NM_SUP as NM_SUP'
+            )
+            ->whereNotNull('t.No_sup')
+            ->distinct()
+            ->orderBy('t.No_sup')
+            ->get();
+
+        return response()->json($rows);
+    }
+
 
    public function getDetailSppb(Request $request): JsonResponse
     {

@@ -68,3 +68,20 @@ tr.selected {
 td {
     cursor: pointer;
 }
+
+
+#supplier,
+#supplier option,
+select.form-control#supplier,
+select.form-control#supplier option {
+  color: #000 !important;
+  background-color: #fff !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
+
+.select2-container .select2-selection__rendered,
+.select2-container .select2-results__option {
+  color: #000 !important;
+  background-color: #fff !important;
+}

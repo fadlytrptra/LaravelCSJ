@@ -53,6 +53,17 @@
         .section-bottom-form {
             margin-top: 1.5rem;
         }
+
+       /* override sementara agar option terlihat */
+        #supplier, #supplier option {
+        color: #000 !important;
+        background-color: #fff !important;
+        -webkit-text-fill-color: #000 !important;
+        }
+        select#supplier .text-dark {
+             color: #000 !important;
+        }
+
     </style>
 
     <div class="container-fluid">
@@ -88,8 +99,8 @@
                                     PROSES
                                 </button>
 
-                                {{-- tombol ini dinamis: KELUAR (mode awal) / BATAL (saat ISI/LIHAT) --}}
-                                <button type="button" id="btn-exit-cancel" class="btn btn-outline-dark btn-sm">
+
+                                <button type="button" id="btn-exit-cancel" class="btn btn-outline-dark btn-sm" data-href="{{ url('/Beli') }}">
                                     KELUAR
                                 </button>
                             </div>
@@ -204,6 +215,8 @@
                                             <input type="text" name="satuan" id="satuan" class="form-control">
                                         </div>
                                     </div>
+
+
                                 </div>
 
                                 <div class="col-md-6">
@@ -319,7 +332,7 @@
 
                                     <div class="mb-2 row">
                                         <div class="col-sm-12 text-end">
-                                            <button type="button" class="btn btn-primary btn-sm">
+                                            <button type="button" id="btn_tambah_harga" class="btn btn-primary btn-sm">
                                                 Tambah Harga
                                             </button>
                                         </div>
@@ -330,7 +343,7 @@
                             {{-- TABEL DETAIL ORDER --}}
                             <div class="row section-table">
                                 <div class="col-12">
-                                    <table id="tbl-detail-order" class="table table-bordered table-striped no-footer"
+                                    <table id="tbl_detail_order" class="table table-bordered table-striped no-footer"
                                         style="width: 100%;" aria-describedby="table_Approve_info">
                                         <thead>
                                             <tr>
@@ -352,7 +365,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- Data diisi via DataTables --}}
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -367,12 +380,13 @@
 
                                 <div class="col-md-3">
                                     <label class="form-label">Pembelian</label>
-                                    <select name="jenis_pembelian" id="jenis_pembelian" class="form-control">
-                                        <option value="">- Pilih -</option>
-                                        <option value="import">Import</option>
-                                        <option value="import_facility">Import Facility</option>
-                                        <option value="local">Lokal</option>
+                                   <select id="jenis_pembelian" name="jenis_pembelian" class="form-control">
+                                        <option value="">Pilih Jenis</option>
+                                        @foreach($jenisList as $j)
+                                            <option value="{{ $j->NO_JNS }}">{{ $j->KET }}</option>
+                                        @endforeach
                                     </select>
+
                                 </div>
 
                                 <div class="col-md-3">
@@ -415,6 +429,5 @@
             </div>
         </div>
     </div>
-
     <script src="{{ asset('js/OrderPembelian/CreatePurchaseOrder/CreatePurchaseOrder.js') }}"></script>
 @endsection
