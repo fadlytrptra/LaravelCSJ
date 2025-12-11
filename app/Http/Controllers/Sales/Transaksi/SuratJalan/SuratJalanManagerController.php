@@ -52,7 +52,7 @@ class SuratJalanManagerController extends Controller
     //Update the specified resource in storage.
     public function update(Request $request)
     {
-        $user = auth::user()->NomorUser;
+        $user = trim(auth::user()->NomorUser);
         $nomorSJs = $request->nomorSJs;
         // dd($request->all());
         for ($i = 0; $i < count($nomorSJs); $i++) {

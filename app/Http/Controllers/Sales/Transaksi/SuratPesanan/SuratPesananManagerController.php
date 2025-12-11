@@ -23,7 +23,7 @@ class SuratPesananManagerController extends Controller
         $kategori_utama = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_KATEGORI_UTAMA');
         $list_satuan = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SATUAN');
         $list_sp = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SP_BLM_ACC');
-        $user = Auth::user()->NomorUser;
+        $user = trim(Auth::user()->NomorUser);
         $access = (new HakAksesController)->HakAksesFiturMaster('Sales');
         return view('Sales.Transaksi.SuratPesanan.AccManager', compact('data', 'access', 'jenis_sp', 'list_customer', 'list_sales', 'jenis_bayar', 'jenis_brg', 'kategori_utama', 'list_satuan', 'list_sp', 'user'));
     }
@@ -233,7 +233,7 @@ class SuratPesananManagerController extends Controller
         // dd($request->all());
         $UraianPesanan = null;
         $no_spText = $request->no_spText;
-        $user = Auth::user()->NomorUser;
+        $user = trim(Auth::user()->NomorUser);
         $tgl_pesan = $request->tgl_pesan;
         $jenis_sp = $request->jenis_sp;
         $IdCust = $request->list_customer;

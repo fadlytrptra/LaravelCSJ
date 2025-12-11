@@ -27,7 +27,7 @@ class BatalSuratJalanController extends Controller
         $idCust = $request->input('idCustomer');
         $noSP = $request->input('surat_pesanan');
         $ket = $request->input('alasan_batal');
-        $idUser = Auth::user()->NomorUser;
+        $idUser = trim(Auth::user()->NomorUser);
         $idJnsSJ = $request->input('idJenisSuratJalan');
         $noSJ = $request->input('surat_jalan');
         try {

@@ -3,6 +3,44 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\Inventory\Master\StokBarangController;
+use App\Http\Controllers\Inventory\Informasi\KartuStokController;
+use App\Http\Controllers\Inventory\Master\KodePerkiraanController;
+use App\Http\Controllers\Inventory\Master\MaintenanceTypeController;
+use App\Http\Controllers\Inventory\Master\MaintenanceObjekController;
+use App\Http\Controllers\Inventory\Informasi\CariKodeBarangController;
+use App\Http\Controllers\Inventory\Informasi\LacakTransaksiController;
+use App\Http\Controllers\Inventory\Transaksi\Hibah\AccHibahController;
+use App\Http\Controllers\Inventory\Informasi\TransaksiHarianController;
+use App\Http\Controllers\Inventory\Informasi\TransaksiBulananController;
+use App\Http\Controllers\Inventory\Transaksi\TerimaPurchasingController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\MhnPemberiController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\MhnPenerimaController;
+use App\Http\Controllers\Inventory\Informasi\ListDetailTransaksiController;
+use App\Http\Controllers\Inventory\Transaksi\Hibah\PenerimaHibahController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\AccSatuDivisiController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\PemberiBarangController;
+use App\Http\Controllers\Inventory\Transaksi\PemakaianGelondonganController;
+use App\Http\Controllers\Inventory\Transaksi\Hibah\PermohonanHibahController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\AccMhnPenerimaController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\MhnMasukKeluarController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\ReturPenjualanController;
+use App\Http\Controllers\Inventory\Transaksi\Konversi\KonversiBarangController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\AccPemberiBarangController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\PemberiBarangAssController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\AccMhnMasukKeluarController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\PermohonanPenerimaController;
+use App\Http\Controllers\Inventory\Transaksi\Konversi\AccKonversiBarangController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\PermohonanSatuDivisiController;
+use App\Http\Controllers\Inventory\Transaksi\Penyesuaian\PenyesuaianBarangController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\PermohonanPenerimaBenangController;
+use App\Http\Controllers\Inventory\Transaksi\Penghangusan\PenghangusanBarangController;
+use App\Http\Controllers\Inventory\Transaksi\Penyesuaian\AccPenyesuaianBarangController;
+use App\Http\Controllers\Inventory\Transaksi\TerimaBenang\TerimaBenangGedungDController;
+use App\Http\Controllers\Inventory\Transaksi\TerimaBenang\TerimaBenangTropodoController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\KeluarBarangUntukPenjualanController;
+use App\Http\Controllers\Inventory\Transaksi\Mutasi\PengembalianPascaPenjualanController;
+use App\Http\Controllers\Inventory\Transaksi\Penghangusan\AccPenghangusanBarangController;
 
 
 $redirectIfAuthenticated = function () {
@@ -30,7 +68,6 @@ Route::group(['middleware' => ['auth']], function () {
     #region Beli
     Route::get('Beli', 'App\Http\Controllers\HomeController@Beli');
 
-
     Route::get('/PurchaseOrder/no-sppb', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'getNoSppbByDivisi'])->name('purchaseorder.no_sppb');
     Route::get('/PurchaseOrder/detail-sppb', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'getDetailSppb'])->name('purchaseorder.detail_sppb');
     Route::post('/purchase-order/detail-sppb/update', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'updateDetailSppb'])->name('purchaseorder.update_detail_sppb');
@@ -38,8 +75,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listSupplier'])->name('purchaseorder.supplier');
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'supplier']);
     Route::post('/purchaseorder/tambah-harga', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'storeHarga']);
-
-
 
     Route::resource('ListOrder', App\Http\Controllers\Beli\Transaksi\ListOrderController::class);
     Route::resource('DaftarHarga', App\Http\Controllers\Beli\Informasi\DaftarHargaController::class);
@@ -561,8 +596,54 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('CetakNotaDanFaktur', CetakNotaDanFakturController::class);
     Route::resource('CetakNotaKredit', CetakNotaKreditController::class);
+    #endregion
 
-    Route::get('/sp-informasi/SP_1273_CIR_CEK_MesinTidakAktif/{tgl_awal}/{tgl_akhir}', [InformasiCircularController::class, 'getMesinTidakAktif']);
-    Route::post('/data-table/get-history-cir', [InformasiCircularController::class, 'getLaporanHistory']);
+    #region Inventory
+    Route::get('Inventory', 'App\Http\Controllers\HomeController@Inventory');
+    Route::resource('AccKeluarPenjualan', KeluarBarangUntukPenjualanController::class);
+    Route::resource('AccKonversiBarang', AccKonversiBarangController::class);
+    Route::resource('AccMhnMasukKeluar', AccMhnMasukKeluarController::class);
+    Route::resource('AccMhnPenerima', AccMhnPenerimaController::class);
+    Route::resource('AccPascaKirim', PengembalianPascaPenjualanController::class);
+    Route::resource('AccPemberiBarang', AccPemberiBarangController::class);
+    Route::resource('AccPenghangusanBarang', AccPenghangusanBarangController::class);
+    Route::resource('AccPenyesuaianBarang', AccPenyesuaianBarangController::class);
+    Route::resource('AccPermohonanHibah', AccHibahController::class);
+    Route::resource('AccReturPenjualan', ReturPenjualanController::class);
+    Route::resource('AccSatuDivisi', AccSatuDivisiController::class);
+    Route::resource('CariKodeBarang', CariKodeBarangController::class);
+    Route::resource('KartuStok', KartuStokController::class);
+    Route::resource('KodePerkiraan', KodePerkiraanController::class);
+    Route::resource('KonversiBarang', KonversiBarangController::class);
+    Route::get('getObjekSelect/{divisi}', 'App\Http\Controllers\Inventory\Transaksi\Konversi\KonversiBarangController@getObjekSelect');
+    Route::get('getKelompokUtamaSelect/{objek}', 'App\Http\Controllers\Inventory\Transaksi\Konversi\KonversiBarangController@getKelompokUtamaSelect');
+    Route::get('getKelompokSelect/{kelompokUtama}', 'App\Http\Controllers\Inventory\Transaksi\Konversi\KonversiBarangController@getKelompokSelect');
+    Route::get('getSubKelompokSelect/{kelompok}', 'App\Http\Controllers\Inventory\Transaksi\Konversi\KonversiBarangController@getSubKelompokSelect');
+    Route::get('getIdTypeSelect/{subKelompok}', 'App\Http\Controllers\Inventory\Transaksi\Konversi\KonversiBarangController@getIdTypeSelect');
+    Route::get('getTypeABMSelect/{subKelompok}', 'App\Http\Controllers\Inventory\Transaksi\Konversi\KonversiBarangController@getTypeABMSelect');
+    Route::get('getTypeCIRSelect', 'App\Http\Controllers\Inventory\Transaksi\Konversi\KonversiBarangController@getTypeCIRSelect');
+    Route::resource('LacakTransaksi', LacakTransaksiController::class);
+    Route::resource('ListDetailTransaksi', ListDetailTransaksiController::class);
+    Route::resource('MaintenanceObjek', MaintenanceObjekController::class);
+    Route::resource('MaintenanceType', MaintenanceTypeController::class);
+    Route::resource('MhnMasukKeluar', MhnMasukKeluarController::class);
+    Route::resource('MhnPemberi', MhnPemberiController::class);
+    Route::resource('MhnPenerima', MhnPenerimaController::class);
+    Route::resource('PemakaianGelondongan', PemakaianGelondonganController::class);
+    Route::resource('PemberiBarang', PemberiBarangController::class);
+    Route::resource('PemberiBarangAss', PemberiBarangAssController::class);
+    Route::resource('PenerimaHibah', PenerimaHibahController::class);
+    Route::resource('PenghangusanBarang', PenghangusanBarangController::class);
+    Route::resource('PenyesuaianBarang', PenyesuaianBarangController::class);
+    Route::resource('PermohonanHibah', PermohonanHibahController::class);
+    Route::resource('PermohonanPenerima', PermohonanPenerimaController::class);
+    Route::resource('PermohonanPenerimaBenang', PermohonanPenerimaBenangController::class);
+    Route::resource('PermohonanSatuDivisi', PermohonanSatuDivisiController::class);
+    Route::resource('StokBarang', StokBarangController::class);
+    Route::resource('TerimaBenangGedungD', TerimaBenangGedungDController::class);
+    Route::resource('TerimaBenangTropodo', TerimaBenangTropodoController::class);
+    Route::resource('TerimaPurchasing', TerimaPurchasingController::class);
+    Route::resource('TransaksiBulanan', TransaksiBulananController::class);
+    Route::resource('TransaksiHarian', TransaksiHarianController::class);
     #endregion
 });

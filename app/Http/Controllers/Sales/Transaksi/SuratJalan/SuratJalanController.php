@@ -460,7 +460,7 @@ class SuratJalanController extends Controller
         $TglActual = $request->tanggal_actual;
         $IdDO = $request->barang0;
         $IDSuratPesanan = $request->barang3;
-        $AccMgr = Auth::user()->NomorUser;
+        $AccMgr = trim(Auth::user()->NomorUser);
         //save data header duluu
 
         db::connection('ConnSales')->statement(

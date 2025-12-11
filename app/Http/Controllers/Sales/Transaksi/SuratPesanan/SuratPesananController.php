@@ -254,7 +254,7 @@ class SuratPesananController extends Controller
         $UraianPesanan = null;
         $Lunas = null;
         $no_spText = $request->no_spText;
-        $user = Auth::user()->NomorUser;
+        $user = trim(Auth::user()->NomorUser);
         $tgl_pesan = $request->tgl_pesan;
         $jenis_sp = $request->jenis_sp;
         $IdCust = $request->list_customer;
@@ -421,7 +421,7 @@ class SuratPesananController extends Controller
         } else if ($id == 'prosesLunasSP') {
             try {
                 $idPesananString = $request->input('idPesananString');
-                $user = Auth::user()->NomorUser;
+                $user = trim(Auth::user()->NomorUser);
                 // dd($idPesananString);
                 if (empty($idPesananString)) {
                     return response()->json([
@@ -489,7 +489,7 @@ class SuratPesananController extends Controller
         $UraianPesanan = null;
         $Lunas = null;
         $no_spText = $request->no_spText;
-        $user = Auth::user()->NomorUser;
+        $user = trim(Auth::user()->NomorUser);
         $tgl_pesan = $request->tgl_pesan;
         $jenis_sp = $request->jenis_sp;
         $IdCust = $request->list_customer;
