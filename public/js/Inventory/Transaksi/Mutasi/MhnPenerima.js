@@ -395,13 +395,13 @@ function loadType(barang, subkel, pib) {
                         data.KodeBarang.trim()
                     );
                     primer.value = data.SaldoPrimer
-                        ? formatNumber(data.SaldoPrimer)
+                        ? numeral(data.SaldoPrimer).format("0,0")
                         : "0";
                     sekunder.value = data.SaldoSekunder
-                        ? formatNumber(data.SaldoSekunder)
+                        ? numeral(data.SaldoSekunder).format("0,0")
                         : "0";
                     tritier.value = data.SaldoTritier
-                        ? formatNumber(data.SaldoTritier)
+                        ? numeral(data.SaldoTritier).format("0,0")
                         : "0";
                     no_primer.value = data.satuan_primer
                         ? decodeHtmlEntities(data.satuan_primer.trim())
@@ -415,21 +415,48 @@ function loadType(barang, subkel, pib) {
                     konvBeri = data.PakaiAturanKonversi.trim();
 
                     primer2.value = response.totalSaldoData[0]?.Primer
-                        ? formatNumber(response.totalSaldoData[0].Primer)
+                        ? numeral(response.totalSaldoData[0].Primer).format(
+                              "0,0"
+                          )
                         : "0";
                     sekunder2.value = response.totalSaldoData[0]?.Sekunder
-                        ? formatNumber(response.totalSaldoData[0].Sekunder)
+                        ? numeral(response.totalSaldoData[0].Sekunder).format(
+                              "0,0"
+                          )
                         : "0";
                     tritier2.value = response.totalSaldoData[0]?.Tritier
-                        ? formatNumber(response.totalSaldoData[0].Tritier)
+                        ? numeral(response.totalSaldoData[0].Tritier).format(
+                              "0,0"
+                          )
                         : "0";
 
-                    primerPIB.value = numeral(response.stockPerPIB[0].Primer).format('0,0'); // prettier-ignore
-                    sekunderPIB.value = numeral(response.stockPerPIB[0].Sekunder).format('0,0'); // prettier-ignore
-                    tritierPIB.value = numeral(response.stockPerPIB[0].Tritier).format('0,0'); // prettier-ignore
-                    no_primerPIB.value = data.satuan_primer;
-                    no_sekunderPIB.value = data.satuan_sekunder;
-                    no_tritierPIB.value = data.satuan_tritier;
+                    // find matching PIB record
+                    const pibData = response.stockPerPIB.find(
+                        (item) => item.PIB === pib
+                    );
+
+                    if (pibData) {
+                        primerPIB.value = numeral(pibData.Primer).format("0,0");
+                        sekunderPIB.value = numeral(pibData.Sekunder).format(
+                            "0,0"
+                        ); // prettir-ignore
+                        tritierPIB.value = numeral(pibData.Tritier).format(
+                            "0,0"
+                        ); // prettir-ignore
+
+                        no_primerPIB.value = data.satuan_primer;
+                        no_sekunderPIB.value = data.satuan_sekunder;
+                        no_tritierPIB.value = data.satuan_tritier;
+                    } else {
+                        // if no matching PIB found, set all to zero
+                        primerPIB.value = "0";
+                        sekunderPIB.value = "0";
+                        tritierPIB.value = "0";
+
+                        no_primerPIB.value = "";
+                        no_sekunderPIB.value = "";
+                        no_tritierPIB.value = "";
+                    }
                     // console.log('KONVBERI: ', konvBeri);
                     resolve(true);
                 } else {
@@ -603,14 +630,6 @@ function escapeHtml(text) {
     });
 }
 
-// format angka
-function formatNumber(value) {
-    if (!isNaN(parseFloat(value)) && isFinite(value)) {
-        return parseFloat(value).toFixed(2);
-    }
-    return value;
-}
-
 // fungsi dapetin user id unk pemohon
 function getUserId() {
     $.ajax({
@@ -685,9 +704,9 @@ function updateDataTable(data) {
             escapeHtml(item.NamaKelompokUtama.trim()),
             escapeHtml(item.NamaKelompok.trim()),
             escapeHtml(item.NamaSubKelompok.trim()),
-            escapeHtml(formatNumber(item.JumlahPengeluaranPrimer.trim())),
-            escapeHtml(formatNumber(item.JumlahPengeluaranSekunder.trim())),
-            escapeHtml(formatNumber(item.JumlahPengeluaranTritier.trim())),
+            numeral(item.JumlahPengeluaranPrimer.trim()).format("0,0"),
+            numeral(item.JumlahPengeluaranSekunder.trim()).format("0,0"),
+            numeral(item.JumlahPengeluaranTritier.trim()).format("0,0"),
             escapeHtml(item.KodeBarang.trim()),
             escapeHtml(item.IdType.trim()),
             escapeHtml(item.SatPrimer.trim()),
@@ -704,17 +723,19 @@ async function simpan_isi() {
     try {
         await cekKodeBarang();
 
-        cekPr = numeral(primer.value).value() + numeral(primer2.value).value();
+        cekPr =
+            numeral(primerPIB.value).value() - numeral(primer2.value).value();
         cekSek =
-            numeral(sekunder.value).value() + numeral(sekunder2.value).value();
+            numeral(sekunderPIB.value).value() -
+            numeral(sekunder2.value).value();
         const cekTr =
-            numeral(tritier.value).value() + numeral(tritier2.value).value();
+            numeral(tritierPIB.value).value() - numeral(tritier2.value).value();
 
-        console.log("primer: ", primer.value, cekPr);
-        console.log("sekunder: ", sekunder.value, cekSek);
+        console.log("primer: ", primerPIB.value, cekPr);
+        console.log("sekunder: ", sekunderPIB.value, cekSek);
         console.log(
             "tritier: ",
-            tritier.value,
+            tritierPIB.value,
             cekTr,
             tritier3.value,
             tritier2.value
@@ -722,7 +743,12 @@ async function simpan_isi() {
 
         console.log("beri: ", konvBeri, "terima: ", konvTerima);
 
-        if (konvBeri !== "Y" && konvTerima !== "Y" && objekId2 !== "099") {
+        if (konvBeri !== "Y" && konvTerima !== "Y") {
+            console.log(
+                numeral(tritier3.value).value(),
+                numeral(cekTr).value()
+            );
+
             if (
                 numeral(primer3.value).value() > numeral(cekPr).value() ||
                 numeral(sekunder3.value).value() > numeral(cekSek).value() ||
@@ -771,7 +797,6 @@ async function simpan_isi() {
                             primer3.value = 0;
                             sekunder3.value = 0;
                             tritier3.value = 0;
-
                             if (tampil === 1) {
                                 showAllTable();
                             } else {
@@ -788,7 +813,6 @@ async function simpan_isi() {
                             primer3.value = 0;
                             sekunder3.value = 0;
                             tritier3.value = 0;
-
                             if (tampil === 1) {
                                 showAllTable();
                                 clearInputs();
@@ -997,7 +1021,7 @@ inputs.forEach((masuk, index) => {
 // Fungsi untuk menangani aksi
 function handleAction(masuk) {
     if (masuk.id === "primer3") {
-        if (parseFloat(primer3.value) > parseFloat(primer.value)) {
+        if (numeral(primer3.value).value() > numeral(primer.value).value()) {
             Swal.fire({
                 icon: "warning",
                 title: "Warning",
@@ -1012,7 +1036,9 @@ function handleAction(masuk) {
             sekunder3.select();
         }
     } else if (masuk.id === "sekunder3") {
-        if (parseFloat(sekunder3.value) > parseFloat(sekunder.value)) {
+        if (
+            numeral(sekunder3.value).value() > numeral(sekunder.value).value()
+        ) {
             Swal.fire({
                 icon: "warning",
                 title: "Warning",
@@ -1029,7 +1055,8 @@ function handleAction(masuk) {
     } else if (masuk.id === "tritier3") {
         if (konvBeri !== "Y") {
             if (
-                parseFloat(tritier3.value) > parseFloat(tritier.value) &&
+                numeral(tritier3.value).value() >
+                    numeral(tritier.value).value() &&
                 objekId.value !== "099"
             ) {
                 Swal.fire({
@@ -1062,7 +1089,7 @@ function handleAction(masuk) {
                 alasan.focus();
             }
         } else {
-            if (parseFloat(tritier3.value) > 0) {
+            if (numeral(tritier3.value).value() > 0) {
                 if (no_primer.value === no_primer3.value) {
                     alasan.focus();
                 } else {
@@ -2321,9 +2348,9 @@ $(document).ready(function () {
         kelutNama2.value = decodeHtmlEntities(data[7]);
         kelompokNama2.value = decodeHtmlEntities(data[8]);
         subkelNama2.value = decodeHtmlEntities(data[9]);
-        primer3.value = formatNumber(data[10]);
-        sekunder3.value = formatNumber(data[11]);
-        tritier3.value = formatNumber(data[12]);
+        primer3.value = numeral(data[10]).value();
+        sekunder3.value = numeral(data[11]).value();
+        tritier3.value = numeral(data[12]).value();
         kodeBarang.value = decodeHtmlEntities(data[13]);
         kodeType.value = decodeHtmlEntities(data[14]);
         no_primer3.value = decodeHtmlEntities(data[15]);

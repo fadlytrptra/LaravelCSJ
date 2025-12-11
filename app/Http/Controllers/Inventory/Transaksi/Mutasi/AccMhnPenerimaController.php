@@ -26,7 +26,7 @@ class AccMhnPenerimaController extends Controller
     //Store a newly created resource in storage.
     public function store(Request $request)
     {
-        // 
+        //
     }
 
     //Display the specified resource.
@@ -38,10 +38,9 @@ class AccMhnPenerimaController extends Controller
         if ($id === 'getUserId') {
             return response()->json(['user' => $user]);
         }
-
         // get divisi
         else if ($id === 'getDivisi') {
-            $divisi = DB::connection('ConnInventory')->select('exec SP_1003_INV_userdivisi @XKdUser = ?', [$user]);
+            $divisi = DB::connection('ConnInventory')->select('exec SP_1273_PRG_userdivisi @XKdUser = ?', [$user]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -54,7 +53,7 @@ class AccMhnPenerimaController extends Controller
 
             // mendapatkan daftar objek
         } else if ($id === 'getObjek') {
-            $objek = DB::connection('ConnInventory')->select('exec SP_1003_INV_User_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $request->input('divisi')]);
+            $objek = DB::connection('ConnInventory')->select('exec SP_1273_PRG_User_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $request->input('divisi')]);
             $data_objek = [];
             foreach ($objek as $detail_objek) {
                 $data_objek[] = [
@@ -68,7 +67,7 @@ class AccMhnPenerimaController extends Controller
 
         // get acc
         else if ($id === 'getAcc') {
-            $objek = DB::connection('ConnInventory')->select('exec SP_1003_INV_List_BelumACC_TmpTransaksi
+            $objek = DB::connection('ConnInventory')->select('exec SP_1273_PRG_List_BelumACC_TmpTransaksi
             @Kode = ?, @XIdTypeTransaksi = ?, @XIdObjek = ?', [1, '02', $request->input('XIdObjek')]);
             $data_objek = [];
             foreach ($objek as $detail_objek) {
@@ -95,7 +94,7 @@ class AccMhnPenerimaController extends Controller
         // get batakl acc
         else if ($id === 'getBatalAcc') {
             $XIdObjek = $request->input('XIdObjek');
-            $objek = DB::connection('ConnInventory')->select('exec SP_1003_INV_List_SudahACC_TmpTransaksi
+            $objek = DB::connection('ConnInventory')->select('exec SP_1273_PRG_List_SudahACC_TmpTransaksi
             @Kode = ?, @XIdTypeTransaksi = ?, @XIdObjek = ?', [2, '02', $XIdObjek]);
             $data_objek = [];
             foreach ($objek as $detail_objek) {
@@ -122,7 +121,7 @@ class AccMhnPenerimaController extends Controller
         // get batakl acc
         else if ($id === 'tampilItem') {
             $XIdTransaksi = $request->input('XIdTransaksi');
-            $objek = DB::connection('ConnInventory')->select('exec SP_1003_INV_AsalSubKelompok_TmpTransaksi
+            $objek = DB::connection('ConnInventory')->select('exec SP_1273_PRG_AsalSubKelompok_TmpTransaksi
             @XIdTransaksi = ?', [$XIdTransaksi]);
             $data_objek = [];
             foreach ($objek as $detail_objek) {
@@ -160,12 +159,12 @@ class AccMhnPenerimaController extends Controller
             try {
                 foreach ($listTransaksi as $transaksi) {
                     DB::connection('ConnInventory')
-                        ->statement('exec [SP_1003_INV_Update_ACCManager_TmpTransaksi]
+                        ->statement('exec [SP_1273_PRG_Update_ACCManager_TmpTransaksi]
                         @UserACC = ?,
                         @Kode = ?,
                         @YIdTransaksi = ?', [
                             $user,
-                            3,
+                            4,
                             $transaksi,
                         ]);
                 }
@@ -182,10 +181,10 @@ class AccMhnPenerimaController extends Controller
             try {
                 foreach ($listTransaksi as $transaksi) {
                     DB::connection('ConnInventory')
-                        ->statement('exec [SP_1003_INV_Batal_ACCManager_TmpTransaksi]
+                        ->statement('exec [SP_1273_PRG_Batal_ACCManager_TmpTransaksi]
                         @Kode = ?,
                         @YIdTransaksi = ?', [
-                            3,
+                            1,
                             $transaksi,
                         ]);
                 }
@@ -199,7 +198,7 @@ class AccMhnPenerimaController extends Controller
     //Remove the specified resource from storage.
     public function destroy(Request $request)
     {
-        // 
+        //
     }
 }
 
