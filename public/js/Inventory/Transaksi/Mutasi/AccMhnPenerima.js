@@ -49,6 +49,17 @@ var today = new Date().toISOString().slice(0, 10);
 tanggal.value = today;
 btn_divisi.focus();
 
+$.ajaxSetup({
+    beforeSend: function () {
+        isLoading = true;
+        $("#loading-screen").css("display", "flex");
+    },
+    complete: function () {
+        isLoading = false;
+        $("#loading-screen").css("display", "none");
+    },
+});
+
 function formatDateToMMDDYYYY(date) {
     let dateObj = new Date(date);
     if (isNaN(dateObj)) {
@@ -65,7 +76,7 @@ function formatDateToMMDDYYYY(date) {
 function getUserId() {
     $.ajax({
         type: "GET",
-        url: "AccMhnPenerima/getUserId",
+        url: "PemberiBarang/getUserId",
         data: {
             _token: csrfToken,
         },
@@ -89,7 +100,6 @@ tanggal.addEventListener("keydown", function (event) {
 
 $(document).ready(function () {
     getUserId();
-
     $("#tableData").DataTable({
         paging: false,
         searching: false,

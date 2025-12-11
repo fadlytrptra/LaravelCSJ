@@ -547,7 +547,7 @@ $("#tableData tbody").on("click", "tr", function () {
     SelectData();
 });
 
-var SaldoPrimer, SaldoSekunder, SaldoTritier, PakaiAturanKonversi;
+var SaldoPrimer, SaldoSekunder, SaldoTritier;
 function SelectData() {
     $.ajax({
         type: "GET",
@@ -572,9 +572,6 @@ function SelectData() {
                 SaldoPrimer = formatNumber(result[0].SaldoPrimer);
                 SaldoSekunder = formatNumber(result[0].SaldoSekunder);
                 SaldoTritier = formatNumber(result[0].SaldoTritier);
-                PakaiAturanKonversi = decodeHtmlEntities(
-                    result[0].PakaiAturanKonversi
-                );
             }
         },
         error: function (xhr, status, error) {
@@ -681,16 +678,14 @@ btn_proses.addEventListener("click", async function (e) {
     Sekunder = parseFloat(SaldoSekunder) - parseFloat(sekunder.value);
     Tritier = parseFloat(SaldoTritier) - parseFloat(tritier.value);
 
-    if (PakaiAturanKonversi != "Y") {
-        if (Primer < 0 || Sekunder < 0 || Tritier < 0) {
-            Swal.fire({
-                icon: "error",
-                text: "Saldo Tidak Cukup, Cek Stok Anda!",
-                returnFocus: false,
-            });
-            btn_proses.disabled = false;
-            return;
-        }
+    if (Primer < 0 || Sekunder < 0 || Tritier < 0) {
+        Swal.fire({
+            icon: "error",
+            text: "Saldo Tidak Cukup, Cek Stok Anda!",
+            returnFocus: false,
+        });
+        btn_proses.disabled = false;
+        return;
     }
 
     const cekPemberiResult = await cek_sesuai_pemberi();

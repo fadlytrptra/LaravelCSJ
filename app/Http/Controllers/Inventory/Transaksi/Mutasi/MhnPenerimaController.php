@@ -258,7 +258,8 @@ class MhnPenerimaController extends Controller
                 $data_stockPerPIB[] = [
                     'Primer' => $detail_stockPerPIB->Qty_Primer,
                     'Sekunder' => $detail_stockPerPIB->Qty_sekunder,
-                    'Tritier' => $detail_stockPerPIB->Qty
+                    'Tritier' => $detail_stockPerPIB->Qty,
+                    'PIB' => $detail_stockPerPIB->NoPIB,
                 ];
             }
             $response_data = [
@@ -531,7 +532,7 @@ class MhnPenerimaController extends Controller
         $kodeTransaksi = $request->input('kodeTransaksi');
         if ($id === 'hapusBarang') {
             try {
-                DB::connection('ConnInventory')->statement('exec SP_1003_INV_Delete_TmpTransaksi  @XIdTransaksi = ?', [$kodeTransaksi]);
+                DB::connection('ConnInventory')->statement('exec SP_1273_PRG_Delete_TmpTransaksi  @XIdTransaksi = ?', [$kodeTransaksi]);
 
                 return response()->json(['success' => 'Data sudah diHAPUS!!'], 200);
             } catch (\Exception $e) {
