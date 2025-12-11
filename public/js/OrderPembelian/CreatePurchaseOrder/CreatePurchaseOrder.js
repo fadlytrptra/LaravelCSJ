@@ -23,7 +23,7 @@ jQuery(function ($) {
     let disc = document.getElementById("disc");
     let ppn = document.getElementById("ppn");
     let dpp_nilai_lain = document.getElementById("dpp_nilai_lain");
-    let harga_ppn = document.getElementById("harga_ppn");
+    let hrg_ppn = document.getElementById("harga_ppn");
     let subtotal_harga_jual = document.getElementById("subtotal_harga_jual");
     let jangka_waktu = document.getElementById("jangka_waktu");
     let total_harga = document.getElementById("total_harga");
@@ -33,6 +33,9 @@ jQuery(function ($) {
     let alasan_hapus = document.getElementById("alasan_hapus");
     let no_sppb = document.getElementById("no_sppb");
     let kd_div = document.getElementById("kd_div");
+    let hrg_disc = document.getElementById("hrg_disc");
+    let btn_tambah_harga = document.getElementById("btn_tambah_harga");
+    let btn_proses = document.getElementById("btn_proses");
     //#endregion
 
     //#region Utility functions
@@ -43,8 +46,8 @@ jQuery(function ($) {
     function parseNumber(v) {
         if (typeof v === "number") return isFinite(v) ? v : 0;
         if (!v && v !== 0) return 0;
-        const s = (v || "").toString().replace(/,/g, "").trim();
-        const n = parseFloat(s);
+        let s = (v || "").toString().replace(/,/g, "").trim();
+        let n = parseFloat(s);
         return isFinite(n) ? n : 0;
     }
 
@@ -54,8 +57,7 @@ jQuery(function ($) {
     }
 
     // clear form + table
-    function clearDetailSppb() {
-        if (tgl_sppb) tgl_sppb.value = "";
+    function clearDetailSppb(jenisClear) {
         if (tgl_datang) tgl_datang.value = "";
         if (no_trans) no_trans.value = "";
         if (kd_brg) kd_brg.value = "";
@@ -73,7 +75,7 @@ jQuery(function ($) {
         if (disc) disc.value = "";
         if (ppn) ppn.value = "";
         if (dpp_nilai_lain) dpp_nilai_lain.value = "";
-        if (harga_ppn) harga_ppn.value = "";
+        if (hrg_ppn) hrg_ppn.value = "";
         if (subtotal_harga_jual) subtotal_harga_jual.value = "";
         if (jangka_waktu) jangka_waktu.value = "";
         if (total_harga) total_harga.value = "";
@@ -95,34 +97,32 @@ jQuery(function ($) {
                 no_sppb.disabled = true;
             }
         }
-
-        if (detailTable) detailTable.clear().draw();
+        if (jenisClear == "gantiDivisi") {
+            if (detailTable) detailTable.clear().draw();
+        }
     }
     //#endregion
 
-    //#region Data loaders (AJAX)
+    //#region Data loaders
     function loadNoSppbByDivisi() {
-        const noSppbEl = document.getElementById("no_sppb");
-        const kdDivEl = document.getElementById("kd_div");
+        let noSppbEl = document.getElementById("no_sppb");
+        let kdDivEl = document.getElementById("kd_div");
 
         if (!noSppbEl || !kdDivEl) {
             console.error("Element no_sppb atau kd_div tidak ditemukan");
             return Promise.reject(new Error("missing elements"));
         }
 
-        const kdDiv = (kdDivEl.value || "").trim();
+        let kdDiv = (kdDivEl.value || "").trim();
         noSppbEl.innerHTML = '<option value="">-- Pilih No SPPB --</option>';
         noSppbEl.disabled = true;
 
         if (!kdDiv) return Promise.resolve([]);
 
-        const url =
-            "/PurchaseOrder/no-sppb?kd_div=" + encodeURIComponent(kdDiv);
+        let url = "/PurchaseOrder/no-sppb?kd_div=" + encodeURIComponent(kdDiv);
         return fetch(url)
             .then((res) => {
-                const ct = (
-                    res.headers.get("content-type") || ""
-                ).toLowerCase();
+                let ct = (res.headers.get("content-type") || "").toLowerCase();
                 if (!res.ok) {
                     return res.text().then((txt) => {
                         throw new Error(
@@ -150,14 +150,14 @@ jQuery(function ($) {
                     '<option value="">-- Pilih No SPPB --</option>';
                 if (Array.isArray(data) && data.length > 0) {
                     data.forEach((item) => {
-                        const val =
+                        let val =
                             item.No_sppb ??
                             item.NoSPPB ??
                             item.no_sppb ??
                             item.noSPPB ??
                             "";
                         if (!val) return;
-                        const opt = document.createElement("option");
+                        let opt = document.createElement("option");
                         opt.value = val;
                         opt.textContent = val;
                         noSppbEl.appendChild(opt);
@@ -180,15 +180,15 @@ jQuery(function ($) {
     }
 
     function loadDetailSppbSingle() {
-        const kdDivEl = document.getElementById("kd_div");
-        const noSppbEl = document.getElementById("no_sppb");
+        let kdDivEl = document.getElementById("kd_div");
+        let noSppbEl = document.getElementById("no_sppb");
         if (!kdDivEl || !noSppbEl) {
             console.error("Element kd_div atau no_sppb tidak ditemukan.");
             return;
         }
 
-        const kdDiv = (kdDivEl.value || "").trim();
-        const noSppb = (noSppbEl.value || "").trim();
+        let kdDiv = (kdDivEl.value || "").trim();
+        let noSppb = (noSppbEl.value || "").trim();
 
         if (!kdDiv) {
             alert("Silakan pilih Nama Divisi terlebih dahulu.");
@@ -199,19 +199,18 @@ jQuery(function ($) {
             return;
         }
 
-        if (typeof clearDetailSppb === "function") clearDetailSppb();
+        if (typeof clearDetailSppb === "function")
+            clearDetailSppb("gantiDivisi");
         noSppbEl.disabled = true;
 
-        const url =
+        let url =
             "/PurchaseOrder/detail-sppb?kd_div=" +
             encodeURIComponent(kdDiv) +
             "&no_sppb=" +
             encodeURIComponent(noSppb);
         fetch(url)
             .then((res) => {
-                const ct = (
-                    res.headers.get("content-type") || ""
-                ).toLowerCase();
+                let ct = (res.headers.get("content-type") || "").toLowerCase();
                 if (!res.ok) {
                     return res.text().then((txt) => {
                         throw new Error(
@@ -243,7 +242,7 @@ jQuery(function ($) {
                     return;
                 }
 
-                const row = data[0] || {};
+                let row = data[0] || {};
                 if (tgl_sppb)
                     tgl_sppb.value = row.Tgl_sppb
                         ? row.Tgl_sppb.substr
@@ -260,24 +259,23 @@ jQuery(function ($) {
                 if (detailTable) {
                     detailTable.clear();
                     data.forEach((item) => {
-                        const qtyVal = item.Qty ?? item.qty ?? "";
-                        const tglOrder = item.Tgl_order ?? item.TglOrder ?? "";
-                        const tglDtg = item.Tgl_dtg ?? item.TglDtg ?? "";
-                        const noTrans = item.No_trans ?? item.NoTrans ?? "";
-                        const hrgMurni =
+                        let qtyVal = item.Qty ?? item.qty ?? "";
+                        let tglOrder = item.Tgl_order ?? item.TglOrder ?? "";
+                        let tglDtg = item.Tgl_dtg ?? item.TglDtg ?? "";
+                        let noTrans = item.No_trans ?? item.NoTrans ?? "";
+                        let hrgMurni =
                             item.hrg_murni ??
                             item.Hrg_trm ??
                             item.PriceUnit ??
                             0;
-                        const discVal =
+                        let discVal =
                             item.Disc_trm ?? item.hrg_disc ?? item.Disc ?? 0;
-                        const dpp =
-                            item.dpp_nilai_lain ?? item.DppNilaiLain ?? 0;
-                        const ppnVal =
+                        let dpp = item.dpp_nilai_lain ?? item.DppNilaiLain ?? 0;
+                        let ppnVal =
                             item.Ppn_trm ?? item.hrg_ppn ?? item.PPN ?? 0;
-                        const total = item.hrg_nego_rp ?? item.TotalHarga ?? 0;
+                        let total = item.hrg_nego_rp ?? item.TotalHarga ?? 0;
 
-                        const checkboxHtml = `
+                        let checkboxHtml = `
                             <input type="checkbox" class="row-select-isi"
                                 data-no-trans="${safeText(noTrans)}"
                                 data-kd-brg="${safeText(item.Kd_brg ?? "")}"
@@ -369,7 +367,7 @@ jQuery(function ($) {
     }
 
     function loadDataByDivisiIsi() {
-        const kdDiv = (
+        let kdDiv = (
             document.getElementById("kd_div")
                 ? document.getElementById("kd_div").value
                 : ""
@@ -386,9 +384,7 @@ jQuery(function ($) {
                 "&no_sppb="
         )
             .then((res) => {
-                const ct = (
-                    res.headers.get("content-type") || ""
-                ).toLowerCase();
+                let ct = (res.headers.get("content-type") || "").toLowerCase();
                 if (!res.ok)
                     return res.text().then((txt) => {
                         throw new Error(
@@ -414,7 +410,7 @@ jQuery(function ($) {
                 detailTable.clear();
                 if (Array.isArray(data) && data.length > 0) {
                     data.forEach((item) => {
-                        const checkboxHtml = `
+                        let checkboxHtml = `
                         <input type="checkbox" class="row-select-isi"
                             data-no-trans="${safeText(item.No_trans ?? "")}"
                             data-kd-brg="${safeText(item.Kd_brg ?? "")}"
@@ -502,12 +498,10 @@ jQuery(function ($) {
                             data-pembayaran="${safeText(
                                 item.Pembayaran ?? item.PersetujuanBayar ?? ""
                             )}"
-                            data-satuan="${safeText(
-                                item.Nama_satuan ?? ""
-                            )}"
+                            data-satuan="${safeText(item.Nama_satuan ?? "")}"
                         />
                         `;
-                        const show = (field) => {
+                        let show = (field) => {
                             if (
                                 !Object.prototype.hasOwnProperty.call(
                                     item,
@@ -515,7 +509,7 @@ jQuery(function ($) {
                                 )
                             )
                                 return "";
-                            const val = item[field];
+                            let val = item[field];
                             return val === null || val === "" ? "-" : val;
                         };
 
@@ -563,13 +557,13 @@ jQuery(function ($) {
     //#region Reference loaders
     function loadMataUang() {
         if (!mata_uang) return;
-        const sel = mata_uang;
+        let sel = mata_uang;
         fetch("/PurchaseOrder/mata-uang")
             .then((res) => res.json())
             .then((data) => {
                 sel.innerHTML = '<option value="">Pilih Mata Uang</option>';
                 (data || []).forEach((row) => {
-                    const opt = document.createElement("option");
+                    let opt = document.createElement("option");
                     opt.value = row.Id_MataUang;
                     opt.textContent = row.Nama_MataUang;
                     sel.appendChild(opt);
@@ -579,7 +573,7 @@ jQuery(function ($) {
     }
 
     function loadSupplier() {
-        const sel = document.getElementById("supplier");
+        let sel = document.getElementById("supplier");
         if (!sel) return;
         sel.innerHTML =
             '<option value="" disabled selected>Pilih Supplier</option>';
@@ -587,7 +581,7 @@ jQuery(function ($) {
             .then((res) => res.text())
             .then((text) => {
                 try {
-                    const data = JSON.parse(text);
+                    let data = JSON.parse(text);
                     if (!Array.isArray(data) || data.length === 0) {
                         sel.innerHTML =
                             '<option value="" disabled>(tidak ada supplier)</option>';
@@ -597,7 +591,7 @@ jQuery(function ($) {
                     sel.innerHTML =
                         '<option value="" disabled selected>Pilih Supplier</option>';
                     data.forEach((row) => {
-                        const noSup =
+                        let noSup =
                             row.No_sup ??
                             row.NO_SUP ??
                             row.NoSup ??
@@ -605,7 +599,7 @@ jQuery(function ($) {
                             row.Id_Sup ??
                             row.no_sup ??
                             "";
-                        const nama = (
+                        let nama = (
                             row.NM_SUP ??
                             row.nm_sup ??
                             row.nama ??
@@ -614,8 +608,8 @@ jQuery(function ($) {
                         )
                             .toString()
                             .trim();
-                        const value = noSup || row.IdSup || nama || "";
-                        const opt = document.createElement("option");
+                        let value = noSup || row.IdSup || nama || "";
+                        let opt = document.createElement("option");
                         opt.value = value;
                         opt.textContent = noSup
                             ? `${noSup} - ${nama || value}`
@@ -648,11 +642,11 @@ jQuery(function ($) {
     //#region Mode
     function applyMode(newMode) {
         if (typeof newMode !== "undefined") mode = newMode;
-        const isIsi = mode === "ISI";
-        const isLihat = mode === "LIHAT";
-        const isNoMode = !isIsi && !isLihat;
+        let isIsi = mode === "ISI";
+        let isLihat = mode === "LIHAT";
+        let isNoMode = !isIsi && !isLihat;
 
-        const allowedIsi = [
+        let allowedIsi = [
             "kd_div",
             "tgl_sppb",
             "mata_uang",
@@ -660,10 +654,6 @@ jQuery(function ($) {
             "hrg_murni",
             "disc",
             "ppn",
-            "dpp_nilai_lain",
-            "harga_ppn",
-            "subtotal_harga_jual",
-            "total_harga",
             "jangka_waktu",
             "pembayaran",
             "tgl_datang",
@@ -671,7 +661,7 @@ jQuery(function ($) {
             "supplier",
             "alasan_hapus",
         ];
-        const allowedLihat = allowedIsi.concat(["no_sppb"]);
+        let allowedLihat = allowedIsi.concat(["no_sppb"]);
 
         document
             .querySelectorAll("form input, form select, form textarea")
@@ -695,9 +685,9 @@ jQuery(function ($) {
                 if (isNoMode) cb.checked = false;
             });
 
-        const btnIsi = document.getElementById("btn-isi");
-        const btnLihat = document.getElementById("btn-lihat");
-        const btnExitCancel = document.getElementById("btn-exit-cancel");
+        let btnIsi = document.getElementById("btn-isi");
+        let btnLihat = document.getElementById("btn-lihat");
+        let btnExitCancel = document.getElementById("btn-exit-cancel");
 
         if (btnIsi) {
             btnIsi.disabled = isIsi || isLihat;
@@ -720,39 +710,42 @@ jQuery(function ($) {
             if (typeof loadNoSppbByDivisi === "function")
                 loadNoSppbByDivisi().catch(() => {});
         } else {
-            if (typeof clearDetailSppb === "function") clearDetailSppb();
+            if (typeof clearDetailSppb === "function")
+                clearDetailSppb("gantiDivisi");
         }
     }
 
     function setMode(newMode) {
         mode =
             typeof newMode === "undefined" || newMode === null ? "" : newMode;
-        if (typeof clearDetailSppb === "function") clearDetailSppb();
+        if (typeof clearDetailSppb === "function")
+            clearDetailSppb("gantiDivisi");
         applyMode();
     }
+
     //#endregion
 
     //#region Mata Uang behavior
     function initMataUangBehavior() {
         if (!mata_uang) return;
+
         function selectedIsRupiah() {
-            const idx = mata_uang.selectedIndex;
+            let idx = mata_uang.selectedIndex;
             if (idx < 0) return false;
-            const txt = (mata_uang.options[idx].text || "")
-                .toLowerCase()
-                .trim();
+            let txt = (mata_uang.options[idx].text || "").toLowerCase().trim();
             return txt.includes("rupiah");
         }
+
         mata_uang.addEventListener("change", function () {
             if (selectedIsRupiah()) {
                 if (kurs) {
                     kurs.value = "1";
-                    kurs.disabled = true;
+                    kurs.disabled = false;
                 }
                 if (hrg_murni) hrg_murni.focus();
             } else {
                 if (kurs) {
-                    const current = parseFloat(kurs.value || "0");
+                    let current = parseFloat(kurs.value || "0");
                     if (!isFinite(current) || current === 0) kurs.value = "0";
                     kurs.disabled = false;
                     kurs.focus();
@@ -761,7 +754,7 @@ jQuery(function ($) {
         });
         if (kurs && hrg_murni) {
             kurs.addEventListener("blur", function () {
-                const v = parseFloat(kurs.value || "0");
+                let v = parseFloat(kurs.value || "0");
                 if (isFinite(v) && v > 0) hrg_murni.focus();
             });
         }
@@ -772,10 +765,51 @@ jQuery(function ($) {
             }
         });
     }
+
     initMataUangBehavior();
+
+    function totalHarga() {
+        let qtyValue = parseNumber(qty?.value);
+        let hrgValue = parseNumber(hrg_murni?.value);
+        let discPct = parseNumber(disc?.value);
+        let ppnPct = parseNumber(ppn?.value);
+
+        // subtotal awal
+        let subtotal = qtyValue * hrgValue;
+
+        // diskon (tidak ditampilkan dalam UI)
+        let diskonRp = subtotal * (discPct / 100);
+
+        // subtotal setelah diskon
+        let setelahDisc = subtotal - diskonRp;
+
+        // DPP nilai lain
+        let dppValue = setelahDisc * (11 / 12);
+
+        // PPN (Rp)
+        let ppnRp = dppValue * (ppnPct / 100);
+
+        // total harga
+        let totalValue = setelahDisc + ppnRp;
+
+        //tampilan
+        subtotal_harga_jual.value = formatNumber(subtotal, 2);
+        dpp_nilai_lain.value = formatNumber(dppValue, 2);
+        hrg_ppn.value = formatNumber(ppnRp, 2);
+        total_harga.value = formatNumber(totalValue, 2);
+
+        return {
+            subtotal,
+            diskonRp,
+            setelahDisc,
+            dppValue,
+            ppnRp,
+            totalValue,
+        };
+    }
     //#endregion
 
-    //#region DataTable init and row select handling
+    //#region DataTable init
     if (window.jQuery && $.fn.DataTable) {
         detailTable = $("#tbl_detail_order").DataTable({
             paging: true,
@@ -803,7 +837,7 @@ jQuery(function ($) {
                 $("#tbl_detail_order tbody .row-select-isi")
                     .not(this)
                     .prop("checked", false);
-
+                clearDetailSppb("clearBiasa");
                 if (!this.checked) {
                     if (no_trans) no_trans.value = "";
                     if (kd_brg) kd_brg.value = "";
@@ -817,14 +851,14 @@ jQuery(function ($) {
                     if (qty) qty.value = "";
                     if (hrg_murni) hrg_murni.value = "";
                     if (dpp_nilai_lain) dpp_nilai_lain.value = "";
-                    if (harga_ppn) harga_ppn.value = "";
+                    if (hrg_ppn) hrg_ppn.value = "";
                     if (subtotal_harga_jual) subtotal_harga_jual.value = "";
                     if (total_harga) total_harga.value = "";
                     if (satuan) satuan.value = "";
                     return;
                 }
 
-                const d = this.dataset;
+                let d = this.dataset;
                 if (no_trans)
                     no_trans.value =
                         d.notrans || d.notransaksi || d.noTrans || "";
@@ -870,7 +904,7 @@ jQuery(function ($) {
 
                 if (d.dppnilailain && dpp_nilai_lain)
                     dpp_nilai_lain.value = d.dppnilailain || "";
-                if (d.hargappn && harga_ppn) harga_ppn.value = d.hargappn || "";
+                if (d.hargappn && hrg_ppn) hrg_ppn.value = d.hargappn || "";
                 if (satuan) satuan.value = d.satuan;
             }
         );
@@ -878,9 +912,9 @@ jQuery(function ($) {
     //#endregion
 
     //#region Buttons, mode switches
-    const btnIsi = document.getElementById("btn-isi");
-    const btnLihat = document.getElementById("btn-lihat");
-    const btnExitCancel = document.getElementById("btn-exit-cancel");
+    let btnIsi = document.getElementById("btn-isi");
+    let btnLihat = document.getElementById("btn-lihat");
+    let btnExitCancel = document.getElementById("btn-exit-cancel");
 
     if (btnIsi)
         btnIsi.addEventListener("click", (e) => {
@@ -901,9 +935,9 @@ jQuery(function ($) {
     document.body.addEventListener(
         "click",
         function (ev) {
-            const t = ev.target;
+            let t = ev.target;
             if (!(t instanceof Element)) return;
-            const btn =
+            let btn =
                 t.closest &&
                 t.closest("#btn-isi, #btn-lihat, #btn-exit-cancel, .btn-mode");
             if (!btn) return;
@@ -925,7 +959,7 @@ jQuery(function ($) {
                     applyMode();
                     return;
                 }
-                const targetUrl = btn.dataset.href;
+                let targetUrl = btn.dataset.href;
                 if (targetUrl) window.location.href = targetUrl;
                 return;
             }
@@ -943,7 +977,7 @@ jQuery(function ($) {
             }
         });
 
-    const noSppbSelect = document.getElementById("no_sppb");
+    let noSppbSelect = document.getElementById("no_sppb");
     if (noSppbSelect)
         noSppbSelect.addEventListener("change", function () {
             if (mode === "LIHAT" && this.value) {
@@ -952,22 +986,22 @@ jQuery(function ($) {
             }
         });
 
-    const jwInput = document.getElementById("jangka_waktu");
+    let jwInput = document.getElementById("jangka_waktu");
     if (jwInput) {
         jwInput.addEventListener("change", applyPembayaranFromJangkaWaktu);
         jwInput.addEventListener("blur", applyPembayaranFromJangkaWaktu);
     }
 
     function todayISO() {
-        const d = new Date();
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, "0");
-        const dd = String(d.getDate()).padStart(2, "0");
+        let d = new Date();
+        let yyyy = d.getFullYear();
+        let mm = String(d.getMonth() + 1).padStart(2, "0");
+        let dd = String(d.getDate()).padStart(2, "0");
         return `${yyyy}-${mm}-${dd}`;
     }
     function ensureTodayDatesIfEmpty() {
         try {
-            const today = todayISO();
+            let today = todayISO();
             if (typeof tgl_sppb !== "undefined" && tgl_sppb && !tgl_sppb.value)
                 tgl_sppb.value = today;
             if (
@@ -981,42 +1015,32 @@ jQuery(function ($) {
         }
     }
     function applyPembayaranFromJangkaWaktu() {
-        const jw = document.getElementById("jangka_waktu");
-        const byr = document.getElementById("pembayaran");
+        let jw = document.getElementById("jangka_waktu");
+        let byr = document.getElementById("pembayaran");
         if (!jw || !byr) return;
-        const n = parseInt(jw.value || "0", 10);
+        let n = parseInt(jw.value || "0", 10);
         if (isNaN(n)) {
             byr.value = "";
             return;
         }
-        if (n === 0) byr.value = "KREDIT";
-        else if (n > 0) byr.value = "TRANSFER";
+        if (n === 0) byr.value = "TUNAI";
+        else if (n > 0) byr.value = "KREDIT";
         else byr.value = "";
     }
     window.applyPembayaranFromJangkaWaktu = applyPembayaranFromJangkaWaktu;
 
-    // initial loaders
+    //#region initial loaders
+    tgl_sppb.valueAsDate = new Date();
     loadMataUang();
     loadSupplier();
     applyMode();
     ensureTodayDatesIfEmpty();
     //#endregion
 
-    //#region Tambah Harga -> insert to DataTable and send to server (YTRANSBL)
     function gatherPricePayload() {
-        const row = getSelectedRowDataset();
+        let row = getSelectedRowDataset();
 
         return {
-            no_trans: (no_trans && no_trans.value) || null,
-            kd_brg: (kd_brg && kd_brg.value) || null,
-            nama_brg: (nama_brg && nama_brg.value) || null,
-            ket_brg: (ket_brg && ket_brg.value) || null,
-            kat_utama: (kat_utama && kat_utama.value) || null,
-            kategori: (kategori && kategori.value) || null,
-            sub_kategori: (sub_kategori && sub_kategori.value) || null,
-            satuan: (satuan && satuan.value) || null,
-            no_satuan: (satuan && satuan.value) || null,
-            qty: parseNumber((qty && qty.value) || 0),
             id_mata_uang: (mata_uang && mata_uang.value) || null,
             kurs: parseNumber((kurs && kurs.value) || 0),
             harga_satuan: parseNumber((hrg_murni && hrg_murni.value) || 0),
@@ -1024,28 +1048,9 @@ jQuery(function ($) {
             ppn_pct: parseNumber((ppn && ppn.value) || 0),
             jenis: (jenis_pembelian && jenis_pembelian.value) || null,
             supplier_id: (supplier && supplier.value) || null,
-            tgl_sppb:
-                tgl_sppb && tgl_sppb.value
-                    ? new Date(tgl_sppb.value).toISOString().slice(0, 10)
-                    : null,
-            tgl_datang:
-                tgl_datang && tgl_datang.value
-                    ? new Date(tgl_datang.value).toISOString().slice(0, 10)
-                    : null,
             jangka_waktu: (jangka_waktu && jangka_waktu.value) || null,
-            computed: computePrices(),
+            computed: totalHarga(),
         };
-    }
-
-    function validatePayloadForServer(p) {
-        const errors = [];
-        if (!p.kd_brg) errors.push("Kode barang kosong");
-        if (!isFinite(p.harga_satuan) || p.harga_satuan <= 0)
-            errors.push("Harga Satuan harus > 0");
-        if (!isFinite(p.qty) || p.qty <= 0) errors.push("Qty harus > 0");
-        if (!p.supplier_id) errors.push("Supplier harus dipilih");
-        if (!p.no_satuan) errors.push("Satuan (kode) harus tersedia");
-        return errors;
     }
 
     function getSelectedRowDataset() {
@@ -1054,51 +1059,155 @@ jQuery(function ($) {
         );
     }
 
-    let btn_tambah_harga = document.getElementById("btn_tambah_harga");
+    ppn.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            totalHarga();
+        }
+    });
+
+    hrg_murni.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            disc.focus();
+        }
+    });
+
+    disc.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            ppn.focus();
+        }
+    });
+
+    ppn.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            jangka_waktu.focus();
+        }
+    });
+
+    jangka_waktu.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            btn_tambah_harga.focus();
+        }
+    });
 
     btn_tambah_harga.addEventListener("click", function (e) {
         e.preventDefault();
-        const payload = gatherPricePayload();
-        const errs = validatePayloadForServer(payload);
-        if (errs.length) {
-            alert("Perbaiki input:\n- " + errs.join("\n- "));
+
+        let payload = gatherPricePayload();
+        console.log(payload);
+
+        if (!detailTable) {
+            console.error("detailTable belum diinisialisasi");
+            alert("Tabel belum siap.");
             return;
         }
 
-        // optimistic add to DataTable
-        // let addedRow = null;
-        // console.log(detailTable);
+        let $checked = $("#tbl_detail_order tbody .row-select-isi:checked");
+        if (!$checked || $checked.length === 0) {
+            alert("Pilih satu baris pada tabel sebelum menambah harga.");
+            return;
+        }
 
-        // if (detailTable) {
-        //     const checkboxHtml = `<input type="checkbox" class="row-select-isi" data-no-trans="${safeText(
-        //         payload.no_trans
-        //     )}" />`;
-        //     console.log(checkboxHtml);
+        let checkboxEl = $checked.get(0);
+        let tr = checkboxEl.closest("tr");
+        let row = detailTable.row(tr);
+        let rowData = row.data();
 
-        //     addedRow = detailTable.row
-        //         .add([
-        //             checkboxHtml,
-        //             "", // Tgl_order
-        //             payload.qty,
-        //             "",
-        //             "",
-        //             "",
-        //             payload.no_trans || "",
-        //             payload.tgl_datang || "",
-        //             "",
-        //             "",
-        //             payload.harga_satuan,
-        //             payload.disc_pct,
-        //             payload.computed.dppNilaiLain,
-        //             payload.ppn_pct,
-        //             payload.computed.totalHarga,
-        //         ])
-        //         .draw(false)
-        //         .node();
-        //     if (addedRow) addedRow.dataset.clientAdded = "1";
+        console.log("DEBUG - rowData (current):", rowData);
+
+        let comp = payload.computed;
+        if (!comp) {
+            console.warn(
+                "payload.computed undefined — pastikan totalHarga() mengembalikan object hasil perhitungan."
+            );
+            alert("Perhitungan belum tersedia. Periksa fungsi perhitungan.");
+            return;
+        }
+
+        // console.group("Preview Perhitungan");
+        // console.log("payload:", payload);
+        // console.log("computed:", comp);
+
+        // if (console.table) {
+        //     console.table({
+        //         Subtotal: comp.subtotal ?? comp.subTotal ?? "n/a",
+        //         DiskonRp: comp.diskonRp ?? 0,
+        //         SetelahDiskon: comp.setelahDisc ?? comp.setelahDiskon ?? "n/a",
+        //         DPP: comp.dppNilaiLain ?? comp.dppValue ?? "n/a",
+        //         PPN_Rp: comp.ppnRp ?? 0,
+        //         Total: comp.totalHarga ?? comp.totalValue ?? "n/a",
+        //     });
         // }
+
+        // console.groupEnd();
+
+        let ok = confirm(
+            "Preview perhitungan ditampilkan di console.\nTekan OK untuk menerapkan ke baris yang dipilih, Cancel untuk membatalkan."
+        );
+        if (!ok) {
+            console.log("Update dibatalkan user.");
+            return;
+        }
+
+        //masuk dataTable
+        let newRow = Array.isArray(rowData)
+            ? rowData.slice()
+            : Object.assign({}, rowData);
+
+        let tgl_datang = payload.Tgl_dtg || 0;
+        let hargaSatuanVal = payload.harga_satuan || 0;
+        let discPctVal = payload.disc_pct || 0;
+        let dppVal = comp.dppNilaiLain ?? comp.dppValue ?? 0;
+        let ppnPctVal = payload.ppn_pct || 0;
+        let totalVal = comp.totalHarga ?? comp.totalValue ?? 0;
+
+        if (Array.isArray(newRow)) {
+            newRow[10] = numeral(hargaSatuanVal).format("0,0.00");
+            newRow[11] = discPctVal;
+            newRow[12] = numeral(dppVal).format("0,0.00");
+            newRow[13] = ppnPctVal;
+            newRow[14] = numeral(totalVal).format("0,0.00");
+        } else {
+            newRow.harga_satuan = hargaSatuanVal;
+            newRow.disc = discPctVal;
+            newRow.dpp_nilai_lain = dppVal;
+            newRow.ppn = ppnPctVal;
+            newRow.total_harga = totalVal;
+        }
+
+        // before updating table
+        let $cb = $($checked.get(0));
+        let wasChecked = $cb.prop("checked");
+
+        //updating the table
+        row.data(newRow).draw(false);
+
+        // re-apply checkbox state and data-* attrs to the new row node
+        try {
+            let node = row.node(); // DOM <tr> for this row after redraw
+            let $newCb = $(node).find(".row-select-isi").first();
+            if ($newCb && $newCb.length) {
+                $newCb.prop("checked", wasChecked);
+                $newCb.attr("data-tgl-datang", String(tgl_datang));
+                $newCb.attr("data-hrg-murni", String(hargaSatuanVal));
+                $newCb.attr("data-disc", String(discPctVal));
+                $newCb.attr("data-dpp-nilai-lain", String(dppVal));
+                $newCb.attr("data-ppn", String(ppnPctVal));
+                $newCb.attr("data-total-harga", String(totalVal));
+            }
+        } catch (err) {
+            console.warn("Gagal re-apply checkbox state:", err);
+        }
+        //masuk database
     });
-    //#endregion
+
+    btn_proses.addEventListener("click", function (e) {
+        e.preventDefault();
+    });
 
     // end jQuery init
 });

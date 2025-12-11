@@ -95,7 +95,7 @@
                                     LIHAT
                                 </button>
 
-                                <button type="button" class="btn btn-outline-success btn-sm">
+                                <button type="button" id="btn_proses" class="btn btn-outline-success btn-sm">
                                     PROSES
                                 </button>
 
@@ -263,14 +263,15 @@
                                     <div class="mb-2 row">
                                         <label class="col-sm-3 col-form-label">Discount</label>
                                         <div class="col-sm-3">
-                                            <input type="text" step="0.01" name="disc" id="disc"
+                                            <input type="number" step="0.01" name="disc" id="disc"
                                                 class="form-control text-end">
                                         </div>
                                         <label class="col-sm-1 col-form-label text-center">%</label>
 
+
                                         <label class="col-sm-2 col-form-label text-end">PPN (%)</label>
                                         <div class="col-sm-3">
-                                            <input type="text" step="0.1" name="ppn" id="ppn"
+                                            <input type="number" step="0.1" name="ppn" id="ppn"
                                                 class="form-control text-end">
                                         </div>
                                     </div>
@@ -288,7 +289,7 @@
                                     <div class="mb-2 row">
                                         <label class="col-sm-3 col-form-label">Harga PPN</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="harga_ppn" id="harga_ppn"
+                                            <input type="text" name="hrg_ppn" id="harga_ppn"
                                                 class="form-control text-end">
                                         </div>
                                     </div>
