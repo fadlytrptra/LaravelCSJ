@@ -74,7 +74,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/PurchaseOrder/mata-uang', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listMataUang'])->name('purchaseorder.mata_uang');
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listSupplier'])->name('purchaseorder.supplier');
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'supplier']);
-    Route::post('/purchaseorder/tambah-harga', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'storeHarga']);
+
 
     Route::resource('ListOrder', App\Http\Controllers\Beli\Transaksi\ListOrderController::class);
     Route::resource('DaftarHarga', App\Http\Controllers\Beli\Informasi\DaftarHargaController::class);

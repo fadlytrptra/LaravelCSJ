@@ -119,6 +119,7 @@
                                         <label class="col-sm-3 col-form-label">Nama Divisi</label>
                                         <div class="col-sm-7">
                                             <select name="kd_div" id="kd_div" class="form-control">
+                                                <option value="">Pilih Divisi</option>
                                                 @foreach ($divisi as $d)
                                                     <option value="{{ $d->Kd_div }}">{{ trim($d->NM_DIV) }}</option>
                                                 @endforeach
@@ -403,26 +404,6 @@
                             </div>
                         </div>
 
-                        {{-- FOOTER --}}
-                        <div class="card-footer">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <div class="d-flex justify-content-start gap-2 mb-2">
-                                        <button type="button" class="btn btn-outline-primary">CETAK SPPB</button>
-                                        <button type="button" class="btn btn-batal">BATAL SPPB</button>
-                                        <button type="button" class="btn btn-outline-danger">HAPUS SPPB</button>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4 d-flex justify-content-end">
-                                    <div class="d-flex gap-2">
-                                        <button type="button" class="btn btn-secondary">
-                                            Lihat Daftar Harga
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                     </form>
 
@@ -430,5 +411,6 @@
             </div>
         </div>
     </div>
+
     <script src="{{ asset('js/OrderPembelian/CreatePurchaseOrder/CreatePurchaseOrder.js') }}"></script>
 @endsection

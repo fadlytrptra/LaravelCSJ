@@ -83,7 +83,7 @@ jQuery(function ($) {
 
         if (supplier) {
             supplier.value = "";
-            supplier.disabled = false;
+            // supplier.disabled = false;
         }
 
         if (jenis_pembelian) jenis_pembelian.value = "";
@@ -208,7 +208,7 @@ jQuery(function ($) {
             encodeURIComponent(kdDiv) +
             "&no_sppb=" +
             encodeURIComponent(noSppb);
-        fetch(url)
+        return fetch(url)
             .then((res) => {
                 let ct = (res.headers.get("content-type") || "").toLowerCase();
                 if (!res.ok) {
@@ -366,6 +366,7 @@ jQuery(function ($) {
             });
     }
 
+    //divisi isi
     function loadDataByDivisiIsi() {
         let kdDiv = (
             document.getElementById("kd_div")
@@ -1128,22 +1129,7 @@ jQuery(function ($) {
             return;
         }
 
-        // console.group("Preview Perhitungan");
-        // console.log("payload:", payload);
-        // console.log("computed:", comp);
 
-        // if (console.table) {
-        //     console.table({
-        //         Subtotal: comp.subtotal ?? comp.subTotal ?? "n/a",
-        //         DiskonRp: comp.diskonRp ?? 0,
-        //         SetelahDiskon: comp.setelahDisc ?? comp.setelahDiskon ?? "n/a",
-        //         DPP: comp.dppNilaiLain ?? comp.dppValue ?? "n/a",
-        //         PPN_Rp: comp.ppnRp ?? 0,
-        //         Total: comp.totalHarga ?? comp.totalValue ?? "n/a",
-        //     });
-        // }
-
-        // console.groupEnd();
 
         let ok = confirm(
             "Preview perhitungan ditampilkan di console.\nTekan OK untuk menerapkan ke baris yang dipilih, Cancel untuk membatalkan."
@@ -1179,16 +1165,13 @@ jQuery(function ($) {
             newRow.total_harga = totalVal;
         }
 
-        // before updating table
         let $cb = $($checked.get(0));
         let wasChecked = $cb.prop("checked");
 
-        //updating the table
         row.data(newRow).draw(false);
 
-        // re-apply checkbox state and data-* attrs to the new row node
         try {
-            let node = row.node(); // DOM <tr> for this row after redraw
+            let node = row.node();
             let $newCb = $(node).find(".row-select-isi").first();
             if ($newCb && $newCb.length) {
                 $newCb.prop("checked", wasChecked);
@@ -1202,12 +1185,14 @@ jQuery(function ($) {
         } catch (err) {
             console.warn("Gagal re-apply checkbox state:", err);
         }
-        //masuk database
+
     });
 
     btn_proses.addEventListener("click", function (e) {
         e.preventDefault();
     });
+
+
 
     // end jQuery init
 });
