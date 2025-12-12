@@ -159,12 +159,12 @@ class AccMhnPenerimaController extends Controller
             try {
                 foreach ($listTransaksi as $transaksi) {
                     DB::connection('ConnInventory')
-                        ->statement('exec [SP_1273_PRG_Update_ACCManager_TmpTransaksi]
+                        ->statement('exec [SP_1273_PRG_Update_AccManager_TmpTransaksi]
                         @UserACC = ?,
                         @Kode = ?,
                         @YIdTransaksi = ?', [
                             $user,
-                            4,
+                            3,
                             $transaksi,
                         ]);
                 }
@@ -181,14 +181,14 @@ class AccMhnPenerimaController extends Controller
             try {
                 foreach ($listTransaksi as $transaksi) {
                     DB::connection('ConnInventory')
-                        ->statement('exec [SP_1273_PRG_Batal_ACCManager_TmpTransaksi]
+                        ->statement('exec [SP_1273_PRG_BATAL_ACCMANAGER_TMPTRANSAKSI]
                         @Kode = ?,
                         @YIdTransaksi = ?', [
-                            1,
+                            3,
                             $transaksi,
                         ]);
                 }
-                return response()->json(['success' => 'Pembatalan Acc Telah Terproses !!..'], 200);
+                return response()->json(['success' => 'Pembatalan Acc Telah Terproses!'], 200);
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Pembatalan Acc gagal.' . $e->getMessage()], 500);
             }
