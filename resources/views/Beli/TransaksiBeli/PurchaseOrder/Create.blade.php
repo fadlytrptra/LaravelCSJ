@@ -275,6 +275,19 @@
                                             <input type="number" step="0.1" name="ppn" id="ppn"
                                                 class="form-control text-end">
                                         </div>
+
+                                       <div class="col-sm-4 d-none" id="dpp_full_wrapper">
+                                            <div class="form-check mt-2">
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="dpp_full"
+                                                    name="dpp_full"
+                                                    value="1">
+                                                <label class="form-check-label fw-semibold" for="dpp_full">
+                                                    DPP FULL
+                                                </label>
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                     {{-- DPP NILAI LAIN --}}

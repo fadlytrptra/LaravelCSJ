@@ -36,6 +36,10 @@ jQuery(function ($) {
     let hrg_disc = document.getElementById("hrg_disc");
     let btn_tambah_harga = document.getElementById("btn_tambah_harga");
     let btn_proses = document.getElementById("btn_proses");
+    let ppnInput = document.getElementById("ppn");
+    let dppWrapper = document.getElementById("dpp_full_wrapper");
+    let dppYes = document.getElementById("dpp_full_yes");
+    let dppNo = document.getElementById("dpp_full_no");
     //#endregion
 
     //#region Utility functions
@@ -100,6 +104,7 @@ jQuery(function ($) {
         if (jenisClear == "gantiDivisi") {
             if (detailTable) detailTable.clear().draw();
         }
+        updateBtnProsesState();
     }
     //#endregion
 
@@ -562,7 +567,7 @@ jQuery(function ($) {
         fetch("/PurchaseOrder/mata-uang")
             .then((res) => res.json())
             .then((data) => {
-                sel.innerHTML = '<option value="">Pilih Mata Uang</option>';
+                sel.inner    = '<option value="">Pilih Mata Uang</option>';
                 (data || []).forEach((row) => {
                     let opt = document.createElement("option");
                     opt.value = row.Id_MataUang;
@@ -661,6 +666,7 @@ jQuery(function ($) {
             "jenis_pembelian",
             "supplier",
             "alasan_hapus",
+            "dpp_full",
         ];
         let allowedLihat = allowedIsi.concat(["no_sppb"]);
 
@@ -770,34 +776,34 @@ jQuery(function ($) {
     initMataUangBehavior();
 
     function totalHarga() {
-        let qtyValue = parseNumber(qty?.value);
-        let hrgValue = parseNumber(hrg_murni?.value);
-        let discPct = parseNumber(disc?.value);
-        let ppnPct = parseNumber(ppn?.value);
+        let qtyValue  = parseNumber(qty?.value);
+        let hrgValue  = parseNumber(hrg_murni?.value);
+        let discPct   = parseNumber(disc?.value);
+        let ppnPct    = parseNumber(ppn?.value);
+        let isDppFull = document.getElementById("dpp_full")?.checked === true;
 
-        // subtotal awal
         let subtotal = qtyValue * hrgValue;
-
-        // diskon (tidak ditampilkan dalam UI)
         let diskonRp = subtotal * (discPct / 100);
-
-        // subtotal setelah diskon
         let setelahDisc = subtotal - diskonRp;
 
-        // DPP nilai lain
-        let dppValue = setelahDisc * (11 / 12);
+        // DPP
+        let dppValue;
+        if (ppnPct === 12 && isDppFull) {
+            dppValue = setelahDisc * (11 / 12);
+        } else {
+            dppValue = subtotal-diskonRp;
+        }
 
-        // PPN (Rp)
+        // PPN
         let ppnRp = dppValue * (ppnPct / 100);
 
-        // total harga
-        let totalValue = setelahDisc + ppnRp;
+        // TOTAL (INI KUNCINYA)
+        let totalValue = dppValue + ppnRp;
 
-        //tampilan
-        subtotal_harga_jual.value = formatNumber(subtotal, 2);
-        dpp_nilai_lain.value = formatNumber(dppValue, 2);
-        hrg_ppn.value = formatNumber(ppnRp, 2);
-        total_harga.value = formatNumber(totalValue, 2);
+        subtotal_harga_jual.value = numeral(subtotal).format("0,0.00");
+        dpp_nilai_lain.value      = numeral(dppValue).format("0,0.00");
+        hrg_ppn.value             = numeral(ppnRp).format("0,0.00");
+        total_harga.value         = numeral(totalValue).format("0,0.00");
 
         return {
             subtotal,
@@ -806,8 +812,10 @@ jQuery(function ($) {
             dppValue,
             ppnRp,
             totalValue,
+            isDppFull
         };
     }
+
     //#endregion
 
     //#region DataTable init
@@ -830,85 +838,81 @@ jQuery(function ($) {
             // ],
         });
 
+
+
+
         $("#tbl_detail_order tbody").on(
             "change",
             ".row-select-isi",
             function () {
+
                 if (mode !== "ISI" && mode !== "LIHAT") return;
+
+
                 $("#tbl_detail_order tbody .row-select-isi")
                     .not(this)
                     .prop("checked", false);
-                clearDetailSppb("clearBiasa");
+
+
                 if (!this.checked) {
-                    if (no_trans) no_trans.value = "";
-                    if (kd_brg) kd_brg.value = "";
-                    if (nama_brg) nama_brg.value = "";
-                    if (ket_brg) ket_brg.value = "";
-                    if (kat_utama) kat_utama.value = "";
-                    if (kategori) categoria = "";
-                    if (sub_kategori) sub_kategori.value = "";
-                    if (ket_pembelian) ket_pembelian.value = "";
-                    if (satuan) satuan.value = "";
-                    if (qty) qty.value = "";
-                    if (hrg_murni) hrg_murni.value = "";
-                    if (dpp_nilai_lain) dpp_nilai_lain.value = "";
-                    if (hrg_ppn) hrg_ppn.value = "";
-                    if (subtotal_harga_jual) subtotal_harga_jual.value = "";
-                    if (total_harga) total_harga.value = "";
-                    if (satuan) satuan.value = "";
+                    updateBtnProsesState();
                     return;
                 }
 
-                let d = this.dataset;
-                if (no_trans)
-                    no_trans.value =
-                        d.notrans || d.notransaksi || d.noTrans || "";
-                if (kd_brg) kd_brg.value = d.kdbrg || d.kdBrg || "";
-                if (nama_brg) nama_brg.value = d.namabrg || d.namaBrg || "";
-                if (ket_brg) ket_brg.value = d.ketbrg || d.ketBrg || "";
-                if (kat_utama) kat_utama.value = d.katutama || d.katUtama || "";
-                if (kategori) kategori.value = d.kategori || "";
-                if (sub_kategori)
-                    sub_kategori.value = d.subKategori || d.sub_kategori || "";
-                if (ket_pembelian)
-                    ket_pembelian.value =
-                        d.ketpembelian || d.ketPembelian || "";
-                if (satuan) satuan.value = d.satuan || "";
-                if (qty) qty.value = d.qty || d.qtyVal || "";
-                if (jangka_waktu) jangka_waktu.value = d.waktu || "";
-                if (pembayaran) pembayaran.value = d.pembayaran || "";
 
-                if (d.tgldatang && tgl_datang)
-                    tgl_datang.value = d.tgldatang || d.tglDatang || "";
-                if (d.tglsppb && tgl_sppb)
-                    tgl_sppb.value = d.tglsppb || d.tglSppb || "";
+                const row = detailTable.row($(this).closest("tr"));
+                const rowData = row.data() || {};
+                const d = this.dataset;
 
-                if (d.noSppb && no_sppb) {
-                    let opt = Array.from(no_sppb.options).find(
-                        (o) => o.value === d.noSppb
-                    );
-                    if (!opt) {
-                        opt = new Option(d.noSppb, d.noSppb, true, true);
-                        no_sppb.appendChild(opt);
-                    } else no_sppb.value = d.noSppb;
+
+                if (no_trans)      no_trans.value = d.notrans || d.noTrans || "";
+                if (kd_brg)        kd_brg.value = d.kdbrg || d.kdBrg || "";
+                if (nama_brg)      nama_brg.value = d.namabrg || d.namaBrg || "";
+                if (ket_brg)       ket_brg.value = d.ketbrg || d.ketBrg || "";
+                if (kat_utama)     kat_utama.value = d.katutama || d.katUtama || "";
+                if (kategori)      kategori.value = d.kategori || "";
+                if (sub_kategori)  sub_kategori.value = d.subKategori || d.sub_kategori || "";
+                if (ket_pembelian) ket_pembelian.value = d.ketpembelian || d.ketPembelian || "";
+                if (satuan)        satuan.value = d.satuan || "";
+                if (qty)           qty.value = d.qty || "";
+
+                if (tgl_sppb && d.tglsppb)
+                    tgl_sppb.value = d.tglsppb;
+
+                if (tgl_datang && d.tgldatang)
+                    tgl_datang.value = d.tgldatang;
+
+
+                if (rowData._harga) {
+                    const h = rowData._harga;
+
+                    if (hrg_murni)       hrg_murni.value = h.harga_satuan;
+                    if (disc)            disc.value = h.disc;
+                    if (ppn)             ppn.value = h.ppn;
+                    if (dpp_nilai_lain)  dpp_nilai_lain.value = numeral(h.dpp).format("0,0.00");
+                    if (total_harga)     total_harga.value = numeral(h.total).format("0,0.00");
+                    if (jangka_waktu)    jangka_waktu.value = h.jangka_waktu;
+                    if (pembayaran)      pembayaran.value = h.pembayaran;
+                    if (jenis_pembelian) jenis_pembelian.value = h.jenis_pembelian;
+                    if (supplier)        supplier.value = h.supplier;
+                    if (tgl_datang)      tgl_datang.value = h.tgl_datang;
+                } else {
+
+                    if (hrg_murni)      hrg_murni.value = "";
+                    if (disc)           disc.value = "";
+                    if (ppn)            ppn.value = "";
+                    if (dpp_nilai_lain) dpp_nilai_lain.value = "";
+                    if (total_harga)    total_harga.value = "";
+                    if (jangka_waktu)   jangka_waktu.value = "";
+                    if (pembayaran)     pembayaran.value = "";
                 }
 
-                if (mata_uang)
-                    mata_uang.value =
-                        d.idMatauang || d.idMataUang || d.idMata || "";
-                if (kurs) kurs.value = d.kurs || d.kurs_rp || "0";
-                if (hrg_murni)
-                    hrg_murni.value =
-                        d.hrgmurni || d.hrg_murni || d.hargaSatuan || "";
-                if (disc) disc.value = d.disc || "";
-                if (ppn) ppn.value = d.ppn || "";
-
-                if (d.dppnilailain && dpp_nilai_lain)
-                    dpp_nilai_lain.value = d.dppnilailain || "";
-                if (d.hargappn && hrg_ppn) hrg_ppn.value = d.hargappn || "";
-                if (satuan) satuan.value = d.satuan;
+                updateBtnProsesState();
             }
         );
+
+
+
     }
     //#endregion
 
@@ -1005,16 +1009,28 @@ jQuery(function ($) {
             let today = todayISO();
             if (typeof tgl_sppb !== "undefined" && tgl_sppb && !tgl_sppb.value)
                 tgl_sppb.value = today;
-            if (
-                typeof tgl_datang !== "undefined" &&
-                tgl_datang &&
-                !tgl_datang.value
-            )
+            if (typeof tgl_datang !== "undefined" && tgl_datang && !tgl_datang.value)
                 tgl_datang.value = today;
         } catch (e) {
             console.error("Error setting today dates:", e);
         }
     }
+    function syncFormToDataset() {
+        let cb = document.querySelector(".row-select-isi:checked");
+        if (!cb) return;
+
+        cb.dataset.tgldatang = tgl_datang?.value || "";
+        cb.dataset.jenispembelian = jenis_pembelian?.value || "";
+        cb.dataset.supplier = supplier?.value || "";
+    }
+
+
+    tgl_datang?.addEventListener("change", syncFormToDataset);
+    jenis_pembelian?.addEventListener("change", syncFormToDataset);
+    supplier?.addEventListener("change", syncFormToDataset);
+
+
+
     function applyPembayaranFromJangkaWaktu() {
         let jw = document.getElementById("jangka_waktu");
         let byr = document.getElementById("pembayaran");
@@ -1032,6 +1048,7 @@ jQuery(function ($) {
 
     //#region initial loaders
     tgl_sppb.valueAsDate = new Date();
+    tgl_datang.valueAsDate = new Date();
     loadMataUang();
     loadSupplier();
     applyMode();
@@ -1050,6 +1067,7 @@ jQuery(function ($) {
             jenis: (jenis_pembelian && jenis_pembelian.value) || null,
             supplier_id: (supplier && supplier.value) || null,
             jangka_waktu: (jangka_waktu && jangka_waktu.value) || null,
+            tgl_datang: tgl_datang?.value || null,
             computed: totalHarga(),
         };
     }
@@ -1144,12 +1162,27 @@ jQuery(function ($) {
             ? rowData.slice()
             : Object.assign({}, rowData);
 
-        let tgl_datang = payload.Tgl_dtg || 0;
+        let tgl_datang = payload.tgl_datang || 0;
         let hargaSatuanVal = payload.harga_satuan || 0;
         let discPctVal = payload.disc_pct || 0;
         let dppVal = comp.dppNilaiLain ?? comp.dppValue ?? 0;
         let ppnPctVal = payload.ppn_pct || 0;
         let totalVal = comp.totalHarga ?? comp.totalValue ?? 0;
+
+
+        newRow._harga = {
+            harga_satuan: hargaSatuanVal,
+            disc: discPctVal,
+            ppn: ppnPctVal,
+            dpp: dppVal,
+            total: totalVal,
+            jangka_waktu: payload.jangka_waktu,
+            pembayaran: pembayaran.value,
+            jenis_pembelian: jenis_pembelian.value,
+            supplier: supplier.value,
+            tgl_datang: payload.tgl_datang
+        };
+
 
         if (Array.isArray(newRow)) {
             newRow[10] = numeral(hargaSatuanVal).format("0,0.00");
@@ -1157,7 +1190,10 @@ jQuery(function ($) {
             newRow[12] = numeral(dppVal).format("0,0.00");
             newRow[13] = ppnPctVal;
             newRow[14] = numeral(totalVal).format("0,0.00");
-        } else {
+        }
+
+
+        else {
             newRow.harga_satuan = hargaSatuanVal;
             newRow.disc = discPctVal;
             newRow.dpp_nilai_lain = dppVal;
@@ -1175,12 +1211,6 @@ jQuery(function ($) {
             let $newCb = $(node).find(".row-select-isi").first();
             if ($newCb && $newCb.length) {
                 $newCb.prop("checked", wasChecked);
-                $newCb.attr("data-tgl-datang", String(tgl_datang));
-                $newCb.attr("data-hrg-murni", String(hargaSatuanVal));
-                $newCb.attr("data-disc", String(discPctVal));
-                $newCb.attr("data-dpp-nilai-lain", String(dppVal));
-                $newCb.attr("data-ppn", String(ppnPctVal));
-                $newCb.attr("data-total-harga", String(totalVal));
             }
         } catch (err) {
             console.warn("Gagal re-apply checkbox state:", err);
@@ -1188,9 +1218,88 @@ jQuery(function ($) {
 
     });
 
+
+    if (jenis_pembelian) {
+        jenis_pembelian.addEventListener("change", function () {
+
+            let checked = document.querySelector(
+                "#tbl_detail_order tbody .row-select-isi:checked"
+            );
+            if (!checked) return;
+
+            let row = detailTable.row($(checked).closest("tr"));
+            let data = row.data();
+            if (!data) return;
+
+            if (!data._harga) data._harga = {};
+
+            let today = todayISO();
+            data._harga.tgl_datang = today;
+
+            if (tgl_datang) tgl_datang.value = today;
+
+            row.cell(row.index(), 7).data(today);
+            data._harga.jenis_pembelian = this.value;
+        });
+    }
+
+
+
+
+    if (ppnInput && dppWrapper) {
+        ppnInput.addEventListener("input", function () {
+            const ppnVal = Number(this.value || 0);
+
+            if (ppnVal === 12) {
+                // tampilkan opsi DPP FULL
+                dppWrapper.classList.remove("d-none");
+            } else {
+                // sembunyikan + reset ke default
+                dppWrapper.classList.add("d-none");
+                if (dppNo) dppNo.checked = true;
+            }
+        });
+    }
+
+    if(btn_proses) {
+        btn_proses.disabled = true;
+    }
+
+
+    //submit database
     btn_proses.addEventListener("click", function (e) {
         e.preventDefault();
+
+        let checked = document.querySelector(".row-select-isi:checked");
+        if (!checked) {
+            alert("Pilih 1 data pada tabel.");
+            return;
+        }
+
+        if (!jenis_pembelian || !jenis_pembelian.value) {
+            alert("Jenis Pembelian tidak boleh kosong");
+            jenis_pembelian.focus();
+            return;
+        }
+
+
+        let comp = totalHarga();
+        if (!comp || comp.totalValue <= 0) {
+            alert("Penambahan harga tidak valid.");
+            return;
+        }
+
+        submitToDatabase(checked, comp);
     });
+
+
+    function updateBtnProsesState() {
+        let checkedCount = document.querySelectorAll(
+            "#tbl_detail_order tbody .row-select-isi:checked"
+        ).length;
+
+        btn_proses.disabled = (checkedCount !== 1);
+    }
 
 
 
