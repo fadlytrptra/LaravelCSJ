@@ -860,9 +860,9 @@ jQuery(function ($) {
                 }
 
 
-                const row = detailTable.row($(this).closest("tr"));
-                const rowData = row.data() || {};
-                const d = this.dataset;
+                let row = detailTable.row($(this).closest("tr"));
+                let rowData = row.data() || {};
+                let d = this.dataset;
 
 
                 if (no_trans)      no_trans.value = d.notrans || d.noTrans || "";
@@ -884,7 +884,7 @@ jQuery(function ($) {
 
 
                 if (rowData._harga) {
-                    const h = rowData._harga;
+                    let h = rowData._harga;
 
                     if (hrg_murni)       hrg_murni.value = h.harga_satuan;
                     if (disc)            disc.value = h.disc;
@@ -1248,7 +1248,7 @@ jQuery(function ($) {
 
     if (ppnInput && dppWrapper) {
         ppnInput.addEventListener("input", function () {
-            const ppnVal = Number(this.value || 0);
+            let ppnVal = Number(this.value || 0);
 
             if (ppnVal === 12) {
                 // tampilkan opsi DPP FULL
@@ -1282,6 +1282,9 @@ jQuery(function ($) {
             return;
         }
 
+        let row = detailTable.row($(checked).closest("tr"));
+        let rowData = row.data();
+
 
         let comp = totalHarga();
         if (!comp || comp.totalValue <= 0) {
@@ -1289,8 +1292,76 @@ jQuery(function ($) {
             return;
         }
 
-        submitToDatabase(checked, comp);
+        submitToDatabase(rowData);
     });
+
+
+    function submitToDatabase(rowData) {
+        if (!rowData || !rowData._harga) {
+            alert("Harga belum diinput. Klik Tambah Harga terlebih dahulu.");
+            return;
+        }
+        let h = rowData._harga;
+
+            let payload = {
+                kd_div_1: document.getElementById("kd_div").value,
+                no_trans_1: rowData[6],
+                tgl_sppb_3: document.getElementById("tgl_sppb").value,
+                tgl_dtg_4: h.tgl_datang,
+                jenis_5: h.jenis_pembelian,
+                no_sup_5: h.supplier,
+                hrg_trm_7: h.harga_satuan,
+                disc_trm_8: h.disc,
+                ppn_trm_9: h.ppn,
+                waktu_10: h.jangka_waktu,
+                IdMataUang: document.getElementById("mata_uang").value,
+                Kurs: document.getElementById("kurs").value,
+                hrg_murni: h.harga_satuan,
+                hrg_murni_rp: 0,
+                hrg_disc: 0,
+                hrg_disc_rp: 0,
+                hrg_nego: 0,
+                hrg_nego_rp: 0,
+                hrg_ppn: 0,
+                hrg_ppn_rp: 0,
+                dpp_nilai_lain: h.dpp,
+                dpp_nilai_lain_rp: 0
+            };
+
+
+            fetch("/purchaseorder/simpan-harga", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content"),
+                },
+                body: JSON.stringify(payload),
+            })
+            .then(async res => {
+                if (!res.ok) {
+                    let text = await res.text();
+                    throw new Error("Server error:\n" + text.slice(0, 500));
+                }
+                return res.json();
+            })
+            .then(res => {
+                if (!res.success) {
+                    alert(res.message || "Gagal menyimpan data harga.");
+                    return;
+                }
+
+                alert("Data harga diproses dan disimpan.");
+                checked.disabled = true;
+                checked.checked = false;
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Terjadi kesalahan server. Cek console.");
+            });
+
+    }
 
 
     function updateBtnProsesState() {
@@ -1300,6 +1371,103 @@ jQuery(function ($) {
 
         btn_proses.disabled = (checkedCount !== 1);
     }
+
+
+    document.getElementById("btn_proses").addEventListener("click", function () {
+
+
+        let checked = document.querySelector(
+            "#tbl_detail_order tbody .row-select-isi:checked"
+        );
+
+        if (!checked) {
+            alert("Pilih satu data pada tabel.");
+            return;
+        }
+
+        let row = detailTable.row($(checked).closest("tr"));
+        let rowData = row.data();
+
+        if (!rowData || !rowData._harga) {
+            alert("Harga belum diinput. Klik Tambah Harga terlebih dahulu.");
+            return;
+        }
+
+        let h = rowData._harga;
+
+
+        if (!h.jenis_pembelian) {
+            alert("Jenis pembelian wajib diisi.");
+            return;
+        }
+
+        if (!h.supplier) {
+            alert("Supplier wajib diisi.");
+            return;
+        }
+
+        if (h.total <= 0) {
+            alert("Total harga tidak valid.");
+            return;
+        }
+
+
+        let payload = {
+            no_trans: rowData[10],
+            qty: rowData[4],
+
+            hrg_murni: h.harga_satuan,
+            disc: h.disc,
+            ppn: h.ppn,
+            dpp_nilai_lain: h.dpp,
+            harga_ppn: h.ppn * h.dpp / 100,
+            subtotal_harga_jual: h.dpp,
+            total_harga: h.total,
+
+            mata_uang: document.getElementById("mata_uang").value,
+            kurs: document.getElementById("kurs").value,
+
+            jangka_waktu: h.jangka_waktu,
+            pembayaran: h.pembayaran,
+
+            tgl_datang: h.tgl_datang,
+            supplier: h.supplier,
+            jenis_pembelian: h.jenis_pembelian
+        };
+
+
+        if (!confirm("LAKUKAN PROSES DATA?")) return;
+
+
+        fetch("/purchaseorder/update-detail-sppb", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute("content"),
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (!res.success) {
+                    alert(res.message || "Gagal menyimpan data.");
+                    return;
+                }
+
+                alert("Data berhasil diproses dan disimpan.");
+
+
+                checked.disabled = true;
+                checked.checked = false;
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Terjadi kesalahan koneksi.");
+            });
+    });
+
 
 
 

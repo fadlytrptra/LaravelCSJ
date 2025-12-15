@@ -99,7 +99,6 @@
                                     PROSES
                                 </button>
 
-
                                 <button type="button" id="btn-exit-cancel" class="btn btn-outline-dark btn-sm" data-href="{{ url('/Beli') }}">
                                     KELUAR
                                 </button>
@@ -352,6 +351,7 @@
                                             </button>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
 

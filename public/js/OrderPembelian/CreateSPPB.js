@@ -113,23 +113,49 @@ $(document).ready(function () {
         alasan_reject.value = "";
     }
 
-    function submit(nomor, qtydelay) {
+    function submit(no_trans_1, tgl_sppb_3, tgl_dtg_4, jenis_5, operator_sppb_6, no_sup_5, hrg_trm_7, disc_trm_8, ppn_trm_9, waktu_10, IdMataUang, Kurs,
+        hrg_murni, hrg_murni_rp, hrg_disc, hrg_disc_rp, hrg_nego, hrg_nego_rp, hrg_ppn, hrg_ppn_rp,
+        dpp_nilai_lain, dpp_nilai_lain_rp) {
         $.ajax({
             url: "/openFormCreateSPPB/create/Submit",
             type: "POST",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
             },
+
             data: {
-                noTrans: nomor,
-                QtyDelay: qtydelay,
+                no_trans_1: no_trans_1,
+                //no_sppb_2: no_sppb_2,
+                tgl_sppb_3: tgl_sppb_3,
+                tgl_dtg_4: tgl_dtg_4,
+                jenis_5: jenis_5,
+                operator_sppb_6: operator_sppb_6,
+                no_sup_5: no_sup_5,
+                hrg_trm_7: hrg_trm_7,
+                disc_trm_8: disc_trm_8,
+                ppn_trm_9: ppn_trm_9,
+                waktu_10: waktu_10,
+                IdMataUang: IdMataUang,
+                Kurs: Kurs,
+                hrg_murni: hrg_murni,
+                hrg_murni_rp: hrg_murni_rp,
+                hrg_disc: hrg_disc,
+                hrg_disc_rp: hrg_disc_rp,
+                hrg_nego: hrg_nego,
+                hrg_nego_rp: hrg_nego_rp,
+                hrg_ppn: hrg_ppn,
+                hrg_ppn_rp: hrg_ppn_rp,
+                dpp_nilai_lain: dpp_nilai_lain,
+                dpp_nilai_lain_rp: dpp_nilai_lain_rp,
             },
+
             success: function (response) {},
             error: function (error) {
                 console.error("Error Send Data:", error);
             },
         });
     }
+
 
     function LoadPermohonan(data) {
         $("#table_CreatePurchaseOrder").DataTable().destroy();
