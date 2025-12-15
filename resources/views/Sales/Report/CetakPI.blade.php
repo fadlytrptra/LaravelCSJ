@@ -46,7 +46,7 @@
                                 <img src="{{ asset('images/Header Cetak PI.jpg') }}" alt="" style="width: 100%">
                                 <div class="header"></div>
                                 {{-- <div class="cetak-sppdf-container03">
-                                        <img src="{{ asset('/images/KRR.png') }}" alt="Logo KRR" style="position: absolute">
+                                        <img src="{{ asset('/images/csj.png') }}" alt="Logo KRR" style="position: absolute">
                                         <div style="width: 100%; text-align: center">
                                             <h1 style="font-weight: 900">PT. KERTA RAJASA RAYA</h1>
                                             <h3 style="font-weight: 700">Woven Bag - Jumbo Bag. Industrial</h3>

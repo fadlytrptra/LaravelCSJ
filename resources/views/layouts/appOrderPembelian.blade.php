@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-<!-- Loading Screen -->
-<link rel="prefetch" href="{{ asset('images/kuning.png') }}" />
-<link rel="prefetch" href="{{ asset('images/biru.png') }}" />
-<link rel="prefetch" href="{{ asset('images/merah.png') }}" />
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +10,7 @@
     <title style="font-size: 20px">@yield('title', 'Home Beli')</title>
 
     <!-- Title and Logo -->
-    <link rel="icon" href="{{ asset('/images/KRR.png') }}" type="image/gif" sizes="16x16">
+    <link rel="icon" href="{{ asset('/images/csj.png') }}" type="image/gif" sizes="16x16">
     <title style="font-size: 20px">{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
@@ -45,9 +40,11 @@
     <link rel="stylesheet" href="{{ asset('css/FontsGoogleMaterialIcons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/fonts.googleapis.MaterialSymbolsOutlined.css') }}" />
     <div id="loading-screen">
-        <div id="part1" class="logo-part"></div>
-        <div id="part2" class="logo-part"></div>
-        <div id="part3" class="logo-part"></div>
+        <div class="logo">
+            <img src="/images/huruf-C.png" class="letter delay-1" alt="C">
+            <img src="/images/huruf-S.png" class="letter delay-2" alt="S">
+            <img src="/images/huruf-J.png" class="letter delay-3" alt="J">
+        </div>
     </div>
 </head>
 
@@ -66,7 +63,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow sticky-top">
             <div class="container col-md-12">
                 <a class="navbar-brand RDZNavBrandCenter RDZUnderLine" href="{{ url('/') }}">
-                    🡰 <img src="{{ asset('/images/KRR.png') }}" width="55" height="50" alt="KRR">
+                    🡰 <img src="{{ asset('/images/csj.png') }}" width="60" height="31" alt="KRR">
                     {{-- {{ config('app.name', 'Laravel') }} --}}
                 </a>
                 @guest

@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-<!-- Loading Screen -->
-<link rel="prefetch" href="{{ asset('images/kuning.png') }}" />
-<link rel="prefetch" href="{{ asset('images/biru.png') }}" />
-<link rel="prefetch" href="{{ asset('images/merah.png') }}" />
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('/images/KRR.png') }}" type="image/gif" loading=lazy sizes="16x16">
+    <link rel="icon" href="{{ asset('/images/csj.png') }}" type="image/gif" loading=lazy sizes="16x16">
     <title style="font-size: 20px">@yield('title', 'Home EDP')</title>
     <!-- Scripts -->
     <script src="{{ asset('js/jquery-3.7.0.min.js') }}"></script>
@@ -41,6 +36,13 @@
     <link href="{{ asset('css/datatables.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/buttons.dataTables.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/Rdz.css') }}" rel="stylesheet" />
+    <div id="loading-screen">
+        <div class="logo">
+            <img src="/images/huruf-C.png" class="letter delay-1" alt="C">
+            <img src="/images/huruf-S.png" class="letter delay-2" alt="S">
+            <img src="/images/huruf-J.png" class="letter delay-3" alt="J">
+        </div>
+    </div>
 </head>
 
 <body onload="Greeting()">
@@ -48,7 +50,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow sticky-top">
             <div class="container col-md-12">
                 <a class="navbar-brand RDZNavBrandCenter RDZUnderLine" href="{{ url('/') }}">
-                    🡰<img src="{{ asset('/images/KRR.png') }}" width="55" height="50" alt="KRR">
+                    🡰<img src="{{ asset('/images/csj.png') }}" width="60" height="31" alt="KRR">
                     {{-- {{ config('app.name', 'Laravel') }} --}}
                 </a>
                 @guest
@@ -162,7 +164,8 @@
                                 onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                 {{ __('Logout') }}
                             </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                style="display: none;">
                                 @csrf
                             </form>
                         </li>

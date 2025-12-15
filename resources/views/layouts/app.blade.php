@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF Token -->
 
-    <link rel="icon" href="{{ asset('/images/KRR.png') }}" type="image/gif" sizes="17x15">
+    <link rel="icon" href="{{ asset('/images/csj.png') }}" type="image/gif" sizes="17x15">
     <title style="font-size: 20px">{{ config('app.name', 'Laravel') }}</title>
     <!-- Scripts -->
     <script src="{{ asset('js/jquery-3.1.0.js') }}" loading=lazy></script>
@@ -53,7 +53,7 @@
             <nav class="navbar navbar-expand-md navbar-light bg-white shadow sticky-top">
                 <div class="container col-md-12">
                     <a class="navbar-brand RDZNavBrandCenter RDZUnderLine" href="{{ url('/') }}">
-                        <img src="{{ asset('/images/KRR.png') }}" width="55" height="50" alt="KRR">
+                        <img src="{{ asset('/images/csj.png') }}" width="60" height="31" alt="KRR">
                         {{ config('app.name', 'Laravel') }}
                     </a>
                     @guest
