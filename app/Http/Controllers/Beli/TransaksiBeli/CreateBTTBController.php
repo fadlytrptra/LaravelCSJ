@@ -36,7 +36,245 @@ class CreateBTTBController extends Controller
     //Store a newly created resource in storage.
     public function store(Request $request)
     {
-        //
+        $jenisProses = $request->jenisProses;
+        $datang = $request->datang;
+        $qty = $request->qty;
+        $QtyTerima = $request->QtyTerima;
+        $SatuanTerima = $request->SatuanTerima;
+        $faktur = $request->faktur;
+        $no_sup = $request->no_sup;
+        $min_ord = $request->min_ord;
+        $hrg_trm = $request->hrg_trm;
+        $disc_trm = $request->disc_trm;
+        $ppn_trm = $request->ppn_trm;
+        $waktu = $request->waktu;
+        $no_ket = $request->no_ket;
+        $ket_trm = $request->ket_trm;
+        $no_sppb = $request->no_sppb;
+        $no_trans = $request->no_trans;
+        $kd_div = $request->kd_div;
+        $IdMataUang = $request->IdMataUang;
+        $Kurs = $request->Kurs;
+        $TglFaktur = $request->TglFaktur;
+        $NoSJ = $request->NoSJ;
+        $hrg_murni = $request->hrg_murni;
+        $hrg_murni_rp = $request->hrg_murni_rp;
+        $hrg_disc = $request->hrg_disc;
+        $hrg_disc_rp = $request->hrg_disc_rp;
+        $hrg_nego = $request->hrg_nego;
+        $hrg_nego_rp = $request->hrg_nego_rp;
+        $hrg_ppn = $request->hrg_ppn;
+        $hrg_ppn_rp = $request->hrg_ppn_rp;
+        $Jenis_Dokumen = $request->Jenis_Dokumen;
+        $No_Seri_Barang = $request->No_Seri_Barang;
+        $No_PIB_KRR = $request->No_PIB_KRR;
+        $No_PIB_External = $request->No_PIB_External;
+        $Tgl_PIB_External = $request->Tgl_PIB_External;
+        $No_Registration_PIB = $request->No_Registration_PIB;
+        $Tgl_Registration_PIB = $request->Tgl_Registration_PIB;
+        $No_BL = $request->No_BL;
+        $Tgl_BL = $request->Tgl_BL;
+        $No_Kontrak = $request->No_Kontrak;
+        $Tgl_Kontrak = $request->Tgl_Kontrak;
+        $No_SPPB_BC = $request->No_SPPB_BC;
+        $Tgl_SPPB_BC = $request->Tgl_SPPB_BC;
+        if ($jenisProses == 'isiBTTB') {
+            try {
+                $Counter = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_COUNTER');
+                $NoTerima = str_pad($Counter[0]->YTERIMA, 10, "0", STR_PAD_LEFT);
+
+                DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_INSERT_YTERIMA_IMPOR
+                @no_terima_1 = ?,
+                @datang_2 = ?,
+                @qty_3 = ?,
+                @QtyTerima = ?,
+                @SatuanTerima = ?,
+                @faktur_4 = ?,
+                @no_sup_5 = ?,
+                @min_ord_6 = ?,
+                @hrg_trm_7 = ?,
+                @disc_trm_8 = ?,
+                @ppn_trm_9 = ?,
+                @waktu_10 = ?,
+                @no_ket_11 = ?,
+                @ket_trm_12 = ?,
+                @no_sppb_13 = ?,
+                @no_trans_14 = ?,
+                @kd_div_15 = ?,
+                @IdMataUang = ?,
+                @Kurs = ?,
+                @TglFaktur = ?,
+                @NoSJ = ?,
+                @hrg_murni = ?,
+                @hrg_murni_rp = ?,
+                @hrg_disc = ?,
+                @hrg_disc_rp = ?,
+                @hrg_nego = ?,
+                @hrg_nego_rp = ?,
+                @hrg_ppn = ?,
+                @hrg_ppn_rp = ?,
+                @Jenis_Dokumen = ?,
+                @No_Seri_Barang = ?,
+                @No_PIB_KRR = ?,
+                @No_PIB_External = ?,
+                @Tgl_PIB_External = ?,
+                @No_Registration_PIB = ?,
+                @Tgl_Registration_PIB = ?,
+                @No_BL = ?,
+                @Tgl_BL = ?,
+                @No_Kontrak = ?,
+                @Tgl_Kontrak = ?,
+                @No_SPPB_BC = ?,
+                @Tgl_SPPB_BC = ?',
+                    [
+                        $NoTerima,
+                        $datang,
+                        $qty,
+                        $QtyTerima,
+                        $SatuanTerima,
+                        $faktur,
+                        $no_sup,
+                        $min_ord,
+                        $hrg_trm,
+                        $disc_trm,
+                        $ppn_trm,
+                        $waktu,
+                        $no_ket,
+                        $ket_trm,
+                        $no_sppb,
+                        $no_trans,
+                        $kd_div,
+                        $IdMataUang,
+                        $Kurs,
+                        $TglFaktur,
+                        $NoSJ,
+                        $hrg_murni,
+                        $hrg_murni_rp,
+                        $hrg_disc,
+                        $hrg_disc_rp,
+                        $hrg_nego,
+                        $hrg_nego_rp,
+                        $hrg_ppn,
+                        $hrg_ppn_rp,
+                        $Jenis_Dokumen,
+                        $No_Seri_Barang,
+                        $No_PIB_KRR,
+                        $No_PIB_External,
+                        $Tgl_PIB_External,
+                        $No_Registration_PIB,
+                        $Tgl_Registration_PIB,
+                        $No_BL,
+                        $Tgl_BL,
+                        $No_Kontrak,
+                        $Tgl_Kontrak,
+                        $No_SPPB_BC,
+                        $Tgl_SPPB_BC,
+                    ]
+                );
+
+                DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_UPDATE_COUNTER_TERIMA
+                @yterima_1 = ?', [
+                    intval($NoTerima)
+                ]);
+
+                return response()->json(['success' => true], 200);
+            } catch (Exception $e) {
+                return response()->json(['error' => true], 500);
+            }
+        } else if ($jenisProses == 'koreksiBTTB') {
+            $no_terima = $request->no_terima;
+            $qty_koreksi = $request->qty_koreksi;
+            $QtyTerimakoreksi = $request->QtyTerimakoreksi;
+
+            DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_UPDATE_YTERIMA_IMPOR
+                @no_terima_1 = ?,
+                @tgl_terima = ?,
+                @qty_2 = ?,
+                @QtyTerima = ?,
+                @qty_2koreksi = ?,
+                @QtyTerimakoreksi = ?,
+                @SatuanTerima = ?,
+                @faktur_3 = ?,
+                @no_sup_8 = ?,
+                @min_ord_7 = ?,
+                @hrg_trm_4 = ?,
+                @disc_trm_5 = ?,
+                @ppn_trm_6 = ?,
+                @waktu_9 = ?,
+                @no_ket_10 = ?,
+                @ket_trm_11 = ?,
+                @IdMataUang = ?,
+                @Kurs = ?,
+                @TglFaktur = ?,
+                @NoSJ = ?,
+                @hrg_murni = ?,
+                @hrg_murni_rp = ?,
+                @hrg_disc = ?,
+                @hrg_disc_rp = ?,
+                @hrg_nego = ?,
+                @hrg_nego_rp = ?,
+                @hrg_ppn = ?,
+                @hrg_ppn_rp = ?,
+                @Jenis_Dokumen = ?,
+                @No_Seri_Barang = ?,
+                @No_PIB_KRR = ?,
+                @No_PIB_External = ?,
+                @Tgl_PIB_External = ?,
+                @No_Registration_PIB = ?,
+                @Tgl_Registration_PIB = ?,
+                @No_BL = ?,
+                @Tgl_BL = ?,
+                @No_Kontrak = ?,
+                @Tgl_Kontrak = ?,
+                @No_SPPB_BC = ?,
+                @Tgl_SPPB_BC = ?,
+                @no_trans_14 = ?',
+                [
+                    $no_terima,
+                    $datang,
+                    $qty,
+                    $QtyTerima,
+                    $qty_koreksi,
+                    $QtyTerimakoreksi,
+                    $SatuanTerima,
+                    $faktur,
+                    $no_sup,
+                    $min_ord,
+                    $hrg_trm,
+                    $disc_trm,
+                    $ppn_trm,
+                    $waktu,
+                    $no_ket,
+                    $ket_trm,
+                    $IdMataUang,
+                    $Kurs,
+                    $TglFaktur,
+                    $NoSJ,
+                    $hrg_murni,
+                    $hrg_murni_rp,
+                    $hrg_disc,
+                    $hrg_disc_rp,
+                    $hrg_nego,
+                    $hrg_nego_rp,
+                    $hrg_ppn,
+                    $hrg_ppn_rp,
+                    $Jenis_Dokumen,
+                    $No_Seri_Barang,
+                    $No_PIB_KRR,
+                    $No_PIB_External,
+                    $Tgl_PIB_External,
+                    $No_Registration_PIB,
+                    $Tgl_Registration_PIB,
+                    $No_BL,
+                    $Tgl_BL,
+                    $No_Kontrak,
+                    $Tgl_Kontrak,
+                    $No_SPPB_BC,
+                    $Tgl_SPPB_BC,
+                    $no_trans,
+                ]
+            );
+        }
     }
 
     public function show(Request $request, $id)
@@ -52,6 +290,14 @@ class CreateBTTBController extends Controller
             try {
                 $mataUang = DB::connection('ConnAccounting')->select('exec SP_1273_PBL_LIST_MATA_UANG');
                 return response()->json($mataUang);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
+            }
+        } else if ($id == 'getDataDetailTerima') {
+            try {
+                $noTerima = $request->noTerima;
+                $detailTerima = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_PIB @NoTerima = ?', [$noTerima]);
+                return response()->json($detailTerima);
             } catch (Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 400);
             }
@@ -96,7 +342,9 @@ class CreateBTTBController extends Controller
     //Update the specified resource in storage.
     public function update(Request $request, $id)
     {
-        //
+        if ($id == 'UpdateFlag') {
+            # code...
+        }
     }
 
     //Remove the specified resource from storage.

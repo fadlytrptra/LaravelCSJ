@@ -3,7 +3,20 @@
 @section('title', 'Create BTTB')
 <link href="{{ asset('css/CreateBTTB.css') }}" rel="stylesheet">
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+<style>
+    #table_terima tbody tr {
+        cursor: pointer;
+    }
 
+    #table_terima tbody tr:hover {
+        background-color: #eef5ff;
+        cursor: pointer;
+    }
+
+    #table_terima tbody tr.selected {
+        background-color: #cfe2ff !important;
+    }
+</style>
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-11 RDZMobilePaddingLR0">

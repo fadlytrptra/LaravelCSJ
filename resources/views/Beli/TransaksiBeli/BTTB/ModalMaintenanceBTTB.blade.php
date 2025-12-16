@@ -11,6 +11,8 @@
                 <div class="row">
                     <div class="col-md-7">
                         <div class="row">
+                            <input type="hidden" name="bttb_noTerima" id="bttb_noTerima"
+                                class="form-control font-weight-bold" readonly>
                             <div class="col-md-3 mb-3">
                                 <label class="font-weight-bold" for="bttb_kodeBarang">Kode Barang</label>
                                 <input type="text" name="bttb_kodeBarang" id="bttb_kodeBarang"
@@ -35,6 +37,10 @@
                                         class="form-control font-weight-bold" style="width: 60%" min="0">
                                     <input type="text" name="bttb_satTerima" id="bttb_satTerima"
                                         class="form-control font-weight-bold" style="width: 40%" readonly>
+                                    <input type="hidden" name="bttb_noSatTerima" id="bttb_noSatTerima"
+                                        class="form-control font-weight-bold" style="width: 40%" readonly>
+                                    <input type="hidden" name="bttb_qtyTerimaKoreksi" id="bttb_qtyTerimaKoreksi"
+                                        class="form-control font-weight-bold" style="width: 60%" min="0">
                                 </div>
                             </div>
                             <div class="col-md-5 mb-3">
@@ -44,6 +50,9 @@
                                         class="form-control font-weight-bold" style="width: 60%" min="0">
                                     <input type="text" name="bttb_satTerimaActual" id="bttb_satTerimaActual"
                                         class="form-control font-weight-bold" style="width: 40%" readonly>
+                                    <input type="hidden" name="bttb_qtyTerimaActualKoreksi"
+                                        id="bttb_qtyTerimaActualKoreksi" class="form-control font-weight-bold"
+                                        style="width: 60%" min="0">
                                 </div>
                             </div>
                         </div>
@@ -89,6 +98,10 @@
                                 <label class="font-weight-bold" for="bttb_ppn">PPN (%)</label>
                                 <input type="number" name="bttb_ppn" id="bttb_ppn"
                                     class="form-control font-weight-bold" min="0">
+                                <div id="bttb_divCbDPP" style="display: none">
+                                    <input type="checkbox" name="bttb_checkboxDPP" id="bttb_checkboxDPP">
+                                    DPP FULL
+                                </div>
                             </div>
                         </div>
                         <div class="row">
