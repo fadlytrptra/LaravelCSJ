@@ -54,15 +54,25 @@
             margin-top: 1.5rem;
         }
 
-       /* override sementara agar option terlihat */
-        #supplier, #supplier option {
-        color: #000 !important;
-        background-color: #fff !important;
-        -webkit-text-fill-color: #000 !important;
+        #supplier {
+            background-color: #f1f3f5 !important;
+            color: #6c757d !important;
+            border-color: #ced4da !important;
         }
-        select#supplier .text-dark {
-             color: #000 !important;
+
+
+        #supplier option {
+            background-color: #f1f3f5 !important;
+            color: #6c757d !important;
+            -webkit-text-fill-color: #6c757d !important;
         }
+
+
+        #supplier:disabled {
+            color: #ccc;
+            opacity: 1;
+        }
+
 
     </style>
 
@@ -85,24 +95,6 @@
                     <div class="card-header">
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                             <div>Maintenance SPPB Pembelian</div>
-
-                            <div class="d-flex flex-wrap gap-2">
-                                <button type="button" id="btn-isi" class="btn btn-outline-secondary btn-sm btn-mode">
-                                    ISI
-                                </button>
-
-                                <button type="button" id="btn-lihat" class="btn btn-outline-secondary btn-sm btn-mode">
-                                    LIHAT
-                                </button>
-
-                                <button type="button" id="btn_proses" class="btn btn-outline-success btn-sm">
-                                    PROSES
-                                </button>
-
-                                <button type="button" id="btn-exit-cancel" class="btn btn-outline-dark btn-sm" data-href="{{ url('/Beli') }}">
-                                    KELUAR
-                                </button>
-                            </div>
                         </div>
                     </div>
 
@@ -130,7 +122,7 @@
                                     <div class="mb-2 row">
                                         <label class="col-sm-3 col-form-label">No SPPB</label>
                                         <div class="col-sm-7 d-flex">
-                                            <select name="no_sppb" id="no_sppb" class="form-control" disabled>
+                                            <select name="no_sppb" id="no_sppb" class="form-control">
                                                 <option value="">-- Pilih No SPPB --</option>
                                             </select>
                                         </div>
@@ -236,8 +228,8 @@
                                         <div class="col-sm-5">
                                             <select name="mata_uang" id="mata_uang" class="form-control">
                                                 <option value="">Pilih Mata Uang</option>
-                                                <option value="Rupiah">Rupiah</option>
-                                                <option value="Dollar">Dollar</option>
+                                                <option value="1">Rupiah</option>
+                                                <option value="2">Dollar</option>
                                                 <option value="">kosong</option>
                                             </select>
                                         </div>
@@ -347,7 +339,7 @@
                                     <div class="mb-2 row">
                                         <div class="col-sm-12 text-end">
                                             <button type="button" id="btn_tambah_harga" class="btn btn-primary btn-sm">
-                                                Tambah Harga
+                                                TAMBAH HARGA
                                             </button>
                                         </div>
                                     </div>
@@ -415,6 +407,30 @@
                                     <input type="text" name="alasan_hapus" id="alasan_hapus" class="form-control">
                                 </div>
                             </div>
+
+
+                            <div class="action-footer">
+                                <div class="action-buttons">
+                                    <button type="button" id="btn-isi" class="btn btn-outline-secondary btn-sm btn-mode">
+                                        ISI
+                                    </button>
+
+                                    <button type="button" id="btn-lihat" class="btn btn-outline-secondary btn-sm btn-mode">
+                                        LIHAT
+                                    </button>
+
+                                    <button type="button" id="btn_proses" class="btn btn-outline-success btn-sm">
+                                        PROSES
+                                    </button>
+
+                                    <button type="button" id="btn-exit-cancel"
+                                        class="btn btn-outline-dark btn-sm"
+                                        data-href="{{ url('/Beli') }}">
+                                        KELUAR
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
 
 

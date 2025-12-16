@@ -1268,9 +1268,10 @@ class PurchaseOrderController extends Controller
         $no_trans_1 = $request->input('no_trans_1');
         $tgl_sppb_3 = $request->input('tgl_sppb_3');
         $tgl_dtg_4 = $request->input('tgl_dtg_4');
+
         $jenis_5 = $request->input('jenis_5');
-        $operator_sppb_6 = $request->input('operator_sppb_6');
         $no_sup_5 = $request->input('no_sup_5');
+
         $hrg_trm_7 = $request->input('hrg_trm_7');
         $disc_trm_8 = $request->input('disc_trm_8');
         $ppn_trm_9 = $request->input('ppn_trm_9');
@@ -1288,6 +1289,16 @@ class PurchaseOrderController extends Controller
 
         $dpp_nilai_lain = $request->input('dpp_nilai_lain');
         $dpp_nilai_lain_rp = $request->input('dpp_nilai_lain_rp');
+
+
+        $jenis_5 = $jenis_5 !== null ? trim($jenis_5) : null;
+        //$operator_sppb_6 = $operator_sppb_6 !== null && $operator_sppb_6 !== '' ? (int) $operator_sppb_6 : null;
+        $no_sup_5 = $no_sup_5 !== null && $no_sup_5 !== '' ? (int) $no_sup_5 : null;
+
+        $IdMataUang = $IdMataUang !== null && $IdMataUang !== '' ? (int) $IdMataUang : null;
+        $waktu_10 = $waktu_10 !== null && $waktu_10 !== '' ? (int) $waktu_10 : null;
+
+
 
         if (!$kd_div_1) {
             return response()->json(['message' => 'kd_div wajib diisi'], 400);
@@ -1315,6 +1326,21 @@ class PurchaseOrderController extends Controller
 
             $no_sppb_2 = "{$bulan}{$tahun}/{$noSppbRight}";
 
+            $operator_sppb_6 = DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->where('No_trans', $no_trans_1)
+            ->value('Operator');
+
+            $exists = DB::connection('ConnPurchase')
+                ->table('YJN_BL')
+                ->where('NO_JNS', $jenis_5)
+                ->exists();
+
+            if (!$exists) {
+                return response()->json([
+                    'error' => "Jenis pembelian ($jenis_5) tidak valid"
+                ], 422);
+            }
 
 
 
@@ -1369,6 +1395,8 @@ class PurchaseOrderController extends Controller
                     $dpp_nilai_lain_rp
                 ]
             );
+
+
 
             DB::connection('ConnPurchase')->statement(
                 'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB

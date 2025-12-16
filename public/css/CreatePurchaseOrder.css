@@ -85,3 +85,25 @@ select.form-control#supplier option {
   color: #000 !important;
   background-color: #fff !important;
 }
+
+
+.action-footer {
+    position: static;
+    bottom: 0;
+    background: #ffff;
+    padding: 10px 12px;
+    border-top: 1px solid #ccc;
+    z-index: 10;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.action-buttons .btn {
+    min-width: 80px;
+    font-weight: 600;
+}
+
