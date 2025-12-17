@@ -1159,14 +1159,13 @@ jQuery(function ($) {
         console.log(payload);
 
         if (!detailTable) {
-            console.error("detailTable belum diinisialisasi");
-            alert("Tabel belum siap.");
+            Swal.fire("Error", "Tabel belum siap.", "error");
             return;
         }
 
         let $checked = $("#tbl_detail_order tbody .row-select-isi:checked");
         if (!$checked || $checked.length === 0) {
-            alert("Pilih satu baris pada tabel sebelum menambah harga.");
+            Swal.fire("Validasi", "Pilih satu baris pada tabel sebelum menambah harga.", "warning");
             return;
         }
 
@@ -1175,102 +1174,91 @@ jQuery(function ($) {
         let row = detailTable.row(tr);
         let rowData = row.data();
 
-        console.log("DEBUG - rowData (current):", rowData);
-
         let comp = payload.computed;
         if (!comp) {
-            console.warn(
-                "payload.computed undefined — pastikan totalHarga() mengembalikan object hasil perhitungan."
+            Swal.fire(
+                "Error",
+                "Perhitungan belum tersedia. Periksa fungsi perhitungan.",
+                "error"
             );
-            alert("Perhitungan belum tersedia. Periksa fungsi perhitungan.");
             return;
         }
 
-        let ok = confirm(
-            "Preview perhitungan ditampilkan di console.\nTekan OK untuk menerapkan ke baris yang dipilih, Cancel untuk membatalkan."
-        );
-        if (!ok) {
-            console.log("Update dibatalkan user.");
-            return;
-        }
-
-        //masuk dataTable
-        let newRow = Array.isArray(rowData)
-            ? rowData.slice()
-            : Object.assign({}, rowData);
-
-        let tgl_datang = payload.tgl_datang || 0;
-        let hargaSatuanVal = payload.harga_satuan || 0;
-        let discPctVal = payload.disc_pct || 0;
-        let dppVal = comp.dppNilaiLain ?? comp.dppValue ?? 0;
-        let ppnPctVal = payload.ppn_pct || 0;
-        let totalVal = comp.totalHarga ?? comp.totalValue ?? 0;
-
-        // newRow._harga = {
-        //     harga_satuan: hargaSatuanVal,
-        //     disc: discPctVal,
-        //     ppn: ppnPctVal,
-        //     dpp: dppVal,
-        //     total: totalVal,
-        //     jangka_waktu: payload.jangka_waktu,
-        //     pembayaran: pembayaran.value,
-        //     jenis_pembelian: jenis_pembelian.value,
-        //     supplier: supplier.value,
-        //     tgl_datang: payload.tgl_datang
-        // };
-
-        newRow._harga = {
-            harga_satuan: hargaSatuanVal,
-            disc_pct: discPctVal,
-            ppn_pct: ppnPctVal,
-            jangka_waktu: payload.jangka_waktu,
-            tgl_datang: payload.tgl_datang,
-
-            id_mata_uang: payload.id_mata_uang,
-            kurs: payload.kurs,
-            jenis: payload.jenis,
-            supplier_id: payload.supplier_id,
-
-            setelahDisc: comp.setelahDisc,
-            dppValue: comp.dppValue,
-            ppnRp: comp.ppnRp,
-            total: totalVal,
-        };
-
-        if (Array.isArray(newRow)) {
-            newRow[10] = numeral(hargaSatuanVal).format("0,0.00");
-            newRow[11] = discPctVal;
-            newRow[12] = numeral(dppVal).format("0,0.00");
-            newRow[13] = ppnPctVal;
-            newRow[14] = numeral(totalVal).format("0,0.00");
-        } else {
-            newRow.harga_satuan = hargaSatuanVal;
-            newRow.disc = discPctVal;
-            newRow.dpp_nilai_lain = dppVal;
-            newRow.ppn = ppnPctVal;
-            newRow.total_harga = totalVal;
-        }
-
-        let $cb = $($checked.get(0));
-        let wasChecked = $cb.prop("checked");
-
-        row.data(newRow).draw(false);
-
-        try {
-            let node = row.node();
-            let $newCb = $(node).find(".row-select-isi").first();
-            if ($newCb && $newCb.length) {
-                $newCb.prop("checked", wasChecked);
+        Swal.fire({
+            title: "Konfirmasi Tambah Harga",
+            text: "Preview perhitungan sudah ditampilkan di console.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "OK",
+            cancelButtonText: "Cancel",
+            reverseButtons: true
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                console.log("Update dibatalkan user.");
+                return;
             }
-        } catch (err) {
-            console.warn("Gagal re-apply checkbox state:", err);
-        }
+
+
+            let newRow = Array.isArray(rowData)
+                ? rowData.slice()
+                : Object.assign({}, rowData);
+
+            let hargaSatuanVal = payload.harga_satuan || 0;
+            let discPctVal = payload.disc_pct || 0;
+            let dppVal = comp.dppNilaiLain ?? comp.dppValue ?? 0;
+            let ppnPctVal = payload.ppn_pct || 0;
+            let totalVal = comp.totalHarga ?? comp.totalValue ?? 0;
+
+            newRow._harga = {
+                harga_satuan: hargaSatuanVal,
+                disc_pct: discPctVal,
+                ppn_pct: ppnPctVal,
+                jangka_waktu: payload.jangka_waktu,
+                tgl_datang: payload.tgl_datang,
+
+                id_mata_uang: payload.id_mata_uang,
+                kurs: payload.kurs,
+                jenis: jenis_pembelian.value,
+                supplier_id: supplier.value,
+
+                setelahDisc: comp.setelahDisc,
+                dppValue: comp.dppValue,
+                ppnRp: comp.ppnRp,
+                total: totalVal,
+            };
+
+            if (Array.isArray(newRow)) {
+                newRow[10] = numeral(hargaSatuanVal).format("0,0.00");
+                newRow[11] = discPctVal;
+                newRow[12] = numeral(dppVal).format("0,0.00");
+                newRow[13] = ppnPctVal;
+                newRow[14] = numeral(totalVal).format("0,0.00");
+            }
+
+            let $cb = $($checked.get(0));
+            let wasChecked = $cb.prop("checked");
+
+            row.data(newRow).draw(false);
+
+            try {
+                let node = row.node();
+                let $newCb = $(node).find(".row-select-isi").first();
+                if ($newCb && $newCb.length) {
+                    $newCb.prop("checked", wasChecked);
+                }
+            } catch (err) {
+                console.warn("Gagal re-apply checkbox state:", err);
+            }
+        });
     });
+
+
+
 
     if (jenis_pembelian) {
         jenis_pembelian.addEventListener("change", function () {
             let checked = document.querySelector(
-                "#tbl_detail_order tbody     .row-select-isi:checked"
+                "#tbl_detail_order tbody .row-select-isi:checked"
             );
             if (!checked) return;
 
@@ -1282,13 +1270,31 @@ jQuery(function ($) {
 
             let today = todayISO();
             data._harga.tgl_datang = today;
+            data._harga.jenis = this.value;
 
             if (tgl_datang) tgl_datang.value = today;
 
             row.cell(row.index(), 7).data(today);
-            data._harga.jenis_pembelian = this.value;
         });
     }
+
+    if (supplier) {
+        supplier.addEventListener("change", function () {
+            let checked = document.querySelector(
+                "#tbl_detail_order tbody .row-select-isi:checked"
+            );
+            if (!checked) return;
+
+            let row = detailTable.row($(checked).closest("tr"));
+            let data = row.data();
+            if (!data) return;
+
+            if (!data._harga) data._harga = {};
+
+            data._harga.supplier_id = this.value;
+        });
+    }
+
 
     if (ppnInput && dppWrapper) {
         ppnInput.addEventListener("input", function () {
@@ -1477,7 +1483,17 @@ jQuery(function ($) {
                 jenis_pembelian: h.jenis_pembelian,
             };
 
-            if (!confirm("LAKUKAN PROSES DATA?")) return;
+            Swal.fire({
+                title: "Konfirmasi",
+                text: "LAKUKAN PROSES DATA?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Ya, Proses",
+                cancelButtonText: "Batal",
+                reverseButtons: true,
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
 
             fetch("/purchaseorder/update-detail-sppb", {
                 method: "POST",
@@ -1489,23 +1505,29 @@ jQuery(function ($) {
                 },
                 body: JSON.stringify(payload),
             })
-                .then((res) => res.json())
-                .then((res) => {
-                    if (!res.success) {
-                        alert(res.message || "Gagal menyimpan data.");
-                        return;
-                    }
+            .then(async (res) => {
+                if (!res.ok) {
+                    let text = await res.text();
+                    throw new Error("HTTP " + res.status + ":\n" + text);
+                }
 
-                    alert("Data berhasil diproses dan disimpan.");
+                return res.json();
+            })
 
-                    checked.disabled = true;
-                    checked.checked = false;
-                })
-                .catch((err) => {
-                    console.error(err);
-                    alert("Terjadi kesalahan koneksi.");
-                });
+            .catch((err) => {
+                console.error("FETCH ERROR:", err);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Data sudah tersimpan.",
+                        showConfirmButton: true,
+                    }).then(() => {
+                window.location.href = "/PurchaseOrder/create";
+            });
         });
+    });
+    });
+
 
     // end jQuery init
 });

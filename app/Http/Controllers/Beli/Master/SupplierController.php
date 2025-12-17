@@ -16,14 +16,14 @@ class SupplierController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        $matauang = DB::connection('ConnPurchase')->select('exec SP_7775_PBL_LIST_MATA_UANG');
+        $matauang = DB::connection('ConnAccounting')->select('exec SP_1273_PBL_LIST_MATA_UANG');
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         return view('Beli.Master.Supplier.Index', compact('access', 'matauang'));
     }
 
     public function getSupplier($id)
     {
-        $data = DB::connection('ConnPurchase')->select('exec SP_1273_PBL_LIST_SUPPLIER @kd = ?, @idSup = ?', [1, $id]);
+        $data = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_SUPPLIER @kd = ?, @idSup = ?', [1, $id]);
         return response()->json($data);
     }
 
@@ -31,7 +31,7 @@ class SupplierController extends Controller
     public function create()
     {
         $supplier = DB::connection('ConnPurchase')->select('exec SP_4384_PBL_Maintenance_Supplier @XKode = ?', [0]);
-        $matauang = DB::connection('ConnPurchase')->select('exec SP_7775_PBL_LIST_MATA_UANG');
+        $matauang = DB::connection('ConnAccounting')->select('exec SP_1273_PBL_LIST_MATA_UANG');
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         return view('Beli.Master.Supplier.Create', compact('supplier', 'matauang', 'access'));
     }
@@ -126,14 +126,13 @@ class SupplierController extends Controller
             $SALDO_HUTANG_Rp = 0;
             $ID_MATAUANG = $request->input('ID_MATAUANG');
             $STATUS = NULL; //$request->input('STATUS');
-            $JNS_SUP = ($request->input('ID_MATAUANG') ?? 0) == 1 ? '01' : '02';
             $IsActive = 1;
             try {
                 DB::connection('ConnPurchase')->statement(
                     'EXEC SP_4384_PBL_Maintenance_Supplier @XKode = ?, @XNM_SUP = ?, @XPERSON1 = ?, @XPERSON2 = ?, @XTLP1 = ?, @XTLP2 = ?, @XHPHONE1 = ?,
                             @XHPHONE2 = ?, @XTELEX1 = ?, @XTELEX2 = ?, @XPAGER1 = ?, @XPAGER2 = ?, @XALAMAT1 = ?, @XALAMAT2 = ?, @XKOMPLEK1 = ?, @XKOMPLEK2 = ?, @XKOTA1 = ?,
                             @XKOTA2 = ?, @XFAX1 = ?, @XFAX2 = ?, @XNEGARA1 = ?, @XNEGARA2 = ?, @XCOUNTER_TRANS = ?, @XSALDO_HUTANG = ?, @XSALDO_HUTANG_Rp = ?, @XID_MATAUANG = ?,
-                            @XSTATUS = ?, @XJNS_SUP = ?, @XIsActive = ?'
+                            @XSTATUS = ?, @XIsActive = ?'
                     ,
                     [
                         2,
@@ -163,7 +162,6 @@ class SupplierController extends Controller
                         $SALDO_HUTANG_Rp,
                         $ID_MATAUANG,
                         $STATUS,
-                        $JNS_SUP,
                         $IsActive,
                     ]
                 );
@@ -191,12 +189,11 @@ class SupplierController extends Controller
                 $NEGARA1 = $request->input('NEGARA1');
                 $NEGARA2 = $request->input('NEGARA2');
                 $ID_MATAUANG = $request->input('ID_MATAUANG');
-                $JNS_SUP = $request->input('JNS_SUP');
                 $NO_SUP = $request->input('NO_SUP');
                 DB::connection('ConnPurchase')->statement(
                     'EXEC SP_4384_PBL_Maintenance_Supplier @XKode = ?, @XNM_SUP = ?, @XPERSON1 = ?, @XPERSON2 = ?, @XTLP1 = ?, @XTLP2 = ?, @XHPHONE1 = ?,
                             @XHPHONE2 = ?, @XTELEX1 = ?, @XTELEX2 = ?, @XALAMAT1 = ?, @XALAMAT2 = ?, @XKOTA1 = ?, @XKOTA2 = ?, @XFAX1 = ?, @XFAX2 = ?,
-                            @XNEGARA1 = ?, @XNEGARA2 = ?, @XID_MATAUANG = ?, @XJNS_SUP = ?, @XNO_SUP = ?'
+                            @XNEGARA1 = ?, @XNEGARA2 = ?, @XID_MATAUANG = ?, @XNO_SUP = ?'
                     ,
                     [
                         3,
@@ -218,7 +215,6 @@ class SupplierController extends Controller
                         $NEGARA1,
                         $NEGARA2,
                         $ID_MATAUANG,
-                        $JNS_SUP,
                         $NO_SUP,
                     ]
                 );
@@ -236,7 +232,6 @@ class SupplierController extends Controller
             }
         } else if ($jenis == 'getAllSupplier') {
             $listSupplier = DB::connection('ConnPurchase')->select('EXEC SP_4384_PBL_Maintenance_Supplier @XKode = ?', [0]);
-
             return DataTables::of($listSupplier)->make(true);
         } else {
             return response()->json(['error' => 'Invalid request type'], 400);
@@ -264,9 +259,9 @@ class SupplierController extends Controller
     //Show the form for editing the specified resource.
     public function edit($id)
     {
-        $data = DB::connection('ConnPurchase')->select('exec SP_1273_PBL_LIST_SUPPLIER @kd = ?, @idSup = ?', [1, $id]);
+        $data = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_SUPPLIER @kd = ?, @idSup = ?', [1, $id]);
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
-        $matauang = DB::connection('ConnPurchase')->select('exec SP_7775_PBL_LIST_MATA_UANG');
+        $matauang = DB::connection('ConnPurchase')->select('exec SP_1273_PBL_LIST_MATA_UANG');
         // dd($data, $matauang);
         return view('Beli.Master.Supplier.Edit', compact('data', 'access', 'matauang'));
     }

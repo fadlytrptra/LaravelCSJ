@@ -19,7 +19,6 @@
             color: #fff;
         }
 
-        /* ---------- TABEL DETAIL: KOMPAK + 1 BARIS HEADER ---------- */
         .table-detail-compact.dataTable thead>tr>th,
         .table-detail-compact.dataTable tbody>tr>td {
             padding: 2px 6px;
@@ -350,7 +349,7 @@
                             {{-- TABEL DETAIL ORDER --}}
                             <div class="row section-table">
                                 <div class="col-12">
-                                    <table id="tbl_detail_order" class="table table-bordered table-striped no-footer"
+                                    <table id="tbl_detail_order" class="table table-bordered table-striped"
                                         style="width: 100%;" aria-describedby="table_Approve_info">
                                         <thead>
                                             <tr>
@@ -440,6 +439,7 @@
             </div>
         </div>
     </div>
+
 
     <script src="{{ asset('js/OrderPembelian/CreatePurchaseOrder/CreatePurchaseOrder.js') }}"></script>
 @endsection

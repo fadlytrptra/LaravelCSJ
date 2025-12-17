@@ -225,6 +225,7 @@ jQuery(function ($) {
         clearModal();
     });
 
+    //fungsi edit supplier
     $(document).on("click", ".btn-edit", function (e) {
         var rowID = $(this).data("id");
         $("#save_button").data("id", rowID);
@@ -280,6 +281,7 @@ jQuery(function ($) {
         });
     });
 
+    //fungsi hapus/nonaktif supplier
     $(document).on("click", ".btn-delete", function (e) {
         var rowID = $(this).data("id");
         $.ajax({

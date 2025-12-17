@@ -1276,6 +1276,7 @@ class PurchaseOrderController extends Controller
         $disc_trm_8 = $request->input('disc_trm_8');
         $ppn_trm_9 = $request->input('ppn_trm_9');
         $waktu_10 = $request->input('waktu_10');
+
         $IdMataUang = $request->input('IdMataUang');
         $Kurs = $request->input('Kurs');
         $hrg_murni = $request->input('hrg_murni');

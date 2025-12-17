@@ -1,6 +1,6 @@
 @extends('layouts.appOrderPembelian')
 @section('content')
-@section('title', 'Edit Supplier ' . $data[0]->NM_SUP)
+@section('title', 'Maintanance Supplier ' . $data[0]->NM_SUP)
 <link href="{{ asset('css/Supplier.css') }}" rel="stylesheet">
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 <div class="container-fluid">
