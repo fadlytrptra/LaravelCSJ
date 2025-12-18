@@ -83,7 +83,7 @@ class TransferBarangController extends Controller
                             @QuantitySekunder = ?,
                             @SatuanSekunder = ?',
                 [
-                    $noTempTrans,
+                    $noTempTrans[0]->NoTransaksiTmp,
                     $NoPIB,
                     $KdBarang,
                     $IdType,
@@ -91,7 +91,7 @@ class TransferBarangController extends Controller
                     $NoSatuan,
                     $MasukPrimer,
                     $SatuanPrimer,
-                    $$MasukSekunder,
+                    $MasukSekunder,
                     $SatuanSekunder,
                 ]
             );

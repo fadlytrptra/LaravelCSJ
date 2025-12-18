@@ -689,6 +689,13 @@ jQuery(function ($) {
                         if (data.error || data.length == 0) {
                             errorHandling("ajaxGetDataResponse", data.error);
                         } else {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil!",
+                                text: "Proses transfer sudah selesai",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
                             loadBTTB();
                         }
                     },
