@@ -24,6 +24,7 @@ jQuery(function ($) {
     });
     let changeEvent = new Event("change", { bubbles: true });
     let total_terima = document.getElementById("total_terima");
+    let btn_koreksiKurs = document.getElementById("btn_koreksiKurs");
     let btn_isi = document.getElementById("btn_isi");
     let btn_koreksi = document.getElementById("btn_koreksi");
     let createBTTBModalLabel = document.getElementById("createBTTBModalLabel");
@@ -69,6 +70,38 @@ jQuery(function ($) {
     let bttb_tglKontrak = document.getElementById("bttb_tglKontrak");
     let bttb_tglSPPBBC = document.getElementById("bttb_tglSPPBBC");
     let button_modalProses = document.getElementById("button_modalProses");
+    let koreksiKurs_noFaktur = document.getElementById("koreksiKurs_noFaktur");
+    let koreksiKurs_tableBarang = $("#koreksiKurs_tableBarang").DataTable({
+        searching: false,
+        info: false,
+        paging: false,
+        ordering: false,
+    });
+    let koreksiKurs_tableKurs = $("#koreksiKurs_tableKurs").DataTable({
+        searching: false,
+        info: false,
+        paging: false,
+        ordering: false,
+    });
+    let koreksiKurs_tableSales = $("#koreksiKurs_tableSales").DataTable({
+        searching: false,
+        info: false,
+        paging: false,
+        ordering: false,
+    });
+    let koreksiKurs_tableJual = $("#koreksiKurs_tableJual").DataTable({
+        searching: false,
+        info: false,
+        paging: false,
+        ordering: false,
+    });
+    let koreksiKurs_nomorTerima = document.getElementById("koreksiKurs_nomorTerima"); // prettier-ignore
+    let koreksiKurs_kodeBarang = document.getElementById("koreksiKurs_kodeBarang"); //prettier-ignore
+    let koreksiKurs_namaBarang = document.getElementById("koreksiKurs_namaBarang"); //prettier-ignore
+    let koreksiKurs_harga = document.getElementById("koreksiKurs_harga");
+    let koreksiKurs_kurs = document.getElementById("koreksiKurs_kurs");
+    let koreksiKurs_totalBayar = document.getElementById("koreksiKurs_totalBayar"); //prettier-ignore
+    let koreksiKurs_Proses = document.getElementById("koreksiKurs_Proses");
     let dppNilaiLain = 0.0;
     let proses;
     //#endregion
@@ -365,7 +398,6 @@ jQuery(function ($) {
 
                     total_terima.value =
                         numeral(lngQty).format("0,0") + " " + satuanQtyTerima;
-                    console.log();
                 }
             },
             error: function (xhr, status, error) {
@@ -503,7 +535,7 @@ jQuery(function ($) {
                     _token: csrfToken,
                 },
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     if (data.error || data.length == 0) {
                         errorHandling("ajaxGetDataResponse", data.error);
                     } else {
@@ -1037,5 +1069,140 @@ jQuery(function ($) {
         // console.log(rowData);
     });
 
+    btn_koreksiKurs.addEventListener("click", function (e) {
+        e.preventDefault();
+        $("#koreksiKursModal").modal("show");
+        koreksiKurs_tableBarang.clear().draw();
+        koreksiKurs_tableKurs.clear().draw();
+        koreksiKurs_tableSales.clear().draw();
+        koreksiKurs_tableJual.clear().draw();
+    });
+
+    $("#koreksiKursModal").on("shown.bs.modal", function (event) {
+        koreksiKurs_noFaktur.value = "";
+        koreksiKurs_kodeBarang.value = "";
+        koreksiKurs_namaBarang.value = "";
+        koreksiKurs_harga.value = 0;
+        koreksiKurs_kurs.value = 0;
+        koreksiKurs_totalBayar.value = 0;
+        koreksiKurs_Proses.disabled = true;
+    });
+
+    koreksiKurs_noFaktur.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            $.ajax({
+                url: "/CreateBTTB/getListSPPBKoreksiKurs",
+                type: "GET",
+                data: {
+                    NoSPPB: this.value,
+                    _token: csrfToken,
+                },
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.error || data.length == 0) {
+                        errorHandling("ajaxGetDataResponse", data.error);
+                    } else {
+                        koreksiKurs_tableBarang.clear();
+                        // Insert ListBarang
+                        data.forEach(function (item) {
+                            koreksiKurs_tableBarang.row.add([
+                                moment(item.Datang).format("MM/DD/YYYY"),
+                                item.Kd_brg,
+                                item.NAMA_BRG,
+                                numeral(item.Hrg_trm).format("0,0.0000"),
+                                numeral(item.Kurs_Rp).format("0,0.00"),
+                                item.No_terima,
+                            ]);
+                        });
+                        koreksiKurs_tableBarang.draw();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    console.error(err.Message);
+                },
+            });
+        }
+    });
+
+    $("#koreksiKurs_tableBarang tbody").on("click", "tr", function () {
+        let rowData = koreksiKurs_tableBarang.row(this).data();
+
+        if (!rowData) {
+            return;
+        }
+
+        // remove highlight from other rows
+        $("#koreksiKurs_tableBarang tbody tr").removeClass("selected");
+        // add highlight to clicked row
+        $(this).addClass("selected");
+        // console.log(rowData);
+
+        koreksiKurs_harga.value = numeral(rowData[3]).value();
+        koreksiKurs_kodeBarang.value = rowData[1];
+        koreksiKurs_namaBarang.value = rowData[2];
+        koreksiKurs_kurs.value = numeral(rowData[4]).value();
+        koreksiKurs_nomorTerima.value = rowData[5];
+        if (koreksiKurs_kurs.value > 0 && koreksiKurs_harga.value > 0) {
+            koreksiKurs_kurs.dispatchEvent(enterKeyboardEvent);
+        }
+        koreksiKurs_kurs.select();
+    });
+
+    koreksiKurs_kurs.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            this.value = numeral(this.value).value();
+            let harga = parseFloat(koreksiKurs_harga.value);
+            let kurs = parseFloat(this.value);
+            koreksiKurs_totalBayar.value = numeral(harga * kurs).format(
+                "0.000"
+            );
+            koreksiKurs_Proses.disabled = false;
+            koreksiKurs_Proses.focus();
+        }
+    });
+
+    koreksiKurs_Proses.addEventListener("click", function (e) {
+        $.ajax({
+            url: "/CreateBTTB/ProsesKoreksiKurs",
+            type: "PUT",
+            data: {
+                NoSPPB: koreksiKurs_nomorTerima.value,
+                Kurs: koreksiKurs_kurs.value,
+                KodeBarang: koreksiKurs_kodeBarang.value,
+                _token: csrfToken,
+            },
+            success: function (data) {
+                console.log(data);
+                if (data.error || data.length == 0) {
+                    errorHandling("ajaxGetDataResponse", data.error);
+                } else {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil!",
+                        text: data.success,
+                        showConfirmButton: false,
+                        timer: 2500,
+                    }).then(() => {
+                        $("#koreksiKurs_tableBarang tbody tr").removeClass(
+                            "selected"
+                        );
+                        koreksiKurs_noFaktur.value = "";
+                        koreksiKurs_kodeBarang.value = "";
+                        koreksiKurs_namaBarang.value = "";
+                        koreksiKurs_harga.value = 0;
+                        koreksiKurs_kurs.value = 0;
+                        koreksiKurs_totalBayar.value = 0;
+                        koreksiKurs_Proses.disabled = true;
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                console.error(err.Message);
+            },
+        });
+    });
     //#endregion
 });

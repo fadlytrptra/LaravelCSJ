@@ -328,6 +328,18 @@ class CreateBTTBController extends Controller
             } catch (Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 400);
             }
+        } else if ($id == 'getListSPPBKoreksiKurs') {
+            try {
+                $noSPPB = $request->NoSPPB;
+                $ada = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_SPPB_HARGA_TERIMA @Kode = ?, @NoSPPB = ?', [2, $noSPPB]);
+                if ($ada[0]->Ada < 1) {
+                    return response()->json(['error' => (string) 'Nomor Faktur ' . $noSPPB . ' tidak ditemukan']);
+                }
+                $dataSPPB = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_SPPB_HARGA_TERIMA @Kode = ?, @NoSPPB = ?', [3, $noSPPB]);
+                return response()->json($dataSPPB);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
+            }
         } else {
             return response()->json(['error' => 'Invalid request'], 400);
         }
@@ -343,7 +355,109 @@ class CreateBTTBController extends Controller
     public function update(Request $request, $id)
     {
         if ($id == 'UpdateFlag') {
-            # code...
+            $no_trans_1 = $request->no_trans_1;
+            $sFlag = $request->sFlag;
+            try {
+                DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_UPDATE_FLAG @no_trans_1 = ?, @sFlag = ?', [$no_trans_1, $sFlag]);
+                return response()->json(['success' => true]);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        } else if ($id == 'ProsesKoreksiKurs') {
+            $NoSPPB = $request->NoSPPB;
+            $Kurs = $request->Kurs;
+            $KodeBarang = $request->KodeBarang;
+            try {
+                DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_UPDATE_HARGA_YTERIMA @Kode = ?, @NoSPPB = ?, @Kurs = ?', [1, $NoSPPB, $Kurs]);
+                $ada = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_HARGASATUAN @Kode = ?, @KodeBarang = ?', [1, $KodeBarang]);
+                if ($ada[0]->Ada > 0) {
+                    $qtyJual = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_CEK_QTY_JUAL @Kode = ?, @KodeBarang = ?', [1, $KodeBarang])[0]->QtyJual;
+                    $saldoInv = DB::connection('ConnInventory')->select('exec SP_1273_PRG_CEK_SALDO @Kode = ?, @KodeBarang = ?', [1, $KodeBarang])[0]->Saldo;
+                    dd($qtyJual, $saldoInv);
+                    if ($qtyJual <> $saldoInv) {
+                        return response()->json(['error' => 'Hubungi EDP untuk cek harga satuan qtyJual <> saldoInv']);
+                    } else {
+                        $qtyTritier = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_HARGASATUAN @Kode = ?, @KodeBarang = ?', [2, $KodeBarang])[0]->QtyTritier;
+                        $qtyJual2 = DB::connection('ConnSales')->select('exec SP_1273_PRG_CEK_QTY_JUAL @Kode = ?, @KodeBarang = ?', [2, $KodeBarang])[0]->QtyJual2;
+                        if ($qtyTritier <> $qtyJual2) {
+                            return response()->json(['error' => 'Hubungi EDP untuk cek harga satuan qtyJual2 <> qtyTritier']);
+                        } else {
+                            $listSales = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_HARGASATUAN @Kode = ?, @KodeBarang = ?', [3, $KodeBarang]);
+                            $listJual = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SPPB_KURS_TERIMA @Kode = ?, @KodeBarang = ?', [3, $KodeBarang]);
+                            for ($i = 0; $i < count($listSales); $i++) {
+                                $qtyJual1 = $listSales[$i]->QtyTritier;
+                                $totalHargaBeli1 = 0.0;
+                                $HargaBeli2 = 0.0;
+                                $noPIBBeli = (string) "";
+                                for ($j = 0; $j < count($listJual); $j++) {
+                                    if ($qtyJual1 > $listJual[$j]->Qty_Jual2) {
+                                        $qtyJual3 = $listJual[$j]->Qty_Jual2;
+                                        $hargaBeli = $listJual[$j]->Hrg_trm;
+                                        $kursBeli = $listJual[$j]->Kurs_Rp;
+                                        $totalHargaBeli = $qtyJual3 * $kursBeli * $hargaBeli;
+                                        $totalHargaBeli1 += $totalHargaBeli;
+                                        $qtyJual1 -= $listJual[$j]->Qty_Jual2;
+                                        $noPIBBeli = (string) $noPIBBeli . trim($listJual[$j]->No_PIB_External) . "(" . $qtyJual3 . "), ";
+                                        $listJual[$j]->Qty_Jual2 = 0;
+                                    } else if ($qtyJual1 < $listJual[$j]->Qty_Jual2) {
+                                        $qtyJual3 = $qtyJual1;
+                                        $hargaBeli = $listJual[$j]->Hrg_trm;
+                                        $kursBeli = $listJual[$j]->Kurs_Rp;
+                                        $totalHargaBeli = $qtyJual3 * $kursBeli * $hargaBeli;
+                                        $totalHargaBeli1 += $totalHargaBeli;
+                                        $noPIBBeli = (string) $noPIBBeli . trim($listJual[$j]->No_PIB_External) . "(" . $qtyJual3 . ")";
+                                        $listJual[$j]->Qty_Jual2 -= $qtyJual1;
+                                        $qtyJual1 = 0;
+                                        break;
+                                    } else if ($qtyJual1 == $listJual[$j]->Qty_Jual2) {
+                                        $qtyJual3 = $listJual[$j]->Qty_Jual2;
+                                        $hargaBeli = $listJual[$j]->Hrg_trm;
+                                        $kursBeli = $listJual[$j]->Kurs_Rp;
+                                        $totalHargaBeli = $qtyJual3 * $kursBeli * $hargaBeli;
+                                        $totalHargaBeli1 += $totalHargaBeli;
+                                        $noPIBBeli = (string) $noPIBBeli . trim($listJual[$j]->No_PIB_External) . "(" . $qtyJual3 . ")";
+                                        $qtyJual1 = 0;
+                                        $listJual[$j]->Qty_Jual2 = 0;
+                                        break;
+                                    }
+                                }
+                                $HargaBeli2 = $totalHargaBeli1 / $listSales[$i]->QtyTritier;
+                                DB::connection('ConnSales')->statement(
+                                    'exec SP_1273_PRG_UDT_PENJUALAN
+                                        @IdTrans = ?,
+                                        @Harga = ?,
+                                        @NoPIBBeli = ?',
+                                    [
+                                        $listSales[$i]->IdTransTmp,
+                                        $HargaBeli2,
+                                        $noPIBBeli
+                                    ]
+                                );
+                                for ($j = 0; $j < count($listJual); $j++) {
+                                    DB::connection('ConnPurchase')->statement(
+                                        'exec SP_1273_PRG_UPDATE_HARGA_YTERIMA
+                                        @Kode = ?,
+                                        @NoTerima = ?,
+                                        @Qty = ?',
+                                        [
+                                            5,
+                                            $listJual[$j]->No_terima,
+                                            $listJual[$j]->Qty_Jual2
+                                        ]
+                                    );
+                                }
+                            }
+                            return response()->json(['success' => (string) 'Proses Koreksi Kurs Selesai.']);
+                        }
+                    }
+                } else {
+                    return response()->json(['success' => (string) 'Tidak ada data hargasatuan2 yang 0 menurut kode barang: ' . $KodeBarang]);
+                }
+                return response()->json(['success' => true]);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+
         }
     }
 

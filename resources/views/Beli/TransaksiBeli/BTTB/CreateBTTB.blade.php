@@ -4,16 +4,19 @@
 <link href="{{ asset('css/CreateBTTB.css') }}" rel="stylesheet">
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 <style>
-    #table_terima tbody tr {
+    #table_terima tbody tr,
+    #koreksiKurs_tableBarang tbody tr {
         cursor: pointer;
     }
 
-    #table_terima tbody tr:hover {
+    #table_terima tbody tr:hover,
+    #koreksiKurs_tableBarang tbody tr:hover {
         background-color: #eef5ff;
         cursor: pointer;
     }
 
-    #table_terima tbody tr.selected {
+    #table_terima tbody tr.selected,
+    #koreksiKurs_tableBarang tbody tr.selected {
         background-color: #cfe2ff !important;
     }
 </style>
@@ -122,5 +125,6 @@
 </div>
 
 @include('Beli.TransaksiBeli.BTTB.ModalMaintenanceBTTB')
+@include('Beli.TransaksiBeli.BTTB.ModalKoreksiKursBTTB')
 <script src="{{ asset('js/OrderPembelian/CreateBTTB/CreateBTTB.js') }}"></script>
 @endsection
