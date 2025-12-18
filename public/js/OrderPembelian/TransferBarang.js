@@ -152,14 +152,13 @@ jQuery(function ($) {
                 _token: csrfToken,
             },
             success: function (data) {
+                table_trasferBarang.clear().draw();
                 if (data.error || data.length == 0) {
                     errorHandling(
                         "ajaxGetDataResponse",
                         data.error ?? "Tidak ada data BTTB"
                     );
                 } else {
-                    table_trasferBarang.clear();
-
                     // Insert ListBarang
                     data.forEach(function (item) {
                         table_trasferBarang.row.add([
@@ -216,8 +215,11 @@ jQuery(function ($) {
         terima_satSaldoAkhirSekunder.value = "";
         terima_saldoAkhirTritier.value = "";
         terima_satSaldoAkhirTritier.value = "";
+        terima_jumlahTerimaPrimer.value = "";
         terima_satJumlahTerimaPrimer.value = "";
+        terima_jumlahTerimaSekunder.value = "";
         terima_satJumlahTerimaSekunder.value = "";
+        terima_jumlahTerimaTritier.value = "";
         terima_satJumlahTerimaTritier.value = "";
         terima_noSatPrimer.value = "";
         terima_noSatSekunder.value = "";
