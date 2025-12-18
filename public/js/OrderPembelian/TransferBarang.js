@@ -118,6 +118,7 @@ jQuery(function ($) {
         });
         select_divisi.val(null).trigger("change");
         radio_warehouseTropodo.checked = true;
+        tgl_awal.focus();
     }
 
     function errorHandling(jenisError, data) {
@@ -182,7 +183,7 @@ jQuery(function ($) {
                             item.No_sppb,
                         ]);
                     });
-
+                    clearTerima();
                     // Redraw
                     table_trasferBarang.draw();
                 }
@@ -218,6 +219,9 @@ jQuery(function ($) {
         terima_satJumlahTerimaPrimer.value = "";
         terima_satJumlahTerimaSekunder.value = "";
         terima_satJumlahTerimaTritier.value = "";
+        terima_noSatPrimer.value = "";
+        terima_noSatSekunder.value = "";
+        terima_noSatTritier.value = "";
         terima_jumlahTerimaPrimer.readOnly = false;
         terima_jumlahTerimaSekunder.readOnly = false;
     }
@@ -301,6 +305,24 @@ jQuery(function ($) {
     //#endregion
 
     //#region Event Listener
+    tgl_awal.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            tgl_akhir.focus();
+        }
+    });
+
+    tgl_akhir.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            select_divisi.select2("open");
+        }
+    });
+
+    select_divisi.on("select2:select", function () {
+        button_redisplay.focus();
+    });
+
     button_redisplay.addEventListener("click", function (e) {
         if (tgl_awal.value > tgl_akhir.value) {
             errorHandling("invalidInput", "Silahkan cek Tanggal Terima Barang");
@@ -312,6 +334,11 @@ jQuery(function ($) {
             return;
         }
         loadBTTB();
+    });
+
+    $("input[name='radio_warehouse']").on("change", function () {
+        clearTerima();
+        $("#table_trasferBarang tbody tr").removeClass("selected");
     });
 
     $("#table_trasferBarang tbody").on("click", "tr", function () {
@@ -384,13 +411,29 @@ jQuery(function ($) {
                             terima_satJumlahTerimaPrimer.value.toLowerCase() ==
                             "null"
                         ) {
+                            terima_jumlahTerimaPrimer.value = 0;
                             terima_jumlahTerimaPrimer.readOnly = true;
                         }
                         if (
                             terima_satJumlahTerimaSekunder.value.toLowerCase() ==
                             "null"
                         ) {
+                            terima_jumlahTerimaSekunder.value = 0;
                             terima_jumlahTerimaSekunder.readOnly = true;
+                        } else {
+                            terima_jumlahTerimaSekunder.value =
+                                numeral(rowData[11]).value() / 25;
+                        }
+                        terima_jumlahTerimaTritier.value = numeral(
+                            rowData[11]
+                        ).value();
+
+                        if (!terima_jumlahTerimaPrimer.readOnly) {
+                            terima_jumlahTerimaPrimer.select();
+                        } else if (!terima_jumlahTerimaSekunder.readOnly) {
+                            terima_jumlahTerimaSekunder.select();
+                        } else {
+                            terima_jumlahTerimaTritier.select();
                         }
                     } else {
                         Swal.fire({
@@ -522,8 +565,23 @@ jQuery(function ($) {
                                 ) {
                                     terima_jumlahTerimaSekunder.value = 0;
                                     terima_jumlahTerimaSekunder.readOnly = true;
+                                } else {
+                                    terima_jumlahTerimaSekunder.value =
+                                        numeral(rowData[11]).value() / 25;
                                 }
-                                terima_jumlahTerimaTritier.value = 0;
+                                terima_jumlahTerimaTritier.value = numeral(
+                                    rowData[11]
+                                ).value();
+
+                                if (!terima_jumlahTerimaPrimer.readOnly) {
+                                    terima_jumlahTerimaPrimer.select();
+                                } else if (
+                                    !terima_jumlahTerimaSekunder.readOnly
+                                ) {
+                                    terima_jumlahTerimaSekunder.select();
+                                } else {
+                                    terima_jumlahTerimaTritier.select();
+                                }
                             }
                         });
                     }
@@ -534,6 +592,27 @@ jQuery(function ($) {
                 console.error(err.Message);
             },
         });
+    });
+
+    terima_jumlahTerimaPrimer.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            terima_jumlahTerimaPrimer.value = numeral(this.value).value();
+            terima_jumlahTerimaSekunder.select();
+        }
+    });
+
+    terima_jumlahTerimaSekunder.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            terima_jumlahTerimaSekunder.value = numeral(this.value).value();
+            terima_jumlahTerimaTritier.select();
+        }
+    });
+
+    terima_jumlahTerimaTritier.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            terima_jumlahTerimaTritier.value = numeral(this.value).value();
+            button_transfer.focus();
+        }
     });
 
     button_transfer.addEventListener("click", function (e) {
@@ -558,11 +637,21 @@ jQuery(function ($) {
             errorHandling("invalidInput", "Input PIB Terlebih Dahulu");
         }
 
-        if (numeral(terima_jumlahTerimaTritier.value).val() <= 0) {
+        function isValidNumber(val) {
+            const num = numeral(val).value();
+            return Number.isFinite(num);
+        }
+
+        if (
+            !isValidNumber(terima_jumlahTerimaPrimer.value) ||
+            !isValidNumber(terima_jumlahTerimaSekunder.value) ||
+            !isValidNumber(terima_jumlahTerimaTritier.value)
+        ) {
             errorHandling(
                 "invalidInput",
-                "Input Jumlah Terima Terlebih Dahulu"
+                "Jumlah terima harus berupa angka yang valid"
             );
+            return;
         }
 
         Swal.fire({
@@ -579,9 +668,15 @@ jQuery(function ($) {
                         IdType: terima_idType.value,
                         NoSPPB: rowData[17],
                         NoPIB: terima_PIB.value,
-                        MasukPrimer: numeral(terima_jumlahTerimaPrimer.value).val(),
-                        MasukSekunder: numeral(terima_jumlahTerimaSekunder.value).val(),
-                        MasukTritier: numeral(terima_jumlahTerimaTritier.value).val(),
+                        MasukPrimer: numeral(
+                            terima_jumlahTerimaPrimer.value
+                        ).value(),
+                        MasukSekunder: numeral(
+                            terima_jumlahTerimaSekunder.value
+                        ).value(),
+                        MasukTritier: numeral(
+                            terima_jumlahTerimaTritier.value
+                        ).value(),
                         SubKel: terima_idSubKelompok.value,
                         NoTerima: rowData[8],
                         KdBarang: terima_kodeBarang.value,
