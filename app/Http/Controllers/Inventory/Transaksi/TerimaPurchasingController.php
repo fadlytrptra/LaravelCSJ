@@ -242,18 +242,34 @@ class TerimaPurchasingController extends Controller
             $MasukTritier = $request->input('MasukTritier');
             // dd($request->all());
             try {
+                // DB::connection('ConnInventory')
+                //     ->statement('exec SP_1273_PRG_PROSES_TERIMA_TRANSFER
+                // @IdTransaksi = ?,
+                // @IdType = ?,
+                // @IdSubKel = ?,
+                // @Penerima = ?,
+                // @MasukPrimer = ?,
+                // @MasukSekunder = ?,
+                // @MasukTritier = ?', [
+                //         $IdTransaksi,
+                //         $IdType,
+                //         $IdSubKel,
+                //         $Penerima,
+                //         $MasukPrimer,
+                //         $MasukSekunder,
+                //         $MasukTritier,
+                //     ]);
+
                 DB::connection('ConnInventory')
                     ->statement('exec SP_1273_PRG_PROSES_TERIMA_TRANSFER
                 @IdTransaksi = ?,
                 @IdType = ?,
-                @IdSubKel = ?,
                 @Penerima = ?,
                 @MasukPrimer = ?,
                 @MasukSekunder = ?,
                 @MasukTritier = ?', [
                         $IdTransaksi,
                         $IdType,
-                        $IdSubKel,
                         $Penerima,
                         $MasukPrimer,
                         $MasukSekunder,
