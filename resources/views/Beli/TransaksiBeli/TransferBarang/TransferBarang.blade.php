@@ -195,7 +195,7 @@
                                 <div style="display: flex;flex-direction: column;">
                                     <label for="terima_saldoAkhirPrimer">Primer</label>
                                     <div style="display: flex; flex-direction: row;gap: 2%;">
-                                        <input type="number" name="terima_saldoAkhirPrimer"
+                                        <input type="text" name="terima_saldoAkhirPrimer"
                                             id="terima_saldoAkhirPrimer" class="form-control" readonly>
                                         <input type="text" name="terima_satSaldoAkhirPrimer"
                                             id="terima_satSaldoAkhirPrimer" class="form-control" readonly>
@@ -204,7 +204,7 @@
                                 <div style="display: flex;flex-direction: column;">
                                     <label for="terima_saldoAkhirSekunder">Sekunder</label>
                                     <div style="display: flex; flex-direction: row;gap: 2%;">
-                                        <input type="number" name="terima_saldoAkhirSekunder"
+                                        <input type="text" name="terima_saldoAkhirSekunder"
                                             id="terima_saldoAkhirSekunder" class="form-control" readonly>
                                         <input type="text" name="terima_satSaldoAkhirSekunder"
                                             id="terima_satSaldoAkhirSekunder" class="form-control" readonly>
@@ -213,7 +213,7 @@
                                 <div style="display: flex;flex-direction: column;">
                                     <label for="terima_saldoAkhirTritier">Tritier</label>
                                     <div style="display: flex; flex-direction: row;gap: 2%;">
-                                        <input type="number" name="terima_saldoAkhirTritier"
+                                        <input type="text" name="terima_saldoAkhirTritier"
                                             id="terima_saldoAkhirTritier" class="form-control" readonly>
                                         <input type="text" name="terima_satSaldoAkhirTritier"
                                             id="terima_satSaldoAkhirTritier" class="form-control" readonly>
@@ -227,7 +227,7 @@
                                 <div style="display: flex;flex-direction: column;">
                                     <label for="terima_jumlahTerimaPrimer">Primer</label>
                                     <div style="display: flex; flex-direction: row;gap: 2%;">
-                                        <input type="number" name="terima_jumlahTerimaPrimer"
+                                        <input type="text" name="terima_jumlahTerimaPrimer"
                                             id="terima_jumlahTerimaPrimer" class="form-control">
                                         <input type="text" name="terima_satJumlahTerimaPrimer"
                                             id="terima_satJumlahTerimaPrimer" class="form-control" readonly>
@@ -236,7 +236,7 @@
                                 <div style="display: flex;flex-direction: column;">
                                     <label for="terima_jumlahTerimaSekunder">Sekunder</label>
                                     <div style="display: flex; flex-direction: row;gap: 2%;">
-                                        <input type="number" name="terima_jumlahTerimaSekunder"
+                                        <input type="text" name="terima_jumlahTerimaSekunder"
                                             id="terima_jumlahTerimaSekunder" class="form-control">
                                         <input type="text" name="terima_satJumlahTerimaSekunder"
                                             id="terima_satJumlahTerimaSekunder" class="form-control" readonly>
@@ -245,7 +245,7 @@
                                 <div style="display: flex;flex-direction: column;">
                                     <label for="terima_jumlahTerimarTritier">Tritier</label>
                                     <div style="display: flex; flex-direction: row;gap: 2%;">
-                                        <input type="number" name="terima_jumlahTerimaTritier"
+                                        <input type="text" name="terima_jumlahTerimaTritier"
                                             id="terima_jumlahTerimaTritier" class="form-control">
                                         <input type="text" name="terima_satJumlahTerimaTritier"
                                             id="terima_satJumlahTerimaTritier" class="form-control" readonly>

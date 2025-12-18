@@ -558,7 +558,7 @@ jQuery(function ($) {
             errorHandling("invalidInput", "Input PIB Terlebih Dahulu");
         }
 
-        if (terima_jumlahTerimaTritier.value <= 0) {
+        if (numeral(terima_jumlahTerimaTritier.value).val() <= 0) {
             errorHandling(
                 "invalidInput",
                 "Input Jumlah Terima Terlebih Dahulu"
@@ -579,9 +579,9 @@ jQuery(function ($) {
                         IdType: terima_idType.value,
                         NoSPPB: rowData[17],
                         NoPIB: terima_PIB.value,
-                        MasukPrimer: terima_jumlahTerimaPrimer.value,
-                        MasukSekunder: terima_jumlahTerimaSekunder.value,
-                        MasukTritier: terima_jumlahTerimaTritier.value,
+                        MasukPrimer: numeral(terima_jumlahTerimaPrimer.value).val(),
+                        MasukSekunder: numeral(terima_jumlahTerimaSekunder.value).val(),
+                        MasukTritier: numeral(terima_jumlahTerimaTritier.value).val(),
                         SubKel: terima_idSubKelompok.value,
                         NoTerima: rowData[8],
                         KdBarang: terima_kodeBarang.value,
