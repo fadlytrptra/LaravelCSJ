@@ -84,11 +84,12 @@ class CustomerController extends Controller
         $AlamatNPWP = $request->AlamatNPWP ?? NULL;
         $KotaKirim = $request->KotaKirim ?? NULL;
         $NITKU = $request->NITKU ?? NULL;
+        $IdPembeliCoretax = $request->IdPembeliCoretax ?? NULL;
 
         // dd($request->all());
 
         try {
-            DB::connection('ConnSales')->statement('exec SP_1486_SLS_PROSES_INS_CUSTOMER @KodeCust = ?,
+            DB::connection('ConnSales')->statement('exec SP_1273_PRG_PROSES_INS_CUSTOMER @KodeCust = ?,
                     @JnsCust = ? ,
                     @NamaCust = ? ,
                     @NPWP = ? ,
@@ -111,8 +112,8 @@ class CustomerController extends Controller
                     @NamaNPWP = ?,
                     @AlamatNPWP = ?,
                     @KotaKirim = ?,
-                    @User_id = ?,
-                    @NITKU = ?',
+                    @NITKU = ?,
+                    @IdPembeliCoretax = ?',
                 [
                     $KodeCust,
                     $JnsCust,
@@ -137,8 +138,8 @@ class CustomerController extends Controller
                     $NamaNPWP,
                     $AlamatNPWP,
                     $KotaKirim,
-                    $User,
-                    $NITKU
+                    $NITKU,
+                    $IdPembeliCoretax,
                 ]
             );
             return response()->json(['success' => 'Data berhasil disimpan!']);
@@ -192,9 +193,10 @@ class CustomerController extends Controller
         $AlamatNPWP = $request->AlamatNPWP ?? NULL;
         $KotaKirim = $request->KotaKirim ?? " ";
         $NITKU = $request->NITKU ?? NULL;
+        $IdPembeliCoretax = $request->IdPembeliCoretax ?? NULL;
 
         // Eksekusi stored procedure dengan parameter yang diberikan
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_UDT_CUSTOMER
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_UDT_CUSTOMER
         @IdCust = ?,
         @NamaCust = ?,
         @NPWP = ?,
@@ -217,8 +219,8 @@ class CustomerController extends Controller
         @NamaNPWP = ?,
         @AlamatNPWP = ?,
         @KotaKirim = ?,
-        @User_id = ?,
-        @NITKU = ?',
+        @NITKU = ?,
+        @IdPembeliCoretax = ?',
             [
                 $id,
                 $NamaCust,
@@ -242,13 +244,13 @@ class CustomerController extends Controller
                 $NamaNPWP,
                 $AlamatNPWP,
                 $KotaKirim,
-                $User,
-                $NITKU
+                $NITKU,
+                $IdPembeliCoretax,
             ]
         );
 
         // Redirect kembali ke halaman sebelumnya dengan pesan sukses
-        return response()->json($User);
+        return response()->json();
     }
 
     // Display the specified resource.

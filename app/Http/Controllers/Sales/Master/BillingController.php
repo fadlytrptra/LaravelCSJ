@@ -51,7 +51,7 @@ class BillingController extends Controller
         $noTelex = $request->noTelex ?? NULL;
         $email = $request->email ?? NULL;
 
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_PROSES_INS_BILLING @NamaBill = ?,
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_PROSES_INS_BILLING @NamaBill = ?,
         @ContactPerson = ?,
         @Alamat = ?,
         @Kota = ?,
@@ -127,7 +127,7 @@ class BillingController extends Controller
         $noTelex = $request->noTelex ?? NULL;
         $email = $request->email ?? NULL;
 
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_UDT_BILLING @IDBill = ?,
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_UDT_BILLING @IDBill = ?,
         @NamaBill = ?,
         @ContactPerson = ?,
         @Alamat = ?,

@@ -55,7 +55,7 @@ class ExpeditorController extends Controller
         $NoTelex = $request->NoTelex ?? NULL;
         $Email = $request->Email ?? NULL;
 
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_MAINT_EXPEDITOR
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_MAINT_EXPEDITOR
             @Kode = ?,
             @NamaExpeditor = ?,
             @ContactPerson = ?,
@@ -138,7 +138,7 @@ class ExpeditorController extends Controller
         $NoTelex = $request->NoTelex ?? NULL;
         $Email = $request->Email ?? NULL;
 
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_MAINT_EXPEDITOR
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_MAINT_EXPEDITOR
             @Kode = ?,
             @IDExpeditor = ?,
             @NamaExpeditor = ?,

@@ -151,6 +151,11 @@
                                         <input type="text" name="NITKU" id="NITKU"
                                             value="{{ $model->NITKU }}" placeholder="NITKU" class="input">
                                     </div>
+                                    <div class="acs-div-filter">
+                                        <label for="IdPembeliCoretax">ID Pembeli</label>
+                                        <input type="text" name="IdPembeliCoretax" id="IdPembeliCoretax"
+                                            value="{{ $model->IdPembeliCoretax }}" placeholder="IdPembeliCoretax" class="input">
+                                    </div>
                                 </div>
                             </div>
                         </div>
