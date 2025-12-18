@@ -662,7 +662,7 @@ jQuery(function ($) {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "/TransferBarang/",
+                    url: "/TransferBarang",
                     type: "POST",
                     data: {
                         IdType: terima_idType.value,
