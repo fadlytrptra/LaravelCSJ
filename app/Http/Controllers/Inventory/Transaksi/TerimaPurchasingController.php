@@ -140,8 +140,8 @@ class TerimaPurchasingController extends Controller
                     'SatSekunder' => $detail_objek->SatSekunder,
                     'SatTritier' => $detail_objek->SatTritier,
                     'KodeBarang' => $detail_objek->KodeBarang,
-                    'PIB' => $detail_objek->PIB ?? '',
-                    'No_PO' => $detail_objek->No_PO ?? '',
+                    'PIB' => $detail_objek->NoPIB ?? '',
+                    'No_SP' => $detail_objek->NoSP ?? '',
                 ]
                 ;
             }

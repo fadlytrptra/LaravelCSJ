@@ -315,6 +315,7 @@ function updateDataTable(data) {
     return new Promise(function (resolve, reject) {
         var table = $("#tableData").DataTable();
         table.clear();
+        console.log(data);
 
         data.forEach(function (item) {
             table.row.add([
@@ -326,7 +327,7 @@ function updateDataTable(data) {
                 formatNumber(item.JumlahPemasukanTritier),
                 escapeHtml(item.IdTransaksi),
                 escapeHtml(item.PIB),
-                escapeHtml(item.No_PO),
+                escapeHtml(item.No_SP),
                 escapeHtml(item.SatPrimer),
                 escapeHtml(item.SatSekunder),
                 escapeHtml(item.SatTritier),
