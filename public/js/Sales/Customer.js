@@ -66,8 +66,13 @@ $(document).ready(function () {
                         "</br>Alamat di NPWP: " +
                         data.data.AlamatNPWP +
                         "</br><hr></br>Tanggal data diinputkan: " +
-                        data.data.TimeInput;
-                    // console.log('yay');
+                        data.data.IdPembeliCoretax +
+                        "</br><hr></br>ID Pembeli: " +
+                        data.data.TimeInput +
+                        data.data.TglUpdate +
+                        data.data.UserInput +
+                        data.data.UserUpdate;
+                    // console.log(data);
                 },
                 error: function (xhr, status, error) {
                     var err = eval("(" + xhr.responseText + ")");
@@ -143,6 +148,10 @@ $(document).ready(function () {
     let modalLabelCustomer = document.getElementById("modalLabelCustomer");
     let typeKegiatanForm = document.getElementById("typeKegiatanForm");
     let submit_btn = document.getElementById("submit_btn");
+    let IdPembeliCoretax = document.getElementById("IdPembeliCoretax");
+    let TimeInput = document.getElementById("TimeInput");
+    let TglUpdate = document.getElementById("TglUpdate");
+    let UserUpdate = document.getElementById("UserUpdate");
     let customerSales = $("#table_Customer").DataTable({
         processing: true,
         serverSide: true,
@@ -264,6 +273,7 @@ $(document).ready(function () {
                     NamaNPWP.value = response.data.NamaNPWP;
                     KotaKirim.value = response.data.KotaKirim;
                     NITKU.value = response.data.NITKU;
+                    IdPembeliCoretax.value = response.data.IdPembeliCoretax;
                 },
                 error: function (error) {
                     Swal.fire({
@@ -340,6 +350,7 @@ $(document).ready(function () {
                     NamaNPWP: NamaNPWP.value,
                     KotaKirim: KotaKirim.value,
                     NITKU: NITKU.value,
+                    IdPembeliCoretax: IdPembeliCoretax.value,
                 },
                 beforeSend: function () {
                     // Show loading screen
@@ -394,6 +405,7 @@ $(document).ready(function () {
                     NamaNPWP: NamaNPWP.value,
                     KotaKirim: KotaKirim.value,
                     NITKU: NITKU.value,
+                    IdPembeliCoretax: IdPembeliCoretax.value,
                 },
                 beforeSend: function () {
                     // Show loading screen
@@ -560,6 +572,18 @@ $(document).ready(function () {
         if (event.key === "Enter") {
             event.preventDefault();
             AlamatNPWP.focus();
+        }
+    });
+    AlamatNPWP.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            NITKU.focus();
+        }
+    });
+    NITKU.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            IdPembeliCoretax.focus();
         }
     });
     //#endregion
