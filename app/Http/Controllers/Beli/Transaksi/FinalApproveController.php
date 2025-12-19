@@ -14,21 +14,16 @@ use DB;
 
 class FinalApproveController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $kdUser = trim(Auth::user()->NomorUser);
 
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
-        // kalau nanti ada hak akses khusus direktur, ganti 'Approve' di bawah ini
-        $result = (new HakAksesController)->HakAksesFitur('Approve');
-        if ($result <= 0) abort(403);
-
-        // Final approve selalu pakai mode DIREKTUR
-        $status = 'DIREKTUR';
+        $result = (new HakAksesController)->HakAksesFitur('Final Approve');
 
         $data = DB::connection('ConnPurchase')->select(
-            'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @kd_user = ?, @mode = ?',
-            [$kdUser, $status]
+            'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @kd_user = ?',
+            [$kdUser]
         );
 
         return view('Beli.Transaksi.FinalApprove.List', compact('data', 'access', 'status'));
@@ -115,7 +110,7 @@ class FinalApproveController extends Controller
             ->leftJoin('Y_BARANG', 'Y_BARANG.KD_BRG', 'YTRANSBL.Kd_brg')
             ->leftJoin('YUSER', 'YUSER.kd_user', 'YTRANSBL.Operator')
             ->leftJoin('YSATUAN', 'YSATUAN.No_satuan', 'YTRANSBL.NoSatuan')
-            // ->leftJoin('STATUS_ORDER', 'STATUS_ORDER.KdStatus', 'YTRANSBL.StatusOrder') 
+            // ->leftJoin('STATUS_ORDER', 'STATUS_ORDER.KdStatus', 'YTRANSBL.StatusOrder')
             ->leftJoin('Y_KATEGORI_SUB', 'Y_KATEGORI_SUB.no_sub_kategori', 'Y_BARANG.NO_SUB_KATEGORI')
             ->leftJoin('Y_KATEGORY', 'Y_KATEGORY.no_kategori', 'Y_KATEGORI_SUB.no_kategori')
             ->leftJoin('Y_KATEGORI_UTAMA', 'Y_KATEGORI_UTAMA.no_kat_utama', 'Y_KATEGORY.no_kat_utama')
@@ -128,7 +123,7 @@ class FinalApproveController extends Controller
 
         $dataBeliTerakhir = TransBL::select()
             ->leftJoin('YSUPPLIER', 'YSUPPLIER.NO_SUP', 'YTRANSBL.supplier')
-            // ->whereIn('StatusOrder', [4, 5, 8, 10, 11])  
+            // ->whereIn('StatusOrder', [4, 5, 8, 10, 11])
             ->where('Kd_brg', $getKD_Barang->Kd_brg)
             ->orderBy('No_trans', 'desc')
             ->offset(0)
