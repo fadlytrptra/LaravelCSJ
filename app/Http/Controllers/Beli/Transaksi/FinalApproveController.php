@@ -26,7 +26,7 @@ class FinalApproveController extends Controller
             [$kdUser]
         );
 
-        return view('Beli.Transaksi.FinalApprove.List', compact('data', 'access', 'status'));
+        return view('Beli.Transaksi.FinalApprove.List', compact('data', 'access'));
     }
 
     public function store(Request $request)
