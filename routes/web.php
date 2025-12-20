@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-
 use App\Http\Controllers\Inventory\Master\StokBarangController;
 use App\Http\Controllers\Inventory\Informasi\KartuStokController;
 use App\Http\Controllers\Inventory\Master\KodePerkiraanController;
@@ -41,6 +40,10 @@ use App\Http\Controllers\Inventory\Transaksi\TerimaBenang\TerimaBenangTropodoCon
 use App\Http\Controllers\Inventory\Transaksi\Mutasi\KeluarBarangUntukPenjualanController;
 use App\Http\Controllers\Inventory\Transaksi\Mutasi\PengembalianPascaPenjualanController;
 use App\Http\Controllers\Inventory\Transaksi\Penghangusan\AccPenghangusanBarangController;
+use App\Http\Controllers\Laporan\CetakBKMController;
+use App\Http\Controllers\Laporan\CetakBKKController;
+use App\Http\Controllers\Laporan\CetakNotaFakturController;
+use App\Http\Controllers\Laporan\CetakSPPBBTTBController;
 
 
 $redirectIfAuthenticated = function () {
@@ -73,7 +76,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/purchase-order/detail-sppb/update', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'updateDetailSppb'])->name('purchaseorder.update_detail_sppb');
     Route::post('/purchaseorder/update-detail-sppb', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'updateDetailSppb']);
 
-    Route::post('/purchaseorder/simpan-harga',[App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'simpanHarga'])->name('purchaseorder.simpanHarga');
+    Route::post('/purchaseorder/simpan-harga', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'simpanHarga'])->name('purchaseorder.simpanHarga');
     Route::get('/PurchaseOrder/mata-uang', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listMataUang'])->name('purchaseorder.mata_uang');
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listSupplier'])->name('purchaseorder.supplier');
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'supplier']);
@@ -649,4 +652,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('TransaksiBulanan', TransaksiBulananController::class);
     Route::resource('TransaksiHarian', TransaksiHarianController::class);
     #endregion
+
+    #region Lapporan
+    Route::get('Laporan', 'App\Http\Controllers\HomeController@Laporan');
+    Route::resource('CetakNotaFaktur', CetakNotaFakturController::class);
+    Route::resource('CetakBKM', CetakBKMController::class);
+    Route::resource('CetakBKK', CetakBKKController::class);
+    Route::resource('CetakSPPBBTTB', CetakSPPBBTTBController::class);
 });

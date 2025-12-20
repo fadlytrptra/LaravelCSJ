@@ -188,9 +188,20 @@ class HomeController extends Controller
         // $counterBrg = DB::connection('ConnPurchase')->table('YCOUNTER')->select('Y_BARANG')->get();
         // dd(intval($counterBrg[0]->Y_BARANG) + 1);
         if ($result) {
-            return view('layouts.appAdStar',compact('access'));
+            return view('layouts.appAdStar', compact('access'));
         } else {
-            return redirect('home')->with('status','Anda Tidak Memiliki Hak Akses Program Ad Star!');
+            return redirect('home')->with('status', 'Anda Tidak Memiliki Hak Akses Program Ad Star!');
+        }
+    }
+    public function Laporan()
+    {
+        $result = (new HakAksesController)->HakAksesProgram('Laporan');
+        $access = (new HakAksesController)->HakAksesFiturMaster('Laporan');
+        if ($result > 0) {
+            return view('layouts.appLaporan', compact('access'));
+        } else {
+            // abort(403);
+            return redirect('home')->with('status', 'Anda Tidak Memiliki Hak Akses Program Laporan!');
         }
     }
 }
