@@ -36,15 +36,19 @@
                         {{ $dataCetak[0]->Alasan }} ) </label>
                 </div>
                 <div style="display: flex;flex-direction: column;">
-                    <table style="width: 100%;border-collapse: collapse;margin-top: 10px;" border="1">
+                    <table style="width: 100%;border-collapse: collapse;margin-top: 10px;border:1px solid #000;"">
                         <tr style="white-space: nowrap">
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;">No</td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Quantity</td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Satuan</td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Spesifikasi</td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Harga Sat</td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;">PPN</td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Harga</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">No</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Quantity
+                            </td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Satuan
+                            </td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">
+                                Spesifikasi</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Harga Sat
+                            </td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">PPN</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Harga</td>
                         </tr>
                         @foreach ($dataCetak as $index => $item)
                             @php
@@ -53,10 +57,11 @@
                                 $sumTotalHarga += (float) $item->TotalHarga;
                             @endphp
                             <tr>
-                                <td style="padding: 4px; font-size: 10px;">{{ $index + 1 }}</td>
-                                <td style="padding: 4px; font-size: 10px;">{{ number_format($item->quantity, 2, '.', ',') }}</td>
-                                <td style="padding: 4px; font-size: 10px;">{{ trim($item->Nama_satuan) }}</td>
-                                <td style="padding: 4px; font-size: 10px;">
+                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">{{ $index + 1 }}</td>
+                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
+                                    {{ number_format($item->quantity, 2, '.', ',') }}</td>
+                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">{{ trim($item->Nama_satuan) }}</td>
+                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
                                     <div style="display: flex;flex-direction: row;">
                                         <div style="display: flex;flex-direction: column;flex:0.2;">
                                             <label>
@@ -69,17 +74,17 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td style="padding: 4px; font-size: 10px;">
+                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
                                     {{ $hargaSatFormatted }}
                                 </td>
-                                <td style="padding: 4px; font-size: 10px;">
+                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
                                     @if ($item->PPN > 0)
                                         {{ number_format($item->PPN, 2, '.', ',') }}
                                     @else
                                         0
                                     @endif
                                 </td>
-                                <td style="padding: 4px; font-size: 10px;">
+                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
                                     {{ $hargaFormatted }}
                                 </td>
                             </tr>
