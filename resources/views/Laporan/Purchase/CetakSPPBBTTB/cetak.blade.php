@@ -18,7 +18,7 @@
         @endif
         <style>
             body {
-                font-family: Arial, Helvetica, sans-serif;
+                font-family: Tahoma, Arial, Helvetica, sans-serif;
                 color: #111;
             }
         </style>
@@ -70,7 +70,7 @@
                             $sumTotalHarga += (float) $item->TotalHarga;
                         @endphp
                         <div
-                            style="display: flex;flex-direction: row;border-bottom: solid 1px grey;margin: 0 0 5px 0;gap: 5px;font-size: 10px;">
+                            style="display: flex;flex-direction: row;border-bottom: solid 1px grey;margin: 0 0 5px 0;gap: 5px;font-size: 12px;">
                             <div style="display: flex;flex-direction: column;flex:0.05;">
                                 <label>{{ $index + 1 }}</label>
                             </div>
