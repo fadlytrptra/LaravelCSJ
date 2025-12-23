@@ -191,66 +191,67 @@
                             border-right: 1px solid grey;
                             border-bottom: 1px solid grey;
                             border-left: 1px solid grey;
-                            font-size: 10px;">
+                            font-size: 10px;
+                            gap: 2px;">
                     <div style="display: flex;flex-direction: row;">
-                        <div style="display: flex;flex-direction: column;flex: 0.245;padding: 0 0 0 5px;">
+                        <div style="display: flex;flex-direction: column;flex: 0.245;padding: 0 0 0 5px;gap: 2px;">
                             <label>NO FAKTUR</label>
                             <label>NO SURAT JALAN</label>
                             <label>KETERANGAN PEMBELIAN</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.005;">
+                        <div style="display: flex;flex-direction: column;flex: 0.005;gap: 2px;">
                             <label>:</label>
                             <label>:</label>
                             <label>:</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.25;">
+                        <div style="display: flex;flex-direction: column;flex: 0.25;gap: 2px;">
                             <label>{{ $dataCetak[0]->Faktur }}</label>
                             <label>{{ $dataCetak[0]->No_SuratJalan }}</label>
                             <label>{{ $dataCetak[0]->ket_beli }}</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.245;">
+                        <div style="display: flex;flex-direction: column;flex: 0.245;gap: 2px;">
                             <label>KODE BARANG</label>
                             <label>NO TERIMA</label>
                             <label>NO PIB</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.005;">
+                        <div style="display: flex;flex-direction: column;flex: 0.005;gap: 2px;">
                             <label>:</label>
                             <label>:</label>
                             <label>:</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.25;">
+                        <div style="display: flex;flex-direction: column;flex: 0.25;gap: 2px;">
                             <label>{{ $dataCetak[0]->kode_barang }}</label>
                             <label>{{ $dataCetak[0]->nomor_terima }}</label>
                             <label>{{ $dataCetak[0]->No_PIB_External }}</label>
                         </div>
                     </div>
                     <div style="display: flex;flex-direction: row;">
-                        <div style="display: flex;flex-direction: column;flex: 0.28;padding: 0 0 0 5px;">
+                        <div style="display: flex;flex-direction: column;flex: 0.28;padding: 0 0 0 5px;gap: 2px;">
                             <label>TANGGAL PERMOHONAN</label>
                             <label>TANGGAL ACC MANAGER</label>
                             <label>TANGGAL PEMBUATAN SPPB</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.005;">
+                        <div style="display: flex;flex-direction: column;flex: 0.005;gap: 2px;">
                             <label>:</label>
                             <label>:</label>
                             <label>:</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.115;">
+                        <div style="display: flex;flex-direction: column;flex: 0.115;gap: 2px;">
                             <label>{{ date('m/d/Y', strtotime($dataCetak[0]->tanggal_order)) }}</label>
                             <label>{{ date('m/d/Y', strtotime($dataCetak[0]->tanggal_acc)) }}</label>
                             <label>{{ date('m/d/Y', strtotime($dataCetak[0]->tanggal_sppb)) }}</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.1;">
+                        <div style="display: flex;flex-direction: column;flex: 0.1;gap: 2px;">
                             <label>PEMOHON</label>
                             <label>MANAGER</label>
                             <label>PEMBUAT</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.005;">
+                        <div style="display: flex;flex-direction: column;flex: 0.005;gap: 2px;">
                             <label>:</label>
                             <label>:</label>
                             <label>:</label>
                         </div>
-                        <div style="display: flex;flex-direction: column;flex: 0.28;">
+                        <div style="display: flex;flex-direction: column;flex: 0.28;gap: 2px;">
                             <label>{{ ucfirst(trim($dataCetak[0]->Pemesan)) }}</label>
                             <label>{{ ucfirst(trim($dataCetak[0]->Manager)) }}</label>
                             <label>{{ ucfirst(trim($dataCetak[0]->Operator_SPPB)) }}</label>
