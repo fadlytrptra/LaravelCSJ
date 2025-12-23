@@ -94,7 +94,7 @@
                         </td>
                     </tr>
 
-                    @foreach ($dataBKM as $item)
+                    @foreach ($dataBKM as $i => $item)
                         @php
                             $sign = '';
 
@@ -109,7 +109,6 @@
                                     $sign = '(+)';
                                 }
                             }
-
                             if ($sumBiaya == 0 && $sumKurangLebih == 0) {
                                 $nilaiTampil = 0;
                             } elseif ($item->ID_Penagihan !== null && ($sumBiaya != 0 || $sumKurangLebih != 0)) {
@@ -138,8 +137,14 @@
                                         {{ $sign }}
                                     </p>
                                     <p style="flex: 0.29;margin:0;padding: 0 10px 0 0">
-                                        @if ($nilaiTampil > 0)
-                                            {{ number_format($nilaiTampil, 2, '.', ',') }}
+                                        @if ($nilaiTampil > 0 || $nilaiTampil < 0)
+                                            @if ($nilaiTampil < 0)
+                                                (
+                                            @endif
+                                            {{ number_format(abs($nilaiTampil), 2, '.', ',') }}
+                                            @if ($nilaiTampil < 0)
+                                                    )
+                                            @endif
                                         @endif
                                     </p>
                                 </div>
@@ -186,7 +191,7 @@
                                 @else
                                     (-)
                                 @endif
-                                {{ $dataBKM[0]->Symbol }} {{ number_format($sumKurangLebih, 2, '.', ',') }}
+                                {{ $dataBKM[0]->Symbol }} {{ number_format(abs($sumKurangLebih), 2, '.', ',') }}
                             </td>
                         </tr>
                     @endif
