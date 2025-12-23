@@ -25,11 +25,14 @@
 
     <body>
         <div style="height: 27cm; overflow: overflow;">
-            <div style="left: 15.8cm;top: 2.9cm; position: absolute;font-size:16px;">{{ $idPenagihan }}</div>
-            @if ($dataCetak[0]->NoSeri_FakturPajak !== '')
-                <div style="left: 13.5cm;top: 4cm; position: absolute;font-size:16px;">No Seri Faktur Pajak:
-                    {{ $dataCetak[0]->NoSeri_FakturPajak }}</div>
-            @endif
+            <div style="left: 11.8cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
+                {{ $idPenagihan }}
+                @if (!empty($dataCetak[0]->NoSeri_FakturPajak))
+                    <br>
+                    <br>
+                    No Seri Faktur Pajak: {{ $dataCetak[0]->NoSeri_FakturPajak }}
+                @endif
+            </div>
             <div style="position:absolute; left:6cm; top:8.5cm; width:14cm;">
                 <div style="font-size:14px; font-weight:bold;">
                     {{ $dataCetak[0]->NamaNPWP }}
