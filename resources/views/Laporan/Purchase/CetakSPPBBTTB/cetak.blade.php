@@ -70,17 +70,17 @@
                                     </div>
                                 </td>
                                 <td style="padding: 4px; font-size: 10px;">
-                                    {{ $item->Symbol }}{{ $hargaSatFormatted }}
+                                    {{ $hargaSatFormatted }}
                                 </td>
                                 <td style="padding: 4px; font-size: 10px;">
                                     @if ($item->PPN > 0)
-                                        {{ $item->Symbol }}{{ number_format($item->PPN, 2, '.', ',') }}
+                                        {{ number_format($item->PPN, 2, '.', ',') }}
                                     @else
                                         0
                                     @endif
                                 </td>
                                 <td style="padding: 4px; font-size: 10px;">
-                                    {{ $item->Symbol }}{{ $hargaFormatted }}
+                                    {{ $hargaFormatted }}
                                 </td>
                             </tr>
                         @endforeach
