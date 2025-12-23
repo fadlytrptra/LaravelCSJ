@@ -60,18 +60,33 @@ class CetakBKMController extends Controller
             try {
                 if ($jenisCetak == 'Penagihan') {
                     $dataBKM = DB::connection('ConnAccounting')->select('SELECT * FROM VW_PRG_5298_ACC_CETAK_BKM_TAGIH WHERE Id_BKM = ?', [$idbkm]);
+                    if (count($dataBKM) > 0) {
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UPDATE_TGLCETAK_BKM @IdBKM = ?', [$idbkm]);
+                        return view('Laporan.Accounting.CetakBKM.cetakPenagihan', compact('dataBKM', 'idbkm', 'jenisCetak'));
+                    } else {
+                        return redirect()->back()
+                            ->with('error', 'Data BKM tidak ditemukan');
+                    }
                 } else if ($jenisCetak == 'Cash Advance') {
                     $dataBKM = DB::connection('ConnAccounting')->select('SELECT * FROM VW_PRG_5298_ACC_CETAK_BKM_NOTAGIH_1 WHERE Id_BKM = ?', [$idbkm]);
+                    if (count($dataBKM) > 0) {
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UPDATE_TGLCETAK_BKM @IdBKM = ?', [$idbkm]);
+                        return view('Laporan.Accounting.CetakBKM.cetakCashAdvance', compact('dataBKM', 'idbkm', 'jenisCetak'));
+                    } else {
+                        return redirect()->back()
+                            ->with('error', 'Data BKM tidak ditemukan');
+                    }
                 } else if ($jenisCetak == 'DP Pelunasan') {
                     $dataBKM = DB::connection('ConnAccounting')->select('SELECT * FROM VW_PRG_5298_ACC_CETAK_BKM_DP WHERE Id_BKM = ?', [$idbkm]);
+                    if (count($dataBKM) > 0) {
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UPDATE_TGLCETAK_BKM @IdBKM = ?', [$idbkm]);
+                        return view('Laporan.Accounting.CetakBKM.cetakDPPelunasan', compact('dataBKM', 'idbkm', 'jenisCetak'));
+                    } else {
+                        return redirect()->back()
+                            ->with('error', 'Data BKM tidak ditemukan');
+                    }
                 }
-                if (count($dataBKM) > 0) {
-                    DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UPDATE_TGLCETAK_BKM @IdBKM = ?', [$idbkm]);
-                    return view('Laporan.Accounting.CetakBKM.cetak', compact('dataBKM', 'idbkm', 'jenisCetak'));
-                } else {
-                    return redirect()->back()
-                        ->with('error', 'Data BKM tidak ditemukan');
-                }
+
             } catch (Exception $e) {
                 abort(404, $e->getMessage());
             }

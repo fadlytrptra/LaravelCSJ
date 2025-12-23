@@ -78,29 +78,13 @@
                     <div style="display: flex;flex-direction: row;border-top: solid 1px grey">
                         <div
                             style="display: flex;flex-direction: column;flex:5.5;text-align: left;border-right: solid 1px grey;">
-                            @if ($jenisCetak == 'Penagihan')
-                                <p style="margin: 0;padding: 0 0 0 10px; font-size: small;">
-                                    {{ $item->NamaCust }} - {{ $item->ID_Penagihan }}
-                                </p>
-                            @elseif ($jenisCetak == 'Cash Advance')
-                                <p style="margin: 0;padding: 0 0 0 10px; font-size: small;">
-                                    {{ $item->NamaCust }} - {{ $item->Uraian }}
-                                </p>
-                            @elseif ($jenisCetak == 'DP Pelunasan')
-                                <p style="margin: 0;padding: 0 0 0 10px; font-size: small;">
-                                    {{ $item->NamaCust }} - {{ $item->Uraian }}
-                                </p>
-                            @endif
+                            <p style="margin: 0;padding: 0 0 0 10px; font-size: small;">
+                                {{ $item->NamaCust }} - {{ $item->Uraian }}
+                            </p>
                         </div>
                         <div
                             style="display: flex;flex-direction: column;flex:2.25;text-align: center;border-right: solid 1px grey">
-                            @if ($jenisCetak == 'Penagihan')
-                                {{ $item->Kode_Perkiraan }}
-                            @elseif ($jenisCetak == 'Cash Advance')
-                                {{ $item->KodePerkiraan }}
-                            @elseif ($jenisCetak == 'DP Pelunasan')
-                                {{ $item->KodePerkiraan }}
-                            @endif
+                            {{ $item->KodePerkiraan }}
                         </div>
                         <div style="display: flex;flex-direction: column;flex:2.25;text-align: right;">
                             <p style="margin: 0;padding: 0 10px 0 0">
@@ -135,25 +119,23 @@
                     __________
                 </div>
                 <div style="display: flex;flex-direction: column;flex:0.6;">
-                    @if ($jenisCetak == 'DP Pelunasan')
-                        <div style="display: flex;flex-direction: row;">
-                            <p style="margin: 0; font-size: smaller;">
-                                Acuan BKK DP Nomer : {{ $dataBKM[0]->Id_BKK_Acuan }}
-                            </p> &nbsp;
-                            <p style="margin: 0; font-size: smaller;">
-                                Tanggal: {{ date('m/d/Y', strtotime($dataBKM[0]->Tgl_BKK)) }}
-                            </p>
-                        </div>
-                        <div style="display: flex;flex-direction: row;">
-                            <p style="margin: 0; font-size: smaller;">
-                                Acuan BKM DP Nomer: {{ $dataBKM[0]->Id_BKM_Acuan }}
-                            </p> &nbsp;
-                            <p style="margin: 0; font-size: smaller;">
-                                Tanggal:
-                                {{ date('m/d/Y', strtotime($dataBKM[0]->Tgl_BKM)) }}
-                            </p>
-                        </div>
-                    @endif
+                    <div style="display: flex;flex-direction: row;">
+                        <p style="margin: 0; font-size: smaller;">
+                            Acuan BKK DP Nomer : {{ $dataBKM[0]->Id_BKK_Acuan }}
+                        </p> &nbsp;
+                        <p style="margin: 0; font-size: smaller;">
+                            Tanggal: {{ date('m/d/Y', strtotime($dataBKM[0]->Tgl_BKK)) }}
+                        </p>
+                    </div>
+                    <div style="display: flex;flex-direction: row;">
+                        <p style="margin: 0; font-size: smaller;">
+                            Acuan BKM DP Nomer: {{ $dataBKM[0]->Id_BKM_Acuan }}
+                        </p> &nbsp;
+                        <p style="margin: 0; font-size: smaller;">
+                            Tanggal:
+                            {{ date('m/d/Y', strtotime($dataBKM[0]->Tgl_BKM)) }}
+                        </p>
+                    </div>
                     Sidoarjo, {{ $tanggalHariIni }}
                 </div>
             </div>
