@@ -114,7 +114,7 @@
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($pajak, 2, '.', ',') }}
             </div>
-            <div style="left: 2cm;top: 23.5cm; position: absolute;font-size:12px;">
+            <div style="left: 2cm;top: 23.5cm; position: absolute;font-size:12px;width: 14.5cm;">
                 {{ $dataCetak[0]->Terbilang }}
             </div>
             <div style="left: 17.2cm;top: 23.5cm; position: absolute;font-size:12px;">
