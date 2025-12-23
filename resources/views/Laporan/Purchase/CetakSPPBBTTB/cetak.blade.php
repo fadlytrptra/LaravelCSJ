@@ -36,75 +36,55 @@
                         {{ $dataCetak[0]->Alasan }} ) </label>
                 </div>
                 <div style="display: flex;flex-direction: column;">
-                    <div
-                        style="display: flex;flex-direction: row;border-bottom: solid 3px grey;margin: 10px 0 5px 0;gap: 5px;">
-                        <div style="display: flex;flex-direction: column;flex:0.05;margin: 0 0 10px 0;">
-                            <label>No</label>
-                        </div>
-                        <div style="display: flex;flex-direction: column;flex:0.1;margin: 0 0 10px 0;">
-                            <label>Quantity</label>
-                        </div>
-                        <div style="display: flex;flex-direction: column;flex:0.1;margin: 0 0 10px 0;">
-                            <label>Satuan</label>
-                        </div>
-                        <div style="display: flex;flex-direction: column;flex:0.2;margin: 0 0 10px 0;">
-                            <label>Jenis Barang</label>
-                        </div>
-                        <div style="display: flex;flex-direction: column;flex:0.29;margin: 0 0 10px 0;">
-                            <label>Spesifikasi</label>
-                        </div>
-                        <div style="display: flex;flex-direction: column;flex:0.13;margin: 0 0 10px 0;">
-                            <label>Harga Sat</label>
-                        </div>
-                        <div style="display: flex;flex-direction: column;flex:0.05;margin: 0 0 10px 0;">
-                            <label>PPN</label>
-                        </div>
-                        <div style="display: flex;flex-direction: column;flex:0.05;margin: 0 0 10px 0;">
-                            <label>Harga</label>
-                        </div>
-                    </div>
-                    @foreach ($dataCetak as $index => $item)
-                        @php
-                            $hargaSatFormatted = number_format($item->Hrg_trm, 2, '.', ',');
-                            $hargaFormatted = number_format($item->TotalHarga, 2, '.', ',');
-                            $sumTotalHarga += (float) $item->TotalHarga;
-                        @endphp
-                        <div
-                            style="display: flex;flex-direction: row;border-bottom: solid 1px grey;margin: 0 0 5px 0;gap: 5px;font-size: 12px;">
-                            <div style="display: flex;flex-direction: column;flex:0.05;">
-                                <label>{{ $index + 1 }}</label>
-                            </div>
-                            <div style="display: flex;flex-direction: column;flex:0.1;">
-                                <label>{{ $item->quantity }}</label>
-                            </div>
-                            <div style="display: flex;flex-direction: column;flex:0.1;">
-                                <label>{{ trim($item->Nama_satuan) }}</label>
-                            </div>
-                            <div style="display: flex;flex-direction: column;flex:0.2;">
-                                <label>{{ $item->nama_sub_kategori }}</label>
-                            </div>
-                            <div style="display: flex;flex-direction: row;flex:0.29;">
-                                <div style="display: flex;flex-direction: column;flex:0.3;">
-                                    <label>
-                                        <{{ $item->kode_barang }}>
-                                    </label>
-                                </div>
-                                <div style="display: flex;flex-direction: column;flex:0.7;">
-                                    <label>{{ $item->NAMA_BRG }}</label>
-                                    <label>( {{ $item->KET }} )</label>
-                                </div>
-                            </div>
-                            <div style="display: flex;flex-direction: column;flex:0.13;">
-                                <label>{{ $hargaSatFormatted }}</label>
-                            </div>
-                            <div style="display: flex;flex-direction: column;flex:0.05;">
-                                <label>{{ number_format($item->PPN) }}</label>
-                            </div>
-                            <div style="display: flex;flex-direction: column;flex:0.05;">
-                                <label>{{ $hargaFormatted }}</label>
-                            </div>
-                        </div>
-                    @endforeach
+                    <table style="width: 100%;border-collapse: collapse;margin-top: 10px;" border="1">
+                        <tr style="white-space: nowrap">
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;">No</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Quantity</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Satuan</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Spesifikasi</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Harga Sat</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;">PPN</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;">Harga</td>
+                        </tr>
+                        @foreach ($dataCetak as $index => $item)
+                            @php
+                                $hargaSatFormatted = number_format($item->Hrg_trm, 2, '.', ',');
+                                $hargaFormatted = number_format($item->TotalHarga, 2, '.', ',');
+                                $sumTotalHarga += (float) $item->TotalHarga;
+                            @endphp
+                            <tr>
+                                <td style="padding: 4px; font-size: 10px;">{{ $index + 1 }}</td>
+                                <td style="padding: 4px; font-size: 10px;">{{ number_format($item->quantity, 2, '.', ',') }}</td>
+                                <td style="padding: 4px; font-size: 10px;">{{ trim($item->Nama_satuan) }}</td>
+                                <td style="padding: 4px; font-size: 10px;">
+                                    <div style="display: flex;flex-direction: row;">
+                                        <div style="display: flex;flex-direction: column;flex:0.2;">
+                                            <label>
+                                                <{{ $item->kode_barang }}>
+                                            </label>
+                                        </div>
+                                        <div style="display: flex;flex-direction: column;flex:0.8;">
+                                            <label>{{ $item->NAMA_BRG }}</label>
+                                            <label>( {{ $item->KET }} )</label>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="padding: 4px; font-size: 10px;">
+                                    {{ $item->Symbol }}{{ $hargaSatFormatted }}
+                                </td>
+                                <td style="padding: 4px; font-size: 10px;">
+                                    @if ($item->PPN > 0)
+                                        {{ $item->Symbol }}{{ number_format($item->PPN, 2, '.', ',') }}
+                                    @else
+                                        0
+                                    @endif
+                                </td>
+                                <td style="padding: 4px; font-size: 10px;">
+                                    {{ $item->Symbol }}{{ $hargaFormatted }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
                     <div
                         style="display: flex;flex-direction: row;border-bottom: solid 3px grey;margin: 10px 0 5px 0;gap: 5px;font-size: 12px;">
                         <div style="display: flex;flex-direction: column;flex:0.15;margin: 0 0 10px 0;">
