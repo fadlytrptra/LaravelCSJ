@@ -25,7 +25,7 @@
 
     <body>
         <div style="height: 27cm; overflow: overflow;">
-            <div style="left: 11.8cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
+            <div style="left: 10.8cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
                 {{ $idPenagihan }}
                 @if (!empty($dataCetak[0]->NoSeri_FakturPajak))
                     <br>
@@ -52,28 +52,28 @@
                     $total += (float) $item->Jml * (float) $item->HargaSatuan;
                 @endphp
                 <div style="position:absolute; top:{{ $top }}cm; left:0;">
-                    <span style="position:absolute; left:1cm; font-size:14px;">{{ $index + 1 }}</span>
-                    <span style="position:absolute; left:2cm; font-size:14px;width: 8.5cm;">{{ $item->NamaType }}</span>
-                    <span style="position:absolute; left:10.5cm; font-size:14px;width: 3cm;">
+                    <span style="position:absolute; left:0.5cm; font-size:14px;">{{ $index + 1 }}</span>
+                    <span style="position:absolute; left:1.5cm; font-size:14px;width: 8.5cm;">{{ $item->NamaType }}</span>
+                    <span style="position:absolute; left:10cm; font-size:14px;width: 3cm;">
                         {{ number_format($item->Jml, 2, '.', ',') }} {{ $item->Satuan }}
                     </span>
-                    <span style="position:absolute; left:13.5cm; font-size:14px;width: 3.5cm;">
+                    <span style="position:absolute; left:13cm; font-size:14px;width: 3.5cm;">
                         {{ $item->Symbol2 }} {{ number_format($item->HargaSatuan, 2, '.', ',') }}
                     </span>
-                    <span style="position:absolute; left:17.2cm; font-size:14px;width: 3.5cm;">
+                    <span style="position:absolute; left:16.7cm; font-size:14px;width: 3.5cm;">
                         {{ $item->Symbol2 }}
                         {{ number_format((float) $item->Jml * (float) $item->HargaSatuan, 2, '.', ',') }}
                     </span>
                 </div>
             @endforeach
             <div style="position:absolute; top:{{ $top + 1.2 }}cm; left:0;">
-                <span style="position:absolute; left:2.5cm; font-size:14px;width: 8.5cm;">
+                <span style="position:absolute; left:1.8cm; font-size:14px;width: 8.5cm;">
                     P O
                     {{ $dataCetak[0]->NO_PO }}
                 </span>
             </div>
             <div style="position:absolute; top:{{ $top + 4.5 }}cm; left:0;">
-                <span style="position:absolute; left:2cm; font-size:14px;width: 6cm;">
+                <span style="position:absolute; left:1.5cm; font-size:14px;width: 6cm;">
                     Pembayaran Harap Ditranfer ke :<br />
                     @if ($bank == 'BCA1')
                         Bank BCA Cab. Galaxy, Surabaya<br />
@@ -105,14 +105,14 @@
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($nilaiUM, 2, '.', ',') }}
             </div>
-            <div style="left: 5cm;top: 22.3cm; position: absolute;font-size:12px;">
+            <div style="left: 4.5cm;top: 22.3cm; position: absolute;font-size:12px;">
                 Nilai Lain
             </div>
             <div style="left: 17.2cm;top: 22.3cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($dpp, 2, '.', ',') }}
             </div>
-            <div style="left: 2cm;top: 22.9cm; position: absolute;font-size:12px;">12%</div>
+            <div style="left: 1.8cm;top: 22.9cm; position: absolute;font-size:12px;">12%</div>
             <div style="left: 17.2cm;top: 22.9cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($pajak, 2, '.', ',') }}
@@ -124,16 +124,16 @@
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($terbayar, 2, '.', ',') }}
             </div>
-            <div style="left: 13.2cm;top: 24cm; position: absolute;font-size:14px;">
+            <div style="left: 13.2cm;top: 24.1cm; position: absolute;font-size:14px;">
                 Sidoarjo
             </div>
-            <div style="left: 16.5cm;top: 24cm; position: absolute;font-size:14px;">
+            <div style="left: 15.6cm;top: 24.1cm; position: absolute;font-size:14px;">
                 {{ date('d F') }}
             </div>
-            <div style="left: 19.7cm;top: 24cm; position: absolute;font-size:14px;">
+            <div style="left: 18.8cm;top: 24.1cm; position: absolute;font-size:14px;">
                 {{ date('y') }}
             </div>
-            <div style="left: 15.2cm;top: 26.3cm; position: absolute;font-size:14px;">
+            <div style="left: 15cm;top: 26.3cm; position: absolute;font-size:14px;">
                 {{ $ttd }}
             </div>
         </div>
