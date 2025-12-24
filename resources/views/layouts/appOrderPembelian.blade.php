@@ -131,12 +131,12 @@
                                                         'NomorUrutDisplay' => $fitur->NomorUrutDisplay,
                                                     ];
                                                 }
-
                                                 foreach ($filteredArrayMenu as $menu) {
                                                     $combinedArrayFiturMenu[] = [
                                                         'Nama' => $menu->NamaMenu,
                                                         'Route' => null,
                                                         'IdMenu' => $menu->IdMenu,
+                                                        'NomorUrutDisplay' => $menu->NomorUrutDisplay,
                                                     ];
                                                 }
                                                 usort($combinedArrayFiturMenu, function ($a, $b) {

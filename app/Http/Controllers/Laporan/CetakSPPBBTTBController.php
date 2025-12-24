@@ -13,7 +13,7 @@ class CetakSPPBBTTBController extends Controller
 {
     public function index()
     {
-        $access = (new HakAksesController)->HakAksesFiturMaster('Laporan');
+        $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Cetak SPPB / BTTB');
         if ($result > 0) {
             return view('Laporan.Purchase.CetakSPPBBTTB.index', compact('access'));

@@ -13,7 +13,7 @@ class CetakBKMController extends Controller
 {
     public function index()
     {
-        $access = (new HakAksesController)->HakAksesFiturMaster('Laporan');
+        $access = (new HakAksesController)->HakAksesFiturMaster('Accounting');
         $result = (new HakAksesController)->HakAksesFitur('Cetak BKM');
         if ($result > 0) {
             return view('Laporan.Accounting.CetakBKM.index', compact('access'));

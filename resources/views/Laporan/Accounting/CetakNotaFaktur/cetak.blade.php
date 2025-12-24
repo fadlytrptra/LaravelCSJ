@@ -80,7 +80,7 @@
                         a/n: PT. CAHAYA SANTOSO JAYA
                     @elseif ($bank == 'OCBC')
                         Bank OCBC Cab. Pemuda, Surabaya<br />
-                        a/c: 788.083.3639<br />
+                        a/c: 050.800.525.037<br />
                         a/n: PT. CAHAYA SANTOSO JAYA
                     @endif
                 </span>
@@ -95,13 +95,28 @@
                 }
                 $pajak = round($dpp * $ppn, 2);
                 $terbayar = $pajak + $total;
+                $tglPenagihan = $dataCetak[0]->Tgl_Penagihan; // "2025-12-23 00:00:00.000"
+                $syaratBayar = (int) $dataCetak[0]->SyaratBayar;
+
+                $jatuhTempo = date('d/m/Y', strtotime("+{$syaratBayar} days", strtotime($tglPenagihan)));
             @endphp
             <div style="left: 16.75cm;top: 20.65cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
+            </div>
+            <div style="left: 17.35cm;top: 20.65cm; position: absolute;font-size:12px;">
                 {{ number_format($total, 2, '.', ',') }}
+            </div>
+            <div style="left: 16.75cm;top: 21.25cm; position: absolute;font-size:12px;">
+                {{ $dataCetak[0]->Symbol2 }}
+            </div>
+            <div style="left: 17.35cm;top: 21.25cm; position: absolute;font-size:12px;">
+                {{-- {{ number_format($nilaiUM, 2, '.', ',') }} --}}
+                0.00
             </div>
             <div style="left: 16.75cm;top: 21.85cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
+            </div>
+            <div style="left: 17.35cm;top: 21.85cm; position: absolute;font-size:12px;">
                 {{ number_format($nilaiUM, 2, '.', ',') }}
             </div>
             <div style="left: 4.5cm;top: 22.45cm; position: absolute;font-size:12px;">
@@ -109,11 +124,15 @@
             </div>
             <div style="left: 16.75cm;top: 22.45cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
+            </div>
+            <div style="left: 17.35cm;top: 22.45cm; position: absolute;font-size:12px;">
                 {{ number_format($dpp, 2, '.', ',') }}
             </div>
             <div style="left: 1.8cm;top: 23.05cm; position: absolute;font-size:12px;">12%</div>
             <div style="left: 16.75cm;top: 23.05cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
+            </div>
+            <div style="left: 17.35cm;top: 23.05cm; position: absolute;font-size:12px;text-align: right;">
                 {{ number_format($pajak, 2, '.', ',') }}
             </div>
             <div style="left: 2cm;top: 23.65cm; position: absolute;font-size:12px;width: 14.5cm;">
@@ -121,6 +140,8 @@
             </div>
             <div style="left: 16.75cm;top: 23.65cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
+            </div>
+            <div style="left: 17.35cm;top: 23.65cm; position: absolute;font-size:12px;text-align: right;">
                 {{ number_format($terbayar, 2, '.', ',') }}
             </div>
             <div style="left: 13.2cm;top: 24.2cm; position: absolute;font-size:14px;">
@@ -134,6 +155,32 @@
             </div>
             <div style="left: 15cm;top: 26.3cm; position: absolute;font-size:14px;">
                 {{ $ttd }}
+            </div>
+            <div style="position:absolute; left:1cm; top:25.5cm; width:12cm;">
+                <div style="display: flex;flex-direction: row;">
+                    <div style="font-size:14px;">
+                        Syarat Pembayaran:
+                    </div>
+                    <div style="font-size:14px;">
+                        {{ $dataCetak[0]->SyaratBayar }} Hari
+                    </div>
+                </div>
+                <div style="display: flex;flex-direction: row;margin-top:0.2cm;">
+                    <div style="font-size:14px;">
+                        Jatuh Tempo:
+                    </div>
+                    <div style="font-size:14px;">
+                        {{ $jatuhTempo }}
+                    </div>
+                </div>
+                <div style="display: flex;flex-direction: row;margin-top:0.2cm;">
+                    <div style="font-size:14px;">
+                        Surat Jalan:
+                    </div>
+                    <div style="font-size:14px;">
+                        {{ $dataCetak[0]->IDPengiriman }}
+                    </div>
+                </div>
             </div>
         </div>
         <div class="no-print" style="color: red;font-weight: bold;">

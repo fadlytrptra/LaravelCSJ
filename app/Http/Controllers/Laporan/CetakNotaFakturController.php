@@ -13,7 +13,7 @@ class CetakNotaFakturController extends Controller
 {
     public function index()
     {
-        $access = (new HakAksesController)->HakAksesFiturMaster('Laporan');
+        $access = (new HakAksesController)->HakAksesFiturMaster('Accounting');
         $result = (new HakAksesController)->HakAksesFitur('Cetak Nota / Faktur');
         if ($result > 0) {
             return view('Laporan.Accounting.CetakNotaFaktur.index', compact('access'));

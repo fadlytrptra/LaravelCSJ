@@ -1,4 +1,4 @@
-@extends('layouts.appOrderPembelian')
+@extends('layouts.appAccounting')
 @section('content')
 @section('title', 'Cetak BKM')
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
