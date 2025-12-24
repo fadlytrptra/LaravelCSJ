@@ -24,7 +24,7 @@ class HakAksesController extends Controller
             ->join('MenuMaster', 'Id_Menu', 'IdMenu')
             ->join('ProgramMaster', 'Id_Program', 'IdProgram')
             ->where('Id_User', Auth::user()->IDUser)->where('NamaProgram', $Program)
-            ->orwhere('Id_User', 218)->where('NamaProgram', $Program)->count();
+            ->orwhere('Id_User', 9)->where('NamaProgram', $Program)->count();
         return $AccessProgram;
         //return view('home',compact('AccessProgram'));
     }
@@ -34,7 +34,7 @@ class HakAksesController extends Controller
             ->table('User_Fitur')
             ->join('FiturMaster', 'Id_Fitur', 'IdFitur')
             ->where('Id_User', Auth::user()->IDUser)->where('NamaFitur', $Fitur)
-            ->orWhere('Id_User', 218)->where('NamaFitur', $Fitur)->count();
+            ->orWhere('Id_User', 9)->where('NamaFitur', $Fitur)->count();
         // dd($AccessFitur);
         return $AccessFitur;
         //return view('home',compact('AccessProgram'));
@@ -67,7 +67,7 @@ class HakAksesController extends Controller
             ->leftJoin('ProgramMaster', 'ProgramMaster.IdProgram', '=', 'MenuMaster.Id_Program')
             ->where(function ($query) {
                 $query->where('User_Fitur.Id_User', Auth::user()->IDUser)
-                    ->Orwhere('Id_User', '218') //User PUBLIC
+                    ->Orwhere('Id_User', '9') //User PUBLIC
                     ->orWhereIn('MenuMaster.IdMenu', function ($subquery) {
                         $subquery->select('MenuMaster.Parent_IdMenu')
                             ->from('MenuMaster')
@@ -76,7 +76,7 @@ class HakAksesController extends Controller
                             ->leftJoin('User_Fitur', 'FiturMaster.IdFitur', '=', 'User_Fitur.Id_Fitur')
                             ->whereNotNull('MenuMaster.Parent_IdMenu')
                             ->where('Id_User', Auth::user()->IDUser)
-                            ->Orwhere('Id_User', '218') //User PUBLIC
+                            ->Orwhere('Id_User', '9') //User PUBLIC
                             ->groupBy('MenuMaster.Parent_IdMenu');
                     });
             })
@@ -99,7 +99,7 @@ class HakAksesController extends Controller
             ->join('ProgramMaster', 'Id_Program', 'IdProgram')
             ->groupBy('IdFitur', 'NamaFitur', 'Id_Menu', 'Route', 'FiturMaster.NomorUrutDisplay')
             ->where('Id_User', Auth::user()->IDUser)
-            ->Orwhere('Id_User', '218'); //'218' itu Id_User PUBLIC
+            ->Orwhere('Id_User', '9'); //'9' itu Id_User PUBLIC
         if ($Program == 'Accounting') {
             $AccessFitur = $AccessFitur->orderBy('IdFitur', 'asc');
         } else {
