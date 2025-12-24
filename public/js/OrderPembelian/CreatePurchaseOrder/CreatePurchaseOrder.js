@@ -1218,7 +1218,7 @@ jQuery(function ($) {
 
                 id_mata_uang: payload.id_mata_uang,
                 kurs: payload.kurs,
-                jenis: jenis_pembelian.value,
+                jenis: String(jenis_pembelian.value).trim(),
                 supplier_id: supplier.value,
 
                 setelahDisc: comp.setelahDisc,
@@ -1315,33 +1315,7 @@ jQuery(function ($) {
         btn_proses.disabled = true;
     }
 
-    //submit database
-    btn_proses.addEventListener("click", function (e) {
-        e.preventDefault();
 
-        let checked = document.querySelector(".row-select-isi:checked");
-        if (!checked) {
-            alert("Pilih 1 data pada tabel.");
-            return;
-        }
-
-        if (!jenis_pembelian || !jenis_pembelian.value) {
-            alert("Jenis Pembelian tidak boleh kosong");
-            jenis_pembelian.focus();
-            return;
-        }
-
-        let row = detailTable.row($(checked).closest("tr"));
-        let rowData = row.data();
-
-        let comp = totalHarga();
-        if (!comp || comp.totalValue <= 0) {
-            alert("Penambahan harga tidak valid.");
-            return;
-        }
-
-        submitToDatabase(rowData);
-    });
 
     function submitToDatabase(rowData) {
         if (!rowData || !rowData._harga) {
@@ -1355,6 +1329,8 @@ jQuery(function ($) {
         let payload = {
             kd_div_1: document.getElementById("kd_div").value.trim(),
             no_trans_1: rowData[6],
+            no_trans: rowData[6],
+            qty: rowData[2],
             tgl_sppb_3: document.getElementById("tgl_sppb").value,
             tgl_dtg_4: h.tgl_datang,
             jenis_5: String(h.jenis).trim(),
@@ -1374,7 +1350,7 @@ jQuery(function ($) {
             hrg_nego_rp: 0,
             hrg_ppn: 0,
             hrg_ppn_rp: 0,
-            dpp_nilai_lain: rowData[12],
+            dpp_nilai_lain: parseFloat(rowData[12]),
             dpp_nilai_lain_rp: 0,
         };
 
@@ -1390,27 +1366,30 @@ jQuery(function ($) {
             },
             body: JSON.stringify(payload),
         })
-            // .then(async (res) => {
-            //     if (!res.ok) {
-            //         let text = await res.text();
-            //         throw new Error("Server error:\n" + text.slice(0, 500));
-            //     }
-            //     return res.json();
-            // })
-            // .then((res) => {
-            //     if (!res.success) {
-            //         alert(res.message || "Gagal menyimpan data harga.");
-            //         return;
-            //     }
 
-            //     alert("Data harga diproses dan disimpan.");
-            //     checked.disabled = true;
-            //     checked.checked = false;
-            // })
-            // .catch((err) => {
-            //     console.error(err);
-            //     alert("Terjadi kesalahan server. Cek console.");
-            // });
+        .then(res => {
+            if (!res.ok) throw new Error("Gagal menyimpan data");
+            return res.json();
+        })
+        .then(res => {
+            // asumsi backend return { success: true }
+            if (res.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: "Data berhasil diperbarui",
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            } else {
+                throw new Error(res.message || "Update gagal");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire("Error", err.message, "error");
+        });
+
     }
 
     function updateBtnProsesState() {
@@ -1421,9 +1400,7 @@ jQuery(function ($) {
         btn_proses.disabled = checkedCount !== 1;
     }
 
-    document
-        .getElementById("btn_proses")
-        .addEventListener("click", function () {
+    document.getElementById("btn_proses").addEventListener("click", function () {
             let checked = document.querySelector(
                 "#tbl_detail_order tbody .row-select-isi:checked"
             );
@@ -1462,12 +1439,12 @@ jQuery(function ($) {
 
             let payload = {
                 no_trans: rowData[10],
-                qty: rowData[4],
+                qty: rowData[2],
 
                 hrg_murni: h.harga_satuan,
                 disc: h.disc,
                 ppn: h.ppn,
-                dpp_nilai_lain: h.dpp,
+                dpp_nilai_lain: rowData[12],
                 harga_ppn: (h.ppn * h.dpp) / 100,
                 subtotal_harga_jual: h.dpp,
                 total_harga: h.total,
@@ -1480,7 +1457,7 @@ jQuery(function ($) {
 
                 tgl_datang: h.tgl_datang,
                 supplier: h.supplier,
-                jenis_pembelian: h.jenis_pembelian,
+                jenis_pembelian: String(h.jenis_pembelian).trim(),
             };
 
             Swal.fire({
@@ -1494,38 +1471,8 @@ jQuery(function ($) {
             }).then((result) => {
                 if (!result.isConfirmed) return;
 
-
-            fetch("/purchaseorder/update-detail-sppb", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute("content"),
-                },
-                body: JSON.stringify(payload),
-            })
-            .then(async (res) => {
-                if (!res.ok) {
-                    let text = await res.text();
-                    throw new Error("HTTP " + res.status + ":\n" + text);
-                }
-
-                return res.json();
-            })
-
-            .catch((err) => {
-                console.error("FETCH ERROR:", err);
-                    Swal.fire({
-                        icon: "success",
-                        title: "Success!",
-                        text: "Data sudah tersimpan.",
-                        showConfirmButton: true,
-                    }).then(() => {
-                window.location.href = "/PurchaseOrder/create";
-            });
+            submitToDatabase(rowData);
         });
-    });
     });
 
 

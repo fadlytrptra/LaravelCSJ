@@ -1203,10 +1203,68 @@ class PurchaseOrderController extends Controller
         }
     }
 
-    public function updateDetailSppb(Request $request): JsonResponse
+    // public function updateDetailSppb(Request $request): JsonResponse
+    // {
+    //     // VALIDASI
+    //     $validated = $request->validate([
+    //         'no_trans' => 'required|string',
+    //         'qty' => 'nullable|numeric',
+    //         'hrg_murni' => 'required|numeric',
+    //         'disc' => 'nullable|numeric',
+    //         'ppn' => 'nullable|numeric',
+    //         'dpp_nilai_lain' => 'nullable|numeric',
+    //         'harga_ppn' => 'nullable|numeric',
+    //         'subtotal_harga_jual' => 'nullable|numeric',
+    //         'total_harga' => 'nullable|numeric',
+    //         'mata_uang' => 'nullable|string',
+    //         'kurs' => 'nullable|numeric',
+    //         'jangka_waktu' => 'nullable|integer',
+    //         'pembayaran' => 'nullable|string',
+    //         'tgl_datang' => 'nullable|date',
+    //         'supplier' => 'nullable|string',
+    //         'jenis_pembelian' => 'nullable|string',
+    //     ]);
+
+    //     try {
+    //         DB::connection('ConnPurchase')
+    //             ->table('YTRANSBL')
+    //             ->where('No_trans', $validated['no_trans'])
+    //             ->update([
+    //                 'Qty' => $validated['qty'],
+    //                 'hrg_murni' => $validated['hrg_murni'],
+    //                 'Disc_trm' => $validated['disc'],
+    //                 'Ppn_trm' => $validated['ppn'],
+    //                 'dpp_nilai_lain' => $validated['dpp_nilai_lain'],
+    //                 'hrg_ppn' => $validated['harga_ppn'],
+    //                 'hrg_nego' => $validated['subtotal_harga_jual'],
+    //                 'hrg_nego_rp' => $validated['total_harga'],
+    //                 'IdMataUang' => $validated['mata_uang'],
+    //                 'Kurs_Rp' => $validated['kurs'],
+    //                 'Waktu' => $validated['jangka_waktu'],
+    //                 'PersetujuanBayar' => $validated['pembayaran'],
+    //                 'Tgl_dtg' => $validated['tgl_datang'],
+    //                 'No_sup' => $validated['supplier'],
+    //                 'Jenis' => $validated['jenis_pembelian'],
+    //             ]);
+
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Detail harga berhasil disimpan.',
+    //         ]);
+
+    //     } catch (\Throwable $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+
+    public function simpanHarga(Request $request)
     {
-        // VALIDASI
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'no_trans' => 'required|string',
             'qty' => 'nullable|numeric',
             'hrg_murni' => 'required|numeric',
@@ -1216,62 +1274,30 @@ class PurchaseOrderController extends Controller
             'harga_ppn' => 'nullable|numeric',
             'subtotal_harga_jual' => 'nullable|numeric',
             'total_harga' => 'nullable|numeric',
-            'mata_uang' => 'nullable|string',
+            'mata_uang' => 'nullable',
             'kurs' => 'nullable|numeric',
             'jangka_waktu' => 'nullable|integer',
             'pembayaran' => 'nullable|string',
             'tgl_datang' => 'nullable|date',
-            'supplier' => 'nullable|string',
+            'supplier' => 'nullable',
             'jenis_pembelian' => 'nullable|string',
         ]);
 
-        try {
-            DB::connection('ConnPurchase')
-                ->table('YTRANSBL')
-                ->where('No_trans', $validated['no_trans'])
-                ->update([
-                    'Qty' => $validated['qty'],
-                    'hrg_murni' => $validated['hrg_murni'],
-                    'Disc_trm' => $validated['disc'],
-                    'Ppn_trm' => $validated['ppn'],
-                    'dpp_nilai_lain' => $validated['dpp_nilai_lain'],
-                    'hrg_ppn' => $validated['harga_ppn'],
-                    'hrg_nego' => $validated['subtotal_harga_jual'],
-                    'hrg_nego_rp' => $validated['total_harga'],
-                    'IdMataUang' => $validated['mata_uang'],
-                    'Kurs_Rp' => $validated['kurs'],
-                    'Waktu' => $validated['jangka_waktu'],
-                    'PersetujuanBayar' => $validated['pembayaran'],
-                    'Tgl_dtg' => $validated['tgl_datang'],
-                    'No_sup' => $validated['supplier'],
-                    'Jenis' => $validated['jenis_pembelian'],
-                ]);
-
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Detail harga berhasil disimpan.',
-            ]);
-
-        } catch (\Throwable $e) {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+                'errors' => $validator->errors(),
+            ], 422);
         }
-    }
 
+        $validated = $validator->validated();
 
-    public function simpanHarga(Request $request)
-    {
         $kd_div_1 = $request->input('kd_div_1');
         $no_trans_1 = $request->input('no_trans_1');
         $tgl_sppb_3 = $request->input('tgl_sppb_3');
         $tgl_dtg_4 = $request->input('tgl_dtg_4');
-
         $jenis_5 = $request->input('jenis_5');
         $no_sup_5 = $request->input('no_sup_5');
-
         $hrg_trm_7 = $request->input('hrg_trm_7');
         $disc_trm_8 = $request->input('disc_trm_8');
         $ppn_trm_9 = $request->input('ppn_trm_9');
@@ -1291,23 +1317,43 @@ class PurchaseOrderController extends Controller
         $dpp_nilai_lain = $request->input('dpp_nilai_lain');
         $dpp_nilai_lain_rp = $request->input('dpp_nilai_lain_rp');
 
-
         $jenis_5 = $jenis_5 !== null ? trim($jenis_5) : null;
-        //$operator_sppb_6 = $operator_sppb_6 !== null && $operator_sppb_6 !== '' ? (int) $operator_sppb_6 : null;
         $no_sup_5 = $no_sup_5 !== null && $no_sup_5 !== '' ? (int) $no_sup_5 : null;
-
         $IdMataUang = $IdMataUang !== null && $IdMataUang !== '' ? (int) $IdMataUang : null;
         $waktu_10 = $waktu_10 !== null && $waktu_10 !== '' ? (int) $waktu_10 : null;
 
-
-
         if (!$kd_div_1) {
-            return response()->json(['message' => 'kd_div wajib diisi'], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'kd_div wajib diisi'
+            ], 400);
         }
 
         DB::connection('ConnPurchase')->beginTransaction();
 
         try {
+            DB::connection('ConnPurchase')
+                ->table('YTRANSBL')
+                ->where('No_trans', $validated['no_trans'])
+                ->update([
+                    'Qty' => $request->input('qty'),
+                    'hrg_murni' => $request->input('hrg_murni'),
+                    'Disc_trm' => $request->input('disc'),
+                    'Ppn_trm' => $request->input('ppn'),
+                    'dpp_nilai_lain' => $request->input('dpp_nilai_lain'),
+                    'hrg_ppn' => $request->input('harga_ppn'),
+                    'hrg_nego' => $request->input('subtotal_harga_jual'),
+                    'hrg_nego_rp' => $request->input('total_harga'),
+                    'IdMataUang' => $request->input('mata_uang'),
+                    'Kurs_Rp' => $request->input('kurs'),
+                    'Waktu' => $request->input('jangka_waktu'),
+                    'PersetujuanBayar' => $request->input('pembayaran'),
+                    'Tgl_dtg' => $request->input('tgl_datang'),
+                    'No_sup' => $request->input('supplier'),
+                    'Jenis' => $request->input('jenis_pembelian'),
+                ]);
+
+
             $counter = DB::connection('ConnPurchase')->select(
                 'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
                 [$kd_div_1]
@@ -1317,20 +1363,16 @@ class PurchaseOrderController extends Controller
                 throw new \Exception('Counter SPPB tidak ditemukan');
             }
 
-            //pembuatan sppb baru
             $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
-
             $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
-            $monthNumber = (int) date('n', strtotime($tgl_sppb_3));
-            $bulan = chr(64 + $monthNumber);
-            $tahun =date('y', strtotime($tgl_sppb_3));
-
+            $bulan = chr(64 + (int) date('n', strtotime($tgl_sppb_3)));
+            $tahun = date('y', strtotime($tgl_sppb_3));
             $no_sppb_2 = "{$bulan}{$tahun}/{$noSppbRight}";
 
             $operator_sppb_6 = DB::connection('ConnPurchase')
-            ->table('YTRANSBL')
-            ->where('No_trans', $no_trans_1)
-            ->value('Operator');
+                ->table('YTRANSBL')
+                ->where('No_trans', $no_trans_1)
+                ->value('Operator');
 
             $exists = DB::connection('ConnPurchase')
                 ->table('YJN_BL')
@@ -1338,12 +1380,8 @@ class PurchaseOrderController extends Controller
                 ->exists();
 
             if (!$exists) {
-                return response()->json([
-                    'error' => "Jenis pembelian ($jenis_5) tidak valid"
-                ], 422);
+                throw new \Exception("Jenis pembelian ($jenis_5) tidak valid");
             }
-
-
 
             DB::connection('ConnPurchase')->statement(
                 'EXEC SP_1273_PRG_UPDATE_YTRANSBL_SPPB_1
@@ -1397,13 +1435,12 @@ class PurchaseOrderController extends Controller
                 ]
             );
 
-
-
             DB::connection('ConnPurchase')->statement(
                 'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
                     @kd_div_1 = ?,
                     @no_sppb_2 = ?',
-                [$kd_div_1, $no_sppb_counter]);
+                [$kd_div_1, $no_sppb_counter]
+            );
 
             DB::connection('ConnPurchase')->commit();
 
@@ -1415,12 +1452,11 @@ class PurchaseOrderController extends Controller
         } catch (\Throwable $e) {
             DB::connection('ConnPurchase')->rollBack();
             return response()->json([
+                'success' => false,
                 'error' => $e->getMessage()
             ], 500);
         }
     }
-
-
 
 
     //Show the form for editing the specified resource.
