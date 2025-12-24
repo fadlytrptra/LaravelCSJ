@@ -25,7 +25,7 @@
 
     <body>
         <div style="height: 27cm; overflow: overflow;">
-            <div style="left: 11cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
+            <div style="left: 11.2cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
                 {{ $idPenagihan }}
                 <br>
                 <br>
@@ -96,40 +96,40 @@
                 $pajak = round($dpp * $ppn, 2);
                 $terbayar = $pajak + $total;
             @endphp
-            <div style="left: 17.2cm;top: 20.65cm; position: absolute;font-size:12px;">
+            <div style="left: 16.75cm;top: 20.65cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($total, 2, '.', ',') }}
             </div>
-            <div style="left: 17.2cm;top: 21.85cm; position: absolute;font-size:12px;">
+            <div style="left: 16.75cm;top: 21.85cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($nilaiUM, 2, '.', ',') }}
             </div>
             <div style="left: 4.5cm;top: 22.45cm; position: absolute;font-size:12px;">
                 Nilai Lain
             </div>
-            <div style="left: 17.2cm;top: 22.45cm; position: absolute;font-size:12px;">
+            <div style="left: 16.75cm;top: 22.45cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($dpp, 2, '.', ',') }}
             </div>
             <div style="left: 1.8cm;top: 23.05cm; position: absolute;font-size:12px;">12%</div>
-            <div style="left: 17.2cm;top: 23.05cm; position: absolute;font-size:12px;">
+            <div style="left: 16.75cm;top: 23.05cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($pajak, 2, '.', ',') }}
             </div>
             <div style="left: 2cm;top: 23.65cm; position: absolute;font-size:12px;width: 14.5cm;">
                 {{ $dataCetak[0]->Terbilang }}
             </div>
-            <div style="left: 17.2cm;top: 23.65cm; position: absolute;font-size:12px;">
+            <div style="left: 16.75cm;top: 23.65cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
                 {{ number_format($terbayar, 2, '.', ',') }}
             </div>
-            <div style="left: 13.2cm;top: 24.15cm; position: absolute;font-size:14px;">
+            <div style="left: 13.2cm;top: 24.2cm; position: absolute;font-size:14px;">
                 Sidoarjo
             </div>
-            <div style="left: 15.6cm;top: 24.15cm; position: absolute;font-size:14px;">
+            <div style="left: 15.6cm;top: 24.2cm; position: absolute;font-size:14px;">
                 {{ date('d F') }}
             </div>
-            <div style="left: 19cm;top: 24.15cm; position: absolute;font-size:14px;">
+            <div style="left: 19.05cm;top: 24.2cm; position: absolute;font-size:14px;">
                 {{ date('y') }}
             </div>
             <div style="left: 15cm;top: 26.3cm; position: absolute;font-size:14px;">
