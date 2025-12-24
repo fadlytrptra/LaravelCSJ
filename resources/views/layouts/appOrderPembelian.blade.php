@@ -128,6 +128,7 @@
                                                         'Nama' => $fitur->NamaFitur,
                                                         'Route' => $fitur->Route,
                                                         'IdMenu' => null,
+                                                        'NomorUrutDisplay' => $fitur->NomorUrutDisplay,
                                                     ];
                                                 }
 
@@ -139,7 +140,7 @@
                                                     ];
                                                 }
                                                 usort($combinedArrayFiturMenu, function ($a, $b) {
-                                                    return strcmp($a['Nama'], $b['Nama']);
+                                                    return strcmp($a['NomorUrutDisplay'], $b['NomorUrutDisplay']);
                                                 });
                                             @endphp
                                             @foreach ($combinedArrayFiturMenu as $combinedArrayFiturMenus)
