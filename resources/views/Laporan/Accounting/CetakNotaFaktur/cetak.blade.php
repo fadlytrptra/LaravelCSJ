@@ -27,11 +27,9 @@
         <div style="height: 27cm; overflow: overflow;">
             <div style="left: 10.8cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
                 {{ $idPenagihan }}
-                @if (!empty($dataCetak[0]->NoSeri_FakturPajak))
-                    <br>
-                    <br>
-                    No Seri Faktur Pajak: {{ $dataCetak[0]->NoSeri_FakturPajak }}
-                @endif
+                <br>
+                <br>
+                No Seri Faktur Pajak: {{ $dataCetak[0]->NoSeri_FakturPajak }}
             </div>
             <div style="position:absolute; left:6cm; top:8.5cm; width:14cm;">
                 <div style="font-size:14px; font-weight:bold;">
@@ -53,7 +51,8 @@
                 @endphp
                 <div style="position:absolute; top:{{ $top }}cm; left:0;">
                     <span style="position:absolute; left:0.5cm; font-size:14px;">{{ $index + 1 }}</span>
-                    <span style="position:absolute; left:1.5cm; font-size:14px;width: 8.5cm;">{{ $item->NamaType }}</span>
+                    <span
+                        style="position:absolute; left:1.5cm; font-size:14px;width: 8.5cm;">{{ $item->NamaType }}</span>
                     <span style="position:absolute; left:10cm; font-size:14px;width: 3cm;">
                         {{ number_format($item->Jml, 2, '.', ',') }} {{ $item->Satuan }}
                     </span>
