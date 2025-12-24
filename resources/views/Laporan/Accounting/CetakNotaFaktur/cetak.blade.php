@@ -103,20 +103,20 @@
             <div style="left: 16.75cm;top: 20.65cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
-            <div style="left: 17.35cm;top: 20.65cm; position: absolute;font-size:12px;">
+            <div style="left: 17.35cm;top: 20.65cm; position: absolute;font-size:12px;width: 2.3cm;text-align: right;">
                 {{ number_format($total, 2, '.', ',') }}
             </div>
             <div style="left: 16.75cm;top: 21.25cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
-            <div style="left: 17.35cm;top: 21.25cm; position: absolute;font-size:12px;">
+            <div style="left: 17.35cm;top: 21.25cm; position: absolute;font-size:12px;width: 2.3cm;text-align: right;">
                 {{-- {{ number_format($nilaiUM, 2, '.', ',') }} --}}
                 0.00
             </div>
             <div style="left: 16.75cm;top: 21.85cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
-            <div style="left: 17.35cm;top: 21.85cm; position: absolute;font-size:12px;">
+            <div style="left: 17.35cm;top: 21.85cm; position: absolute;font-size:12px;width: 2.3cm;text-align: right;">
                 {{ number_format($nilaiUM, 2, '.', ',') }}
             </div>
             <div style="left: 4.5cm;top: 22.45cm; position: absolute;font-size:12px;">
@@ -125,14 +125,15 @@
             <div style="left: 16.75cm;top: 22.45cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
-            <div style="left: 17.35cm;top: 22.45cm; position: absolute;font-size:12px;">
+            <div style="left: 17.35cm;top: 22.45cm; position: absolute;font-size:12px;width: 2.3cm;text-align: right;">
                 {{ number_format($dpp, 2, '.', ',') }}
             </div>
             <div style="left: 1.8cm;top: 23.05cm; position: absolute;font-size:12px;">12%</div>
             <div style="left: 16.75cm;top: 23.05cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
-            <div style="left: 17.35cm;top: 23.05cm; position: absolute;font-size:12px;text-align: right;">
+            <div
+                style="left: 17.35cm;top: 23.05cm; position: absolute;font-size:12px;text-align: right;width: 2.3cm;text-align: right;">
                 {{ number_format($pajak, 2, '.', ',') }}
             </div>
             <div style="left: 2cm;top: 23.65cm; position: absolute;font-size:12px;width: 14.5cm;">
@@ -141,7 +142,8 @@
             <div style="left: 16.75cm;top: 23.65cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
-            <div style="left: 17.35cm;top: 23.65cm; position: absolute;font-size:12px;text-align: right;">
+            <div
+                style="left: 17.35cm;top: 23.65cm; position: absolute;font-size:12px;text-align: right;width: 2.3cm;text-align: right;">
                 {{ number_format($terbayar, 2, '.', ',') }}
             </div>
             <div style="left: 13.2cm;top: 24.2cm; position: absolute;font-size:14px;">
@@ -156,7 +158,29 @@
             <div style="left: 15cm;top: 26.3cm; position: absolute;font-size:14px;">
                 {{ $ttd }}
             </div>
-            <div style="position:absolute; left:1cm; top:25.5cm; width:12cm;">
+            <table style="position:absolute; left:1cm; top:25.5cm; width:8cm;font-size:14px;">
+                <colgroup>
+                    <col style="width:3.5cm;">
+                    <col style="width:0.4cm;">
+                    <col style="width:auto;">
+                </colgroup>
+                <tr>
+                    <td>Syarat Pembayaran</td>
+                    <td>:</td>
+                    <td>{{ $dataCetak[0]->SyaratBayar }} Hari</td>
+                </tr>
+                <tr>
+                    <td>Jatuh Tempo</td>
+                    <td>:</td>
+                    <td>{{ $jatuhTempo }}</td>
+                </tr>
+                <tr>
+                    <td>Surat Jalan</td>
+                    <td>:</td>
+                    <td>{{ $dataCetak[0]->IDPengiriman }}</td>
+                </tr>
+            </table>
+            {{-- <div style="position:absolute; left:1cm; top:25.5cm; width:12cm;">
                 <div style="display: flex;flex-direction: row;">
                     <div style="font-size:14px;">
                         Syarat Pembayaran:
@@ -181,7 +205,7 @@
                         {{ $dataCetak[0]->IDPengiriman }}
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
         <div class="no-print" style="color: red;font-weight: bold;">
             <label>Saat print harap pastikan sudah sesuai dengan settingan berikut: </label>
