@@ -515,16 +515,16 @@ nomor_doSelect.addEventListener("change", function () {
                                 });
                         });
                 });
-            qty_primer.value = numeral(data[0].QtyPrimer).format("0,0");
-            qty_sekunder.value = numeral(data[0].QtySekunder).format("0,0");
-            qty_tritier.value = numeral(data[0].QtyTritier).format("0,0");
-            qty_kirim.value = numeral(data[0].TerKirim).format("0,0");
-            qty_order.value = numeral(data[0].Qty).format("0,0");
+            qty_primer.value = numeral(data[0].QtyPrimer).value();
+            qty_sekunder.value = numeral(data[0].QtySekunder).value();
+            qty_tritier.value = numeral(data[0].QtyTritier).value();
+            qty_kirim.value = numeral(data[0].TerKirim).value();
+            qty_order.value = numeral(data[0].Qty).value();
             max_kirim.value = data[0].MaxKirimDO;
             min_kirim.value = data[0].MinKirimDO;
-            qty_primerGudang.value = numeral(data[0].SaldoPrimer).format("0,0"); // prettier-ignore
-            qty_sekunderGudang.value = numeral(data[0].SaldoSekunder).format("0,0"); // prettier-ignore
-            qty_tritierGudang.value = numeral(data[0].SaldoTritier).format("0,0"); // prettier-ignore
+            qty_primerGudang.value = numeral(data[0].SaldoPrimer).value(); // prettier-ignore
+            qty_sekunderGudang.value = numeral(data[0].SaldoSekunder).value(); // prettier-ignore
+            qty_tritierGudang.value = numeral(data[0].SaldoTritier).value(); // prettier-ignore
             satuan_primer.value = data[0].SatPrimer;
             satuan_sekunder.value = data[0].SatSekunder;
             satuan_tritier.value = data[0].SatTritier;
