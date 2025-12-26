@@ -135,7 +135,7 @@ class SuratJalanController extends Controller
         // dd($request->all());
         $Mytype = 1;
         $JnsIdPengiriman = $request->jenis_pengiriman;
-        $IDPengiriman = substr(trim($request->surat_jalan), 0, 10);
+        $IDPengiriman = str_pad(trim($request->surat_jalan), 10, '0', STR_PAD_LEFT);
         // $IDPengiriman = str_pad($IDPengiriman1, 10, '0', STR_PAD_LEFT);
         // dd($IDPengiriman);
         $IDExpeditor = $request->expeditor;
@@ -150,13 +150,13 @@ class SuratJalanController extends Controller
         $NoBL = $request->nomor_bl ?? NULL;
         $TglActual = $request->tanggal_actual;
         $IdDO = $request->barang0;
-        $IDSuratPesanan = $request->barang3;
+        $IDSuratPesanan = $request->barang2;
         $AccMgr = trim(Auth::user()->NomorUser);
         $nama_barang = $request->nama_barang;
         $idtransaksi = $request->idtrans;
-        $jumlah_dikeluarkanPrimer = (float) $request->jumlah_dikeluarkanPrimer;
-        $jumlah_dikeluarkanSekunder = (float) $request->jumlah_dikeluarkanSekunder;
-        $jumlah_dikeluarkanTritier = (float) $request->jumlah_dikeluarkanTritier;
+        $jumlah_dikeluarkanPrimer = (float) str_replace(',', '', $request->jumlah_dikeluarkanPrimer);
+        $jumlah_dikeluarkanSekunder = (float) str_replace(',', '', $request->jumlah_dikeluarkanSekunder);
+        $jumlah_dikeluarkanTritier = (float) str_replace(',', '', $request->jumlah_dikeluarkanTritier);
         $surat_pesanan = $request->surat_pesanan;
         $KodeBarang = $request->hidden_kodeBarang;
         $idType = $request->hidden_idTypeDO;
@@ -401,7 +401,7 @@ class SuratJalanController extends Controller
                 [
                     4,
                     $row->No_terima,
-                    $row->Qty_Terima
+                    $row->Qty_Jual
                 ],
             );
         }
@@ -459,7 +459,7 @@ class SuratJalanController extends Controller
         $NoBL = $request->nomor_bl ?? NULL;
         $TglActual = $request->tanggal_actual;
         $IdDO = $request->barang0;
-        $IDSuratPesanan = $request->barang3;
+        $IDSuratPesanan = $request->barang2;
         $AccMgr = trim(Auth::user()->NomorUser);
         //save data header duluu
 
