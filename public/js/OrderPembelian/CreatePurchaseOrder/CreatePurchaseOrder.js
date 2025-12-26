@@ -588,7 +588,8 @@ jQuery(function ($) {
         if (!sel) return;
 
         // reset awal
-        sel.innerHTML = '<option value="" disabled selected>Pilih Supplier</option>';
+        sel.innerHTML =
+            '<option value="" disabled selected>Pilih Supplier</option>';
         sel.disabled = true;
 
         fetch("/PurchaseOrder/supplier")
@@ -597,8 +598,8 @@ jQuery(function ($) {
                 if (!Array.isArray(data) || data.length === 0) {
                     sel.innerHTML =
                         '<option value="" disabled>(tidak ada supplier)</option>';
-                        sel.disabled = true;
-                        return;
+                    sel.disabled = true;
+                    return;
                 }
 
                 // === NORMALISASI DATA ===
@@ -622,7 +623,7 @@ jQuery(function ($) {
 
                         return {
                             value: noSup || nama,
-                            label: nama.toString().trim()
+                            label: nama.toString().trim(),
                         };
                     })
                     .filter((s) => s.label !== "");
@@ -630,12 +631,13 @@ jQuery(function ($) {
                 // === SORT ALFABET (A–Z) ===
                 suppliers.sort((a, b) =>
                     a.label.localeCompare(b.label, "id", {
-                        sensitivity: "base"
+                        sensitivity: "base",
                     })
                 );
 
                 // === RENDER OPTION ===
-                sel.innerHTML = '<option value="" disabled selected>Pilih Supplier</option>';
+                sel.innerHTML =
+                    '<option value="" disabled selected>Pilih Supplier</option>';
                 suppliers.forEach((s) => {
                     let opt = document.createElement("option");
                     opt.value = s.value;
@@ -732,7 +734,6 @@ jQuery(function ($) {
                 clearDetailSppb("gantiDivisi");
         }
     }
-
 
     function setMode(newMode) {
         mode =
@@ -887,7 +888,6 @@ jQuery(function ($) {
 
                 if (tgl_datang && d.tgldatang) tgl_datang.value = d.tgldatang;
 
-
                 if (rowData._harga) {
                     let h = rowData._harga;
 
@@ -989,20 +989,17 @@ jQuery(function ($) {
 
     if (kd_div)
         kd_div.addEventListener("change", function () {
-
             if (mode === "ISI") {
-
                 loadDataByDivisiIsi();
-
             } else if (mode === "LIHAT") {
-
                 // === TAMBAHAN WAJIB ===
                 let noSppbEl = document.getElementById("no_sppb");
 
                 // reset No SPPB setiap ganti divisi
                 if (noSppbEl) {
                     noSppbEl.value = "";
-                    noSppbEl.innerHTML = '<option value="">-- Pilih No SPPB --</option>';
+                    noSppbEl.innerHTML =
+                        '<option value="">-- Pilih No SPPB --</option>';
                     noSppbEl.disabled = true;
                 }
 
@@ -1013,11 +1010,8 @@ jQuery(function ($) {
                 if (typeof loadNoSppbByDivisi === "function") {
                     loadNoSppbByDivisi();
                 }
-
-
             }
         });
-
 
     let noSppbSelect = document.getElementById("no_sppb");
     if (noSppbSelect)
@@ -1165,7 +1159,11 @@ jQuery(function ($) {
 
         let $checked = $("#tbl_detail_order tbody .row-select-isi:checked");
         if (!$checked || $checked.length === 0) {
-            Swal.fire("Validasi", "Pilih satu baris pada tabel sebelum menambah harga.", "warning");
+            Swal.fire(
+                "Validasi",
+                "Pilih satu baris pada tabel sebelum menambah harga.",
+                "warning"
+            );
             return;
         }
 
@@ -1186,18 +1184,17 @@ jQuery(function ($) {
 
         Swal.fire({
             title: "Konfirmasi Tambah Harga",
-            text: "Preview perhitungan sudah ditampilkan di console.",
+            text: "Anda yakin harga sudah benar?.",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "OK",
-            cancelButtonText: "Cancel",
-            reverseButtons: true
+            confirmButtonText: "Ya",
+            cancelButtonText: "Tidak",
+            reverseButtons: true,
         }).then((result) => {
             if (!result.isConfirmed) {
                 console.log("Update dibatalkan user.");
                 return;
             }
-
 
             let newRow = Array.isArray(rowData)
                 ? rowData.slice()
@@ -1252,9 +1249,6 @@ jQuery(function ($) {
         });
     });
 
-
-
-
     if (jenis_pembelian) {
         jenis_pembelian.addEventListener("change", function () {
             let checked = document.querySelector(
@@ -1295,7 +1289,6 @@ jQuery(function ($) {
         });
     }
 
-
     if (ppnInput && dppWrapper) {
         ppnInput.addEventListener("input", function () {
             let ppnVal = Number(this.value || 0);
@@ -1314,8 +1307,6 @@ jQuery(function ($) {
     if (btn_proses) {
         btn_proses.disabled = true;
     }
-
-
 
     function submitToDatabase(rowData) {
         if (!rowData || !rowData._harga) {
@@ -1366,30 +1357,36 @@ jQuery(function ($) {
             },
             body: JSON.stringify(payload),
         })
+            .then((res) => {
+                if (!res.ok) throw new Error("Gagal menyimpan data");
+                return res.json();
+            })
+            .then((res) => {
+                console.log(res);
 
-        .then(res => {
-            if (!res.ok) throw new Error("Gagal menyimpan data");
-            return res.json();
-        })
-        .then(res => {
-            // asumsi backend return { success: true }
-            if (res.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Berhasil",
-                    text: "Data berhasil diperbarui",
-                    timer: 1500,
-                    showConfirmButton: false,
-                });
-            } else {
-                throw new Error(res.message || "Update gagal");
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            Swal.fire("Error", err.message, "error");
-        });
-
+                // asumsi backend return { success: true }
+                if (res.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: "Data berhasil diproses, apakah Anda ingin mencetak PO?",
+                        showCancelButton: true,
+                        confirmButtonText: "Ya",
+                        cancelButtonText: "Tidak",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            let printUrl = `/CetakSPPBBTTB/print?divisi=${kd_div.value.trim()}&jenisCetak=SPPB&sppb=${res.no_sppb}&noTerima=`; // prettier-ignore
+                            window.open(printUrl, "_blank");
+                        }
+                    });
+                } else {
+                    throw new Error(res.message || "Update gagal");
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                Swal.fire("Error", err.message, "error");
+            });
     }
 
     function updateBtnProsesState() {
@@ -1400,81 +1397,55 @@ jQuery(function ($) {
         btn_proses.disabled = checkedCount !== 1;
     }
 
-    document.getElementById("btn_proses").addEventListener("click", function () {
-            let checked = document.querySelector(
-                "#tbl_detail_order tbody .row-select-isi:checked"
-            );
+    btn_proses.addEventListener("click", function () {
+        let checked = document.querySelector(
+            "#tbl_detail_order tbody .row-select-isi:checked"
+        );
 
-            if (!checked) {
-                alert("Pilih satu data pada tabel.");
-                return;
-            }
+        if (!checked) {
+            alert("Pilih satu data pada tabel.");
+            return;
+        }
 
-            let row = detailTable.row($(checked).closest("tr"));
-            let rowData = row.data();
+        let row = detailTable.row($(checked).closest("tr"));
+        let rowData = row.data();
 
-            if (!rowData || !rowData._harga) {
-                alert(
-                    "Harga belum diinput. Klik Tambah Harga terlebih dahulu."
-                );
-                return;
-            }
+        if (!rowData || !rowData._harga) {
+            alert("Harga belum diinput. Klik Tambah Harga terlebih dahulu.");
+            return;
+        }
 
-            let h = rowData._harga;
+        let h = rowData._harga;
 
-            if (!h.jenis) {
-                alert("Jenis pembelian wajib diisi.");
-                return;
-            }
+        if (!h.jenis) {
+            alert("Jenis pembelian wajib diisi.");
+            return;
+        }
 
-            if (!h.supplier_id) {
-                alert("Supplier wajib diisi.");
-                return;
-            }
+        if (!h.supplier_id) {
+            alert("Supplier wajib diisi.");
+            return;
+        }
 
-            if (h.total <= 0) {
-                alert("Total harga tidak valid.");
-                return;
-            }
+        if (h.total <= 0) {
+            alert("Total harga tidak valid.");
+            return;
+        }
 
-            let payload = {
-                no_trans: rowData[10],
-                qty: rowData[2],
-
-                hrg_murni: h.harga_satuan,
-                disc: h.disc,
-                ppn: h.ppn,
-                dpp_nilai_lain: rowData[12],
-                harga_ppn: (h.ppn * h.dpp) / 100,
-                subtotal_harga_jual: h.dpp,
-                total_harga: h.total,
-
-                mata_uang: document.getElementById("mata_uang").value,
-                kurs: document.getElementById("kurs").value,
-
-                jangka_waktu: h.jangka_waktu,
-                pembayaran: h.pembayaran,
-
-                tgl_datang: h.tgl_datang,
-                supplier: h.supplier,
-                jenis_pembelian: String(h.jenis_pembelian).trim(),
-            };
-
-            Swal.fire({
-                title: "Konfirmasi",
-                text: "LAKUKAN PROSES DATA?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Ya, Proses",
-                cancelButtonText: "Batal",
-                reverseButtons: true,
-            }).then((result) => {
-                if (!result.isConfirmed) return;
+        Swal.fire({
+            title: "Konfirmasi",
+            text: "Lakukan proses data?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Proses",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (!result.isConfirmed) return;
 
             submitToDatabase(rowData);
         });
     });
-
 
     // end jQuery init
 });

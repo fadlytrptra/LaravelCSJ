@@ -1119,9 +1119,6 @@ class PurchaseOrderController extends Controller
         return response()->json($data);
     }
 
-
-
-
     public function listMataUang(): JsonResponse
     {
         $rows = DB::connection('ConnPurchase')
@@ -1132,8 +1129,6 @@ class PurchaseOrderController extends Controller
 
         return response()->json($rows);
     }
-
-
 
     public function listSupplier(Request $request)
     {
@@ -1196,7 +1191,6 @@ class PurchaseOrderController extends Controller
                     [1, $kdDiv, '']
                 );
             }
-
             return response()->json($rows);
         } catch (\Throwable $e) {
             return response()->json($e->getMessage(), 500);
@@ -1279,7 +1273,7 @@ class PurchaseOrderController extends Controller
             'jangka_waktu' => 'nullable|integer',
             'pembayaran' => 'nullable|string',
             'tgl_datang' => 'nullable|date',
-            'supplier' => 'nullable',
+            'supplier' => 'nullable|string',
             'jenis_pembelian' => 'nullable|string',
         ]);
 
@@ -1318,7 +1312,7 @@ class PurchaseOrderController extends Controller
         $dpp_nilai_lain_rp = $request->input('dpp_nilai_lain_rp');
 
         $jenis_5 = $jenis_5 !== null ? trim($jenis_5) : null;
-        $no_sup_5 = $no_sup_5 !== null && $no_sup_5 !== '' ? (int) $no_sup_5 : null;
+        $no_sup_5 = $no_sup_5 !== null && $no_sup_5 !== '' ? $no_sup_5 : null;
         $IdMataUang = $IdMataUang !== null && $IdMataUang !== '' ? (int) $IdMataUang : null;
         $waktu_10 = $waktu_10 !== null && $waktu_10 !== '' ? (int) $waktu_10 : null;
 
