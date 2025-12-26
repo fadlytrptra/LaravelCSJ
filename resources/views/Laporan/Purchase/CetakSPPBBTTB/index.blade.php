@@ -1,6 +1,6 @@
 @extends('layouts.appOrderPembelian')
 @section('content')
-@section('title', 'Cetak BKM')
+@section('title', 'Cetak SPPB / BTTB')
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 @if (session('error'))
     <script>
@@ -11,7 +11,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10 RDZMobilePaddingLR0">
             <div class="card font-weight-bold">
-                <div class="card-header">Cetak BKM</div>
+                <div class="card-header">Cetak SPPB / BTTB</div>
                 <div class="card-body">
                     <div style="display: flex; flex-direction: row">
                         <div class="p-2" style="display: flex; flex-direction: row;">
