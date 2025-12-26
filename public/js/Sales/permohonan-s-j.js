@@ -529,29 +529,7 @@ function funcClearTableHighlight() {
     nama_barang.value = "";
 }
 
-isiQty_button.addEventListener("click", function (e) {
-    e.preventDefault();
-    isiQty_button.disabled = true;
-    setTimeout(() => {
-        isiQty_button.disabled = false;
-    }, 300);
-    if (!idtrans.value) {
-        Swal.fire({
-            icon: "error",
-            title: "Terjadi Kesalahan!",
-            text: "Pilih Id Transaksi Penjualan Terlebih Dahulu!",
-        });
-        return;
-    }
-    no_pibQtyDO.value = "";
-    id_typeQtyDO.value = hidden_idTypeDO.value;
-    kode_barangQtyDO.value = hidden_kodeBarangDO.value;
-    primer_qtyDO.value = 0;
-    primer_qtyDO.readOnly = true;
-    sekunder_qtyDO.value = 0;
-    sekunder_qtyDO.readOnly = true;
-    tritier_qtyDO.value = 0;
-    tritier_qtyDO.readOnly = true;
+function loadListStokListJual() {
     table_listStok.clear().draw();
     table_listJual.clear().draw();
     fetch("/options/loadliststokqtydo/" + id_typeQtyDO.value)
@@ -588,6 +566,32 @@ isiQty_button.addEventListener("click", function (e) {
                     $("#isiQtyModal").modal("show");
                 });
         });
+}
+
+isiQty_button.addEventListener("click", function (e) {
+    e.preventDefault();
+    isiQty_button.disabled = true;
+    setTimeout(() => {
+        isiQty_button.disabled = false;
+    }, 300);
+    if (!idtrans.value) {
+        Swal.fire({
+            icon: "error",
+            title: "Terjadi Kesalahan!",
+            text: "Pilih Id Transaksi Penjualan Terlebih Dahulu!",
+        });
+        return;
+    }
+    no_pibQtyDO.value = "";
+    id_typeQtyDO.value = hidden_idTypeDO.value;
+    kode_barangQtyDO.value = hidden_kodeBarangDO.value;
+    primer_qtyDO.value = 0;
+    primer_qtyDO.readOnly = true;
+    sekunder_qtyDO.value = 0;
+    sekunder_qtyDO.readOnly = true;
+    tritier_qtyDO.value = 0;
+    tritier_qtyDO.readOnly = true;
+    loadListStokListJual();
 });
 
 $("#table_listStok tbody").on("click", "tr", function () {
@@ -680,6 +684,8 @@ button_isiQtyDO.addEventListener("click", function (e) {
                     icon: "success",
                     title: "Berhasil",
                     text: "Data berhasil ditambahkan",
+                }).then(() => {
+                    loadListStokListJual();
                 });
             } else if (response.error) {
                 Swal.fire({

@@ -143,14 +143,14 @@
                                             <span>Surat Pesanan</span>
                                             <select class="permohonan-sj-select3 input" id="surat_pesanan"
                                                 name="surat_pesanan">
-                                                <option disabled selected>-- Pilih Jenis Pengiriman --</option>
+                                                <option disabled selected>-- Pilih Surat Pesanan --</option>
                                             </select>
                                         </div>
                                         <div class="permohonan-sj-container10">
                                             <span>Nomor DO</span>
                                             <select class="permohonan-sj-select4 input" id="nomor_do"
                                                 name="nomor_do">
-                                                <option disabled selected>-- Pilih Jenis Pengiriman --</option>
+                                                <option disabled selected>-- Pilih Delivery Order --</option>
                                             </select>
                                         </div>
                                         {{-- <div class="permohonan-sj-container11">
@@ -446,5 +446,4 @@
 </div>
 
 <script type="text/javascript" src="{{ asset('js/Sales/permohonan-s-j.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/Sales/liveProgrammingTest.js') }}"></script>
 @endsection
