@@ -182,7 +182,7 @@ class SuratPesananController extends Controller
     public function getNamaBarang($subKategori)
     {
         // dd($subKategori);
-        $fourthOptions = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_BARANG @NoSubKategori = ?, @Eksport = ?', [$subKategori, 'N']);
+        $fourthOptions = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_BARANG @NoSubKategori = ?', [$subKategori]);
         // dd($fourthOptions);
         return response()->json($fourthOptions);
     }
