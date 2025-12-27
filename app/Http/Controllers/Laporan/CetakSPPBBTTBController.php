@@ -69,6 +69,15 @@ class CetakSPPBBTTBController extends Controller
                 } else {
                     return redirect()->back()->with('error', 'Data tidak ditemukan');
                 }
+            } else if ($jenisCetak == 'SPPBBaru') {
+                $ada = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?', [2, $divisi, $sppb]);
+                if ($ada[0]->Ada == 0) {
+                    DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?', [1, $divisi, $sppb]);
+                } else {
+                    DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?, @Alasan = \'Cetak Ulang\'', [4, $divisi, $sppb]);
+                }
+                $dataCetak = DB::connection('ConnPurchase')->select('SELECT * FROM VW_PRG_1273_SPPB_NEW WHERE kode_divisi = ? AND nomor_sppb = ?', [$divisi, $sppb]);
+                // dd($dataCetak);
             }
             if (count($dataCetak) > 0) {
                 return view('Laporan.Purchase.CetakSPPBBTTB.cetak', compact('dataCetak', 'jenisCetak'));

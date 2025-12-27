@@ -20,6 +20,11 @@
                             <label style="margin: 0; align-content: center;" for="radio_jenisSPPB">SPPB</label>
                         </div>
                         <div class="p-2" style="display: flex; flex-direction: row;">
+                            <input style="margin-right: 5px" type="radio" name="radio_jenisCetak" id="radio_jenisSPPBBaru"
+                                value="SPPBBaru">
+                            <label style="margin: 0; align-content: center;" for="radio_jenisSPPB">SPPB Baru</label>
+                        </div>
+                        <div class="p-2" style="display: flex; flex-direction: row;">
                             <input style="margin-right: 5px" type="radio" name="radio_jenisCetak" id="radio_jenisBTTB"
                                 value="BTTB">
                             <label style="margin: 0; align-content: center;" for="radio_jenisBTTB">BTTB</label>
