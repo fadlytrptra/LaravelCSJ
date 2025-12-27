@@ -829,10 +829,6 @@ $(document).ready(function () {
                 document.getElementById("satuan_tritier").readOnly = true;
             });
         // console.log(kategoriUtama.value);
-
-        //Jika kategori utama berasal dari KRR-Hasil Produksi, isi Berat Standard
-        funcBeratStandard(namaBarang);
-        funcKolomBeratStandard();
     });
 
     kode_barang.addEventListener("keypress", function (event) {

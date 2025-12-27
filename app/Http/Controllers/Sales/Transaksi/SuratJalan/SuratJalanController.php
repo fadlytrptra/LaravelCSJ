@@ -160,7 +160,6 @@ class SuratJalanController extends Controller
         $surat_pesanan = $request->surat_pesanan;
         $KodeBarang = $request->hidden_kodeBarang;
         $idType = $request->hidden_idTypeDO;
-        // dd($IdDO[0]);
 
         //Cek_Sesuai_Pemberi
         $pemberi = db::connection('ConnInventory')->select(
@@ -180,25 +179,25 @@ class SuratJalanController extends Controller
         }
 
         //proses acc jual
-        db::connection('ConnInventory')->statement(
-            'exec SP_1273_PRG_PROSES_ACC_JUAL
-            @IDtransaksi = ?,
-            @IDPemberi = ?,
-            @JumlahKeluarPrimer = ?,
-            @JumlahKeluarSekunder = ?,
-            @JumlahKeluartritier = ?,
-            @JumlahKonversi = ?,
-            @NoSP = ?',
-            [
-                $idtransaksi,
-                $AccMgr,
-                $jumlah_dikeluarkanPrimer,
-                $jumlah_dikeluarkanSekunder,
-                $jumlah_dikeluarkanTritier,
-                0,
-                $surat_pesanan
-            ],
-        );
+        // db::connection('ConnInventory')->statement(
+        //     'exec SP_1273_PRG_PROSES_ACC_JUAL
+        //     @IDtransaksi = ?,
+        //     @IDPemberi = ?,
+        //     @JumlahKeluarPrimer = ?,
+        //     @JumlahKeluarSekunder = ?,
+        //     @JumlahKeluartritier = ?,
+        //     @JumlahKonversi = ?,
+        //     @NoSP = ?',
+        //     [
+        //         $idtransaksi,
+        //         $AccMgr,
+        //         $jumlah_dikeluarkanPrimer,
+        //         $jumlah_dikeluarkanSekunder,
+        //         $jumlah_dikeluarkanTritier,
+        //         0,
+        //         $surat_pesanan
+        //     ],
+        // );
 
         $type = db::connection('ConnInventory')->select(
             'exec SP_1273_PRG_LIST_TYPE
@@ -254,7 +253,7 @@ class SuratJalanController extends Controller
             }
             $kurs = $totalKurs1 / $saldo1;
             $harga = $totalHarga1 / $saldo1;
-
+            dd($kurs);
             db::connection('ConnInventory')->statement(
                 'exec SP_1273_PRG_Update_Kurs
                         @KodeBarang = ?,
@@ -334,11 +333,9 @@ class SuratJalanController extends Controller
                 $KodeBarang
             ],
         );
-
         $QtyJual1 = $jumlah_dikeluarkanTritier;
         $TotalHargaBeli1 = 0.0;
         $No_PIBBeli = "";
-
         foreach ($listJual as $row) {
             $rowQty = (float) $row->Qty_Jual;
             $HargaBeli = (float) $row->Hrg_trm;
@@ -360,7 +357,7 @@ class SuratJalanController extends Controller
             $row->Qty_Jual = $rowQty - $QtyJual;
 
             // Build PIB string
-            $pib = !empty($row->No_PIB) ? $row->No_PIB_External : "-";
+            $pib = $row->No_PIB_External;
             $No_PIBBeli .= "{$pib}({$QtyJual})";
 
             // Add comma only if we continue
@@ -376,7 +373,6 @@ class SuratJalanController extends Controller
                 break;
             }
         }
-
         $hargaBeliResult = $TotalHargaBeli1 / $jumlah_dikeluarkanTritier;
         $hargaBeliResult = number_format($hargaBeliResult, 4, '.', '');
 

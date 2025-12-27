@@ -270,8 +270,15 @@
                                     class="permohonan-s-p-textinput18 input" id="qty_pesan" /> </div>
                             <div class="permohonan-s-p-container30"> <input type="text" placeholder="Harga Satuan"
                                     class="permohonan-s-p-textinput19 input" id="harga_satuan" /> </div>
-                            <div class="permohonan-s-p-container31"> <input type="text" placeholder="P P N"
-                                    class="permohonan-s-p-textinput20 input" id="ppn" /> </div>
+                            {{-- <div class="permohonan-s-p-container31"> <input type="text" placeholder="P P N"
+                                    class="permohonan-s-p-textinput20 input" id="ppn" /> </div> --}}
+                            <div class="permohonan-s-p-container31">
+                                <select name="ppn" id="ppn" class="permohonan-s-p-textinput20 input">
+                                    <option value="0">0</option>
+                                    <option value="INCLUDE">INCLUDE</option>
+                                    <option value="EXCLUDE">EXCLUDE</option>
+                                </select>
+                            </div>
                             <div class="permohonan-s-p-container31"> <input type="text" placeholder="Belum Lunas"
                                     class="permohonan-s-p-textinput20 input" id="lunas" /> </div>
                             <div class="permohonan-s-p-container31"> <input type="text" placeholder="Jml Terkirim"
