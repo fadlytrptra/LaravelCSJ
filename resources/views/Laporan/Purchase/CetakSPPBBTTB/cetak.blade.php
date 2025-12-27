@@ -324,7 +324,7 @@
                     }
                 </style>
                 <div
-                    style="width: 20.5cm; height: 27.94cm; padding: 10px 10px 0px 10px; margin: 0; background: #FFFFFF; box-sizing: border-box; page-break-after: avoid;">
+                    style="width: 19.5cm; height: 27.94cm; padding: 10px 10px 0px 10px; margin: 0; background: #FFFFFF; box-sizing: border-box; page-break-after: avoid;">
                     <div style="width: 100%; height : 15%;"></div>
                     <main style="width: 100%; height : 70%;">
                         <div style="width: 100%; height: auto; display: flex;">
