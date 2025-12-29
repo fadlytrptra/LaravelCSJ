@@ -179,25 +179,25 @@ class SuratJalanController extends Controller
         }
 
         //proses acc jual
-        // db::connection('ConnInventory')->statement(
-        //     'exec SP_1273_PRG_PROSES_ACC_JUAL
-        //     @IDtransaksi = ?,
-        //     @IDPemberi = ?,
-        //     @JumlahKeluarPrimer = ?,
-        //     @JumlahKeluarSekunder = ?,
-        //     @JumlahKeluartritier = ?,
-        //     @JumlahKonversi = ?,
-        //     @NoSP = ?',
-        //     [
-        //         $idtransaksi,
-        //         $AccMgr,
-        //         $jumlah_dikeluarkanPrimer,
-        //         $jumlah_dikeluarkanSekunder,
-        //         $jumlah_dikeluarkanTritier,
-        //         0,
-        //         $surat_pesanan
-        //     ],
-        // );
+        db::connection('ConnInventory')->statement(
+            'exec SP_1273_PRG_PROSES_ACC_JUAL
+            @IDtransaksi = ?,
+            @IDPemberi = ?,
+            @JumlahKeluarPrimer = ?,
+            @JumlahKeluarSekunder = ?,
+            @JumlahKeluartritier = ?,
+            @JumlahKonversi = ?,
+            @NoSP = ?',
+            [
+                $idtransaksi,
+                $AccMgr,
+                $jumlah_dikeluarkanPrimer,
+                $jumlah_dikeluarkanSekunder,
+                $jumlah_dikeluarkanTritier,
+                0,
+                $surat_pesanan
+            ],
+        );
 
         $type = db::connection('ConnInventory')->select(
             'exec SP_1273_PRG_LIST_TYPE
@@ -253,7 +253,6 @@ class SuratJalanController extends Controller
             }
             $kurs = $totalKurs1 / $saldo1;
             $harga = $totalHarga1 / $saldo1;
-            dd($kurs);
             db::connection('ConnInventory')->statement(
                 'exec SP_1273_PRG_Update_Kurs
                         @KodeBarang = ?,
