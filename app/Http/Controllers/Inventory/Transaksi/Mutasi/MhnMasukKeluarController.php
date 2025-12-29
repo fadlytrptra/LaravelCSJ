@@ -44,11 +44,9 @@ class MhnMasukKeluarController extends Controller
 
         if ($id === 'getUserId') {
             return response()->json(['user' => $user]);
-        }
-
-        else if ($id === 'getDivisi') {
+        } else if ($id === 'getDivisi') {
             // mendapatkan daftar divisi
-            $divisi = DB::connection('ConnInventory')->select('exec SP_1003_INV_userdivisi @XKdUser = ?', [$user]);
+            $divisi = DB::connection('ConnInventory')->select('exec SP_1273_PRG_userdivisi @XKdUser = ?', [$user]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -57,11 +55,9 @@ class MhnMasukKeluarController extends Controller
                 ];
             }
             return datatables($divisi)->make(true);
-        }
-
-        else if ($id === 'getObjek') {
+        } else if ($id === 'getObjek') {
             // mendapatkan daftar objek
-            $objek = DB::connection('ConnInventory')->select('exec SP_1003_INV_User_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $divisiId]);
+            $objek = DB::connection('ConnInventory')->select('exec SP_1273_PRG_User_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $divisiId]);
             // dd($request->all());
             $data_objek = [];
             foreach ($objek as $detail_objek) {
@@ -72,11 +68,9 @@ class MhnMasukKeluarController extends Controller
             }
             // dd($objek, $request->all());
             return datatables($objek)->make(true);
-        }
-
-        else if ($id === 'getKelUt') {
+        } else if ($id === 'getKelUt') {
             // mendapatkan daftar kelompok utama
-            $kelut = DB::connection('ConnInventory')->select('exec SP_1003_INV_IdObjek_KelompokUtama @XIdObjek_KelompokUtama = ?', [$objekId]);
+            $kelut = DB::connection('ConnInventory')->select('exec SP_1273_PRG_IdObjek_KelompokUtama @XIdObjek_KelompokUtama = ?', [$objekId]);
             $data_kelut = [];
             foreach ($kelut as $detail_kelut) {
                 $data_kelut[] = [
@@ -85,11 +79,9 @@ class MhnMasukKeluarController extends Controller
                 ];
             }
             return datatables($kelut)->make(true);
-        }
-
-        else if ($id === 'getKelompok') {
+        } else if ($id === 'getKelompok') {
             // mendapatkan daftar kelompok
-            $kelompok = DB::connection('ConnInventory')->select('exec SP_1003_INV_IdKelompokUtama_Kelompok @XIdKelompokUtama_Kelompok = ?', [$kelutId]);
+            $kelompok = DB::connection('ConnInventory')->select('exec SP_1273_PRG_IdKelompokUtama_Kelompok @XIdKelompokUtama_Kelompok = ?', [$kelutId]);
             $data_kelompok = [];
             foreach ($kelompok as $detail_kelompok) {
                 $data_kelompok[] = [
@@ -98,11 +90,9 @@ class MhnMasukKeluarController extends Controller
                 ];
             }
             return datatables($kelompok)->make(true);
-        }
-
-        else if ($id === 'getSubkel') {
+        } else if ($id === 'getSubkel') {
             // mendapatkan daftar sub kelompok
-            $subkel = DB::connection('ConnInventory')->select('exec SP_1003_INV_IDKELOMPOK_SUBKELOMPOK @XIdKelompok_SubKelompok = ?', [$kelompokId]);
+            $subkel = DB::connection('ConnInventory')->select('exec SP_1273_PRG_IdKelompok_SubKelompok @XIdKelompok_SubKelompok = ?', [$kelompokId]);
             $data_subkel = [];
             foreach ($subkel as $detail_subkel) {
                 $data_subkel[] = [
@@ -111,25 +101,22 @@ class MhnMasukKeluarController extends Controller
                 ];
             }
             return datatables($subkel)->make(true);
-        }
-
-        else if ($id === 'getABM') {
-            // mendapatkan daftar type ABM
-            $listABM = DB::connection('ConnInventory')->select('exec SP_1003_INV_IdSubKelompok_Type_ABM @XIdSubKelompok_Type = ?', [$subkelId]);
-            $data_listABM = [];
-            foreach ($listABM as $detail_listABM) {
-                $data_listABM[] = [
-                    'idtype' => $detail_listABM->idtype,
-                    'BARU' => $detail_listABM->BARU
+        } else if ($id === 'getType') {
+            // mendapatkan nama type & id type
+            $type = DB::connection('ConnInventory')->select('exec SP_1273_PRG_idsubkelompok_type @XIdSubKelompok_Type = ?', [$subkelId]);
+            $data_type = [];
+            foreach ($type as $detail_type) {
+                $data_type[] = [
+                    'IdType' => $detail_type->IdType,
+                    'NamaType' => $detail_type->NamaType
                 ];
             }
-            // dd($detail_listABM);
-            return datatables($detail_listABM)->make(true);
-        }
-
-        else if ($id === 'getSatuanType') {
+            // dd($subkelId, $data_type);
+            // dd($request->all());
+            return datatables($data_type)->make(true);
+        } else if ($id === 'getSatuanType') {
             // mendapatkan satuan type
-            $type = DB::connection('ConnInventory')->select('exec SP_1003_INV_AsalSubKelompok_Type @XIdType = ?', [$kodeType]);
+            $type = DB::connection('ConnInventory')->select('exec SP_1273_PRG_AsalSubKelompok_Type @XIdType = ?', [$kodeType]);
             $data_type = [];
             if (count($type) > 0) {
                 foreach ($type as $detail_type) {
@@ -145,68 +132,30 @@ class MhnMasukKeluarController extends Controller
                 return response()->json($data_type);
             }
             return response()->json([]);
-        }
-
-        else if ($id === 'getSaldo') {
+        } else if ($id === 'getSaldo') {
             // mendapatkan saldo
-            $saldo = DB::connection('ConnInventory')->select('exec SP_1003_INV_Saldo_Barang @IdType = ?', [$kodeType]);
+            $ada = DB::connection('ConnInventory')->select('exec SP_1273_PRG_TypePIB @Kode = ?, @IdType = ?', [5, $kodeType]);
+            if ($ada[0]->Ada >= 1) {
+                $saldo = DB::connection('ConnInventory')->select('exec SP_1273_PRG_TypePIB @Kode = ?, @IdType = ?', [8, $kodeType]);
+            }
             $data_saldo = [];
             foreach ($saldo as $detail_saldo) {
                 $data_saldo[] = [
                     'SaldoPrimer' => $detail_saldo->SaldoPrimer,
                     'SaldoSekunder' => $detail_saldo->SaldoSekunder,
                     'SaldoTritier' => $detail_saldo->SaldoTritier,
-
+                    'Qty' => $detail_saldo->Qty,
+                    'Qty_Primer' => $detail_saldo->Qty_Primer,
+                    'Qty_Sekunder' => $detail_saldo->Qty_sekunder,
+                    'NoPIB' => $detail_saldo->NoPIB
                 ];
             }
             // dd($data_saldo);
             return response()->json($data_saldo);
-        }
-
-        else if ($id === 'getTypeCIR') {
-            // mendapatkan nama type & id type
-            DB::connection('ConnInventory')->statement('exec SP_1003_INV_idnamasubkelompok_type @XIdDivisi = ?, @XIdSubKelompok = ?', [$divisiId, $subkelId]);
-
-            $typeCIR = DB::connection('ConnInventory')->select('exec SP_1003_INV_List_Type_PerUkuran');
-            $data_typeCIR = [];
-            foreach ($typeCIR as $detail_typeCIR) {
-                $data_typeCIR[] = [
-                    'Id_Type' => $detail_typeCIR->Id_Type,
-                    'Nm_Type' => $detail_typeCIR->Nm_Type
-                ];
-            }
-
-            // dd($data_typeCIR);
-            return datatables($data_typeCIR)->make(true);
-        }
-
-        else if ($id === 'getType') {
-            // mendapatkan nama type & id type
-            $type = DB::connection('ConnInventory')->select('exec SP_1003_INV_Idsubkelompok_type @XIdSubKelompok_Type = ?', [$subkelId]);
-            $data_type = [];
-            foreach ($type as $detail_type) {
-                $data_type[] = [
-                    'IdType' => $detail_type->IdType,
-                    'NamaType' => $detail_type->NamaType
-                ];
-            }
-            // dd($subkelId, $data_type);
-            // dd($request->all());
-            return datatables($data_type)->make(true);
-        }
-
-        else if ($id === 'getKodeBarang') {
-            // mendapatkan kode barang
-            $code = DB::connection('ConnInventory')->select('exec SP_1003_INV_list_Type @Kode = 1, @idtype = ?', [$kodeType]);
-            $data_code = array_map(fn($detail_code) => ['KodeBarang' => $detail_code->KodeBarang], $code);
-
-            return datatables($data_code)->make(true);
-        }
-
-        else if ($id === 'getData') {
+        } else if ($id === 'getData') {
             // mendapatkan isi tabel
             $justData = DB::connection('ConnInventory')->select('
-            SP_1003_INV_List_BelumACC_TmpTransaksi @Kode = 13, @XIdTypeTransaksi = ?, @XUraian = ?, @XIdobjek = ?', ['13', $uraian, $objekId]);
+            SP_1273_PRG_List_BelumACC_TmpTransaksi @Kode = 13, @XIdTypeTransaksi = ?, @XUraian = ?, @XIdobjek = ?', ['13', $uraian, $objekId]);
 
             $data_justData = [];
             foreach ($justData as $detail_justData) {
@@ -263,7 +212,7 @@ class MhnMasukKeluarController extends Controller
     //Update the specified resource in storage.
     public function update(Request $request, $id)
     {
-        $a = (int)$request->input('a');
+        $a = (int) $request->input('a');
         $kode = $request->input('kode');
         $uraian = $request->input('uraian');
         $user = $request->input('user');
@@ -280,29 +229,59 @@ class MhnMasukKeluarController extends Controller
         if ($id === 'proses') {
             // proses terjadi
             if ($a === 1) { // ISI
-                try{
+                try {
                     // insert
                     DB::connection('ConnInventory')->statement(
-                        'exec SP_1003_INV_Insert_08_TmpTransaksi
-                        @Kode = ?, @XIdTypeTransaksi = ?, @XUraianDetailTransaksi = ?, @XIdType = ?,  @XIdPemberi = ?, @XSaatawalTransaksi = ?,
-                        @XJumlahMasukPrimer = ?, @XJumlahMasukSekunder = ?, @XJumlahMasukTritier = ?, @XAsalIdSubKelompok = ?, @XTujuanIdSubKelompok = ?',
-                        [$kode, '08', $uraian, $kodeType, $user, $tanggal,
-                         $primer2, $sekunder2, $tritier2, $subkelId, $subkelId]
+                        'exec SP_1273_PRG_INSERT_08_TMPTRANSAKSI
+                        @Kode = ?,
+                        @XIdTypeTransaksi = ?,
+                        @XUraianDetailTransaksi = ?,
+                        @XIdType = ?,
+                        @XIdPemberi = ?,
+                        @XSaatawalTransaksi = ?,
+                        @XJumlahMasukPrimer = ?,
+                        @XJumlahMasukSekunder = ?,
+                        @XJumlahMasukTritier = ?,
+                        @XAsalIdSubKelompok = ?,
+                        @XTujuanIdSubKelompok = ?',
+                        [
+                            $kode,
+                            '08',
+                            $uraian,
+                            $kodeType,
+                            $user,
+                            $tanggal,
+                            $primer2,
+                            $sekunder2,
+                            $tritier2,
+                            $subkelId,
+                            $subkelId
+                        ]
                     );
 
                     return response()->json(['success' => 'Data sudah tersimpan!!'], 200);
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Data Gagal ter-SIMPAN' . $e->getMessage()], 500);
                 }
-            }
-
-            else if ($a === 2) { // KOREKSI
+            } else if ($a === 2) { // KOREKSI
                 try {
                     // update
                     DB::connection('ConnInventory')->statement(
-                        'exec SP_1003_INV_Update_TMPTRANSAKSI
-                        @XIdTransaksi = ?, @XUraianDetailTransaksi = ?, @XJumlahKeluarPrimer = ?, @XJumlahKeluarSekunder = ?, @XJumlahKeluarTritier = ?, @XTujuanSubKelompok = ?',
-                        [$kodeTransaksi, $uraian, $primer2, $sekunder2, $tritier2, $subkelId]
+                        'exec SP_1273_PRG_INSERT_08_TMPTRANSAKSI
+                        @XIdTransaksi = ?,
+                        @XUraianDetailTransaksi = ?,
+                        @XJumlahKeluarPrimer = ?,
+                        @XJumlahKeluarSekunder = ?,
+                        @XJumlahKeluarTritier = ?,
+                        @XTujuanSubKelompok = ?',
+                        [
+                            $kodeTransaksi,
+                            $uraian,
+                            $primer2,
+                            $sekunder2,
+                            $tritier2,
+                            $subkelId
+                        ]
                     );
 
                     // dd($request->all());

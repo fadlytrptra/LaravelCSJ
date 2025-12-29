@@ -19,7 +19,11 @@ var subkelNama = document.getElementById("subkelNama");
 var kodeTransaksi = document.getElementById("kodeTransaksi");
 var kodeBarang = document.getElementById("kodeBarang");
 var kodeType = document.getElementById("kodeType");
+var noPIB = document.getElementById("noPIB");
 var namaBarang = document.getElementById("namaBarang");
+var saldoPrimerPerPIB = document.getElementById("saldoPrimerPerPIB");
+var saldoSekunderPerPIB = document.getElementById("saldoSekunderPerPIB");
+var saldoTritierPerPIB = document.getElementById("saldoTritierPerPIB");
 var uraian = document.getElementById("uraian");
 var primer = document.getElementById("primer");
 var primer2 = document.getElementById("primer2");
@@ -275,11 +279,11 @@ tanggal.disabled = true;
 uraian.disabled = true;
 
 tanggal.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            btn_divisi.focus();
-        }
-    });
+    if (event.key === "Enter") {
+        event.preventDefault();
+        btn_divisi.focus();
+    }
+});
 
 // mutasiLabel.value = "Mutasi Masuk";
 fillUraian();
@@ -843,137 +847,237 @@ btn_subkel.addEventListener("click", function (e) {
     }
 });
 
-btn_kodeType.addEventListener("click", handleTypeSelection);
-
-async function handleTypeSelection() {
-    primer.value = sekunder.value = tritier.value = 0;
-    primer2.value = sekunder2.value = tritier2.value = 0;
-
-    const divisi = divisiId.value;
-    const objek = objekId.value;
-    const kelompok = kelompokId.value;
-    const subkel = subkelId.value;
-
-    if (
-        (divisi === "ABM" && objek === "022") ||
-        (divisi === "CIR" && objek === "043") ||
-        (divisi === "JBB" && objek === "042") ||
-        (divisi === "EXT" && (objek === "1259" || objek === "1283"))
-    ) {
-        if (divisi === "ABM" && objek === "022" && kelompok !== "0292") {
-            if (!divisi)
-                return showWarning("Pilih dulu Sub Kelompoknya!", btn_subkel);
-            await showTypeSelection("MhnMasukKeluar/getABM", {
-                subkelId: subkel,
-            });
-        } else if (subkel) {
-            await showTypeSelection("MhnMasukKeluar/getTypeCIR", {
-                divisiId: divisi,
-                subkelId: subkel,
-            });
-        }
-    } else if (subkel) {
-        await showTypeSelection("MhnMasukKeluar/getType", { subkelId: subkel });
-    }
-
-    if (kodeType.value) {
-        try {
-            const response = await fetch(
-                `MhnMasukKeluar/getKodeBarang?_token=${csrfToken}&kodeType=${kodeType.value}`
-            );
-            const data = await response.json();
-            if (data.length > 0) {
-                kodeBarang.value = decodeHtmlEntities(
-                    data[0].KodeBarang.trim()
-                );
-                uraian.focus();
-            }
-        } catch (error) {
-            console.error("AJAX Error:", error);
-        }
-    }
-}
-
-async function showTypeSelection(url, params) {
-    try {
-        const { value: selectedData } = await Swal.fire({
-            title: "Kode Type",
-            html: `<table id="table_list" class="table"><thead><tr><th>ID Type</th><th>Nama</th></tr></thead><tbody></tbody></table>`,
-            width: "55%",
+btn_kodeType.addEventListener("click", function (e) {
+    if (!(masuk.checked || keluar.checked)) {
+        Swal.fire({
+            icon: "error",
+            title: "Pilih dulu Jenis Mutasi!",
             returnFocus: false,
-            showCloseButton: true,
-            showConfirmButton: true,
-            confirmButtonText: "Select",
-            preConfirm: () => {
-                const selected = $("#table_list")
-                    .DataTable()
-                    .row(".selected")
-                    .data();
-                if (!selected) {
-                    Swal.showValidationMessage("Please select a row");
-                    return false;
+        });
+        return;
+    } else {
+        try {
+            Swal.fire({
+                title: "Pilih Id Type",
+                html: `
+                <table id="table_list" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID Type</th>
+                            <th scope="col">Nama Type</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            `,
+                preConfirm: () => {
+                    const selectedData = $("#table_list")
+                        .DataTable()
+                        .row(".selected")
+                        .data();
+                    if (!selectedData) {
+                        Swal.showValidationMessage("Please select a row");
+                        return false;
+                    }
+                    return selectedData;
+                },
+                width: "40%",
+                returnFocus: false,
+                showCloseButton: true,
+                showConfirmButton: true,
+                confirmButtonText: "Select",
+                didOpen: () => {
+                    $(document).ready(function () {
+                        const table = $("#table_list").DataTable({
+                            responsive: true,
+                            processing: true,
+                            serverSide: true,
+                            paging: false,
+                            scrollY: "400px",
+                            scrollCollapse: true,
+                            order: [1, "asc"],
+                            ajax: {
+                                url: "MhnMasukKeluar/getType",
+                                dataType: "json",
+                                type: "GET",
+                                data: {
+                                    _token: csrfToken,
+                                    subkelId: subkelId.value,
+                                },
+                            },
+                            columns: [{ data: "IdType" }, { data: "NamaType" }],
+                            columnDefs: [
+                                {
+                                    targets: 0,
+                                    width: "100px",
+                                },
+                            ],
+                        });
+
+                        $("#table_list tbody").on("click", "tr", function () {
+                            table.$("tr.selected").removeClass("selected");
+                            $(this).addClass("selected");
+                            scrollRowIntoView(this);
+                        });
+
+                        const searchInput = $("#table_list_filter input");
+                        if (searchInput.length > 0) {
+                            searchInput.focus();
+                        }
+
+                        currentIndex = null;
+                        Swal.getPopup().addEventListener("keydown", (e) =>
+                            handleTableKeydown(e, "table_list")
+                        );
+                    });
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    primer2.focus();
+                    kodeType.value = result.value.IdType.trim();
+                    namaBarang.value = result.value.NamaType.trim();
+
+                    if (kodeType.value) {
+                        getType(kodeType.value);
+                        getSaldo(kodeType.value);
+                    } else {
+                        showWarning("Pilih dulu Type Barangnya!", btn_kodeType);
+                    }
                 }
-                return selected;
-            },
-            didOpen: () => initDataTable(url, params),
-        });
-
-        if (selectedData) {
-            kodeType.value =
-                selectedData.IdType?.trim() || selectedData.idtype?.trim();
-            namaBarang.value = decodeHtmlEntities(
-                selectedData.NamaType?.trim() || selectedData.BARU?.trim()
-            );
-
-            if (kodeType.value) {
-                getType(kodeType.value);
-                getSaldo(kodeType.value);
-            } else {
-                showWarning("Pilih dulu Type Barangnya!", btn_kodeType);
-            }
+            });
+        } catch (error) {
+            console.error(error);
         }
-    } catch (error) {
-        console.error(error);
     }
-}
+});
 
-function initDataTable(url, params) {
-    $(document).ready(() => {
-        if ($.fn.DataTable.isDataTable("#table_list")) {
-            $("#table_list").DataTable().destroy();
-        }
+// async function handleTypeSelection() {
+//     primer.value = sekunder.value = tritier.value = 0;
+//     primer2.value = sekunder2.value = tritier2.value = 0;
 
-        const table = $("#table_list").DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            paging: true,
-            scrollY: "400px",
-            scrollCollapse: true,
-            order: [1, "asc"],
-            ajax: {
-                url,
-                dataType: "json",
-                type: "GET",
-                data: { _token: csrfToken, ...params },
-            },
-            columns: [{ data: "IdType" }, { data: "NamaType" }],
-        });
+//     const divisi = divisiId.value;
+//     const objek = objekId.value;
+//     const kelompok = kelompokId.value;
+//     const subkel = subkelId.value;
 
-        $("#table_list tbody").on("click", "tr", function () {
-            table.$("tr.selected").removeClass("selected");
-            $(this).addClass("selected");
-            scrollRowIntoView(this);
-        });
+//     if (
+//         (divisi === "ABM" && objek === "022") ||
+//         (divisi === "CIR" && objek === "043") ||
+//         (divisi === "JBB" && objek === "042") ||
+//         (divisi === "EXT" && (objek === "1259" || objek === "1283"))
+//     ) {
+//         if (divisi === "ABM" && objek === "022" && kelompok !== "0292") {
+//             if (!divisi)
+//                 return showWarning("Pilih dulu Sub Kelompoknya!", btn_subkel);
+//             await showTypeSelection("MhnMasukKeluar/getABM", {
+//                 subkelId: subkel,
+//             });
+//         } else if (subkel) {
+//             await showTypeSelection("MhnMasukKeluar/getTypeCIR", {
+//                 divisiId: divisi,
+//                 subkelId: subkel,
+//             });
+//         }
+//     } else if (subkel) {
+//         await showTypeSelection("MhnMasukKeluar/getType", { subkelId: subkel });
+//     }
 
-        const searchInput = $("#table_list_filter input");
-        if (searchInput.length > 0) searchInput.focus();
+//     if (kodeType.value) {
+//         try {
+//             const response = await fetch(
+//                 `MhnMasukKeluar/getKodeBarang?_token=${csrfToken}&kodeType=${kodeType.value}`
+//             );
+//             const data = await response.json();
+//             if (data.length > 0) {
+//                 kodeBarang.value = decodeHtmlEntities(
+//                     data[0].KodeBarang.trim()
+//                 );
+//                 uraian.focus();
+//             }
+//         } catch (error) {
+//             console.error("AJAX Error:", error);
+//         }
+//     }
+// }
 
-        Swal.getPopup().addEventListener("keydown", (e) =>
-            handleTableKeydown(e, "table_list")
-        );
-    });
-}
+// async function showTypeSelection(url, params) {
+//     try {
+//         const { value: selectedData } = await Swal.fire({
+//             title: "Kode Type",
+//             html: `<table id="table_list" class="table"><thead><tr><th>ID Type</th><th>Nama</th></tr></thead><tbody></tbody></table>`,
+//             width: "55%",
+//             returnFocus: false,
+//             showCloseButton: true,
+//             showConfirmButton: true,
+//             confirmButtonText: "Select",
+//             preConfirm: () => {
+//                 const selected = $("#table_list")
+//                     .DataTable()
+//                     .row(".selected")
+//                     .data();
+//                 if (!selected) {
+//                     Swal.showValidationMessage("Please select a row");
+//                     return false;
+//                 }
+//                 return selected;
+//             },
+//             didOpen: () => initDataTable(url, params),
+//         });
+
+//         if (selectedData) {
+//             kodeType.value =
+//                 selectedData.IdType?.trim() || selectedData.idtype?.trim();
+//             namaBarang.value = decodeHtmlEntities(
+//                 selectedData.NamaType?.trim() || selectedData.BARU?.trim()
+//             );
+
+//             if (kodeType.value) {
+//             } else {
+//                 showWarning("Pilih dulu Type Barangnya!", btn_kodeType);
+//             }
+//         }
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
+
+// function initDataTable(url, params) {
+//     $(document).ready(() => {
+//         if ($.fn.DataTable.isDataTable("#table_list")) {
+//             $("#table_list").DataTable().destroy();
+//         }
+
+//         const table = $("#table_list").DataTable({
+//             responsive: true,
+//             processing: true,
+//             serverSide: true,
+//             paging: true,
+//             scrollY: "400px",
+//             scrollCollapse: true,
+//             order: [1, "asc"],
+//             ajax: {
+//                 url,
+//                 dataType: "json",
+//                 type: "GET",
+//                 data: { _token: csrfToken, ...params },
+//             },
+//             columns: [{ data: "IdType" }, { data: "NamaType" }],
+//         });
+
+//         $("#table_list tbody").on("click", "tr", function () {
+//             table.$("tr.selected").removeClass("selected");
+//             $(this).addClass("selected");
+//             scrollRowIntoView(this);
+//         });
+
+//         const searchInput = $("#table_list_filter input");
+//         if (searchInput.length > 0) searchInput.focus();
+
+//         Swal.getPopup().addEventListener("keydown", (e) =>
+//             handleTableKeydown(e, "table_list")
+//         );
+//     });
+// }
 
 function showWarning(message, focusElement) {
     Swal.fire({
@@ -1202,8 +1306,108 @@ function getSaldo(kodeType) {
                 primer.value = formatNumber(response[0].SaldoPrimer);
                 sekunder.value = formatNumber(response[0].SaldoSekunder);
                 tritier.value = formatNumber(response[0].SaldoTritier);
+                uraian.disabled = false;
 
-                uraian.select();
+                if (response.length == 1) {
+                    saldoPrimerPerPIB.value = formatNumber(response[0].Qty_Primer); //prettier-ignore
+                    saldoSekunderPerPIB.value = formatNumber(response[0].Qty_Sekunder); //prettier-ignore
+                    saldoTritierPerPIB.value = formatNumber(response[0].Qty); //prettier-ignore
+                    noPIB.value = response[0].NoPIB;
+                    uraian.select();
+                } else {
+                    try {
+                        Swal.fire({
+                            title: "Nomor PIB",
+                            html: `
+                                <table id="table_list" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No. PIB</th>
+                                            <th scope="col">Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            `,
+                            preConfirm: () => {
+                                const selectedData = $("#table_list")
+                                    .DataTable()
+                                    .row(".selected")
+                                    .data();
+                                if (!selectedData) {
+                                    Swal.showValidationMessage(
+                                        "Please select a row"
+                                    );
+                                    return false;
+                                }
+                                return selectedData;
+                            },
+                            width: "40%",
+                            returnFocus: false,
+                            showCloseButton: true,
+                            showConfirmButton: true,
+                            confirmButtonText: "Select",
+                            didOpen: () => {
+                                $(document).ready(function () {
+                                    const table = $("#table_list").DataTable({
+                                        responsive: true,
+                                        paging: false,
+                                        scrollY: "400px",
+                                        scrollCollapse: true,
+                                        order: [1, "asc"],
+                                        data: response,
+                                        columns: [
+                                            { data: "NoPIB" },
+                                            { data: "Qty" },
+                                        ],
+                                        columnDefs: [
+                                            {
+                                                targets: 0,
+                                                width: "300px",
+                                            },
+                                        ],
+                                    });
+
+                                    $("#table_list tbody").on(
+                                        "click",
+                                        "tr",
+                                        function () {
+                                            table
+                                                .$("tr.selected")
+                                                .removeClass("selected");
+                                            $(this).addClass("selected");
+                                            scrollRowIntoView(this);
+                                        }
+                                    );
+
+                                    const searchInput = $(
+                                        "#table_list_filter input"
+                                    );
+                                    if (searchInput.length > 0) {
+                                        searchInput.focus();
+                                    }
+
+                                    currentIndex = null;
+                                    Swal.getPopup().addEventListener(
+                                        "keydown",
+                                        (e) =>
+                                            handleTableKeydown(e, "table_list")
+                                    );
+                                });
+                            },
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                noPIB.value = result.value.NoPIB.trim();
+                                saldoPrimerPerPIB.value = formatNumber(result.value.Qty_Primer); //prettier-ignore
+                                saldoSekunderPerPIB.value = formatNumber(result.value.Qty_Sekunder); //prettier-ignore
+                                saldoTritierPerPIB.value = formatNumber(result.value.Qty); //prettier-ignore
+                                uraian.select();
+                            }
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
             }
         },
         error: function (xhr, status, error) {
