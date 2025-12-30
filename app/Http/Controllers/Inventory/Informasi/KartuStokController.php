@@ -35,7 +35,7 @@ class KartuStokController extends Controller
         $user = Auth::user()->NomorUser;
 
         if ($id === 'getDivisi') {
-            $divisi = DB::connection('ConnInventory')->select('exec SP_1003_INV_userdivisi @XKdUser = ?', [$user]);
+            $divisi = DB::connection('ConnInventory')->select('exec SP_1273_PRG_userdivisi @XKdUser = ?', [$user]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -48,7 +48,7 @@ class KartuStokController extends Controller
 
             // mendapatkan daftar objek
         } else if ($id === 'getObjek') {
-            $objek = DB::connection('ConnInventory')->select('exec SP_1003_INV_User_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $request->input('divisi')]);
+            $objek = DB::connection('ConnInventory')->select('exec SP_1273_PRG_User_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $request->input('divisi')]);
             $data_objek = [];
             foreach ($objek as $detail_objek) {
                 $data_objek[] = [
@@ -61,7 +61,7 @@ class KartuStokController extends Controller
 
             // mendapatkan daftar kelompok utama
         } else if ($id === 'getKelUt') {
-            $kelut = DB::connection('ConnInventory')->select('exec SP_1003_INV_IdObjek_KelompokUtama @XIdObjek_KelompokUtama = ?', [$request->input('objekId')]);
+            $kelut = DB::connection('ConnInventory')->select('exec SP_1273_PRG_IdObjek_KelompokUtama @XIdObjek_KelompokUtama = ?', [$request->input('objekId')]);
             $data_kelut = [];
             foreach ($kelut as $detail_kelut) {
                 $data_kelut[] = [
@@ -73,7 +73,7 @@ class KartuStokController extends Controller
 
             // mendapatkan daftar kelompok
         } else if ($id === 'getKelompok') {
-            $kelompok = DB::connection('ConnInventory')->select('exec SP_1003_INV_IdKelompokUtama_Kelompok @XIdKelompokUtama_Kelompok = ?', [$request->input('kelutId')]);
+            $kelompok = DB::connection('ConnInventory')->select('exec SP_1273_PRG_IdKelompokUtama_Kelompok @XIdKelompokUtama_Kelompok = ?', [$request->input('kelutId')]);
             $data_kelompok = [];
             foreach ($kelompok as $detail_kelompok) {
                 $data_kelompok[] = [
@@ -89,7 +89,7 @@ class KartuStokController extends Controller
 
             $XIdKelompok_SubKelompok = $XIdKelompok_SubKelompok ?? '0';
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_1003_INV_IDKELOMPOK_SUBKELOMPOK @XIdKelompok_SubKelompok = ?', [$XIdKelompok_SubKelompok]);
+            $subkel = DB::connection('ConnInventory')->select('exec SP_1273_PRG_IDKELOMPOK_SUBKELOMPOK @XIdKelompok_SubKelompok = ?', [$XIdKelompok_SubKelompok]);
             $data_subkel = [];
             foreach ($subkel as $detail_subkel) {
                 $data_subkel[] = [
@@ -108,7 +108,7 @@ class KartuStokController extends Controller
             $id_objek = $request->input('id_objek');
             $id_Divisi = $request->input('id_Divisi');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_SubKel_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_SubKel_Stok
             @kode = ?, @id_Subkel = ?, @id_Kelompok = ?, @id_Kel_utama = ?, @id_objek = ?, @id_Divisi = ?',
                 [1, $id_Subkel, $id_Kelompok, $id_Kel_utama, $id_objek, $id_Divisi]
             );
@@ -141,7 +141,7 @@ class KartuStokController extends Controller
             $id_objek = $request->input('id_objek');
             $id_Divisi = $request->input('id_Divisi');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_Kelompok_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_Kelompok_Stok
             @kode = ?, @id_Kelompok = ?, @id_Kel_utama = ?, @id_objek = ?, @id_Divisi = ?',
                 [1, $id_Kelompok, $id_Kel_utama, $id_objek, $id_Divisi]
             );
@@ -173,7 +173,7 @@ class KartuStokController extends Controller
             $id_objek = $request->input('id_objek');
             $id_Divisi = $request->input('id_Divisi');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_KelUtama_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_KelUtama_Stok
             @kode = ?, @id_Kel_utama = ?, @id_objek = ?, @id_Divisi = ?',
                 [1, $id_Kel_utama, $id_objek, $id_Divisi]
             );
@@ -204,7 +204,7 @@ class KartuStokController extends Controller
             $id_objek = $request->input('id_objek');
             $id_Divisi = $request->input('id_Divisi');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_Objek_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_Objek_Stok
             @kode = ?, @id_objek = ?, @id_Divisi = ?',
                 [1, $id_objek, $id_Divisi]
             );
@@ -238,7 +238,7 @@ class KartuStokController extends Controller
             $id_objek = $request->input('id_objek');
             $id_Divisi = $request->input('id_Divisi');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_SubKel_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_SubKel_Stok
             @id_Subkel = ?, @id_Kelompok = ?, @id_Kel_utama = ?, @id_objek = ?, @id_Divisi = ?',
                 [$id_Subkel, $id_Kelompok, $id_Kel_utama, $id_objek, $id_Divisi]
             );
@@ -272,7 +272,7 @@ class KartuStokController extends Controller
             $id_objek = $request->input('id_objek');
             $id_Divisi = $request->input('id_Divisi');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_Kelompok_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_Kelompok_Stok
             @id_Kelompok = ?, @id_Kel_utama = ?, @id_objek = ?, @id_Divisi = ?',
                 [$id_Kelompok, $id_Kel_utama, $id_objek, $id_Divisi]
             );
@@ -304,7 +304,7 @@ class KartuStokController extends Controller
             $id_objek = $request->input('id_objek');
             $id_Divisi = $request->input('id_Divisi');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_KelUtama_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_KelUtama_Stok
             @id_Kel_utama = ?, @id_objek = ?, @id_Divisi = ?',
                 [$id_Kel_utama, $id_objek, $id_Divisi]
             );
@@ -335,7 +335,7 @@ class KartuStokController extends Controller
             $id_objek = $request->input('id_objek');
             $id_Divisi = $request->input('id_Divisi');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_Objek_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_Objek_Stok
             @id_objek = ?, @id_Divisi = ?',
                 [$id_objek, $id_Divisi]
             );

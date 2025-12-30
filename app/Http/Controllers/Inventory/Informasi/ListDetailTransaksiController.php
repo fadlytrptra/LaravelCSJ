@@ -36,7 +36,7 @@ class ListDetailTransaksiController extends Controller
         if ($id === 'getListDetail') {
             $idtype = $request->input('idtype');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_Detail_Kartu_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_Detail_Kartu_Stok
             @idtype = ?',
                 [$idtype]
             );
@@ -75,7 +75,7 @@ class ListDetailTransaksiController extends Controller
             $tgl_awal = $request->input('tgl_awal');
             $tgl_akhir = $request->input('tgl_akhir');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4372_List_Detail_Kartu_Stok
+            $subkel = DB::connection('ConnInventory')->select('exec SP_INV_4384_List_Detail_Kartu_Stok
             @kode = ?, @id_brg = ?, @id_subkel = ?, @tgl_awal = ?, @tgl_akhir = ?',
                 [1, $id_brg, $id_subkel, $tgl_awal, $tgl_akhir]
             );
@@ -109,7 +109,7 @@ class ListDetailTransaksiController extends Controller
         else if ($id === 'getSaldoBarang') {
             $IdType = $request->input('IdType');
 
-            $subkel = DB::connection('ConnInventory')->select('exec SP_1003_INV_Saldo_Barang
+            $subkel = DB::connection('ConnInventory')->select('exec SP_1273_PRG_SALDO_BARANG
             @IdType = ?',
                 [$IdType]
             );
@@ -130,7 +130,7 @@ class ListDetailTransaksiController extends Controller
                     'MinimumStock' => $detail_subkel->MinimumStock,
                     'MaximumStock' => $detail_subkel->MaximumStock,
                     'KodeBarang' => $detail_subkel->KodeBarang,
-                    'PIB' => $detail_subkel->PIB
+                    // 'PIB' => $detail_subkel->PIB
                 ];
             }
             return response()->json($data_subkel);
