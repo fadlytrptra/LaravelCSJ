@@ -100,7 +100,7 @@ class FakturUangMukaController extends Controller
 
             if ($proses == 1) {
                 $penagihanResult = DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_1486_ACC_MAINT_PENAGIHAN_SJ @Kode = ?, @Tgl_Penagihan = ?, @Id_Customer = ?, @PO = ?, @id_Jenis_Dokumen = ?, @Nilai_Penagihan = ?, @Id_MataUang = ?, @Terbilang = ?, @UserInput = ?, @IdPenagih = ?, @TglFakturPajak = ?, @NilaiKurs = ?, @Jns_PPN = ?, @persenPPN = ?', [
+                    ->statement('EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = ?, @Tgl_Penagihan = ?, @Id_Customer = ?, @PO = ?, @id_Jenis_Dokumen = ?, @Nilai_Penagihan = ?, @Id_MataUang = ?, @Terbilang = ?, @UserInput = ?, @IdPenagih = ?, @TglFakturPajak = ?, @NilaiKurs = ?, @Jns_PPN = ?, @persenPPN = ?', [
                         1,
                         $request->input('tanggal'),
                         $request->input('idCustomer'),
@@ -143,7 +143,7 @@ class FakturUangMukaController extends Controller
 
             if ($proses == 2) {
                 DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_1486_ACC_MAINT_PENAGIHAN_SJ @Kode = ?, @Id_Penagihan = ?, @Nilai_Penagihan = ?, @Discount = ?, @Id_MataUang = ?, @Terbilang = ?, @IdPenagih = ?, @NilaiKurs = ?, @Jns_PPN = ?', [
+                    ->statement('EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = ?, @Id_Penagihan = ?, @Nilai_Penagihan = ?, @Discount = ?, @Id_MataUang = ?, @Terbilang = ?, @IdPenagih = ?, @NilaiKurs = ?, @Jns_PPN = ?', [
                         4,
                         $request->input('no_penagihan'),
                         (float) str_replace(',', '', $request->input('total')),
@@ -180,7 +180,7 @@ class FakturUangMukaController extends Controller
         if ($id == 'getCustomer') {
             // Call stored procedure to get customer list
             $results = DB::connection('ConnSales')
-                ->select('exec SP_1486_ACC_LIST_ALL_CUSTOMER ?', ['1']);
+                ->select('exec SP_1273_PRG_LIST_ALL_CUSTOMER ?', ['1']);
             // dd($results);
             // Instance to handle lookup (similar to mLook class in VB)
             $response = [];
@@ -209,7 +209,7 @@ class FakturUangMukaController extends Controller
             $TIdCustomer = $request->input('idCustomer');
 
             $customerResults = DB::connection('ConnSales')
-                ->select('exec SP_1486_ACC_LIST_CUSTOMER @IDCUST = ?', [trim($TIdCustomer)]);
+                ->select('exec SP_1273_PRG_LIST_CUSTOMER @IDCUST = ?', [trim($TIdCustomer)]);
             // dd($customerResults);
             if (!empty($customerResults)) {
                 $customer = $customerResults[0];
@@ -224,7 +224,7 @@ class FakturUangMukaController extends Controller
                 }
 
                 $jenisCustResults = DB::connection('ConnSales')
-                    ->select('exec SP_1486_ACC_LIST_JNSCUST @IDJNSCUST = ?', [trim($TIdJnsCust)]);
+                    ->select('exec SP_1273_PRG_LIST_JNSCUST @IDJNSCUST = ?', [trim($TIdJnsCust)]);
                 // dd($jenisCustResults);
                 if (!empty($jenisCustResults)) {
                     $TJenisCust = $jenisCustResults[0]->NamaJnsCust;
@@ -242,8 +242,7 @@ class FakturUangMukaController extends Controller
         } else if ($id == 'getPenagihan') {
             // Call the stored procedure with the customer ID
             $customerId = $request->input('idCustomer');
-            $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_TAGIHAN_DP @IDCustomer = ?', [$customerId]);
+            $results = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_TAGIHAN_DP');
             // dd($results);
             // Processing the results for the lookup
             $mLook = [];
@@ -276,7 +275,7 @@ class FakturUangMukaController extends Controller
 
                 $customerId = $request->input('idCustomer');
                 $results = DB::connection('ConnSales')
-                    ->select('exec SP_1486_ACC_LIST_HEADER_PESANAN @KODE = ?, @IdCust = ?', [4, $customerId]);
+                    ->select('exec SP_1273_PRG_LIST_HEADER_PESANAN @KODE = ?, @IdCust = ?', [4, $customerId]);
                 // dd($results);
                 $mLook = [];
                 foreach ($results as $row) {
@@ -296,9 +295,9 @@ class FakturUangMukaController extends Controller
             $sNoSP = $request->input('no_sp');
             // dd($sNoSP);
             try {
-                // Fetch order details using SP_1486_ACC_LIST_HEADER_PESANAN
+                // Fetch order details using SP_1273_PRG_LIST_HEADER_PESANAN
                 $orderResults = DB::connection('ConnSales')
-                    ->select('exec SP_1486_ACC_LIST_HEADER_PESANAN @Kode = ?, @IDSURATPESANAN = ?', [3, $sNoSP]);
+                    ->select('exec SP_1273_PRG_LIST_HEADER_PESANAN @Kode = ?, @IDSURATPESANAN = ?', [3, $sNoSP]);
                 // dd($orderResults);
                 if (count($orderResults) > 0) {
                     $order = $orderResults[0];
@@ -314,9 +313,9 @@ class FakturUangMukaController extends Controller
                     }
                 }
 
-                // Fetch currency details using SP_1486_ACC_LIST_MATAUANG
+                // Fetch currency details using SP_1273_PRG_LIST_MATAUANG
                 $currencyResults = DB::connection('ConnAccounting')
-                    ->select('exec SP_1486_ACC_LIST_MATAUANG @Kode = ?, @IdMataUang = ?', [2, $TIdMataUang]);
+                    ->select('exec SP_1273_PRG_LIST_MATAUANG @Kode = ?, @IdMataUang = ?', [2, $TIdMataUang]);
                 // dd($currencyResults);
                 if (count($currencyResults) > 0) {
                     $TMataUang = $currencyResults[0]->Nama_MataUang;
@@ -336,7 +335,7 @@ class FakturUangMukaController extends Controller
             }
         } else if ($id == 'getPenagih') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_USER_PENAGIH @KODE = ?', [1]);
+                ->select('exec SP_1273_PRG_LIST_USER_PENAGIH @KODE = ?', [1]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -352,7 +351,7 @@ class FakturUangMukaController extends Controller
         } else if ($id == 'getPajak') {
             // Execute the stored procedure to list jenis pajak
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_JENIS_PAJAK');
+                ->select('exec SP_1273_PRG_LIST_JENIS_PAJAK');
             // dd($results);
             // Prepare the response array
             $response = [];
@@ -369,7 +368,7 @@ class FakturUangMukaController extends Controller
             $kode = trim($request->input('id_cust')) == 'NPX' ? 3 : 2;
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_JENIS_DOKUMEN @KODE = ?', [$kode]);
+                ->select('exec SP_1273_PRG_LIST_JENIS_DOKUMEN @KODE = ?', [$kode]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -385,7 +384,7 @@ class FakturUangMukaController extends Controller
             $sid_Penagihan = $request->input('no_penagihan');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ @Kode = ?, @Id_Penagihan = ?', [8, $sid_Penagihan]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ1 @Kode = ?, @Id_Penagihan = ?', [8, $sid_Penagihan]);
             // dd($results);
             if (!empty($results)) {
                 $row = $results[0];
@@ -418,7 +417,7 @@ class FakturUangMukaController extends Controller
 
                 if ($TJnsPajak != '') {
                     $pajakResults = DB::connection('ConnAccounting')
-                        ->select('exec SP_1486_ACC_LIST_JENIS_PAJAK @Kode = ?, @Jns_PPN = ?', [1, $TJnsPajak]);
+                        ->select('exec SP_1273_PRG_LIST_JENIS_PAJAK @Kode = ?, @Jns_PPN = ?', [1, $TJnsPajak]);
 
                     if (!empty($pajakResults)) {
                         $TPajak = $pajakResults[0]->Nama_Jns_PPN;

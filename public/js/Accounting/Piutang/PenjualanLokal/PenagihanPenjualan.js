@@ -15,8 +15,6 @@ $(document).ready(function () {
     let btn_dokumen = document.getElementById("btn_dokumen");
     let btn_penagihanUM = document.getElementById("btn_penagihanUM");
     let btn_suratJalan = document.getElementById("btn_suratJalan");
-    let btn_charge = document.getElementById("btn_charge");
-    let btn_add = document.getElementById("btn_add");
     let btn_lihatItem = document.getElementById("btn_lihatItem");
     let btn_simpanM = document.getElementById("btn_simpanM");
     let btn_keluarM = document.getElementById("btn_keluarM");
@@ -52,14 +50,18 @@ $(document).ready(function () {
     let no_penagihanUM = document.getElementById("no_penagihanUM");
     let id_penagihanUM = document.getElementById("id_penagihanUM");
     let surat_jalan = document.getElementById("surat_jalan");
-    let id_charge = document.getElementById("id_charge");
-    let x_charge = document.getElementById("x_charge");
     let totalLihat = document.getElementById("totalLihat");
     let tanggal_diterima = document.getElementById("tanggal_diterima");
     let nilaiPenagihan = document.getElementById("nilaiPenagihan");
     let nilaiUangMuka = document.getElementById("nilaiUangMuka");
+    let dpp_nilaiLain = document.getElementById("dpp_nilaiLain");
+    let nilai_ppn = document.getElementById("nilai_ppn");
     let idJenisPajak = document.getElementById("idJenisPajak");
     let syaratPembayaran = document.getElementById("syaratPembayaran");
+    let nama_bank = document.getElementById("nama_bank");
+    let btn_bank = document.getElementById("btn_bank");
+    let idBank = document.getElementById("idBank");
+    let nomor_seriFakturPajak = document.getElementById("nomor_seriFakturPajak"); //prettier-ignore
     let table_atas = $("#table_atas").DataTable({
         columnDefs: [{ targets: [0, 7], visible: false }],
     });
@@ -93,12 +95,11 @@ $(document).ready(function () {
     btn_penagihan.disabled = true;
     btn_noSP.disabled = true;
     btn_userPenagih.disabled = true;
+    btn_bank.disabled = true;
     btn_pajak.disabled = true;
     btn_penagihanUM.disabled = true;
     btn_suratJalan.disabled = true;
     btn_dokumen.disabled = true;
-    btn_charge.disabled = true;
-    btn_add.disabled = true;
     btn_lihatItem.disabled = true;
     btn_hapusItem.disabled = true;
     id_cust.readOnly = true;
@@ -110,14 +111,17 @@ $(document).ready(function () {
     nomorPO.readOnly = true;
     namaMataUang.readOnly = true;
     user_penagih.readOnly = true;
+    nama_bank.readOnly = true;
     nama_pajak.readOnly = true;
     no_penagihanUM.readOnly = true;
     surat_jalan.readOnly = true;
     dokumen.readOnly = true;
     noBC24.readOnly = false;
-    x_charge.readOnly = true;
+    nomor_seriFakturPajak.readOnly = false;
     nilaiPenagihan.readOnly = true;
     nilaiUangMuka.readOnly = true;
+    dpp_nilaiLain.readOnly = true;
+    nilai_ppn.readOnly = true;
     terbilang.readOnly = true;
     btn_isi.focus();
 
@@ -134,12 +138,11 @@ $(document).ready(function () {
         btn_penagihan.disabled = true;
         btn_noSP.disabled = false;
         btn_userPenagih.disabled = false;
+        btn_bank.disabled = false;
         btn_pajak.disabled = false;
         btn_penagihanUM.disabled = false;
         btn_suratJalan.disabled = false;
         btn_dokumen.disabled = false;
-        btn_charge.disabled = false;
-        btn_add.disabled = false;
         btn_lihatItem.disabled = false;
         btn_hapusItem.disabled = false;
         btn_customer.focus();
@@ -157,12 +160,11 @@ $(document).ready(function () {
         btn_penagihan.disabled = false;
         btn_noSP.disabled = true;
         btn_userPenagih.disabled = false;
+        btn_bank.disabled = false;
         btn_pajak.disabled = false;
         btn_penagihanUM.disabled = false;
         btn_suratJalan.disabled = false;
         btn_dokumen.disabled = false;
-        btn_charge.disabled = false;
-        btn_add.disabled = false;
         btn_lihatItem.disabled = false;
         btn_hapusItem.disabled = false;
         btn_customer.focus();
@@ -186,12 +188,11 @@ $(document).ready(function () {
         btn_penagihan.disabled = false;
         btn_noSP.disabled = true;
         btn_userPenagih.disabled = false;
+        btn_bank.disabled = false;
         btn_pajak.disabled = false;
         btn_penagihanUM.disabled = false;
         btn_suratJalan.disabled = false;
         btn_dokumen.disabled = false;
-        btn_charge.disabled = false;
-        btn_add.disabled = false;
         btn_lihatItem.disabled = false;
         btn_hapusItem.disabled = false;
         btn_customer.focus();
@@ -352,6 +353,8 @@ $(document).ready(function () {
                     penagihanPajak: penagihanPajak.value,
                     no_penagihanUM: no_penagihanUM.value,
                     TTerbilang: TTerbilang,
+                    noSeriFakturPajak: nomor_seriFakturPajak.value,
+                    idBank: idBank.value,
                     TNilaiPenagihan: TNilaiPenagihan,
                     TNilaiUM: TNilaiUM,
                     allRowsDataAtas: allRowsDataAtas,
@@ -406,6 +409,7 @@ $(document).ready(function () {
                     idUserPenagih: idUserPenagih.value,
                     penagihanPajak: penagihanPajak.value,
                     no_penagihan: no_penagihan.value,
+                    idBank: idBank.value
                 },
                 success: function (response) {
                     console.log(response);
@@ -505,10 +509,8 @@ $(document).ready(function () {
         rows.each(function (rowData, index) {
             const newRow = {
                 Id_Detail: tableData.length + 1,
-                x_charge: "",
                 surat_jalan: surat_jalan.value,
                 TanggalDiterima: tanggal_diterima.value,
-                change_amount: rowData.Total,
                 no_sp: no_sp.value,
                 jenis: "SJ",
                 id_xc: "",
@@ -523,10 +525,8 @@ $(document).ready(function () {
                 table_atas.row
                     .add([
                         newRow.Id_Detail,
-                        newRow.x_charge,
                         newRow.surat_jalan,
                         newRow.TanggalDiterima,
-                        newRow.change_amount,
                         newRow.no_sp,
                         newRow.jenis,
                         newRow.id_xc,
@@ -715,7 +715,9 @@ $(document).ready(function () {
             table_bawah.row(selectedRow).remove().draw();
 
             // Remove the row from tableData array
-            tableData = tableData.filter((row) => row.no_penagihanUM !== rowData[0]);
+            tableData = tableData.filter(
+                (row) => row.no_penagihanUM !== rowData[0]
+            );
             console.log(tableData);
 
             const totalPelunasanUM = table_bawah
@@ -742,58 +744,6 @@ $(document).ready(function () {
         }
     });
 
-    btn_add.addEventListener("click", async function (event) {
-        event.preventDefault();
-        const newRow = {
-            Id_Detail: tableData.length + 1,
-            x_charge: x_charge.value,
-            // surat_jalan: surat_jalan.value,
-            surat_jalan: "",
-            TanggalDiterima: tanggal_diterima.value ?? "",
-            change_amount: numeral(parseFloat(change_amount.value)).format(
-                "0,0.00"
-            ),
-            no_sp: no_sp.value,
-            jenis: "XC",
-            id_xc: id_charge.value,
-        };
-
-        tableData.push(newRow);
-        console.log(tableData);
-
-        if ($.fn.DataTable.isDataTable("#table_atas")) {
-            var table_atas = $("#table_atas").DataTable();
-
-            table_atas.row
-                .add([
-                    newRow.Id_Detail,
-                    newRow.x_charge,
-                    newRow.surat_jalan,
-                    newRow.TanggalDiterima,
-                    newRow.change_amount,
-                    newRow.no_sp,
-                    newRow.jenis,
-                    newRow.id_xc,
-                ])
-                .draw();
-        }
-
-        const totalPelunasan = table_atas
-            .rows()
-            .data()
-            .toArray()
-            .reduce((sum, row) => {
-                let jumlahUang = row[4].replace(/,/g, "");
-                return sum + parseInt(jumlahUang);
-            }, 0);
-        console.log(totalPelunasan);
-
-        nilaiPenagihan.value = totalPelunasan.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        });
-    });
-
     $("#table_bawah tbody").on("click", "tr", function () {
         // Remove the 'selected' class from any previously selected row
         $("#table_bawah tbody tr").removeClass("selected");
@@ -804,9 +754,6 @@ $(document).ready(function () {
         // Get data from the clicked row
         var data = table_bawah.row(this).data();
         console.log(data);
-
-        // x_charge.value = data[1];
-        // change_amount.value = data[4];
     });
 
     $("#table_atas tbody").on("click", "tr", function () {
@@ -819,9 +766,6 @@ $(document).ready(function () {
         // Get data from the clicked row
         var data = table_atas.row(this).data();
         console.log(data);
-
-        x_charge.value = data[1];
-        change_amount.value = data[4];
     });
 
     btn_customer.addEventListener("click", async function (event) {
@@ -1060,6 +1004,8 @@ $(document).ready(function () {
                             idJenisDokumen.value = data.TIdJnsDok;
                             nilaiPenagihan.value = data.TNilai_Penagihan;
                             nilaiUangMuka.value = data.TNilai_UM;
+                            dpp_nilaiLain.value = (data.TNilai_Penagihan * 11) / 12; //prettier-ignore
+                            nilai_ppn.value = (dpp_nilaiLain * 12) / 100;
 
                             if (idMataUang.value == "1") {
                                 terbilangS = convertNumberToWordsRupiah(
@@ -1094,11 +1040,9 @@ $(document).ready(function () {
                                         const newRow = {
                                             Id_Detail:
                                                 table_atas.rows().count() + 1,
-                                            x_charge: "", // Assuming you don't have a value for this field yet
                                             surat_jalan: item.Surat_Jalan,
                                             TanggalDiterima:
                                                 item.Tgl_Surat_jalan,
-                                            change_amount: item.Total,
                                             no_sp: item.IDSuratPesanan,
                                             jenis: item.Type,
                                             id_xc: "",
@@ -1107,15 +1051,8 @@ $(document).ready(function () {
                                         table_atas.row
                                             .add([
                                                 newRow.Id_Detail,
-                                                newRow.x_charge,
                                                 newRow.surat_jalan,
                                                 newRow.TanggalDiterima,
-                                                parseFloat(
-                                                    newRow.change_amount
-                                                ).toLocaleString("en-US", {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2,
-                                                }),
                                                 newRow.no_sp,
                                                 newRow.jenis,
                                                 newRow.id_xc,
@@ -1128,11 +1065,9 @@ $(document).ready(function () {
                                         const newRow = {
                                             Id_Detail:
                                                 table_atas.rows().count() + 1,
-                                            x_charge: item.Nama_Charge, // Assuming you don't have a value for this field yet
                                             surat_jalan: "",
                                             TanggalDiterima:
                                                 item.Tgl_Surat_jalan ?? "",
-                                            change_amount: item.Storage,
                                             no_sp: item.IDSuratPesanan ?? "",
                                             jenis: item.Type,
                                             id_xc: item.Jenis_Charge,
@@ -1141,15 +1076,8 @@ $(document).ready(function () {
                                         table_atas.row
                                             .add([
                                                 newRow.Id_Detail,
-                                                newRow.x_charge,
                                                 newRow.surat_jalan,
                                                 newRow.TanggalDiterima,
-                                                parseFloat(
-                                                    newRow.change_amount
-                                                ).toLocaleString("en-US", {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2,
-                                                }),
                                                 newRow.no_sp,
                                                 newRow.jenis,
                                                 newRow.id_xc,
@@ -1158,16 +1086,14 @@ $(document).ready(function () {
                                     } else if (
                                         item.Type == "XC" &&
                                         item.Nama_Charge ==
-                                        "Extra Charge Transport"
+                                            "Extra Charge Transport"
                                     ) {
                                         const newRow = {
                                             Id_Detail:
                                                 table_atas.rows().count() + 1,
-                                            x_charge: item.Nama_Charge, // Assuming you don't have a value for this field yet
                                             surat_jalan: "",
                                             TanggalDiterima:
                                                 item.Tgl_Surat_jalan ?? "",
-                                            change_amount: item.XCTranspor,
                                             no_sp: item.IDSuratPesanan ?? "",
                                             jenis: item.Type,
                                             id_xc: item.Jenis_Charge,
@@ -1176,15 +1102,8 @@ $(document).ready(function () {
                                         table_atas.row
                                             .add([
                                                 newRow.Id_Detail,
-                                                newRow.x_charge,
                                                 newRow.surat_jalan,
                                                 newRow.TanggalDiterima,
-                                                parseFloat(
-                                                    newRow.change_amount
-                                                ).toLocaleString("en-US", {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2,
-                                                }),
                                                 newRow.no_sp,
                                                 newRow.jenis,
                                                 newRow.id_xc,
@@ -1400,7 +1319,7 @@ $(document).ready(function () {
                     idUserPenagih.value = escapeHTML(selectedRow.IdUser.trim());
                     // IdPenagihan.value = escapeHTML(selectedRow.Id_Penagihan.trim());
                     setTimeout(() => {
-                        btn_pajak.focus();
+                        btn_bank.focus();
                     }, 300);
                 }
             });
@@ -1408,6 +1327,93 @@ $(document).ready(function () {
             console.error("An error occurred:", error);
         }
         // console.log(selectedRow);
+    });
+
+    btn_bank.addEventListener("click", async function (e) {
+        e.preventDefault();
+        try {
+            const result = await Swal.fire({
+                title: "Select a Penagih",
+                html: '<table id="BankTable" class="display" style="width:100%"><thead><tr><th>Nama Bank</th><th>ID. Bank</th></tr></thead><tbody></tbody></table>',
+                showCancelButton: true,
+                width: "40%",
+                preConfirm: () => {
+                    const selectedData = $("#BankTable")
+                        .DataTable()
+                        .row(".selected")
+                        .data();
+                    if (!selectedData) {
+                        Swal.showValidationMessage("Please select a row");
+                        return false;
+                    }
+                    return selectedData;
+                },
+                didOpen: () => {
+                    $(document).ready(function () {
+                        const table = $("#BankTable").DataTable({
+                            responsive: true,
+                            processing: true,
+                            serverSide: true,
+                            returnFocus: true,
+                            ajax: {
+                                url: "PenagihanPenjualanLokal/getBank",
+                                dataType: "json",
+                                type: "GET",
+                                data: {
+                                    _token: csrfToken,
+                                },
+                            },
+                            columns: [
+                                {
+                                    data: "NamaBank",
+                                },
+                                {
+                                    data: "IdBank",
+                                },
+                            ],
+                            order: [1, "asc"],
+                            paging: false,
+                            scrollY: "400px",
+                            scrollCollapse: true,
+                        });
+                        setTimeout(() => {
+                            $("#BankTable_filter input").focus();
+                        }, 300);
+                        // $("#BankTable_filter input").on(
+                        //     "keyup",
+                        //     function () {
+                        //         table
+                        //             .columns(1) // Kolom kedua (Kode_Penagih)
+                        //             .search(this.value) // Cari berdasarkan input pencarian
+                        //             .draw(); // Perbarui hasil pencarian
+                        //     }
+                        // );
+                        $("#BankTable tbody").on("click", "tr", function () {
+                            // Remove 'selected' class from all rows
+                            table.$("tr.selected").removeClass("selected");
+                            // Add 'selected' class to the clicked row
+                            $(this).addClass("selected");
+                        });
+                        currentIndex = null;
+                        Swal.getPopup().addEventListener("keydown", (e) =>
+                            handleTableKeydownInSwal(e, "BankTable")
+                        );
+                    });
+                },
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const selectedRow = result.value;
+                    nama_bank.value = escapeHTML(selectedRow.NamaBank.trim());
+                    idBank.value = escapeHTML(selectedRow.IdBank.trim());
+                    // IdPenagihan.value = escapeHTML(selectedRow.Id_Penagihan.trim());
+                    setTimeout(() => {
+                        btn_pajak.focus();
+                    }, 300);
+                }
+            });
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
     });
 
     btn_pajak.addEventListener("click", async function (event) {
@@ -1595,7 +1601,9 @@ $(document).ready(function () {
 
                     const newRow = {
                         no_penagihanUM: no_penagihanUM.value,
-                        nilai_BLM_PAJAK: numeral(selectedRow.nilai_BLM_PAJAK.trim()).format("0,0.00"),
+                        nilai_BLM_PAJAK: numeral(
+                            selectedRow.nilai_BLM_PAJAK.trim()
+                        ).format("0,0.00"),
                     };
 
                     tableData.push(newRow);
@@ -1622,10 +1630,13 @@ $(document).ready(function () {
                         }, 0);
                     console.log(totalPelunasanUM);
 
-                    nilaiUangMuka.value = totalPelunasanUM.toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    });
+                    nilaiUangMuka.value = totalPelunasanUM.toLocaleString(
+                        "en-US",
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }
+                    );
                 }
             });
         } catch (error) {
@@ -1879,93 +1890,6 @@ $(document).ready(function () {
                     idJenisDokumen.value = escapeHTML(
                         selectedRow.Id_Jenis_Dokumen.trim()
                     );
-                    // IdPenagihan.value = escapeHTML(selectedRow.Id_Penagihan.trim());
-                    // setTimeout(() => {
-                    //     uangMasuk.focus();
-                    // }, 300);
-                }
-            });
-        } catch (error) {
-            console.error("An error occurred:", error);
-        }
-        // console.log(selectedRow);
-    });
-
-    btn_charge.addEventListener("click", async function (event) {
-        event.preventDefault();
-        try {
-            const result = await Swal.fire({
-                title: "Select a Charge",
-                html: '<table id="ChargeTable" class="display" style="width:100%"><thead><tr><th>ID. Charge</th><th>Charge</th></tr></thead><tbody></tbody></table>',
-                showCancelButton: true,
-                width: "40%",
-                preConfirm: () => {
-                    const selectedData = $("#ChargeTable")
-                        .DataTable()
-                        .row(".selected")
-                        .data();
-                    if (!selectedData) {
-                        Swal.showValidationMessage("Please select a row");
-                        return false;
-                    }
-                    return selectedData;
-                },
-                didOpen: () => {
-                    $(document).ready(function () {
-                        const table = $("#ChargeTable").DataTable({
-                            responsive: true,
-                            processing: true,
-                            serverSide: true,
-                            returnFocus: true,
-                            ajax: {
-                                url: "PenagihanPenjualanLokal/getCharge",
-                                dataType: "json",
-                                type: "GET",
-                                data: {
-                                    _token: csrfToken,
-                                },
-                            },
-                            columns: [
-                                {
-                                    data: "Id_Charge",
-                                },
-                                {
-                                    data: "Nama_Charge",
-                                },
-                            ],
-                            paging: false,
-                            scrollY: "400px",
-                            scrollCollapse: true,
-                        });
-                        setTimeout(() => {
-                            $("#ChargeTable_filter input").focus();
-                        }, 300);
-                        // $("#ChargeTable_filter input").on(
-                        //     "keyup",
-                        //     function () {
-                        //         table
-                        //             .columns(1) // Kolom kedua (Kode_Charge)
-                        //             .search(this.value) // Cari berdasarkan input pencarian
-                        //             .draw(); // Perbarui hasil pencarian
-                        //     }
-                        // );
-                        $("#ChargeTable tbody").on("click", "tr", function () {
-                            // Remove 'selected' class from all rows
-                            table.$("tr.selected").removeClass("selected");
-                            // Add 'selected' class to the clicked row
-                            $(this).addClass("selected");
-                        });
-                        currentIndex = null;
-                        Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "ChargeTable")
-                        );
-                    });
-                },
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    const selectedRow = result.value;
-                    x_charge.value = escapeHTML(selectedRow.Nama_Charge.trim());
-                    id_charge.value = escapeHTML(selectedRow.Id_Charge.trim());
                     // IdPenagihan.value = escapeHTML(selectedRow.Id_Penagihan.trim());
                     // setTimeout(() => {
                     //     uangMasuk.focus();

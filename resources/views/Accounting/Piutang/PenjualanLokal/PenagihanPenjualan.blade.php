@@ -32,7 +32,7 @@
                                         style="width: 100%">
                                 </div>
                                 <div class="col-md-1">
-                                    <input type="text" id="id_cust" name="id_cust" class="form-control"
+                                    <input type="hidden" id="id_cust" name="id_cust" class="form-control"
                                         style="width: 100%">
                                 </div>
                             </div>
@@ -184,10 +184,20 @@
                                 </div>
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-default" id="btn_userPenagih">...</button>
+                                    <input type="hidden" id="idUserPenagih" name="idUserPenagih"
+                                        class="form-control" style="width: 100%; display: none">
                                 </div>
                                 <div class="col-md-1">
-                                    <input type="text" id="idUserPenagih" name="idUserPenagih"
-                                        class="form-control" style="width: 100%; display: none">
+                                    <label for="nama_bank" style="margin-right: 10px;">Bank</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" id="nama_bank" name="nama_bank" class="form-control"
+                                        style="width: 100%">
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-default" id="btn_bank">...</button>
+                                    <input type="hidden" id="idBank" name="idBank" class="form-control"
+                                        style="width: 100%; display: none">
                                 </div>
                             </div>
                             <p>
@@ -240,7 +250,8 @@
                             <!--CARD 2-->
                             <br>
                             <div>
-                                <label for="" style="margin-right: 10px; font-weight: bold;">Tabel Surat Jalan</label>
+                                <label for="" style="margin-right: 10px; font-weight: bold;">Tabel Surat
+                                    Jalan</label>
                                 <div style="overflow-y: auto;">
                                     <table style="width: 100%;" id="table_atas">
                                         {{-- <colgroup>
@@ -281,7 +292,8 @@
                             </div>
                             <br>
                             <div>
-                                <label for="" style="margin-right: 10px; font-weight: bold;">Tabel Uang Muka</label>
+                                <label for="" style="margin-right: 10px; font-weight: bold;">Tabel Uang
+                                    Muka</label>
                                 <div style="overflow-y: auto;">
                                     <table style="width: 100%;" id="table_bawah">
                                         {{-- <colgroup>
@@ -351,6 +363,15 @@
                             <p>
                             <div class="d-flex">
                                 <div class="col-md-3">
+                                    <label for="nomor_seriFakturPajak" style="margin-right: 10px;">No. Seri Faktur Pajak</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="nomor_seriFakturPajak" name="nomor_seriFakturPajak" class="form-control"
+                                        style="width: 100%">
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="col-md-3">
                                     <label for="noBC24" style="margin-right: 10px;">No. BC 2.4</label>
                                 </div>
                                 <div class="col-md-3">
@@ -364,37 +385,6 @@
                                     <input type="date" id="tanggalBC24" name="tanggalBC24" class="form-control"
                                         style="width: 100%">
                                 </div>
-                            </div>
-                            <p>
-                            <div class="d-flex">
-                                <div class="col-md-3">
-                                    <label for="dokumenSelect" style="margin-right: 10px;">Extra Charge</label>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="text" id="x_charge" name="x_charge" class="form-control"
-                                        style="width: 100%;">
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-default" id="btn_charge">...</button>
-                                </div>
-                                <div class="col-md-1" style="display: none">
-                                    <input type="text" id="id_charge" name="id_charge" class="form-control"
-                                        style="width: 100%; display: none">
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="dokumenSelect" style="margin-right: 10px;">Change Amount</label>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="text" id="change_amount" name="change_amount"
-                                        class="form-control" style="width: 100%;">
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-default" id="btn_add">Add</button>
-                                </div>
-                                {{-- <div class="col-md-1">
-                                    <input type="text" id="id_charge" name="id_charge" class="form-control"
-                                        style="width: 100%; display: none">
-                                </div> --}}
                             </div>
                             <hr>
                             <div class="d-flex">
@@ -412,6 +402,22 @@
                                 <div class="col-md-4">
                                     <input type="text" id="nilaiUangMuka" name="nilaiUangMuka"
                                         class="form-control" style="width: 100%">
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="col-md-3">
+                                    <label for="dpp_nilaiLain" style="margin-right: 10px;">DPP Nilai Lain</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" id="dpp_nilaiLain" name="dpp_nilaiLain"
+                                        class="form-control" style="width: 100%;">
+                                </div>
+                                <div class="col-md-1">
+                                    <label for="nilai_ppn" style="margin-right: 10px;">PPN</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" id="nilai_ppn" name="nilai_ppn" class="form-control"
+                                        style="width: 100%;">
                                 </div>
                             </div>
                             <p>
