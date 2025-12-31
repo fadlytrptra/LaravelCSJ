@@ -56,7 +56,7 @@ class SuratJalanManagerController extends Controller
         $nomorSJs = $request->nomorSJs;
         // dd($request->all());
         for ($i = 0; $i < count($nomorSJs); $i++) {
-            db::connection('ConnSales')->statement('exec SP_1486_SLS_ACC_PENGIRIMAN @IdManager = ?, @IdHeaderKirim = ?', [$user, $nomorSJs[$i]]);
+            db::connection('ConnSales')->statement('exec SP_1273_PRG_ACC_PENGIRIMAN @IdManager = ?, @IdHeaderKirim = ?', [$user, $nomorSJs[$i]]);
         }
         return redirect()->back()->with('success', 'Surat Jalan yang Dipilih Sudah Disetujui!');
     }
