@@ -1,0 +1,413 @@
+<?php
+
+namespace App\Http\Controllers\Beli\Transaksi;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Controllers\HakAksesController;
+use Auth;
+use Exception;
+use DB;
+
+class CreateSPPBController extends Controller
+{
+    public function index()
+    {
+        $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
+        $result = (new HakAksesController)->HakAksesFitur('Create SPPB');
+        $user_id = trim(Auth::user()->NomorUser);
+        if ($result > 0) {
+            return view('Beli.Transaksi.CreateSPPB.index', compact('access', 'user_id'));
+        } else {
+            abort(403);
+        }
+    }
+
+    public function create()
+    {
+        //
+    }
+
+    public function store(Request $request)
+    {
+        $jenisStore = $request->jenisStore;
+        if ($jenisStore == 'addOrderPembelian') {
+            $Kd_div = $request->Kd_div;
+            $Kd_brg = $request->Kd_brg;
+            $keterangan = $request->keterangan;
+            $Qty = $request->Qty;
+            $NoSatuan = $request->NoSatuan;
+            $Pemesan = $request->Pemesan;
+            $No_gol = $request->No_gol;
+            $No_msn = $request->No_msn;
+            $Operator = $request->Operator;
+            $Tgl_sppb = $request->Tgl_sppb;
+            $Jenis = $request->Jenis;
+            $Tgl_Dibutuhkan = $request->Tgl_Dibutuhkan;
+            $No_sup = $request->No_sup;
+            $IdMataUang = $request->IdMataUang;
+            $Kurs_Rp = $request->Kurs_Rp;
+            $Hrg_trm = $request->Hrg_trm;
+            $Disc_trm = $request->Disc_trm;
+            $Ppn_trm = $request->Ppn_trm;
+            $Waktu = $request->Waktu;
+            $hrg_murni = $request->hrg_murni;
+            $hrg_murni_rp = $request->hrg_murni_rp;
+            $hrg_disc = $request->hrg_disc;
+            $hrg_disc_rp = $request->hrg_disc_rp;
+            $hrg_nego = $request->hrg_nego;
+            $hrg_nego_rp = $request->hrg_nego_rp;
+            $hrg_ppn = $request->hrg_ppn;
+            $kurs_ppn = $request->kurs_ppn;
+            $hrg_ppn_rp = $request->hrg_ppn_rp;
+            $dpp_nilai_lain = $request->dpp_nilai_lain;
+            $dpp_nilai_lain_rp = $request->dpp_nilai_lain_rp;
+            if ($Kd_div != null && $Kd_brg != null && $NoSatuan != null && $Tgl_Dibutuhkan != null) {
+                try {
+                    $mValue = DB::connection('ConnPurchase')->table('YCounter')->value('YTRANSBL') + 1;
+                    $No_trans = '00000000' . str_pad($mValue, 8, '0', STR_PAD_LEFT);
+                    $No_trans = substr($No_trans, -8);
+                    //update table counter dilakukan oleh trigger table ytransbl
+                    DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @Kd_div = ?,  @Kd_brg = ?, @keterangan = ?, @Qty = ?,
+                    @NoSatuan = ?, @Pemesan = ?, @No_gol = ?, @No_msn = ?, @Operator = ?, @Tgl_sppb = ?, @Jenis = ?,
+                    @Tgl_Dibutuhkan = ?, @No_trans = ?, @No_sup = ?, @IdMataUang = ?, @Kurs_Rp = ?,
+                    @Hrg_trm = ?, @Disc_trm  = ?, @Ppn_trm  = ?, @Waktu  = ?, @hrg_murni = ?,
+                    @hrg_murni_rp = ?, @hrg_disc = ?, @hrg_disc_rp = ?, @hrg_nego = ?, @hrg_nego_rp = ?,
+                    @hrg_ppn = ?, @kurs_ppn = ?, @hrg_ppn_rp = ?, @dpp_nilai_lain = ?, @dpp_nilai_lain_rp = ?',
+                        [
+                            0,
+                            $Kd_div,
+                            $Kd_brg,
+                            $keterangan,
+                            $Qty,
+                            $NoSatuan,
+                            $Pemesan,
+                            $No_gol,
+                            $No_msn,
+                            $Operator,
+                            $Tgl_sppb,
+                            $Jenis,
+                            $Tgl_Dibutuhkan,
+                            $No_trans,
+                            $No_sup,
+                            $IdMataUang,
+                            $Kurs_Rp,
+                            $Hrg_trm,
+                            $Disc_trm,
+                            $Ppn_trm,
+                            $Waktu,
+                            $hrg_murni,
+                            $hrg_murni_rp,
+                            $hrg_disc,
+                            $hrg_disc_rp,
+                            $hrg_nego,
+                            $hrg_nego_rp,
+                            $hrg_ppn,
+                            $kurs_ppn,
+                            $hrg_ppn_rp,
+                            $dpp_nilai_lain,
+                            $dpp_nilai_lain_rp
+                        ]
+                    );
+                    return response()->json(['message' => 'Data Berhasil DiTambahkan!', "data" => $No_trans]);
+
+                } catch (Exception $Ex) {
+                    return response()->json($Ex->getMessage());
+                }
+            } else {
+                return response()->json('Parameter harus diisi');
+            }
+        } else if ($jenisStore == 'editOrderPembelian') {
+            $No_trans = $request->No_trans;
+            $Kd_div = $request->Kd_div;
+            $Kd_brg = $request->Kd_brg;
+            $keterangan = $request->keterangan;
+            $Qty = $request->Qty;
+            $NoSatuan = $request->NoSatuan;
+            $Pemesan = $request->Pemesan;
+            $No_gol = $request->No_gol;
+            $No_msn = $request->No_msn;
+            $Operator = $request->Operator;
+            $Tgl_sppb = $request->Tgl_sppb;
+            $Jenis = $request->Jenis;
+            $Tgl_Dibutuhkan = $request->Tgl_Dibutuhkan;
+            $No_sup = $request->No_sup;
+            $IdMataUang = $request->IdMataUang;
+            $Kurs_Rp = $request->Kurs_Rp;
+            $Hrg_trm = $request->Hrg_trm;
+            $Disc_trm = $request->Disc_trm;
+            $Ppn_trm = $request->Ppn_trm;
+            $Waktu = $request->Waktu;
+            $hrg_murni = $request->hrg_murni;
+            $hrg_murni_rp = $request->hrg_murni_rp;
+            $hrg_disc = $request->hrg_disc;
+            $hrg_disc_rp = $request->hrg_disc_rp;
+            $hrg_nego = $request->hrg_nego;
+            $hrg_nego_rp = $request->hrg_nego_rp;
+            $hrg_ppn = $request->hrg_ppn;
+            $kurs_ppn = $request->kurs_ppn;
+            $hrg_ppn_rp = $request->hrg_ppn_rp;
+            $dpp_nilai_lain = $request->dpp_nilai_lain;
+            $dpp_nilai_lain_rp = $request->dpp_nilai_lain_rp;
+            if ($Kd_div != null && $Kd_brg != null && $NoSatuan != null && $Tgl_Dibutuhkan != null) {
+                try {
+                    DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @Kd_div = ?,  @Kd_brg = ?, @keterangan = ?, @Qty = ?,
+                    @NoSatuan = ?, @Pemesan = ?, @No_gol = ?, @No_msn = ?, @Operator = ?, @Tgl_sppb = ?, @Jenis = ?,
+                    @Tgl_Dibutuhkan = ?, @No_trans = ?, @No_sup = ?, @IdMataUang = ?, @Kurs_Rp = ?,
+                    @Hrg_trm = ?, @Disc_trm  = ?, @Ppn_trm  = ?, @Waktu  = ?, @hrg_murni = ?,
+                    @hrg_murni_rp = ?, @hrg_disc = ?, @hrg_disc_rp = ?, @hrg_nego = ?, @hrg_nego_rp = ?,
+                    @hrg_ppn = ?, @kurs_ppn = ?, @hrg_ppn_rp = ?, @dpp_nilai_lain = ?, @dpp_nilai_lain_rp = ?', [
+                        1,
+                        $Kd_div,
+                        $Kd_brg,
+                        $keterangan,
+                        $Qty,
+                        $NoSatuan,
+                        $Pemesan,
+                        $No_gol,
+                        $No_msn,
+                        $Operator,
+                        $Tgl_sppb,
+                        $Jenis,
+                        $Tgl_Dibutuhkan,
+                        $No_trans,
+                        $No_sup,
+                        $IdMataUang,
+                        $Kurs_Rp,
+                        $Hrg_trm,
+                        $Disc_trm,
+                        $Ppn_trm,
+                        $Waktu,
+                        $hrg_murni,
+                        $hrg_murni_rp,
+                        $hrg_disc,
+                        $hrg_disc_rp,
+                        $hrg_nego,
+                        $hrg_nego_rp,
+                        $hrg_ppn,
+                        $kurs_ppn,
+                        $hrg_ppn_rp,
+                        $dpp_nilai_lain,
+                        $dpp_nilai_lain_rp,
+                    ]);
+                    return response()->json(['message' => 'Data Berhasil DiEdit!', "data" => $No_trans]);
+
+                } catch (Exception $Ex) {
+                    return response()->json($Ex->getMessage());
+                }
+            } else {
+                return response()->json('Parameter harus diisi');
+            }
+        } else if ($jenisStore == 'deleteOrderPembelian') {
+            $No_trans = $request->No_trans;
+
+            if ($No_trans != null) {
+                try {
+                    DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @No_trans = ?', [
+                        2,
+                        $No_trans,
+                    ]);
+                    return response()->json(['message' => 'Data Berhasil DiHapus!', "data" => $No_trans]);
+
+                } catch (Exception $Ex) {
+                    return response()->json($Ex->getMessage());
+                }
+            } else {
+                return response()->json('Parameter harus diisi');
+            }
+        } else if ($jenisStore == 'savePO') {
+            $rows = $request->table_orderPembelian;
+            $idDivisi = $request->idDivisi;
+            $Tgl_sppb = $request->Tgl_sppb;
+            $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                        @XKode = ?, @No_trans = ?', [
+                3,
+                $rows[0][11],
+            ]);
+            if (!$No_sppb[0]->No_sppb) {
+
+                $counter = DB::connection('ConnPurchase')->select(
+                    'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
+                    [$idDivisi]
+                );
+                if (empty($counter)) {
+                    throw new \Exception('Counter SPPB tidak ditemukan');
+                }
+
+                $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
+                $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
+                $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
+                $tahun = date('y', strtotime($Tgl_sppb));
+                $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
+
+                DB::connection('ConnPurchase')->statement(
+                    'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
+                                    @kd_div_1 = ?,
+                                    @no_sppb_2 = ?',
+                    [$idDivisi, $no_sppb_counter]
+                );
+            }
+            foreach ($rows as $index => $row) {
+                $No_trans = $row[11];
+                try {
+                    DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @No_trans = ?, @No_sppb = ?', [
+                        4,
+                        $No_trans,
+                        $No_sppb
+                    ]);
+
+                } catch (Exception $Ex) {
+                    return response()->json($Ex->getMessage());
+                }
+            }
+            return response()->json(['message' => 'Sudah Berhasil Save PO!', "data" => $No_sppb]);
+        } else if ($jenisStore == 'submitPO') {
+            dd($request->all());
+            $rows = $request->table_orderPembelian;
+            $idDivisi = $request->idDivisi;
+            $Tgl_sppb = $request->Tgl_sppb;
+            $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                        @XKode = ?, @No_trans = ?', [
+                3,
+                $rows[0][11],
+            ]);
+            if (!$No_sppb[0]->No_sppb) {
+
+                $counter = DB::connection('ConnPurchase')->select(
+                    'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
+                    [$idDivisi]
+                );
+                if (empty($counter)) {
+                    throw new \Exception('Counter SPPB tidak ditemukan');
+                }
+
+                $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
+                $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
+                $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
+                $tahun = date('y', strtotime($Tgl_sppb));
+                $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
+
+                DB::connection('ConnPurchase')->statement(
+                    'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
+                                    @kd_div_1 = ?,
+                                    @no_sppb_2 = ?',
+                    [$idDivisi, $no_sppb_counter]
+                );
+            }
+
+            foreach ($rows as $index => $row) {
+                $No_trans = $row[11];
+                try {
+                    DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @No_trans = ?, @No_sppb = ?', [
+                        5,
+                        $No_trans,
+                        $No_sppb
+                    ]);
+
+                } catch (Exception $Ex) {
+                    return response()->json($Ex->getMessage());
+                }
+            }
+            return response()->json(['message' => 'Sudah Berhasil Submit PO!', "data" => $No_sppb]);
+        } else {
+            return response()->json('Invalid request', 405);
+        }
+    }
+
+    public function show($id, Request $request)
+    {
+        if ($id == 'getDataSPPB') {
+            $listSPPB = DB::connection('ConnPurchase')
+                ->select('exec SP_4384_Maintenance_SPPB @XKode= ?', [0]);
+            $dataSPPB = [];
+            foreach ($listSPPB as $SPPB) {
+                $dataSPPB[] = [
+                    'No_sppb' => $SPPB->No_sppb,
+                    'NM_SUP' => $SPPB->NM_SUP,
+                    'Tgl_sppb' => $SPPB->Tgl_sppb,
+                    'Tgl_acc' => $SPPB->Tgl_acc,
+                    'Tgl_Direktur' => $SPPB->Tgl_Direktur
+                ];
+            }
+            return datatables($dataSPPB)->make(true);
+        } else if ($id == 'getDivisi') {
+            $idUser = trim(Auth::user()->NomorUser);
+            $dataDiv = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_User_Divisi @Operator = ' . rtrim($idUser) . '');
+            return response()->json($dataDiv, 200);
+        } else if ($id == 'getJenisBeli') {
+            $jenisList = DB::connection('ConnPurchase')
+                ->table('YJN_BL')
+                ->orderBy('NO_JNS')
+                ->get();
+            return response()->json($jenisList, 200);
+        } else if ($id == 'getSupplier') {
+            $supplierList = DB::connection('ConnPurchase')
+                ->select('exec SP_1273_PRG_LIST_SUPPLIER');
+            return response()->json($supplierList, 200);
+        } else if ($id == 'getMataUang') {
+            $mataUang = DB::connection('ConnPurchase')
+                ->table('ACCOUNTING.dbo.T_MATAUANG')
+                ->select('Id_MataUang', 'Nama_MataUang')
+                ->orderBy('Id_MataUang')
+                ->get();
+
+            return response()->json($mataUang);
+        } else if ($id == 'getGolongan') {
+            $kd_div = $request->kd_div;
+            $golonganList = DB::connection('ConnPurchase')
+                ->select('exec SP_1273_PRG_Select_GolonganByDivisi @kd_div = ?', [$kd_div]);
+            return response()->json($golonganList, 200);
+        } else if ($id == 'getKelompokMesin') {
+            $golongan = $request->golongan;
+            $kelompokMesinList = DB::connection('ConnPurchase')
+                ->select('exec SP_1273_PRG_Select_MesinByGolongan @no_gol = ?', [$golongan]);
+            return response()->json($kelompokMesinList, 200);
+        } else if ($id == 'getKategoriUtama') {
+            $kategoriUtamaList = DB::connection('ConnPurchase')
+                ->select('exec SP_1273_PRG_Select_HirarkiTypeBarang @MyType = ?', [1]);
+            return response()->json($kategoriUtamaList, 200);
+        } else if ($id == 'getKategori') {
+            $kategoriUtama = $request->kategoriUtama;
+            $kategoriList = DB::connection('ConnPurchase')
+                ->select('exec SP_1273_PRG_Select_HirarkiTypeBarang @MyType = ?, @MyValue = ?', [2, $kategoriUtama]);
+            return response()->json($kategoriList, 200);
+        } else if ($id == 'getSubKategori') {
+            $kategori = $request->kategori;
+            $subKategoriList = DB::connection('ConnPurchase')
+                ->select('exec SP_1273_PRG_Select_HirarkiTypeBarang @MyType = ?, @MyValue = ?', [3, $kategori]);
+            return response()->json($subKategoriList, 200);
+        } else if ($id == 'getNamaBarang') {
+            $subKategori = $request->subKategori;
+            $namaBarangList = DB::connection('ConnPurchase')
+                ->select('exec SP_1273_PRG_Select_HirarkiTypeBarang @MyType = ?, @MyValue = ?', [5, $subKategori]);
+            return response()->json($namaBarangList, 200);
+        } else if ($id == 'getDetailBarang') {
+            $kodeBrg = $request->kodeBrg;
+            $dataDetailBarang = DB::connection('ConnPurchase')
+                ->select('exec SP_1273_PRG_Select_Barang @KdBarang = ?', [$kodeBrg]);
+            return response()->json($dataDetailBarang, 200);
+        } else {
+            return response()->json('Invalid request', 405);
+        }
+    }
+
+    public function edit($id)
+    {
+        //
+    }
+
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    public function destroy($id)
+    {
+        //
+    }
+}
