@@ -222,98 +222,135 @@ class CreateSPPBController extends Controller
             $rows = $request->table_orderPembelian;
             $idDivisi = $request->idDivisi;
             $Tgl_sppb = $request->Tgl_sppb;
-            $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
+            $No_sppb = $request->No_sppb;
+
+            if (!$No_sppb) {
+                $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
                         @XKode = ?, @No_trans = ?', [
-                3,
-                $rows[0][11],
-            ]);
-            if (!$No_sppb[0]->No_sppb) {
+                    3,
+                    $rows[0][11],
+                ]);
+                if (!$No_sppb[0]->No_sppb) {
 
-                $counter = DB::connection('ConnPurchase')->select(
-                    'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
-                    [$idDivisi]
-                );
-                if (empty($counter)) {
-                    throw new \Exception('Counter SPPB tidak ditemukan');
-                }
+                    $counter = DB::connection('ConnPurchase')->select(
+                        'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
+                        [$idDivisi]
+                    );
+                    if (empty($counter)) {
+                        throw new \Exception('Counter SPPB tidak ditemukan');
+                    }
 
-                $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
-                $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
-                $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
-                $tahun = date('y', strtotime($Tgl_sppb));
-                $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
+                    $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
+                    $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
+                    $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
+                    $tahun = date('y', strtotime($Tgl_sppb));
+                    $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
 
-                DB::connection('ConnPurchase')->statement(
-                    'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
+                    DB::connection('ConnPurchase')->statement(
+                        'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
                                     @kd_div_1 = ?,
                                     @no_sppb_2 = ?',
-                    [$idDivisi, $no_sppb_counter]
-                );
-            }
-            foreach ($rows as $index => $row) {
-                $No_trans = $row[11];
-                try {
-                    DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_trans = ?, @No_sppb = ?', [
-                        4,
-                        $No_trans,
-                        $No_sppb
-                    ]);
-
-                } catch (Exception $Ex) {
-                    return response()->json($Ex->getMessage());
+                        [$idDivisi, $no_sppb_counter]
+                    );
                 }
+
+                foreach ($rows as $index => $row) {
+                    $No_trans = $row[11];
+                    try {
+                        DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @No_trans = ?, @No_sppb = ?', [
+                            4,
+                            $No_trans,
+                            $No_sppb
+                        ]);
+
+                    } catch (Exception $Ex) {
+                        return response()->json($Ex->getMessage());
+                    }
+                }
+            } else {
+                DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @No_sppb = ?', [
+                    4,
+                    $No_sppb
+                ]);
             }
             return response()->json(['message' => 'Sudah Berhasil Save PO!', "data" => $No_sppb]);
-        } else if ($jenisStore == 'submitPO') {
-            dd($request->all());
+        } else if ($jenisStore == 'sumbitPO') {
             $rows = $request->table_orderPembelian;
             $idDivisi = $request->idDivisi;
             $Tgl_sppb = $request->Tgl_sppb;
-            $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
+            $No_sppb = $request->No_sppb;
+
+            if (!$No_sppb) {
+                $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
                         @XKode = ?, @No_trans = ?', [
-                3,
-                $rows[0][11],
-            ]);
-            if (!$No_sppb[0]->No_sppb) {
+                    3,
+                    $rows[0][11],
+                ]);
+                if (!$No_sppb[0]->No_sppb) {
 
-                $counter = DB::connection('ConnPurchase')->select(
-                    'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
-                    [$idDivisi]
-                );
-                if (empty($counter)) {
-                    throw new \Exception('Counter SPPB tidak ditemukan');
-                }
+                    $counter = DB::connection('ConnPurchase')->select(
+                        'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
+                        [$idDivisi]
+                    );
+                    if (empty($counter)) {
+                        throw new \Exception('Counter SPPB tidak ditemukan');
+                    }
 
-                $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
-                $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
-                $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
-                $tahun = date('y', strtotime($Tgl_sppb));
-                $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
+                    $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
+                    $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
+                    $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
+                    $tahun = date('y', strtotime($Tgl_sppb));
+                    $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
 
-                DB::connection('ConnPurchase')->statement(
-                    'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
+                    DB::connection('ConnPurchase')->statement(
+                        'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
                                     @kd_div_1 = ?,
                                     @no_sppb_2 = ?',
-                    [$idDivisi, $no_sppb_counter]
-                );
-            }
-
-            foreach ($rows as $index => $row) {
-                $No_trans = $row[11];
-                try {
-                    DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_trans = ?, @No_sppb = ?', [
-                        5,
-                        $No_trans,
-                        $No_sppb
-                    ]);
-
-                } catch (Exception $Ex) {
-                    return response()->json($Ex->getMessage());
+                        [$idDivisi, $no_sppb_counter]
+                    );
                 }
+
+                foreach ($rows as $index => $row) {
+                    $No_trans = $row[11];
+                    try {
+                        DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @No_trans = ?, @No_sppb = ?', [
+                            5,
+                            $No_trans,
+                            $No_sppb
+                        ]);
+
+                    } catch (Exception $Ex) {
+                        return response()->json($Ex->getMessage());
+                    }
+                }
+            } else {
+                DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
+                    @XKode = ?, @No_sppb = ?', [
+                    5,
+                    $No_sppb
+                ]);
             }
             return response()->json(['message' => 'Sudah Berhasil Submit PO!', "data" => $No_sppb]);
+        } else if ($jenisStore == 'accPO') {
+            $nomorSPPB = $request->nomorSPPB;
+            $user_id = trim(Auth::user()->NomorUser);
+            try {
+                DB::connection('ConnPurchase')->statement('exec SP_4384_Maintenance_SPPB @XKode= ?, @XNoSPPB = ?, @XOperator = ?', [1, $nomorSPPB, $user_id]);
+                return response()->json(['message' => 'Sudah Berhasil ACC PO!', "data" => $nomorSPPB]);
+            } catch (Exception $ex) {
+                return response()->json($ex->getMessage());
+            }
+        } else if ($jenisStore == 'deletePO') {
+            $nomorSPPB = $request->nomorSPPB;
+            try {
+                DB::connection('ConnPurchase')->statement('exec SP_4384_Maintenance_SPPB @XKode= ?, @XNoSPPB = ?', [2, $nomorSPPB]);
+                return response()->json(['message' => 'Sudah Berhasil Delete PO!', "data" => $nomorSPPB]);
+            } catch (Exception $ex) {
+                return response()->json($ex->getMessage());
+            }
         } else {
             return response()->json('Invalid request', 405);
         }
@@ -331,7 +368,8 @@ class CreateSPPBController extends Controller
                     'NM_SUP' => $SPPB->NM_SUP,
                     'Tgl_sppb' => $SPPB->Tgl_sppb,
                     'Tgl_acc' => $SPPB->Tgl_acc,
-                    'Tgl_Direktur' => $SPPB->Tgl_Direktur
+                    'Tgl_Direktur' => $SPPB->Tgl_Direktur,
+                    'Kd_div' => $SPPB->Kd_div,
                 ];
             }
             return datatables($dataSPPB)->make(true);
@@ -391,6 +429,11 @@ class CreateSPPBController extends Controller
             $dataDetailBarang = DB::connection('ConnPurchase')
                 ->select('exec SP_1273_PRG_Select_Barang @KdBarang = ?', [$kodeBrg]);
             return response()->json($dataDetailBarang, 200);
+        } else if ($id == 'getDetailPO') {
+            $no_sppb = $request->no_sppb;
+            $dataDetailPO = DB::connection('ConnPurchase')
+                ->select('exec SP_4384_Maintenance_SPPB @XKode = ?, @XNoSPPB = ?', [3, $no_sppb]);
+            return response()->json($dataDetailPO, 200);
         } else {
             return response()->json('Invalid request', 405);
         }

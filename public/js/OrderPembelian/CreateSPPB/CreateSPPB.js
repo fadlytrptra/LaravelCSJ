@@ -3,6 +3,13 @@ jQuery(function ($) {
     let csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
+    const enterEvent = new KeyboardEvent("keypress", {
+        key: "Enter",
+        code: "Enter",
+        keyCode: 13,
+        which: 13,
+        bubbles: true,
+    });
     let idUser = document.getElementById("idUser");
     let table_sppb = $("#table_sppb").DataTable({
         processing: true, // Optional, as processing is more relevant for server-side
@@ -28,6 +35,8 @@ jQuery(function ($) {
                     let buttonCetak =
                         '<button class="btn btn-success btn-print" data-id="' +
                         data +
+                        '"data-div="' +
+                        full.Kd_div +
                         '">Cetak PO</button>';
                     let buttonEdit =
                         '<button class="btn btn-primary btn-edit" data-id="' +
@@ -38,7 +47,7 @@ jQuery(function ($) {
                         data +
                         '">Submit</button>';
                     let buttonHapus =
-                        '<button class="btn btn-danger" data-id="' +
+                        '<button class="btn btn-danger btn-hapus" data-id="' +
                         data +
                         '">Hapus</button>';
                     if (full.Tgl_Direktur) {
@@ -136,52 +145,52 @@ jQuery(function ($) {
 
     function initializeSelect2() {
         sppb_divisi.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentDivisi"),
             placeholder: "Pilih Divisi",
         });
 
         sppb_jenisPembelian.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentPembelian"),
             placeholder: "Pilih Jenis Pembelian",
         });
 
         sppb_supplier.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentSupplier"),
             placeholder: "Pilih Supplier",
         });
 
         sppb_mataUang.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentMataUang"),
             placeholder: "Pilih Mata Uang",
         });
 
         sppb_golongan.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentGolongan"),
             placeholder: "Pilih Golongan",
         });
 
         sppb_kelompok.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentKelompok"),
             placeholder: "Pilih Kelompok Mesin",
         });
 
         sppb_kategoriUtama.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentKategoriUtama"),
             placeholder: "Pilih Kategori Utama",
         });
 
         sppb_kategori.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentKategori"),
             placeholder: "Pilih Kategori",
         });
 
         sppb_subKategori.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentSubKategori"),
             placeholder: "Pilih Sub Kategori",
         });
 
         sppb_namaBarang.select2({
-            dropdownParent: $("#modalSPPB"),
+            dropdownParent: $("#sppb_select2ParentNamaBarang"),
             placeholder: "Pilih Nama Barang",
         });
 
@@ -966,12 +975,97 @@ jQuery(function ($) {
 
     //#region Event Listener
     buttonTambahSPPB.addEventListener("click", function (e) {
+        $("#sppb_buttonSave").data("id", null);
         $("#sppb_buttonSubmit").data("id", null);
     });
 
     $("#modalSPPB").on("shown.bs.modal", function (event) {
         let nomorSPPB = $("#sppb_buttonSubmit").data("id");
         if (nomorSPPB) {
+            $.ajax({
+                url: "/CreateSPPB/getDetailPO",
+                method: "GET",
+                data: {
+                    _token: csrfToken,
+                    no_sppb: nomorSPPB,
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (!data) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            showConfirmButton: false,
+                            timer: 1000,
+                            text: "fetching data Divisi failed ",
+                            returnFocus: false,
+                        });
+                    } else {
+                        console.log(data);
+                        sppb_tanggal.value = moment(data[0].Tgl_sppb).format("YYYY-MM-DD"); //prettier-ignore
+                        sppb_tanggalDibutuhkan.value = moment(data[0].Tgl_Dibutuhkan).format("YYYY-MM-DD"); //prettier-ignore
+                        sppb_divisi.val(data[0].Kd_div).trigger("change");
+                        getDataGolongan().then;
+                        init("resetOrder");
+                        init("disableHeader");
+                        sppb_jenisPembelian
+                            .val(data[0].Jenis.trim())
+                            .trigger("change");
+                        sppb_supplier.val(data[0].No_sup).trigger("change");
+                        sppb_pemesan.value = data[0].Pemesan;
+                        sppb_mataUang.val(data[0].IdMataUang).trigger("change");
+                        sppb_kursRupiah.value = numeral(
+                            data[0].Kurs_Rp
+                        ).value();
+                        sppb_jangkaWaktu.value = numeral(data[0].Waktu).value();
+                        sppb_jangkaWaktu.dispatchEvent(enterEvent);
+                        data.forEach((orderPembelian) => {
+                            let totalHarga =
+                                numeral(orderPembelian.hrg_murni).value() +
+                                numeral(orderPembelian.hrg_ppn).value();
+                            sppb_tableOrderPembelian.row
+                                .add([
+                                    orderPembelian.NAMA_BRG,
+                                    orderPembelian.Kd_brg,
+                                    numeral(orderPembelian.Qty).format(
+                                        "0,0.00"
+                                    ),
+                                    orderPembelian.keterangan,
+                                    numeral(orderPembelian.Hrg_trm).format(
+                                        "0,0.00"
+                                    ),
+                                    numeral(orderPembelian.Disc_trm).format(
+                                        "0.00"
+                                    ),
+                                    numeral(orderPembelian.Ppn_trm).format(
+                                        "0.00"
+                                    ),
+                                    numeral(
+                                        orderPembelian.dpp_nilai_lain
+                                    ).format("0,0.00"),
+                                    numeral(orderPembelian.hrg_ppn).format(
+                                        "0,0.00"
+                                    ),
+                                    numeral(orderPembelian.hrg_murni).format(
+                                        "0,0.00"
+                                    ),
+                                    numeral(totalHarga).format("0,0.00"),
+                                    orderPembelian.No_trans,
+                                    orderPembelian.No_gol,
+                                    orderPembelian.No_msn,
+                                ])
+                                .draw();
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Failed to load Divisi.",
+                    });
+                },
+            });
         } else {
             sppb_tanggal.focus();
             init("modal");
@@ -1224,6 +1318,8 @@ jQuery(function ($) {
         getDataKelompokMesin().then(function () {
             sppb_kelompok.val(selectedRowData[13]).trigger("change");
         });
+        selectedGolongan = selectedRowData[12];
+        selectedKelompok = selectedRowData[13];
         getDataDetailBarang("auto");
         sppb_buttonAdd.disabled = true;
     });
@@ -1606,6 +1702,7 @@ jQuery(function ($) {
     });
 
     sppb_buttonSave.addEventListener("click", function (e) {
+        let nomorSPPB = $(this).data("id");
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
@@ -1618,6 +1715,7 @@ jQuery(function ($) {
                     .toArray(),
                 idDivisi: sppb_divisi.val(),
                 Tgl_sppb: sppb_tanggal.value,
+                No_sppb: nomorSPPB,
             },
             dataType: "json",
             success: function (response) {
@@ -1658,6 +1756,7 @@ jQuery(function ($) {
     });
 
     sppb_buttonSubmit.addEventListener("click", function (e) {
+        let nomorSPPB = $(this).data("id");
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
@@ -1669,6 +1768,7 @@ jQuery(function ($) {
                     .data()
                     .toArray(),
                 idDivisi: sppb_divisi.val(),
+                No_sppb: nomorSPPB,
             },
             dataType: "json",
             success: function (response) {
@@ -1707,7 +1807,115 @@ jQuery(function ($) {
     });
 
     $(document).on("click", ".btn-print", function (e) {
-        console.log(idUser);
+        let nomorSPPB = $(this).data("id");
+        let urlEncodedNomorSPPB = encodeURIComponent(nomorSPPB);
+        let kdDiv = $(this).data("div");
+
+        window.open(
+            `/CetakSPPBBTTB/print?divisi=` +
+                kdDiv +
+                `&jenisCetak=SPPBBaru&sppb=` +
+                urlEncodedNomorSPPB +
+                `&noTerima=`,
+            "_blank"
+        );
+    });
+
+    $(document).on("click", ".btn-acc", function (e) {
+        let nomorSPPB = $(this).data("id");
+        $.ajax({
+            url: "/CreateSPPB",
+            method: "POST",
+            data: {
+                _token: csrfToken,
+                jenisStore: "accPO",
+                No_sppb: nomorSPPB,
+            },
+            dataType: "json",
+            success: function (response) {
+                if (!response) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        showConfirmButton: false,
+                        timer: 1000,
+                        text: "ACC PO failed ",
+                        returnFocus: false,
+                    });
+                } else {
+                    console.log(response);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        showConfirmButton: false,
+                        timer: 1000,
+                        text: response.message,
+                        returnFocus: false,
+                    });
+                    table_sppb.ajax.reload(function () {
+                        table_sppb.columns.adjust().draw(false);
+                    }, false);
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to ACC PO.",
+                });
+            },
+        });
+    });
+
+    $(document).on("click", ".btn-edit", function (e) {
+        let nomorSPPB = $(this).data("id");
+        $("#sppb_buttonSave").data("id", nomorSPPB);
+        $("#sppb_buttonSubmit").data("id", nomorSPPB);
+    });
+
+    $(document).on("click", ".btn-hapus", function (e) {
+        $.ajax({
+            url: "/CreateSPPB",
+            method: "POST",
+            data: {
+                _token: csrfToken,
+                jenisStore: "deletePO",
+                nomorSPPB: nomorSPPB,
+            },
+            dataType: "json",
+            success: function (response) {
+                if (!response) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        showConfirmButton: false,
+                        timer: 1000,
+                        text: "Delete PO failed ",
+                        returnFocus: false,
+                    });
+                } else {
+                    console.log(response);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        showConfirmButton: false,
+                        timer: 1000,
+                        text: response.message,
+                        returnFocus: false,
+                    });
+                    table_sppb.ajax.reload(function () {
+                        table_sppb.columns.adjust().draw(false);
+                    }, false);
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to Delete PO.",
+                });
+            },
+        });
     });
     //#endregion
 });

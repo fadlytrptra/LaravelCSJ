@@ -23,19 +23,19 @@
                                 name="sppb_tanggalDibutuhkan">
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group"style="flex: 0.2" id="sppb_select2ParentDivisi">
                         <label for="sppb_divisi">Divisi</label>
                         <div class="input-group">
                             <select name="sppb_divisi" id="sppb_divisi"></select>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group"style="flex: 0.2" id="sppb_select2ParentPembelian">
                         <label for="sppb_jenisPembelian">Jenis Pembelian</label>
                         <div class="input-group">
                             <select name="sppb_jenisPembelian" id="sppb_jenisPembelian"></select>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.3">
+                    <div class="form-group"style="flex: 0.3" id="sppb_select2ParentSupplier">
                         <label for="sppb_supplier">Supplier</label>
                         <div class="input-group">
                             <select name="sppb_supplier" id="sppb_supplier"></select>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex" style="gap: 0.5%;width: 100%">
+                <div class="d-flex" style="gap: 0.5%;width: 100%" id="sppb_select2ParentMataUang">
                     <div class="form-group"style="flex: 0.3">
                         <label for="sppb_mataUang">Mata Uang</label>
                         <div class="input-group">
@@ -101,39 +101,39 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="d-flex pt-2" style="gap: 0.5%;width: 100%">
+                <div class="d-flex pt-2" style="gap: 0.5%;width: 100%" id="sppb_select2ParentGolongan">
                     <div class="form-group"style="flex: 0.2">
                         <label for="sppb_golongan">Golongan</label>
                         <div class="input-group">
                             <select name="sppb_golongan" id="sppb_golongan"></select>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group"style="flex: 0.2" id="sppb_select2ParentKelompok">
                         <label for="sppb_kelompok">Kelompok</label>
                         <div class="input-group">
                             <select name="sppb_kelompok" id="sppb_kelompok"></select>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group"style="flex: 0.2" id="sppb_select2ParentKategoriUtama">
                         <label for="sppb_kategoriUtama">Kategori Utama</label>
                         <div class="input-group">
                             <select name="sppb_kategoriUtama" id="sppb_kategoriUtama"></select>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group"style="flex: 0.2" id="sppb_select2ParentKategori">
                         <label for="sppb_kategori">Kategori</label>
                         <div class="input-group">
                             <select name="sppb_kategori" id="sppb_kategori"></select>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group"style="flex: 0.2" id="sppb_select2ParentSubKategori">
                         <label for="sppb_subKategori">Sub Kategori</label>
                         <div class="input-group">
                             <select name="sppb_subKategori" id="sppb_subKategori"></select>
                         </div>
                     </div>
                 </div>
-                <div class="d-flex" style="gap: 0.5%;width: 100%">
+                <div class="d-flex" style="gap: 0.5%;width: 100%" id="sppb_select2ParentNamaBarang">
                     <div class="form-group"style="flex: 0.4">
                         <label for="sppb_namaBarang">Nama Barang</label>
                         <div class="input-group">
