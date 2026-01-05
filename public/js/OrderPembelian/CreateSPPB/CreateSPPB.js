@@ -1872,6 +1872,7 @@ jQuery(function ($) {
         let nomorSPPB = $(this).data("id");
         $("#sppb_buttonSave").data("id", nomorSPPB);
         $("#sppb_buttonSubmit").data("id", nomorSPPB);
+        sppb_tableOrderPembelian.clear().draw();
     });
 
     $(document).on("click", ".btn-hapus", function (e) {
