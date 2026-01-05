@@ -1823,13 +1823,14 @@ jQuery(function ($) {
 
     $(document).on("click", ".btn-acc", function (e) {
         let nomorSPPB = $(this).data("id");
+
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
             data: {
                 _token: csrfToken,
                 jenisStore: "accPO",
-                No_sppb: nomorSPPB,
+                nomorSPPB: nomorSPPB,
             },
             dataType: "json",
             success: function (response) {
