@@ -1874,6 +1874,7 @@ jQuery(function ($) {
     });
 
     $(document).on("click", ".btn-hapus", function (e) {
+        let nomorSPPB = $(this).data("id");
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
