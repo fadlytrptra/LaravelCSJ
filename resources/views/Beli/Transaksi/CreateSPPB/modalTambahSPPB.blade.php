@@ -163,34 +163,34 @@
                     </div>
                 </div>
                 <div class="d-flex" style="gap: 0.5%;width: 100%">
-                    <div class="form-group"style="flex: 0.1">
+                    <div class="form-group" style="flex: 0.1">
                         <label for="sppb_quantityBarang">Quantity</label>
                         <div class="input-group">
                             <input type="number" class="form-control" name="sppb_quantityBarang"
                                 id="sppb_quantityBarang" min="1">
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.475">
+                    <div class="form-group" style="flex: 0.475">
                         <label for="sppb_KeteranganOrder">Keterangan Order</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="sppb_KeteranganOrder"
                                 id="sppb_KeteranganOrder">
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group" style="flex: 0.2">
                         <label for="sppb_hargaSatuan">Harga Satuan</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="sppb_hargaSatuan"
                                 id="sppb_hargaSatuan">
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.1">
+                    <div class="form-group" style="flex: 0.1">
                         <label for="sppb_discount">Discount</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="sppb_discount" id="sppb_discount">
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.05">
+                    <div class="form-group" style="flex: 0.05">
                         <label for="sppb_ppn">PPN(%)</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="sppb_ppn" id="sppb_ppn">
@@ -203,28 +203,28 @@
                     </div>
                 </div>
                 <div class="d-flex" style="gap: 0.5%;width: 100%">
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group" style="flex: 0.2">
                         <label for="sppb_DPPNilaiLain">DPP Nilai Lain</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="sppb_DPPNilaiLain"
                                 id="sppb_DPPNilaiLain" readonly>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group" style="flex: 0.2">
                         <label for="sppb_hargaPPN">Harga PPN</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="sppb_hargaPPN" id="sppb_hargaPPN"
                                 readonly>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group" style="flex: 0.2">
                         <label for="sppb_subTotalHargaJual">SubTotal Harga Jual</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="sppb_subTotalHargaJual"
                                 id="sppb_subTotalHargaJual" readonly>
                         </div>
                     </div>
-                    <div class="form-group"style="flex: 0.2">
+                    <div class="form-group" style="flex: 0.2">
                         <label for="sppb_totalHarga">Total Harga</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="sppb_totalHarga" id="sppb_totalHarga"
@@ -232,10 +232,64 @@
                         </div>
                     </div>
                 </div>
-                <div style="display:block;align-content: center;flex: 0.2;width: 100%">
+                <div style="display:block;align-content: center;flex: 0.2;width: 100%;">
                     <button class="btn btn-primary" id="sppb_buttonAdd">Add</button>
                     <button class="btn btn-warning" id="sppb_buttonUpdate">Update</button>
                     <button class="btn btn-danger" id="sppb_buttonDelete">Delete</button>
+                </div>
+                <div class="d-flex mt-2" style="gap: 0.5%;width: 100%">
+                    <div class="form-group" style="flex: 0.4">
+                        <label for="sppb_deliveryTerm">Delivery Term</label>
+                        <input type="text" name="sppb_deliveryTerm" id="sppb_deliveryTerm"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" style="flex: 0.4">
+                        <label for="sppb_packing">Packing</label>
+                        <input type="text" name="sppb_packing" id="sppb_packing" class="form-control">
+                    </div>
+                    <div class="form-group" style="flex: 0.2">
+                        <label for="sppb_shippingMark">Shipping Mark</label>
+                        <input type="text" name="sppb_shippingMark" id="sppb_shippingMark"
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="d-flex" style="gap: 0.5%;width: 100%">
+                    <div class="form-group" style="flex: 0.2">
+                        <label for="sppb_deliveryTime">Delivery Time</label>
+                        <input type="text" name="sppb_deliveryTime" id="sppb_deliveryTime"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" style="flex: 0.4">
+                        <label for="sppb_documentsRequired">Documents Required</label>
+                        <input type="text" name="sppb_documentsRequired" id="sppb_documentsRequired"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" style="flex: 0.2">
+                        <label for="sppb_partialShipmentTransit">Partial Shipment / Transit</label>
+                        <input type="text" name="sppb_partialShipmentTransit" id="sppb_partialShipmentTransit"
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="d-flex" style="gap: 0.5%;width: 100%">
+                    <div class="form-group" style="flex: 0.2">
+                        <label for="sppb_portOfLoading">Port of Loading</label>
+                        <input type="text" name="sppb_portOfLoading" id="sppb_portOfLoading"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" style="flex: 0.2">
+                        <label for="sppb_portOfDischarge">Port of Discharge</label>
+                        <input type="text" name="sppb_portOfDischarge" id="sppb_portOfDischarge"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" style="flex: 0.3">
+                        <label for="sppb_otherConditions">Other Conditions</label>
+                        <input type="text" name="sppb_otherConditions" id="sppb_otherConditions"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" style="flex: 0.3">
+                        <label for="sppb_payments">Payments</label>
+                        <input type="text" name="sppb_payments" id="sppb_payments" class="form-control">
+                    </div>
                 </div>
                 <div class="d-flex" style="justify-content: end;width: 100%">
                     <button class="btn btn-info" id="sppb_buttonSave">Save</button>

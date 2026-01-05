@@ -106,6 +106,16 @@ jQuery(function ($) {
     let sppb_buttonAdd = document.getElementById("sppb_buttonAdd");
     let sppb_buttonUpdate = document.getElementById("sppb_buttonUpdate");
     let sppb_buttonDelete = document.getElementById("sppb_buttonDelete");
+    let sppb_deliveryTerm = document.getElementById("sppb_deliveryTerm");
+    let sppb_packing = document.getElementById("sppb_packing");
+    let sppb_shippingMark = document.getElementById("sppb_shippingMark");
+    let sppb_deliveryTime = document.getElementById("sppb_deliveryTime");
+    let sppb_documentsRequired = document.getElementById("sppb_documentsRequired"); //prettier-ignore
+    let sppb_partialShipmentTransit = document.getElementById("sppb_partialShipmentTransit"); //prettier-ignore
+    let sppb_portOfLoading = document.getElementById("sppb_portOfLoading");
+    let sppb_portOfDischarge = document.getElementById("sppb_portOfDischarge");
+    let sppb_otherConditions = document.getElementById("sppb_otherConditions");
+    let sppb_payments = document.getElementById("sppb_payments");
     let sppb_buttonSave = document.getElementById("sppb_buttonSave");
     let sppb_buttonSubmit = document.getElementById("sppb_buttonSubmit");
     let selectedDivisi;
@@ -1703,6 +1713,26 @@ jQuery(function ($) {
 
     sppb_buttonSave.addEventListener("click", function (e) {
         let nomorSPPB = $(this).data("id");
+        let keteranganCetak =
+            sppb_deliveryTerm.value +
+            " | " +
+            sppb_packing.value +
+            " | " +
+            sppb_shippingMark.value +
+            " | " +
+            sppb_deliveryTime.value +
+            " | " +
+            sppb_documentsRequired.value +
+            " | " +
+            sppb_partialShipmentTransit.value +
+            " | " +
+            sppb_portOfLoading.value +
+            " | " +
+            sppb_portOfDischarge.value +
+            " | " +
+            sppb_otherConditions.value +
+            " | " +
+            sppb_payments.value;
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
