@@ -919,7 +919,8 @@ jQuery(function ($) {
     });
 
     button_modalProses.addEventListener("click", function (e) {
-        if (bttb_qtyTerima.value == 0 || bttb_qtyTerima.value) {
+
+        if (bttb_qtyTerima.value == 0 || !bttb_qtyTerima.value) {
             errorHandling(
                 "qtyTerimaKosong",
                 "Quantity Terima tidak boleh kosong"
@@ -927,7 +928,7 @@ jQuery(function ($) {
             return;
         }
 
-        if (bttb_qtyTerimaActual.value == 0 || bttb_qtyTerimaActual.value) {
+        if (bttb_qtyTerimaActual.value == 0 || !bttb_qtyTerimaActual.value) {
             errorHandling(
                 "qtyTerimaKosongActual",
                 "Quantity Terima Actual tidak boleh kosong"
@@ -935,14 +936,14 @@ jQuery(function ($) {
             return;
         }
 
-        if (bttb_noFaktur.value == "" || bttb_noFaktur.value) {
-            bttb_noFaktur.value = "-";
-        }
-        console.log(bttb_keterangan.value);
+        // if (bttb_noFaktur.value == "" || !bttb_noFaktur.value) {
+        //     bttb_noFaktur.value = "-";
+        // }
+        // console.log(bttb_keterangan.value);
 
-        if (bttb_keterangan.value == "") {
-            bttb_keterangan.value = "-";
-        }
+        // if (bttb_keterangan.value == "") {
+        //     bttb_keterangan.value = "-";
+        // }
         let hrg_murni = 0.0;
         let hrg_murni_rp = 0.0;
         let hrg_disc = 0.0;
@@ -964,7 +965,7 @@ jQuery(function ($) {
         hrg_ppn_rp = hrg_ppn * parseFloat(bttb_kursRupiah.value);
 
         $.ajax({
-            url: "/CreateBTTB/getDataSPPB",
+            url: "/CreateBTTB",
             type: "POST",
             data: {
                 _token: csrfToken,

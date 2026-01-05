@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Laporan;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HakAksesController;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 use Exception;
 use Auth;
 use DB;
@@ -15,8 +17,9 @@ class CetakSPPBBTTBController extends Controller
     {
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Cetak SPPB / BTTB');
+        $user = trim(Auth::user()->NomorUser);
         if ($result > 0) {
-            return view('Laporan.Purchase.CetakSPPBBTTB.index', compact('access'));
+            return view('Laporan.Purchase.CetakSPPBBTTB.index', compact('access', 'user'));
         } else {
             abort(403);
         }
@@ -29,8 +32,34 @@ class CetakSPPBBTTBController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $jenisStore = $request->jenisStore;
+        if ($jenisStore == 'Email') {
+            $noSPPB = $request->noSPPB;
+            $idDivisi = $request->idDivisi;
+            $deliveryTerm = $request->deliveryTerm;
+            $packing = $request->packing;
+            $shippingMark = $request->shippingMark;
+            $deliveryTime = $request->deliveryTime;
+            $documentsRequired = $request->documentsRequired;
+            $partialShipmentTransit = $request->partialShipmentTransit;
+            $portOfLoading = $request->portOfLoading;
+            $portOfDischarge = $request->portOfDischarge;
+            $otherConditions = $request->otherConditions;
+            $payments = $request->payments;
+            $informasiCetak =
+                $deliveryTerm . ' | ' . $packing . ' | ' . $shippingMark . ' | ' .
+                $deliveryTime . ' | ' . $documentsRequired . ' | ' .
+                $partialShipmentTransit . ' | ' . $portOfLoading . ' | ' .
+                $portOfDischarge . ' | ' . $otherConditions . ' | ' . $payments;
+            DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @NoSppb = ?, @InformasiCetak = ?', [5, $noSPPB, $informasiCetak]);
+            $dataCetak = DB::connection('ConnPurchase')->select('SELECT * FROM VW_PRG_1273_SPPB_NEW WHERE kode_divisi = ? AND nomor_sppb = ?', [$idDivisi, $noSPPB]);
+            dd($dataCetak);
+
+        } else {
+            return response()->json('Request Invalid', 400);
+        }
     }
+
 
     public function show($id, Request $request)
     {
@@ -77,7 +106,6 @@ class CetakSPPBBTTBController extends Controller
                     DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?, @Alasan = \'Cetak Ulang\'', [4, $divisi, $sppb]);
                 }
                 $dataCetak = DB::connection('ConnPurchase')->select('SELECT * FROM VW_PRG_1273_SPPB_NEW WHERE kode_divisi = ? AND nomor_sppb = ?', [$divisi, $sppb]);
-                // dd($dataCetak);
             }
             if (count($dataCetak) > 0) {
                 return view('Laporan.Purchase.CetakSPPBBTTB.cetak', compact('dataCetak', 'jenisCetak'));

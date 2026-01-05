@@ -53,27 +53,29 @@
                 <hr>
                 <label for="contoh_print" id="contoh_print">Contoh print:</label>
             </div>
-            <div class="acs-div-container" id="contoh_printDiv" style="display: none">
-                <span id="nomor_sjKolom" class="span-nomor_sjKolom" contenteditable="true">sj: 0000101861</span>
-                <span id="tanggal_kirimKolom" class="span-tanggal_kirimKolom"
-                    contenteditable="true">16-August-2023</span>
-                <span id="truk_nopolKolom" class="span-truk_nopolKolom" contenteditable="true">L 8169 UM/RODA JY</span>
-                <span id="no_spKolom" class="span-no_spKolom" contenteditable="true">34631</span>
-                <span id="nama_customerKolomAlamat_kolom" class="span-nama_customerKolomAlamat_kolom"
-                    contenteditable="true"></span>
-                <span id="nama_barangKolomNo_poKolom" class="span-nama_barangKolomNo_poKolom"
-                    contenteditable="true"></span>
-                <span id="nama_typeBarangKolom" class="span-nama_typeBarangKolom" contenteditable="true"></span>
-                <span id="satuan_barangPrimerKolom" class="span-satuan_barangPrimerKolom" contenteditable="true"></span>
-                <span id="jumlah_barangPrimerKolom" class="span-jumlah_barangPrimerKolom" contenteditable="true"></span>
-                <span id="satuan_barangSekunderKolom" class="span-satuan_barangSekunderKolom"
-                    contenteditable="true"></span>
-                <span id="jumlah_barangSekunderKolom" class="span-jumlah_barangSekunderKolom"
-                    contenteditable="true"></span>
-                <span id="keterangan_tambahanKolom" class="span-keterangan_tambahanKolom"
-                    contenteditable="true"></span>
-                <span id="alamat_kirimKolom" class="span-alamat_kirimKolom" contenteditable="true"></span>
-                <span id="tanda_tanganKolom" class="span-tanda_tanganKolom" contenteditable="true">(SUNYATA
+            <div class="acs-div-container" id="contoh_printDiv"
+                style="display: none;width: 16cm;height:20cm;position: relative;">
+                <span id="nomor_sjKolom" style="position: absolute;top: 5.5cm;left: 10.5cm;"
+                    contenteditable="true">Nomor SJ</span>
+                <span id="tanggal_kirimKolom" style="position: absolute;top: 6cm;left: 10.5cm;"
+                    contenteditable="true">Tanggal Kirim</span>
+                <span id="truk_nopolKolom" style="position: absolute;top: 6.5cm;left: 10.5cm;"
+                    contenteditable="true">Plat Nomor</span>
+                <span id="no_spKolom" style="position: absolute;top: 7cm;left: 10.5cm;" contenteditable="true">Nomor
+                    SP</span>
+                <span id="no_poKolom" style="position: absolute;top: 7.5cm;left: 10.5cm;" contenteditable="true">Nomor
+                    PO</span>
+                <span id="nama_customerKolomAlamat_kolom"
+                    style="position: absolute;top: 6cm;left: 1cm;width: 6cm;max-height: 2cm;"
+                    contenteditable="true">Customer</span>
+                <span id="nama_typeBarangKolom" style="position: absolute;top: 8cm;left: 1cm;width: 9cm;height: 5cm;" contenteditable="true"></span>
+                <span id="satuan_barangPrimerKolom" style="position: absolute;" contenteditable="true"></span>
+                <span id="jumlah_barangPrimerKolom" style="position: absolute;" contenteditable="true"></span>
+                <span id="satuan_barangSekunderKolom" style="position: absolute;" contenteditable="true"></span>
+                <span id="jumlah_barangSekunderKolom" style="position: absolute;" contenteditable="true"></span>
+                <span id="keterangan_tambahanKolom" style="position: absolute;" contenteditable="true"></span>
+                <span id="alamat_kirimKolom" style="position: absolute;" contenteditable="true"></span>
+                <span id="tanda_tanganKolom" style="position: absolute;" contenteditable="true">(SUNYATA
                     ICHWAN)</span>
             </div>
             <div class="acs-div-container" id="contoh_printSjEksportDiv" style="display: none"

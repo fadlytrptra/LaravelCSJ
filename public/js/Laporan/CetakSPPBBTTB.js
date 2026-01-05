@@ -15,6 +15,7 @@ jQuery(function ($) {
     let no_terima = document.getElementById("no_terima");
     let button_browseDataNomorTerima = document.getElementById("button_browseDataNomorTerima"); // prettier-ignore
     let button_cetak = document.getElementById("button_cetak");
+    let div_emailPO = document.getElementById("div_emailPO");
     //#endregion
 
     //#region Load Form
@@ -131,17 +132,72 @@ jQuery(function ($) {
         }
         return true;
     }
+
+    function openPrintWindow(jenisCetak) {
+        const params = new URLSearchParams({
+            divisi: id_divisi.value,
+            jenisCetak: jenisCetak,
+            sppb: sppb.value,
+            noTerima: no_terima.value || "",
+        });
+
+        window.open(`/CetakSPPBBTTB/print?${params.toString()}`, "_blank");
+    }
+
+    function sendEmail() {
+        $.ajax({
+            url: "/CetakSPPBBTTB",
+            type: "POST",
+            data: {
+                jenisStore: "Email",
+                deliveryTerm: email_deliveryTerm.value,
+                packing: email_packing.value,
+                shippingMark: email_shippingMark.value,
+                deliveryTime: email_deliveryTime.value,
+                documentsRequired: email_documentsRequired.value,
+                partialShipmentTransit: email_partialShipmentTransit.value,
+                portOfLoading: email_portOfLoading.value,
+                portOfDischarge: email_portOfDischarge.value,
+                otherConditions: email_otherConditions.value,
+                payments: email_payments.value,
+                noSPPB: sppb.value,
+                idDivisi: id_divisi.value,
+                _token: csrfToken,
+            },
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire("Berhasil", "Email berhasil dikirim", "success");
+                } else {
+                    Swal.fire("Error", response.error, "error");
+                }
+            },
+            error: function (xhr) {
+                Swal.fire("Error", "Server error", "error");
+                console.error(xhr.responseText);
+            },
+        });
+    }
+
     //#endregion
 
     //#region Event Listener
     radios.forEach((radio) => {
         radio.addEventListener("change", function () {
-            if (radio_jenisBTTB.checked) {
+            if (radio_jenisEmail.checked) {
+                div_noTerima.style.display = "none";
+                button_browseDataNomorTerima.style.display = "none";
+                div_emailPO.style.display = "block";
+                button_cetak.innerHTML = "Kirim";
+            } else if (radio_jenisBTTB.checked) {
                 div_noTerima.style.display = "flex";
                 button_browseDataNomorTerima.style.display = "block";
+                div_emailPO.style.display = "none";
+                button_cetak.innerHTML = "Cetak";
             } else {
                 div_noTerima.style.display = "none";
                 button_browseDataNomorTerima.style.display = "none";
+                div_emailPO.style.display = "none";
+                button_cetak.innerHTML = "Cetak";
             }
         });
     });
@@ -317,10 +373,15 @@ jQuery(function ($) {
                     let checkedRadio = document.querySelector('input[name="radio_jenisCetak"]:checked'); // prettier-ignore
                     sppb.value = result.value.No_sppb;
                     no_trans.value = result.value.No_trans;
-                    if (checkedRadio.value == "SPPB") {
+                    if (
+                        checkedRadio.value == "SPPB" ||
+                        checkedRadio.value == "SPPBBaru"
+                    ) {
                         button_cetak.focus();
                     } else if (checkedRadio.value == "BTTB") {
                         button_browseDataNomorTerima.focus();
+                    } else if (checkedRadio.value == "Email") {
+                        email_deliveryTerm.focus();
                     }
                 }
             });
@@ -432,24 +493,39 @@ jQuery(function ($) {
     });
 
     button_cetak.addEventListener("click", function (e) {
-        let checkedRadio = document.querySelector('input[name="radio_jenisCetak"]:checked'); // prettier-ignore
+        e.preventDefault();
 
+        const jenisCetak = document.querySelector(
+            'input[name="radio_jenisCetak"]:checked'
+        ).value;
+
+        // COMMON VALIDATION
         if (!validateEmpty(id_divisi, "Pilih Divisi!", button_browseDataDivisi))
             return;
+
         if (!validateEmpty(sppb, "Pilih SPPB!", button_browseDataSPPB)) return;
-        if (checkedRadio.value == "BTTB") {
-            if (
-                !validateEmpty(
-                    no_terima,
-                    "Pilih Nomor Terima!",
-                    button_browseDataNomorTerima
-                )
-            )
-                return;
+
+        // EMAIL MODE
+        if (jenisCetak === "Email") {
+            sendEmail();
+            return;
         }
 
-        let url = `/CetakSPPBBTTB/print?divisi=${id_divisi.value}&jenisCetak=${checkedRadio.value}&sppb=${sppb.value}&noTerima=${no_terima.value}`; // prettier-ignore
-        window.open(url, "_blank");
+        // BTTB VALIDATION
+        if (
+            jenisCetak === "BTTB" &&
+            !validateEmpty(
+                no_terima,
+                "Pilih Nomor Terima!",
+                button_browseDataNomorTerima
+            )
+        ) {
+            return;
+        }
+
+        // PRINT ACTION
+        openPrintWindow(jenisCetak);
     });
+
     //#endregion
 });

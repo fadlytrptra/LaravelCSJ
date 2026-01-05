@@ -223,6 +223,7 @@ class CreateSPPBController extends Controller
             $idDivisi = $request->idDivisi;
             $Tgl_sppb = $request->Tgl_sppb;
             $No_sppb = $request->No_sppb;
+            $keteranganCetak = $request->keteranganCetak;
 
             if (!$No_sppb) {
                 $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
@@ -258,10 +259,11 @@ class CreateSPPBController extends Controller
                     $No_trans = $row[11];
                     try {
                         DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_trans = ?, @No_sppb = ?', [
+                    @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
                             4,
                             $No_trans,
-                            $No_sppb
+                            $No_sppb,
+                            $keteranganCetak
                         ]);
 
                     } catch (Exception $Ex) {
@@ -270,9 +272,10 @@ class CreateSPPBController extends Controller
                 }
             } else {
                 DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_sppb = ?', [
+                    @XKode = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
                     4,
-                    $No_sppb
+                    $No_sppb,
+                    $keteranganCetak
                 ]);
             }
             return response()->json(['message' => 'Sudah Berhasil Save PO!', "data" => $No_sppb]);
@@ -281,6 +284,7 @@ class CreateSPPBController extends Controller
             $idDivisi = $request->idDivisi;
             $Tgl_sppb = $request->Tgl_sppb;
             $No_sppb = $request->No_sppb;
+            $keteranganCetak = $request->keteranganCetak;
 
             if (!$No_sppb) {
                 $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
@@ -316,10 +320,11 @@ class CreateSPPBController extends Controller
                     $No_trans = $row[11];
                     try {
                         DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_trans = ?, @No_sppb = ?', [
+                    @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
                             5,
                             $No_trans,
-                            $No_sppb
+                            $No_sppb,
+                            $keteranganCetak
                         ]);
 
                     } catch (Exception $Ex) {
@@ -328,9 +333,10 @@ class CreateSPPBController extends Controller
                 }
             } else {
                 DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_sppb = ?', [
+                    @XKode = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
                     5,
-                    $No_sppb
+                    $No_sppb,
+                    $keteranganCetak
                 ]);
             }
             return response()->json(['message' => 'Sudah Berhasil Submit PO!', "data" => $No_sppb]);

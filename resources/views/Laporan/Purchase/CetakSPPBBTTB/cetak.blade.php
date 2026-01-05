@@ -304,338 +304,520 @@
                     </div>
                 </div>
             @elseif ($jenisCetak == 'SPPBBaru')
-                {{-- @php
+                @php
                     $chunkSize = 5;
-                    $chunks = array_chunk($dataCetak['print'], $chunkSize);
+                    $chunks = array_chunk($dataCetak, $chunkSize);
 
-                    $sumAmount = collect($dataCetak['print'])->sum('PriceSub');
-                    $ppn = collect($dataCetak['print'])->sum('PPN');
-                    $amountDPP = collect($dataCetak['print'])->sum('PriceDPP');
-
-                    function nf($val)
-                    {
-                        return number_format((float) $val, 2, '.', ',');
-                    }
-                @endphp --}}
+                    $sumAmount = collect($dataCetak)->sum('TotalHarga');
+                    $ppn = collect($dataCetak)->sum('Ppn_trm');
+                    $amountDPP = collect($dataCetak)->sum('dpp_nilai_lain');
+                @endphp
                 <style>
                     body {
                         margin: 0;
                         padding: 0;
                     }
                 </style>
-                <div
-                    style="width: 19.5cm; height: 27.94cm; padding: 10px 10px 0px 10px; margin: 0; background: #FFFFFF; box-sizing: border-box; page-break-after: avoid;">
-                    <div style="width: 100%; height : 15%;"></div>
-                    <main style="width: 100%; height : 70%;">
-                        <div style="width: 100%; height: auto; display: flex;">
-                            <div style="width: 50%; height: auto; margin-right: 20px;">
-                                <h1
-                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin:2px 0 10px 0;">
-                                    Issued To:
-                                </h1>
-                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                    {{ $dataCetak[0]->NM_SUP }}
-                                </p>
-                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                    {{ $dataCetak[0]->ALAMAT1 }}
-                                </p>
-                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                    {{ $dataCetak[0]->KOTA1 }}
-                                </p>
-                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                    {{ $dataCetak[0]->NEGARA1 }}
-                                </p>
-                                <br>
-                                <h1
-                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin-top: 10px; margin-bottom: 2px;">
-                                    Delivery To:</h1>
-                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">PT. Kerta Rajasa
-                                    Raya</p>
-                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">Jl. Raya Tropodo
-                                    No. 1</p>
-                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">Waru - Sidoarjo
-                                    61256 East Java, Indonesia</p>
+                @foreach ($chunks as $pageIndex => $items)
+                    <div
+                        style="
+                                width: 19.5cm;
+                                height: 27.94cm;
+                                padding: 10px 10px 0px 10px;
+                                margin: 0;
+                                background: #FFFFFF;
+                                box-sizing: border-box;
+                                page-break-after: {{ $pageIndex < count($chunks) - 1 ? 'always' : 'avoid' }};">
+                        <div style="width: 100%; height : 15%;"></div>
+                        <main style="width: 100%; height : 70%;">
+                            <div style="width: 100%; height: auto; display: flex;">
+                                <div style="width: 50%; height: auto; margin-right: 20px;">
+                                    <h1
+                                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin:2px 0 10px 0;">
+                                        Issued To:
+                                    </h1>
+                                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                        {{ $dataCetak[0]->NM_SUP }}
+                                    </p>
+                                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                        {{ $dataCetak[0]->ALAMAT1 }}
+                                    </p>
+                                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                        {{ $dataCetak[0]->KOTA1 }}
+                                    </p>
+                                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                        {{ $dataCetak[0]->NEGARA1 }}
+                                    </p>
+                                    <br>
+                                    <h1
+                                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin-top: 10px; margin-bottom: 2px;">
+                                        Delivery To:</h1>
+                                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">PT. Cahaya Santoso
+                                        Jaya
+                                        Raya</p>
+                                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">Jl. Raya Tropodo
+                                        No. 1</p>
+                                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">Waru - Sidoarjo
+                                        61256 East Java, Indonesia</p>
+                                </div>
+                                <div style="width: 50%; height: auto; margin-left: 20px;">
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 30%; height: auto;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Number
+                                            </h1>
+                                        </div>
+                                        <div style="width: 70%; height: auto;">
+                                            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                {{ $dataCetak[0]->nomor_sppb }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 30%; height: auto;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Date</h1>
+                                        </div>
+                                        <div style="width: 70%; height: auto;">
+                                            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                {{ $tanggalSPPB }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 30%; height: auto;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Delivery Date</h1>
+                                        </div>
+                                        <div style="width: 70%; height: auto;">
+                                            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                {{ $EstDate }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 30%; height: auto;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Payment Term</h1>
+                                        </div>
+                                        <div style="width: 70%; height: auto;">
+                                            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                {{ $dataCetak[0]->Waktu }} Days
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 30%; height: auto;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Divisi</h1>
+                                        </div>
+                                        <div style="width: 70%; height: auto;">
+                                            <div
+                                                style="font-size: 13px;font-family: Helvetica; margin: 2px 0; display:flex">
+                                                <span>:</span>
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 0 0 0 4px">
+                                                    {{ trim($dataCetak[0]->kode_divisi) }} -
+                                                    {{ trim($dataCetak[0]->nama_divisi) }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 30%; height: auto;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Requester</h1>
+                                        </div>
+                                        <div style="width: 70%; height: auto;">
+                                            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                {{ ucwords(strtolower(trim($dataCetak[0]->Operator))) }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 30%; height: auto;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Page</h1>
+                                        </div>
+                                        <div style="width: 70%; height: auto;">
+                                            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">: Page
+                                                {{ $pageIndex + 1 }}
+                                                of {{ count($chunks) }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div style="width: 50%; height: auto; margin-left: 20px;">
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 30%; height: auto;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Number
-                                        </h1>
+                            <div class="details" style="margin-top: 20px;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                    No.</h1>
+                                            </th>
+                                            <th style="text-align: center;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                    Item Number</h1>
+                                            </th>
+                                            <th style="text-align: center;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                    Description</h1>
+                                            </th>
+                                            <th style="text-align: center;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                    Qty</h1>
+                                            </th>
+                                            <th style="text-align: center;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                    Unit</h1>
+                                            </th>
+                                            <th style="text-align: center;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                    Unit Price<br> {{ $dataCetak[0]->Symbol2 }}
+                                                </h1>
+                                            </th>
+                                            <th style="text-align: center;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                    Disc.<br> {{ $dataCetak[0]->Symbol2 }}
+                                                </h1>
+                                            </th>
+                                            <th style="text-align: center;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                    Amount<br> {{ $dataCetak[0]->Symbol2 }}
+                                                </h1>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="border-top: 1px solid black; border-bottom: 1px solid black;">
+                                        @foreach ($dataCetak as $index => $item)
+                                            <tr>
+                                                <td style="text-align: center;vertical-align: top;">
+                                                    <p style="margin:0;font-size: 12px;font-family: Helvetica;">
+                                                        {{ $index + 1 }}
+                                                    </p>
+                                                </td>
+                                                <td style="text-align: center;vertical-align: top;">
+                                                    <p style="margin:0;font-size: 12px;font-family: Helvetica;">
+                                                        {{ $item->kode_barang }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p
+                                                        style="line-height: 13.8px; font-size: 12px;font-family: Helvetica;padding-right:8px">
+                                                        {{ str_replace('<', '&lt;', $item->NAMA_BRG) }}
+                                                        <br>
+                                                        {{ $item->KET ?? '-' }}
+                                                        <br>
+                                                        {{ $item->nama_sub_kategori }}
+                                                        <br>
+                                                        {{ $item->nama_kategori }}
+                                                        <br>
+                                                        {{ $item->No_trans }}
+                                                    </p>
+                                                </td>
+                                                <td style="text-align: center;vertical-align: top;">
+                                                    <p style="margin:0;font-size: 12px;font-family: Helvetica;">
+                                                        {{ number_format($item->quantity, 2, '.', ',') }}
+                                                    </p>
+                                                </td>
+                                                <td style="text-align: center;vertical-align: top;">
+                                                    <p style="margin:0;font-size: 12px;font-family: Helvetica;">
+                                                        {{ trim($item->Nama_satuan) }}
+                                                    </p>
+                                                </td>
+                                                <td style="text-align: center;vertical-align: top;">
+                                                    <p style="margin:0;font-size: 12px;font-family: Helvetica;">
+                                                        {{ number_format($item->Hrg_trm, 4, '.', ',') }}
+                                                    </p>
+                                                </td>
+                                                <td style="text-align: center;vertical-align: top;">
+                                                    <p style="margin:0;font-size: 12px;font-family: Helvetica;">
+                                                        {{ number_format($item->hrg_disc, 2, '.', ',') }}
+                                                        <br>
+                                                        ({{ number_format($item->Disc_trm, 2, '.', ',') }}%)
+                                                    </p>
+                                                </td>
+                                                <td style="text-align: center;vertical-align: top;">
+                                                    <p style="margin:0;font-size: 12px;font-family: Helvetica;">
+                                                        {{ number_format($item->TotalHarga, 2, '.', ',') }}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @if ($dataCetak[0]->Informasi_Cetak)
+                                @php
+                                    $deliveryTerm = explode(' | ', $dataCetak[0]->Informasi_Cetak)[0];
+                                    $packing = explode(' | ', $dataCetak[0]->Informasi_Cetak)[1];
+                                    $shippingMark = explode(' | ', $dataCetak[0]->Informasi_Cetak)[2];
+                                    $deliveryTime = explode(' | ', $dataCetak[0]->Informasi_Cetak)[3];
+                                    $documentsRequired = explode(' | ', $dataCetak[0]->Informasi_Cetak)[4];
+                                    $partialShipmentTransit = explode(' | ', $dataCetak[0]->Informasi_Cetak)[5];
+                                    $portOfLoading = explode(' | ', $dataCetak[0]->Informasi_Cetak)[6];
+                                    $portOfDischarge = explode(' | ', $dataCetak[0]->Informasi_Cetak)[7];
+                                    $otherConditions = explode(' | ', $dataCetak[0]->Informasi_Cetak)[8];
+                                    $payment = explode(' | ', $dataCetak[0]->Informasi_Cetak)[9];
+                                @endphp
+                                @if ($deliveryTerm)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Delivery Term
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $deliveryTerm }}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div style="width: 70%; height: auto;">
-                                        <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                            {{ $dataCetak[0]->nomor_sppb }}
-                                        </p>
+                                @endif
+                                @if ($packing)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Packing
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $packing }}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
+                                @endif
+                                @if ($shippingMark)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Shipping Mark
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $shippingMark }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($deliveryTime)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Delivery Time
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $deliveryTime }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($documentsRequired)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Documents Required
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $documentsRequired }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($partialShipmentTransit)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Partial Shipment Transit
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $partialShipmentTransit }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($portOfLoading)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Port of Loading
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $portOfLoading }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($portOfDischarge)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Port Of Discharge
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $portOfDischarge }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($otherConditions)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Other Conditions
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $otherConditions }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($payment)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Payment
+                                                </h1>
+                                            </div>
+                                            <div style="width: 70%; height: auto;">
+                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                                                    {{ $payment }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
+                            <div style="width: 100%; display: flex;">
+                                <div style="width: 70%;">
+                                    <h1
+                                        style="font-size: 13px;font-family: Helvetica; font-weight: bold;margin-top:50px">
+                                        Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}</h1>
                                 </div>
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 30%; height: auto;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Date</h1>
+                                <div style="width: 30%;">
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 55%; margin-right: 10%;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Sub Total</h1>
+                                        </div>
+                                        <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
+                                            <p
+                                                style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                {{ $dataCetak[0]->Symbol }}{{ number_format($sumAmount, 2, '.', ',') }}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div style="width: 70%; height: auto;">
-                                        <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                            {{ $tanggalSPPB }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 30%; height: auto;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Delivery Date</h1>
-                                    </div>
-                                    <div style="width: 70%; height: auto;">
-                                        <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                            {{ $EstDate }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 30%; height: auto;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Payment Term</h1>
-                                    </div>
-                                    <div style="width: 70%; height: auto;">
-                                        <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                            {{ $dataCetak[0]->Waktu }} Days
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 30%; height: auto;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Divisi</h1>
-                                    </div>
-                                    <div style="width: 70%; height: auto;">
-                                        <div
-                                            style="font-size: 13px;font-family: Helvetica; margin: 2px 0; display:flex">
-                                            <span>:</span>
-                                            <p style="font-size: 13px;font-family: Helvetica; margin: 0 0 0 4px">
-                                                {{ trim($dataCetak[0]->kode_divisi) }} -
-                                                {{ trim($dataCetak[0]->nama_divisi) }}
+                                    @if ((float) $dataCetak[0]->PPN > 0)
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 55%; margin-right: 10%;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    DPP Nilai Lain</h1>
+                                            </div>
+                                            <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
+                                                <p
+                                                    style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $dataCetak[0]->Symbol }}{{ number_format($amountDPP, 2, '.', ',') }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @if ((float) $dataCetak[0]->PPN > 0)
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 55%; margin-right: 10%;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    VAT</h1>
+                                            </div>
+                                            <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
+                                                <p
+                                                    style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $dataCetak[0]->Symbol }}{{ number_format($ppn, 2, '.', ',') }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <div style="width: 100%; display: flex;">
+                                        <div style="width: 55%; margin-right: 10%;">
+                                            <h1
+                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                Total</h1>
+                                        </div>
+                                        <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
+                                            <p
+                                                style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                @if ((float) $dataCetak[0]->PPN > 0)
+                                                    {{ $dataCetak[0]->Symbol }}{{ number_format($ppn + $sumAmount, 2, '.', ',') }}
+                                                @else
+                                                    {{ $dataCetak[0]->Symbol }}{{ number_format($sumAmount, 2, '.', ',') }}
+                                                @endif
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 30%; height: auto;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Requester</h1>
-                                    </div>
-                                    <div style="width: 70%; height: auto;">
-                                        <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                            {{ ucwords(strtolower(trim($dataCetak[0]->Operator))) }}
-                                        </p>
-                                    </div>
-                                </div>
-                                {{-- <div style="width: 100%; display: flex;">
-                                    <div style="width: 30%; height: auto;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Page</h1>
-                                    </div>
-                                    <div style="width: 70%; height: auto;">
-                                        <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">: Page ${
-                                            Page + 1
-                                            } of ${chunkedData.length}</p>
-                                    </div>
-                                </div> --}}
                             </div>
-                        </div>
-                        <div class="details" style="margin-top: 20px;">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                No.</h1>
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                Item Number</h1>
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                Description</h1>
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                Qty</h1>
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                Unit</h1>
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                Unit Price<br> {{ $dataCetak[0]->Symbol2 }}
-                                            </h1>
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                Disc.<br> {{ $dataCetak[0]->Symbol2 }}
-                                            </h1>
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                Amount<br> {{ $dataCetak[0]->Symbol2 }}
-                                            </h1>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody style="border-top: 1px solid black; border-bottom: 1px solid black;">
-                                    @foreach ($dataCetak as $index => $item)
-                                        @php
-                                            $sumAmount += (float) $item->TotalHarga;
-                                            $ppn += (float) $item->Ppn_trm;
-                                            $amountDPP += (float) $item->dpp_nilai_lain;
-                                        @endphp
-                                        <tr>
-                                            <td style="text-align: center;vertical-align: top;">
-                                                <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                    {{ $index + 1 }}
-                                                </p>
-                                            </td>
-                                            <td style="text-align: center;vertical-align: top;">
-                                                <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                    {{ $item->kode_barang }}
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p
-                                                    style="line-height: 13.8px; font-size: 12px;font-family: Helvetica;padding-right:8px">
-                                                    {{ str_replace('<', '&lt;', $item->NAMA_BRG) }}
-                                                    <br>
-                                                    {{ $item->KET ?? '-' }}
-                                                    <br>
-                                                    {{ $item->nama_sub_kategori }}
-                                                    <br>
-                                                    {{ $item->nama_kategori }}
-                                                    <br>
-                                                    {{ $item->No_trans }}
-                                                </p>
-                                            </td>
-                                            <td style="text-align: center;vertical-align: top;">
-                                                <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                    {{ number_format($item->quantity, 2, '.', ',') }}
-                                                </p>
-                                            </td>
-                                            <td style="text-align: center;vertical-align: top;">
-                                                <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                    {{ trim($item->Nama_satuan) }}
-                                                </p>
-                                            </td>
-                                            <td style="text-align: center;vertical-align: top;">
-                                                <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                    {{ number_format($item->Hrg_trm, 4, '.', ',') }}
-                                                </p>
-                                            </td>
-                                            <td style="text-align: center;vertical-align: top;">
-                                                <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                    {{ number_format($item->hrg_disc, 2, '.', ',') }}
-                                                    <br>
-                                                    ({{ number_format($item->Disc_trm, 2, '.', ',') }}%)
-                                                </p>
-                                            </td>
-                                            <td style="text-align: center;vertical-align: top;">
-                                                <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                    {{ number_format($item->TotalHarga, 2, '.', ',') }}
-                                                </p>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="width: 100%; display: flex;">
-                            <div style="width: 70%;">
-                                <h1 style="font-size: 13px;font-family: Helvetica; font-weight: bold;margin-top:50px">
-                                    Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}</h1>
-                            </div>
-                            <div style="width: 30%;">
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 55%; margin-right: 10%;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Sub Total</h1>
-                                    </div>
-                                    <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
-                                        <p
-                                            style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                            {{ $dataCetak[0]->Symbol }}{{ number_format($sumAmount, 2, '.', ',') }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 55%; margin-right: 10%;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            DPP Nilai Lain</h1>
-                                    </div>
-                                    <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
-                                        <p
-                                            style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                            @if ((float) $dataCetak[0]->PPN > 0)
-                                                {{ $dataCetak[0]->Symbol }}{{ number_format($amountDPP, 2, '.', ',') }}
-                                            @else
-                                                {{ $dataCetak[0]->Symbol }}0.00
-                                            @endif
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 55%; margin-right: 10%;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            VAT</h1>
-                                    </div>
-                                    <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
-                                        <p
-                                            style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                            @if ((float) $dataCetak[0]->PPN > 0)
-                                                {{ $dataCetak[0]->Symbol }}{{ number_format($ppn, 2, '.', ',') }}
-                                            @else
-                                                {{ $dataCetak[0]->Symbol }}0.00
-                                            @endif
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; display: flex;">
-                                    <div style="width: 55%; margin-right: 10%;">
-                                        <h1
-                                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                            Total</h1>
-                                    </div>
-                                    <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
-                                        <p
-                                            style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                            @if ((float) $dataCetak[0]->PPN > 0)
-                                                {{ $dataCetak[0]->Symbol }}{{ number_format($ppn + $sumAmount, 2, '.', ',') }}
-                                            @else
-                                                {{ $dataCetak[0]->Symbol }}{{ number_format($sumAmount, 2, '.', ',') }}
-                                            @endif
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
+                        </main>
+                    </div>
+                @endforeach
             @endif
         </div>
     </body>

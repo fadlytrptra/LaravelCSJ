@@ -282,6 +282,16 @@ jQuery(function ($) {
             sppb_hargaPPN.value = "";
             sppb_subTotalHargaJual.value = "";
             sppb_totalHarga.value = "";
+            sppb_deliveryTerm.value = "";
+            sppb_packing.value = "";
+            sppb_shippingMark.value = "";
+            sppb_deliveryTime.value = "";
+            sppb_documentsRequired.value = "";
+            sppb_partialShipmentTransit.value = "";
+            sppb_portOfLoading.value = "";
+            sppb_portOfDischarge.value = "";
+            sppb_otherConditions.value = "";
+            sppb_payments.value = "";
             sppb_buttonAdd.disabled = false;
         } else if (initType == "resetOrder") {
             sppb_namaBarang.val(null).trigger("change");
@@ -1011,7 +1021,6 @@ jQuery(function ($) {
                             returnFocus: false,
                         });
                     } else {
-                        console.log(data);
                         sppb_tanggal.value = moment(data[0].Tgl_sppb).format("YYYY-MM-DD"); //prettier-ignore
                         sppb_tanggalDibutuhkan.value = moment(data[0].Tgl_Dibutuhkan).format("YYYY-MM-DD"); //prettier-ignore
                         sppb_divisi.val(data[0].Kd_div).trigger("change");
@@ -1066,6 +1075,38 @@ jQuery(function ($) {
                                 ])
                                 .draw();
                         });
+                        sppb_deliveryTerm.value = "";
+                        sppb_packing.value = "";
+                        sppb_shippingMark.value = "";
+                        sppb_deliveryTime.value = "";
+                        sppb_documentsRequired.value = "";
+                        sppb_partialShipmentTransit.value = "";
+                        sppb_portOfLoading.value = "";
+                        sppb_portOfDischarge.value = "";
+                        sppb_otherConditions.value = "";
+                        sppb_payments.value = "";
+                        if (data[0].Informasi_Cetak) {
+                            let deliveryTerm = data[0].Informasi_Cetak.split(" | ")[0]; //prettier-ignore
+                            let packing = data[0].Informasi_Cetak.split(" | ")[1]; //prettier-ignore
+                            let shippingMark = data[0].Informasi_Cetak.split(" | ")[2]; //prettier-ignore
+                            let deliveryTime = data[0].Informasi_Cetak.split(" | ")[3]; //prettier-ignore
+                            let documentsRequired = data[0].Informasi_Cetak.split(" | ")[4]; //prettier-ignore
+                            let partialShipmentTransit = data[0].Informasi_Cetak.split(" | ")[5]; //prettier-ignore
+                            let portOfLoading = data[0].Informasi_Cetak.split(" | ")[6]; //prettier-ignore
+                            let portOfDischarge = data[0].Informasi_Cetak.split(" | ")[7]; //prettier-ignore
+                            let otherConditions = data[0].Informasi_Cetak.split(" | ")[8]; //prettier-ignore
+                            let payment = data[0].Informasi_Cetak.split(" | ")[9]; //prettier-ignore
+                            sppb_deliveryTerm.value = deliveryTerm;
+                            sppb_packing.value = packing;
+                            sppb_shippingMark.value = shippingMark;
+                            sppb_deliveryTime.value = deliveryTime;
+                            sppb_documentsRequired.value = documentsRequired;
+                            sppb_partialShipmentTransit.value = partialShipmentTransit; //prettier-ignore
+                            sppb_portOfLoading.value = portOfLoading;
+                            sppb_portOfDischarge.value = portOfDischarge;
+                            sppb_otherConditions.value = otherConditions;
+                            sppb_payments.value = payment;
+                        }
                     }
                 },
                 error: function () {
@@ -1297,6 +1338,67 @@ jQuery(function ($) {
                 sppb_buttonAdd.focus();
             }
             hitungHarga();
+        }
+    });
+
+    sppb_deliveryTerm.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_packing.focus();
+        }
+    });
+    sppb_packing.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_shippingMark.focus();
+        }
+    });
+    sppb_shippingMark.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_deliveryTime.focus();
+        }
+    });
+    sppb_deliveryTime.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_documentsRequired.focus();
+        }
+    });
+    sppb_documentsRequired.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_partialShipmentTransit.focus();
+        }
+    });
+    sppb_partialShipmentTransit.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_portOfLoading.focus();
+        }
+    });
+    sppb_portOfLoading.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_portOfDischarge.focus();
+        }
+    });
+    sppb_portOfDischarge.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_otherConditions.focus();
+        }
+    });
+    sppb_otherConditions.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_payments.focus();
+        }
+    });
+    sppb_payments.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            sppb_buttonSave.focus();
         }
     });
 
@@ -1746,6 +1848,7 @@ jQuery(function ($) {
                 idDivisi: sppb_divisi.val(),
                 Tgl_sppb: sppb_tanggal.value,
                 No_sppb: nomorSPPB,
+                keteranganCetak: keteranganCetak,
             },
             dataType: "json",
             success: function (response) {
@@ -1787,6 +1890,26 @@ jQuery(function ($) {
 
     sppb_buttonSubmit.addEventListener("click", function (e) {
         let nomorSPPB = $(this).data("id");
+        let keteranganCetak =
+            sppb_deliveryTerm.value +
+            " | " +
+            sppb_packing.value +
+            " | " +
+            sppb_shippingMark.value +
+            " | " +
+            sppb_deliveryTime.value +
+            " | " +
+            sppb_documentsRequired.value +
+            " | " +
+            sppb_partialShipmentTransit.value +
+            " | " +
+            sppb_portOfLoading.value +
+            " | " +
+            sppb_portOfDischarge.value +
+            " | " +
+            sppb_otherConditions.value +
+            " | " +
+            sppb_payments.value;
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
@@ -1799,6 +1922,7 @@ jQuery(function ($) {
                     .toArray(),
                 idDivisi: sppb_divisi.val(),
                 No_sppb: nomorSPPB,
+                keteranganCetak: keteranganCetak,
             },
             dataType: "json",
             success: function (response) {
