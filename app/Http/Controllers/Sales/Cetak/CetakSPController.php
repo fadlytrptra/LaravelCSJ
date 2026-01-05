@@ -17,7 +17,7 @@ class CetakSPController extends Controller
         // dd(now()->format('Y-m-d'));
         try {
             $date = now()->format('Y-m-d');
-            $nosp = DB::connection('ConnSales')->select('exec SP_1486_SLS_LIST_SP_CETAK @Kode = ?, @Tanggal = ?', [3, $date]);
+            $nosp = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SP_CETAK @Kode = ?, @Tanggal = ?', [1, $date]);
 
             if (empty($nosp)) {
                 throw new \Exception("No data returned from the stored procedure.");
@@ -31,12 +31,6 @@ class CetakSPController extends Controller
             // You can log the error, display a custom error message, etc.
             // return view('error.view')->with('errorMessage', $e->getMessage());
             $access = (new HakAksesController)->HakAksesFiturMaster('Sales');
-            // $nosp = [
-            //     [
-            //         'IDSuratPesanan' => 'No Data',
-            //         'NamaCust' => 'No Data'
-            //     ]
-            // ];
             $dataArray = [
                 [
                     'IDSuratPesanan' => 'NO DATA',
@@ -48,25 +42,18 @@ class CetakSPController extends Controller
             }, $dataArray);
             // dd($nosp);
             return view('Sales.Report.CetakSP', compact('nosp', 'access'));
-
         }
     }
 
     public function getSuratPesananSelect($tanggal)
     {
-        $nosp = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_SP_CETAK @Kode =?, @Tanggal =?', [3, $tanggal]);
+        $nosp = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SP_CETAK @Kode =?, @Tanggal =?', [1, $tanggal]);
         return response()->json($nosp);
-    }
-
-    public function getSuratPesananText($nosp)
-    {
-        $data = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_SP_CETAK @Kode = ?, @IdSuratPesanan = ?', [2, $nosp]);
-        return response()->json($data);
     }
 
     public function getJenisSp($nosp)
     {
-        $jnssp = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_SP_CETAK @Kode = ?, @IdSuratPesanan = ?', [2, $nosp]);
+        $jnssp = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SP_CETAK @Kode = ?, @IdSuratPesanan = ?', [2, $nosp]);
         return response()->json($jnssp);
     }
 

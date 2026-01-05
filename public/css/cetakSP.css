@@ -1,0 +1,109 @@
+.acs-div-filter {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    margin: 4px 0;
+}
+.acs-div-filter1 {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    margin: 4px 0;
+}
+.acs-div-filter2 {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    margin: 4px 0;
+}
+.acs-div-filter3 {
+    display: flex;
+    width: 300px;
+    flex-direction: row;
+    margin: 4px 0;
+    gap: 3px;
+}
+.acs-div-container {
+    width: 900px;
+    height: 800px;
+    border: 2px;
+    border-style: solid;
+    background-color: white;
+}
+#table_sp table tr td,
+#table_sp table tr td:first-child {
+    border: 1px solid black !important;
+}
+.cetak-sppdf-container05 table tr td,
+.cetak-sppdf-container05 table tr td:first-child {
+    border: none !important;
+}
+.cetak-sppdf-container07 table tr td,
+.cetak-sppdf-container07 table tr td:first-child {
+    border: none !important;
+}
+.cetak-sppdf-container09 table tr td,
+.cetak-sppdf-container09 table tr td:first-child {
+    border: none !important;
+}
+.cetak-sppdf-container10 table tr td,
+.cetak-sppdf-container10 table tr td:first-child {
+    border: none !important;
+}
+.acs-table-border {
+    border-right: solid 1px #212529 !important;
+    border-bottom: solid 1px #212529 !important;
+}
+#nomor_barangKolom {
+    border-left: solid 1px #212529 !important;
+    border-bottom: solid 1px #212529 !important;
+    border-right: solid 1px #212529 !important;
+}
+
+@page {
+    margin-top: 0cm;
+    margin-right: 1cm;
+    margin-left: 1cm;
+}
+@media print {
+    .acs-div-container,
+    .acs-div-container * {
+        font-family: Arial, Helvetica, sans-serif;
+        visibility: visible;
+        border: none;
+    }
+    .acs-div-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        width: 100%;
+    }
+    #table_sp {
+        border-collapse: collapse !important;
+    }
+
+    #table_sp,
+    #table_sp th,
+    #table_sp td {
+        border: 1px solid black !important;
+        padding: 3px;
+    }
+    #table_sp th {
+        font-size: 15px;
+        white-space: nowrap;
+        text-align: center;
+    }
+    #table_sp td:first-child,
+    #table_sp td:last-child,
+    #table_sp td:nth-child(3){
+        text-align: center;
+    }
+    #table_sp td,
+    .cetak-sppdf-container09 table,
+    .cetak-sppdf-container08 table,
+    .cetak-sppdf-container07 table,
+    .cetak-sppdf-container05 {
+        font-size: 17px;
+    }
+}

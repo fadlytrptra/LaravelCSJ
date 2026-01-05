@@ -22,7 +22,7 @@ class CetakSJController extends Controller
 
     public function getSuratJalan($tanggal)
     {
-        $data = db::connection('ConnSales')->select('exec SP_1486_SLS_LIST_CETAK_SJ @TglKirim = ?, @XKode = ?', [$tanggal, 1]);
+        $data = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_CETAK_SJ @TglKirim = ?, @XKode = ?', [$tanggal, 1]);
         return response()->json($data);
     }
     public function getDataCetakSuratJalan($tanggal, $nosj, $jenissj)

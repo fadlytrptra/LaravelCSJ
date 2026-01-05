@@ -20,7 +20,8 @@
                             style="display: none">{{-- SJ Afalan --}}
                     </div>
                     <div>
-                        <input type="radio" name="group_suratJalan" id="surat_jalanExport" value="export"> SJ Export
+                        <input type="radio" name="group_suratJalan" id="surat_jalanExport" value="export"
+                            style="display: none">{{-- SJ Export --}}
                     </div>
                 </div>
                 <div class="acs-div-filter">
@@ -58,7 +59,8 @@
                     contenteditable="true">16-August-2023</span>
                 <span id="truk_nopolKolom" class="span-truk_nopolKolom" contenteditable="true">L 8169 UM/RODA JY</span>
                 <span id="no_spKolom" class="span-no_spKolom" contenteditable="true">34631</span>
-                <span id="nama_customerKolomAlamat_kolom" class="span-nama_customerKolomAlamat_kolom" contenteditable="true"></span>
+                <span id="nama_customerKolomAlamat_kolom" class="span-nama_customerKolomAlamat_kolom"
+                    contenteditable="true"></span>
                 <span id="nama_barangKolomNo_poKolom" class="span-nama_barangKolomNo_poKolom"
                     contenteditable="true"></span>
                 <span id="nama_typeBarangKolom" class="span-nama_typeBarangKolom" contenteditable="true"></span>
@@ -68,12 +70,14 @@
                     contenteditable="true"></span>
                 <span id="jumlah_barangSekunderKolom" class="span-jumlah_barangSekunderKolom"
                     contenteditable="true"></span>
-                <span id="keterangan_tambahanKolom" class="span-keterangan_tambahanKolom" contenteditable="true"></span>
+                <span id="keterangan_tambahanKolom" class="span-keterangan_tambahanKolom"
+                    contenteditable="true"></span>
                 <span id="alamat_kirimKolom" class="span-alamat_kirimKolom" contenteditable="true"></span>
                 <span id="tanda_tanganKolom" class="span-tanda_tanganKolom" contenteditable="true">(SUNYATA
                     ICHWAN)</span>
             </div>
-            <div class="acs-div-container" id="contoh_printSjEksportDiv" style="display: none" contenteditable="true">
+            <div class="acs-div-container" id="contoh_printSjEksportDiv" style="display: none"
+                contenteditable="true">
                 <div class="acs-div-printsjekspor-header">
                     <div class="acs-div-printsjekspor-header1">
                         <h3>PT. KERTA RAJASA RAYA</h3>
