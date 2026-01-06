@@ -118,7 +118,6 @@ class PenagihanPenjualanController extends Controller
             $idBank = $request->input('idBank');
             $user_id = trim(Auth::user()->NomorUser);
             $saveData = false;
-            // dd($request->idCustomer);
 
             // Save data - AddMode
             if ($proses == 1) {
@@ -208,9 +207,9 @@ class PenagihanPenjualanController extends Controller
                         @SuratPesanan = ?',
                             [
                                 2,
-                                $idPenagihan,
-                                $item[1],
+                                $idPenagihan[0]->Id_Penagihan,
                                 $item[2],
+                                $item[3],
                                 $request->idCustomer,
                                 $item[4],
                             ]
@@ -224,7 +223,7 @@ class PenagihanPenjualanController extends Controller
                 // dd($request->all());
                 $koreksi = DB::connection('ConnAccounting')
                     ->statement(
-                        'EXEC SP_1486_ACC_MAINT_PENAGIHAN_SJ
+                        'EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ
                         @Kode = ?,
                         @ID_Penagihan = ?,
                         @IdPenagih = ?,
