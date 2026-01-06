@@ -514,6 +514,7 @@ $(document).ready(function () {
                 no_sp: no_sp.value,
                 jenis: "SJ",
                 id_xc: "",
+                Total: rowData.Total
             };
 
             tableData.push(newRow);
@@ -525,9 +526,11 @@ $(document).ready(function () {
                 table_atas.row
                     .add([
                         newRow.Id_Detail,
+                        "",
                         newRow.surat_jalan,
                         newRow.TanggalDiterima,
                         newRow.no_sp,
+                        newRow.Total,
                         newRow.jenis,
                         newRow.id_xc,
                     ])
@@ -540,7 +543,7 @@ $(document).ready(function () {
             .data()
             .toArray()
             .reduce((sum, row) => {
-                let jumlahUang = row[4].replace(/,/g, "");
+                let jumlahUang = row[5].replace(/,/g, "");
                 return sum + parseInt(jumlahUang);
             }, 0);
         console.log(totalPelunasan);
