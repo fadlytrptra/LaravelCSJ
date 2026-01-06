@@ -81,7 +81,8 @@ class CreateBTTBController extends Controller
         if ($jenisProses == 'isiBTTB') {
             try {
                 $Counter = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_COUNTER');
-                $NoTerima = str_pad($Counter[0]->YTERIMA, 10, "0", STR_PAD_LEFT);
+                $NewCounter = $Counter[0]->YTERIMA + 1;
+                $NoTerima = str_pad($NewCounter, 10, "0", STR_PAD_LEFT);
 
                 DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_INSERT_YTERIMA_IMPOR
                 @no_terima_1 = ?,
@@ -174,12 +175,12 @@ class CreateBTTBController extends Controller
 
                 DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_UPDATE_COUNTER_TERIMA
                 @yterima_1 = ?', [
-                    intval($NoTerima)
+                    intval($NewCounter)
                 ]);
 
                 return response()->json(['success' => true], 200);
             } catch (Exception $e) {
-                return response()->json(['error' => true], 500);
+                return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
             }
         } else if ($jenisProses == 'koreksiBTTB') {
             $no_terima = $request->no_terima;
