@@ -488,12 +488,19 @@
                                                     Unit Price<br> {{ $dataCetak[0]->Symbol2 }}
                                                 </h1>
                                             </th>
-                                            <th style="text-align: center;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                                                    Disc.<br> {{ $dataCetak[0]->Symbol2 }}
-                                                </h1>
-                                            </th>
+                                            @php
+                                                $totalDisc = array_sum(
+                                                    array_map(fn($row) => (float) $row->Disc_trm, $dataCetak),
+                                                );
+                                            @endphp
+                                            @if ((float) $totalDisc > 1)
+                                                <th style="text-align: center;">
+                                                    <h1
+                                                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
+                                                        Disc.<br> {{ $dataCetak[0]->Symbol2 }}
+                                                    </h1>
+                                                </th>
+                                            @endif
                                             <th style="text-align: center;">
                                                 <h1
                                                     style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
@@ -544,13 +551,15 @@
                                                         {{ number_format($item->Hrg_trm, 4, '.', ',') }}
                                                     </p>
                                                 </td>
-                                                <td style="text-align: center;vertical-align: top;">
-                                                    <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                        {{ number_format($item->hrg_disc, 2, '.', ',') }}
-                                                        <br>
-                                                        ({{ number_format($item->Disc_trm, 2, '.', ',') }}%)
-                                                    </p>
-                                                </td>
+                                                @if ((float) $item->Disc_trm > 1)
+                                                    <td style="text-align: center;vertical-align: top;">
+                                                        <p style="margin:0;font-size: 12px;font-family: Helvetica;">
+                                                            {{ number_format($item->hrg_disc, 2, '.', ',') }}
+                                                            <br>
+                                                            ({{ number_format($item->Disc_trm, 2, '.', ',') }}%)
+                                                        </p>
+                                                    </td>
+                                                @endif
                                                 <td style="text-align: center;vertical-align: top;">
                                                     <p style="margin:0;font-size: 12px;font-family: Helvetica;">
                                                         {{ number_format($item->TotalHarga, 2, '.', ',') }}
@@ -561,211 +570,27 @@
                                     </tbody>
                                 </table>
                             </div>
-                            @if ($dataCetak[0]->Informasi_Cetak)
-                                @php
-                                    $deliveryTerm = explode(' | ', $dataCetak[0]->Informasi_Cetak)[0];
-                                    $packing = explode(' | ', $dataCetak[0]->Informasi_Cetak)[1];
-                                    $shippingMark = explode(' | ', $dataCetak[0]->Informasi_Cetak)[2];
-                                    $deliveryTime = explode(' | ', $dataCetak[0]->Informasi_Cetak)[3];
-                                    $documentsRequired = explode(' | ', $dataCetak[0]->Informasi_Cetak)[4];
-                                    $partialShipmentTransit = explode(' | ', $dataCetak[0]->Informasi_Cetak)[5];
-                                    $portOfLoading = explode(' | ', $dataCetak[0]->Informasi_Cetak)[6];
-                                    $portOfDischarge = explode(' | ', $dataCetak[0]->Informasi_Cetak)[7];
-                                    $otherConditions = explode(' | ', $dataCetak[0]->Informasi_Cetak)[8];
-                                    $payment = explode(' | ', $dataCetak[0]->Informasi_Cetak)[9];
-                                @endphp
-                                @if ($deliveryTerm)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Delivery Term
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $deliveryTerm }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($packing)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Packing
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $packing }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($shippingMark)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Shipping Mark
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $shippingMark }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($deliveryTime)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Delivery Time
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $deliveryTime }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($documentsRequired)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Documents Required
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $documentsRequired }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($partialShipmentTransit)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Partial Shipment Transit
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $partialShipmentTransit }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($portOfLoading)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Port of Loading
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $portOfLoading }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($portOfDischarge)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Port Of Discharge
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $portOfDischarge }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($otherConditions)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Other Conditions
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $otherConditions }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if ($payment)
-                                    <div style="width: 80%; height: auto; margin-left: 20px;">
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 30%; height: auto;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Payment
-                                                </h1>
-                                            </div>
-                                            <div style="width: 70%; height: auto;">
-                                                <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                    {{ $payment }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                            @endif
                             <div style="width: 100%; display: flex;">
                                 <div style="width: 70%;">
-                                    <h1
+                                    {{-- <h1
                                         style="font-size: 13px;font-family: Helvetica; font-weight: bold;margin-top:50px">
-                                        Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}</h1>
+                                        Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}</h1> --}}
                                 </div>
                                 <div style="width: 30%;">
-                                    <div style="width: 100%; display: flex;">
-                                        <div style="width: 55%; margin-right: 10%;">
-                                            <h1
-                                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                Sub Total</h1>
-                                        </div>
-                                        <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
-                                            <p
-                                                style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                                {{ $dataCetak[0]->Symbol }}{{ number_format($sumAmount, 2, '.', ',') }}
-                                            </p>
-                                        </div>
-                                    </div>
                                     @if ((float) $dataCetak[0]->PPN > 0)
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 55%; margin-right: 10%;">
+                                                <h1
+                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Sub Total</h1>
+                                            </div>
+                                            <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
+                                                <p
+                                                    style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $dataCetak[0]->Symbol }}{{ number_format($sumAmount, 2, '.', ',') }}
+                                                </p>
+                                            </div>
+                                        </div>
                                         <div style="width: 100%; display: flex;">
                                             <div style="width: 55%; margin-right: 10%;">
                                                 <h1
@@ -779,8 +604,6 @@
                                                 </p>
                                             </div>
                                         </div>
-                                    @endif
-                                    @if ((float) $dataCetak[0]->PPN > 0)
                                         <div style="width: 100%; display: flex;">
                                             <div style="width: 55%; margin-right: 10%;">
                                                 <h1
@@ -813,6 +636,226 @@
                                             </p>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            @if ($dataCetak[0]->Informasi_Cetak)
+                                @php
+                                    $deliveryTerm = explode(' | ', $dataCetak[0]->Informasi_Cetak)[0];
+                                    $packing = explode(' | ', $dataCetak[0]->Informasi_Cetak)[1];
+                                    $shippingMark = explode(' | ', $dataCetak[0]->Informasi_Cetak)[2];
+                                    $deliveryTime = explode(' | ', $dataCetak[0]->Informasi_Cetak)[3];
+                                    $documentsRequired = explode(' | ', $dataCetak[0]->Informasi_Cetak)[4];
+                                    $partialShipmentTransit = explode(' | ', $dataCetak[0]->Informasi_Cetak)[5];
+                                    $portOfLoading = explode(' | ', $dataCetak[0]->Informasi_Cetak)[6];
+                                    $portOfDischarge = explode(' | ', $dataCetak[0]->Informasi_Cetak)[7];
+                                    $otherConditions = explode(' | ', $dataCetak[0]->Informasi_Cetak)[8];
+                                    $payment = explode(' | ', $dataCetak[0]->Informasi_Cetak)[9];
+                                @endphp
+                                @if ($deliveryTerm)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Delivery Term
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $deliveryTerm }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($packing)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Packing
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $packing }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($shippingMark)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Shipping Mark
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $shippingMark }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($deliveryTime)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Delivery Time
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $deliveryTime }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($documentsRequired)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Documents Required
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $documentsRequired }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($partialShipmentTransit)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Partial Shipment Transit
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $partialShipmentTransit }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($portOfLoading)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Port of Loading
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $portOfLoading }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($portOfDischarge)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Port Of Discharge
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $portOfDischarge }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($otherConditions)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Other Conditions
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $otherConditions }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($payment)
+                                    <div style="width: 80%; height: auto; margin-left: 20px;">
+                                        <div style="width: 100%; display: flex;">
+                                            <div style="width: 30%; height: auto;">
+                                                <h1
+                                                    style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                    Payment
+                                                </h1>
+                                            </div>
+                                            <div style="width: 1%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">:</p>
+                                            </div>
+                                            <div style="width: 69%; height: auto;">
+                                                <p style="font-size: 12px;font-family: Helvetica; margin: 2px 0;">
+                                                    {{ $payment }} </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
+                            <div style="width: 100%; display: flex;">
+                                <div style="width: 70%;">
+                                    <h1
+                                        style="font-size: 13px;font-family: Helvetica; font-weight: bold;margin-top:50px">
+                                        Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}</h1>
                                 </div>
                             </div>
                         </main>

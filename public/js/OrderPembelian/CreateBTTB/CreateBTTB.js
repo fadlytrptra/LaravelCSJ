@@ -919,7 +919,6 @@ jQuery(function ($) {
     });
 
     button_modalProses.addEventListener("click", function (e) {
-
         if (bttb_qtyTerima.value == 0 || !bttb_qtyTerima.value) {
             errorHandling(
                 "qtyTerimaKosong",
@@ -944,6 +943,8 @@ jQuery(function ($) {
         // if (bttb_keterangan.value == "") {
         //     bttb_keterangan.value = "-";
         // }
+        console.log(bttb_qtyTerima.value);
+
         let hrg_murni = 0.0;
         let hrg_murni_rp = 0.0;
         let hrg_disc = 0.0;
@@ -952,6 +953,16 @@ jQuery(function ($) {
         let hrg_nego_rp = 0.0;
         let hrg_ppn = 0.0;
         let hrg_ppn_rp = 0.0;
+        console.log(
+            hrg_murni,
+            hrg_murni_rp,
+            hrg_disc,
+            hrg_disc_rp,
+            hrg_nego,
+            hrg_nego_rp,
+            hrg_ppn,
+            hrg_ppn_rp
+        );
 
         hrg_murni =
             parseFloat(bttb_qtyTerimaActual.value) *
@@ -964,57 +975,63 @@ jQuery(function ($) {
         hrg_ppn = hrg_nego * (parseFloat(bttb_ppn.value) / 100);
         hrg_ppn_rp = hrg_ppn * parseFloat(bttb_kursRupiah.value);
 
+        const formData = new FormData();
+
+        formData.append("_token", csrfToken);
+        formData.append("jenisProses", proses);
+        formData.append("no_terima", bttb_noTerima.value ?? "");
+        formData.append("datang", bttb_tanggal.value);
+        formData.append("qty", bttb_qtyTerima.value);
+        formData.append("QtyTerima", bttb_qtyTerimaActual.value);
+        formData.append("SatuanTerima", bttb_noSatTerima.value);
+        formData.append("faktur", bttb_noFaktur.value);
+        formData.append("no_sup", bttb_noSupplier.value);
+        formData.append("min_ord", bttb_hargaPer.value);
+        formData.append("hrg_trm", bttb_harga.value);
+        formData.append("disc_trm", bttb_discount.value);
+        formData.append("ppn_trm", bttb_ppn.value);
+        formData.append("waktu", bttb_jangkaWaktu.value);
+        formData.append("no_ket", bttb_jangkaWaktu.value == 0 ? "001" : "002");
+        formData.append("no_sppb", select_noSPPB.val());
+        formData.append("no_trans", table_barang.data()[0][8]);
+        formData.append("kd_div", select_divisi.val());
+        formData.append("IdMataUang", bttb_selectMataUang.val());
+        formData.append("Kurs", bttb_kursRupiah.value);
+        formData.append("TglFaktur", bttb_tanggalFaktur.value);
+        formData.append("NoSJ", bttb_nomorSJ.value);
+        formData.append("hrg_murni", hrg_murni);
+        formData.append("hrg_murni_rp", hrg_murni_rp);
+        formData.append("hrg_disc", hrg_disc);
+        formData.append("hrg_disc_rp", hrg_disc_rp);
+        formData.append("hrg_nego", hrg_nego);
+        formData.append("hrg_nego_rp", hrg_nego_rp);
+        formData.append("hrg_ppn", hrg_ppn);
+        formData.append("hrg_ppn_rp", hrg_ppn_rp);
+        formData.append("Jenis_Dokumen", bttb_jenisDokumen.value);
+        formData.append("No_Seri_Barang", bttb_noSeriBarang.value);
+        formData.append("No_PIB_KRR", bttb_noPIBKRR.value);
+        formData.append("No_PIB_External", bttb_noPIBExternal.value);
+        formData.append("Tgl_PIB_External", bttb_tglPIBExternal.value);
+        formData.append("No_Registration_PIB", bttb_noRegisPIB.value);
+        formData.append("Tgl_Registration_PIB", bttb_tglRegisPIB.value);
+        formData.append("No_BL", bttb_noBL.value);
+        formData.append("Tgl_BL", bttb_tglBL.value);
+        formData.append("No_Kontrak", bttb_noKontrak.value);
+        formData.append("Tgl_Kontrak", bttb_tglKontrak.value);
+        formData.append("No_SPPB_BC", bttb_noSPPBBC.value);
+        formData.append("Tgl_SPPB_BC", bttb_tglSPPBBC.value);
+        formData.append("qty_koreksi", bttb_qtyTerimaKoreksi.value ?? 0);
+        formData.append(
+            "QtyTerimakoreksi",
+            bttb_qtyTerimaActualKoreksi.value ?? 0
+        );
+
         $.ajax({
             url: "/CreateBTTB",
             type: "POST",
-            data: {
-                _token: csrfToken,
-                jenisProses: proses,
-                no_terima: bttb_noTerima.value ?? "",
-                datang: bttb_tanggal.value,
-                qty: bttb_qtyTerima.value,
-                QtyTerima: bttb_qtyTerimaActual.value,
-                SatuanTerima: bttb_noSatTerima.value,
-                faktur: bttb_noFaktur.value,
-                no_sup: bttb_noSupplier.value,
-                min_ord: bttb_hargaPer.value,
-                hrg_trm: bttb_harga.value,
-                disc_trm: bttb_discount.value,
-                ppn_trm: bttb_ppn.value,
-                waktu: bttb_jangkaWaktu.value,
-                no_ket: bttb_jangkaWaktu.value == 0 ? "001" : "002",
-                ket_trm: bttb_keterangan.value,
-                no_sppb: select_noSPPB.val(),
-                no_trans: table_barang.data()[0][8],
-                kd_div: select_divisi.val(),
-                IdMataUang: bttb_selectMataUang.val(),
-                Kurs: bttb_kursRupiah.value,
-                TglFaktur: bttb_tanggalFaktur.value,
-                NoSJ: bttb_nomorSJ,
-                hrg_murni: hrg_murni,
-                hrg_murni_rp: hrg_murni_rp,
-                hrg_disc: hrg_disc,
-                hrg_disc_rp: hrg_disc_rp,
-                hrg_nego: hrg_nego,
-                hrg_nego_rp: hrg_nego_rp,
-                hrg_ppn: hrg_ppn,
-                hrg_ppn_rp: hrg_ppn_rp,
-                Jenis_Dokumen: bttb_jenisDokumen.value,
-                No_Seri_Barang: bttb_noSeriBarang.value,
-                No_PIB_KRR: bttb_noPIBKRR,
-                No_PIB_External: bttb_noPIBExternal.value,
-                Tgl_PIB_External: bttb_tglPIBExternal.value,
-                No_Registration_PIB: bttb_noRegisPIB.value,
-                Tgl_Registration_PIB: bttb_tglRegisPIB.value,
-                No_BL: bttb_noBL.value,
-                Tgl_BL: bttb_tglBL.value,
-                No_Kontrak: bttb_noKontrak.value,
-                Tgl_Kontrak: bttb_tglKontrak.value,
-                No_SPPB_BC: bttb_noSPPBBC.value,
-                Tgl_SPPB_BC: bttb_tglSPPBBC.value,
-                qty_koreksi: bttb_qtyTerimaKoreksi.value ?? 0,
-                QtyTerimakoreksi: bttb_qtyTerimaActualKoreksi.value ?? 0,
-            },
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function (data) {
                 if (data.error || data.length == 0) {
                     errorHandling("ajaxGetDataResponse", data.error);
