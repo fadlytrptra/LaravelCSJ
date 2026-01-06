@@ -272,7 +272,7 @@ class CreateSPPBController extends Controller
                         'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?, @XSPPB = ?',
                         [1, $year, $sppbCounter]
                     );
-                    $sppbFormatted = str_pad($sppbCounter, 4, '0', STR_PAD_LEFT);
+                    $sppbFormatted = str_pad((string) $sppbCounter, 4, '0', STR_PAD_LEFT);
                     $No_sppb = 'PO-' . $yearShort . 'CSJ' . $sppbFormatted;
                 }
                 foreach ($rows as $index => $row) {
@@ -291,7 +291,6 @@ class CreateSPPBController extends Controller
                     }
                 }
             } else {
-                dd($No_sppb);
                 DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
                     @XKode = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
                     4,
@@ -315,26 +314,48 @@ class CreateSPPBController extends Controller
                 ]);
                 if (!$No_sppb[0]->No_sppb) {
 
+                    // $counter = DB::connection('ConnPurchase')->select(
+                    //     'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
+                    //     [$idDivisi]
+                    // );
+                    // if (empty($counter)) {
+                    //     throw new \Exception('Counter SPPB tidak ditemukan');
+                    // }
+
+                    // $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
+                    // $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
+                    // $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
+                    // $tahun = date('y', strtotime($Tgl_sppb));
+                    // $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
+
+                    // DB::connection('ConnPurchase')->statement(
+                    //     'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
+                    //                 @kd_div_1 = ?,
+                    //                 @no_sppb_2 = ?',
+                    //     [$idDivisi, $no_sppb_counter]
+                    // );
+
+                    $year = date("Y");
+                    $yearShort = date('y');
                     $counter = DB::connection('ConnPurchase')->select(
-                        'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
-                        [$idDivisi]
+                        'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
+                        [0, $year]
                     );
-                    if (empty($counter)) {
-                        throw new \Exception('Counter SPPB tidak ditemukan');
+                    if (count($counter) < 1) {
+                        DB::connection('ConnPurchase')->statement(
+                            'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
+                            [2, $year]
+                        );
+                        $sppbCounter = 1;
+                    } else {
+                        $sppbCounter = $counter[0]->SPPB + 1;
                     }
-
-                    $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
-                    $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
-                    $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
-                    $tahun = date('y', strtotime($Tgl_sppb));
-                    $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
-
                     DB::connection('ConnPurchase')->statement(
-                        'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
-                                    @kd_div_1 = ?,
-                                    @no_sppb_2 = ?',
-                        [$idDivisi, $no_sppb_counter]
+                        'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?, @XSPPB = ?',
+                        [1, $year, $sppbCounter]
                     );
+                    $sppbFormatted = str_pad((string) $sppbCounter, 4, '0', STR_PAD_LEFT);
+                    $No_sppb = 'PO-' . $yearShort . 'CSJ' . $sppbFormatted;
                 }
 
                 foreach ($rows as $index => $row) {
