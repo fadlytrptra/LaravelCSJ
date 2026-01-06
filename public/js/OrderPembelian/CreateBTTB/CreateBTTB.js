@@ -927,6 +927,10 @@ jQuery(function ($) {
             return;
         }
 
+        if (bttb_keterangan.value == "") {
+            bttb_keterangan.value = "-";
+        }
+
         if (bttb_qtyTerimaActual.value == 0 || !bttb_qtyTerimaActual.value) {
             errorHandling(
                 "qtyTerimaKosongActual",
@@ -934,16 +938,6 @@ jQuery(function ($) {
             );
             return;
         }
-
-        // if (bttb_noFaktur.value == "" || !bttb_noFaktur.value) {
-        //     bttb_noFaktur.value = "-";
-        // }
-        // console.log(bttb_keterangan.value);
-
-        // if (bttb_keterangan.value == "") {
-        //     bttb_keterangan.value = "-";
-        // }
-        console.log(bttb_qtyTerima.value);
 
         let hrg_murni = 0.0;
         let hrg_murni_rp = 0.0;
