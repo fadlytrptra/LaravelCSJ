@@ -240,8 +240,7 @@
                 <div class="d-flex mt-2" style="gap: 0.5%;width: 100%">
                     <div class="form-group" style="flex: 0.4">
                         <label for="sppb_deliveryTerm">Delivery Term</label>
-                        <input type="text" name="sppb_deliveryTerm" id="sppb_deliveryTerm"
-                            class="form-control">
+                        <input type="text" name="sppb_deliveryTerm" id="sppb_deliveryTerm" class="form-control">
                     </div>
                     <div class="form-group" style="flex: 0.4">
                         <label for="sppb_packing">Packing</label>
@@ -249,15 +248,13 @@
                     </div>
                     <div class="form-group" style="flex: 0.2">
                         <label for="sppb_shippingMark">Shipping Mark</label>
-                        <input type="text" name="sppb_shippingMark" id="sppb_shippingMark"
-                            class="form-control">
+                        <input type="text" name="sppb_shippingMark" id="sppb_shippingMark" class="form-control">
                     </div>
                 </div>
                 <div class="d-flex" style="gap: 0.5%;width: 100%">
                     <div class="form-group" style="flex: 0.2">
                         <label for="sppb_deliveryTime">Delivery Time</label>
-                        <input type="text" name="sppb_deliveryTime" id="sppb_deliveryTime"
-                            class="form-control">
+                        <input type="text" name="sppb_deliveryTime" id="sppb_deliveryTime" class="form-control">
                     </div>
                     <div class="form-group" style="flex: 0.4">
                         <label for="sppb_documentsRequired">Documents Required</label>

@@ -41,7 +41,7 @@ jQuery(function ($) {
                     let buttonEdit =
                         '<button class="btn btn-primary btn-edit" data-id="' +
                         data +
-                        '" data-toggle="modal" data-target="#modalSPPB">Edit</button>';
+                        '" data-bs-toggle="modal" data-bs-target="#modalSPPB">Edit</button>';
                     let buttonACC =
                         '<button class="btn btn-warning btn-acc" data-id="' +
                         data +
