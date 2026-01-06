@@ -55,6 +55,7 @@ $(document).ready(function () {
     let nilaiPenagihan = document.getElementById("nilaiPenagihan");
     let nilaiUangMuka = document.getElementById("nilaiUangMuka");
     let dpp_nilaiLain = document.getElementById("dpp_nilaiLain");
+    let nilai_total = document.getElementById("nilai_total");
     let nilai_ppn = document.getElementById("nilai_ppn");
     let idJenisPajak = document.getElementById("idJenisPajak");
     let syaratPembayaran = document.getElementById("syaratPembayaran");
@@ -122,7 +123,8 @@ $(document).ready(function () {
     nilaiUangMuka.readOnly = true;
     dpp_nilaiLain.readOnly = true;
     nilai_ppn.readOnly = true;
-    terbilang.readOnly = true;
+    nilai_total.readOnly = true;
+    terbilang.readOnly = false;
     btn_isi.focus();
 
     let tableData = [];
@@ -409,7 +411,7 @@ $(document).ready(function () {
                     idUserPenagih: idUserPenagih.value,
                     penagihanPajak: penagihanPajak.value,
                     no_penagihan: no_penagihan.value,
-                    idBank: idBank.value
+                    idBank: idBank.value,
                 },
                 success: function (response) {
                     console.log(response);
@@ -514,7 +516,7 @@ $(document).ready(function () {
                 no_sp: no_sp.value,
                 jenis: "SJ",
                 id_xc: "",
-                Total: rowData.Total
+                Total: rowData.Total,
             };
 
             tableData.push(newRow);
@@ -546,13 +548,15 @@ $(document).ready(function () {
                 let jumlahUang = row[5].replace(/,/g, "");
                 return sum + parseInt(jumlahUang);
             }, 0);
-        console.log(totalPelunasan);
-
-        nilaiPenagihan.value = totalPelunasan.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        });
-
+        let dppNilaiLain = (totalPelunasan * 11) / 12;
+        let nilaiPPN = (dppNilaiLain * 12) / 100;
+        let nilaiTotal = totalPelunasan + nilaiPPN;
+        nilaiPenagihan.value = numeral(totalPelunasan).format("0,0.00");
+        nilaiUangMuka.value = 0;
+        dpp_nilaiLain.value = numeral(dppNilaiLain).format("0,0.00");
+        nilai_ppn.value = numeral(nilaiPPN).format("0,0.00");
+        nilai_total.value = numeral(nilaiTotal).format("0,0.00");
+        terbilang.value = convertNumberToWordsRupiah(nilaiTotal);
         btn_keluarM.click();
 
         setTimeout(() => {

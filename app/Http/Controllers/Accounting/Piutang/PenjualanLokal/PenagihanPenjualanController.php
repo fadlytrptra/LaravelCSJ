@@ -118,7 +118,6 @@ class PenagihanPenjualanController extends Controller
             $idBank = $request->input('idBank');
             $user_id = trim(Auth::user()->NomorUser);
             $saveData = false;
-            // dd($request->all());
             // dd($request->idCustomer);
 
             // Save data - AddMode
@@ -139,7 +138,7 @@ class PenagihanPenjualanController extends Controller
                         @TglFakturPajak = ?,
                         @NilaiKurs = ?,
                         @Jns_PPN = ?,
-                        @Id_Penagihan_Acuan = ?
+                        @Id_Penagihan_Acuan = ?,
                         @NoSeriFakturPajak = ?,
                         @PPN = ?,
                         @Bank = ? ',
