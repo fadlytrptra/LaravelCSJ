@@ -370,6 +370,7 @@
                                         style="width: 100%">
                                 </div>
                             </div>
+                            <p>
                             <div class="d-flex">
                                 <div class="col-md-3">
                                     <label for="noBC24" style="margin-right: 10px;">No. BC 2.4</label>
@@ -404,6 +405,7 @@
                                         class="form-control" style="width: 100%">
                                 </div>
                             </div>
+                            <p>
                             <div class="d-flex">
                                 <div class="col-md-3">
                                     <label for="dpp_nilaiLain" style="margin-right: 10px;">DPP Nilai Lain</label>
@@ -423,6 +425,16 @@
                             <p>
                             <div class="d-flex">
                                 <div class="col-md-3">
+                                    <label for="nilai_total" style="margin-right: 10px;">Total</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" id="nilai_total" name="nilai_total"
+                                        class="form-control" style="width: 100%;">
+                                </div>
+                            </div>
+                            <p>
+                            <div class="d-flex">
+                                <div class="col-md-3">
                                     <label for="terbilang" style="margin-right: 10px;">Terbilang</label>
                                 </div>
                                 <div class="col-md-9">
@@ -430,7 +442,6 @@
                                         style="width: 100%">
                                 </div>
                             </div>
-
                             <br>
                             <div>
                                 <div style="display: flex; justify-content: space-between;">
