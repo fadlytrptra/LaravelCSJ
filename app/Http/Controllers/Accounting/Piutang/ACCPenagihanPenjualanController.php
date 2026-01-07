@@ -73,7 +73,7 @@ class ACCPenagihanPenjualanController extends Controller
 
         $idPenagihan = str_replace('.', '/', $id_Penagihan);
 
-        DB::connection('ConnAccounting')->statement('exec [SP_1486_ACC_PENAGIHAN_SJ]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_PENAGIHAN_SJ]
         @UserAcc = ?,
         @Id_Penagihan = ?,
         @IdCust = ?,
@@ -97,7 +97,7 @@ class ACCPenagihanPenjualanController extends Controller
     {
         if ($id == 'getPenagihan') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ ?', [1]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ1 ?', [1]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -123,7 +123,7 @@ class ACCPenagihanPenjualanController extends Controller
             $sIdPenagihan = $request->input('ID_Penagihan');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ @Kode = ?, @Id_Penagihan = ?', [2, $sIdPenagihan]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ1 @Kode = ?, @Id_Penagihan = ?', [2, $sIdPenagihan]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -141,7 +141,7 @@ class ACCPenagihanPenjualanController extends Controller
             $ID_PENAGIHAN = $request->input('ID_PENAGIHAN');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ @Kode = ?, @ID_PENAGIHAN = ?', [11, $ID_PENAGIHAN]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ1 @Kode = ?, @ID_PENAGIHAN = ?', [11, $ID_PENAGIHAN]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -157,7 +157,7 @@ class ACCPenagihanPenjualanController extends Controller
             $IdPenagihan = $request->input('IdPenagihan');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_CHECK_CTK_SJ @IdPenagihan = ?', [$IdPenagihan]);
+                ->select('exec SP_1273_PRG_CHECK_CTK_SJ @IdPenagihan = ?', [$IdPenagihan]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -173,7 +173,7 @@ class ACCPenagihanPenjualanController extends Controller
             $IdPenagihan = $request->input('IdPenagihan');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_CHECK_CTK_SP @IdPenagihan = ?', [$IdPenagihan]);
+                ->select('exec SP_1273_PRG_CHECK_CTK_SP @IdPenagihan = ?', [$IdPenagihan]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -206,7 +206,7 @@ class ACCPenagihanPenjualanController extends Controller
             // dd($request->all());
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_1486_ACC_PENAGIHAN_SJ]
+                    ->statement('exec [SP_1273_PRG_PENAGIHAN_SJ]
                     @Id_Penagihan = ?,
                 @IdCust = ?,
                 @IdMtUang = ?,
