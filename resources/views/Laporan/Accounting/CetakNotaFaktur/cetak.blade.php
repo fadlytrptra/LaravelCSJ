@@ -25,10 +25,10 @@
 
     <body>
         <div style="height: 27cm; overflow: overflow;">
-            <div style="left: 11.2cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
+            <div style="left:15.25cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
                 {{ $idPenagihan }}
-                <br>
-                <br>
+            </div>
+            <div style="left: 11cm; top: 4cm; position: absolute; text-align:right; font-size:16px;">
                 No Seri Faktur Pajak: {{ $dataCetak[0]->NoSeri_FakturPajak }}
             </div>
             <div style="position:absolute; left:6cm; top:8.5cm; width:14cm;">
@@ -150,7 +150,8 @@
                 Sidoarjo
             </div>
             <div style="left: 15.6cm;top: 24.2cm; position: absolute;font-size:14px;">
-                {{ date('d F') }}
+                {{-- {{ date('d F', $dataCetak[0]->Tgl_Penagihan) }} --}}
+                {{ \Carbon\Carbon::parse($dataCetak[0]->Tgl_Penagihan)->locale('id')->translatedFormat('j F') }}
             </div>
             <div style="left: 19.05cm;top: 24.2cm; position: absolute;font-size:14px;">
                 {{ date('y') }}
