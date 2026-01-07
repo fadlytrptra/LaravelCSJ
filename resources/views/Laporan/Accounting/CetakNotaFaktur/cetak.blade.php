@@ -25,7 +25,7 @@
 
     <body>
         <div style="height: 27cm; overflow: overflow;">
-            <div style="left:16.75cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
+            <div style="left:16.25cm; top: 2.9cm; position: absolute; text-align:right; font-size:16px;">
                 {{ $idPenagihan }}
             </div>
             <div style="left: 11cm; top: 4cm; position: absolute; text-align:right; font-size:16px;">
