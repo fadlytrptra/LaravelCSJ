@@ -41,6 +41,7 @@ class MhnMasukKeluarController extends Controller
 
         $kodeType = $request->input('kodeType');
         $uraian = $request->input('uraian');
+        $noPIB = $request->input('noPIB');
 
         if ($id === 'getUserId') {
             return response()->json(['user' => $user]);
@@ -152,6 +153,26 @@ class MhnMasukKeluarController extends Controller
             }
             // dd($data_saldo);
             return response()->json($data_saldo);
+        } else if ($id === 'getSaldoPIB') {
+            // mendapatkan saldo
+            $ada = DB::connection('ConnInventory')->select('exec SP_1273_PRG_TypePIB @Kode = ?, @IdType = ?', [5, $kodeType]);
+            if ($ada[0]->Ada >= 1) {
+                $saldo = DB::connection('ConnInventory')->select('exec SP_1273_PRG_TypePIB @Kode = ?, @IdType = ?, @NoPIB = ?', [12, $kodeType, $noPIB]);
+            }
+            $data_saldo = [];
+            foreach ($saldo as $detail_saldo) {
+                $data_saldo[] = [
+                    'SaldoPrimer' => $detail_saldo->SaldoPrimer,
+                    'SaldoSekunder' => $detail_saldo->SaldoSekunder,
+                    'SaldoTritier' => $detail_saldo->SaldoTritier,
+                    'Qty' => $detail_saldo->Qty,
+                    'Qty_Primer' => $detail_saldo->Qty_Primer,
+                    'Qty_Sekunder' => $detail_saldo->Qty_sekunder,
+                    'NoPIB' => $detail_saldo->NoPIB
+                ];
+            }
+            // dd($data_saldo);
+            return response()->json($data_saldo);
         } else if ($id === 'getData') {
             // mendapatkan isi tabel
             $justData = DB::connection('ConnInventory')->select('
@@ -182,7 +203,8 @@ class MhnMasukKeluarController extends Controller
                     'UraianDetailTransaksi' => $detail_justData->UraianDetailTransaksi,
                     'SaatAwalTransaksi' => $formattedDate,
                     'idpemberi' => $detail_justData->idpemberi,
-                    'kodebarang' => $detail_justData->kodebarang
+                    'kodebarang' => $detail_justData->kodebarang,
+                    "NoPIB" => $detail_justData->NoPIB
                 ];
 
                 if ($uraian === 'Mutasi Masuk') {
