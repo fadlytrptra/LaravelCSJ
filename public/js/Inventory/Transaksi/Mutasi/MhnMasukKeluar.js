@@ -1599,6 +1599,29 @@ btn_proses.addEventListener("click", function (e) {
             }).then(() => {
                 tanggal.focus();
             });
+            return;
+        }
+        if (kodeType.value == "") {
+            Swal.fire({
+                icon: "warning",
+                title: "Perhatikan Barang!",
+                text: "Barang harus diisi",
+                returnFocus: false,
+            }).then(() => {
+                btn_kodeType.focus();
+            });
+            return;
+        }
+        if (tritier2.value < 1) {
+            Swal.fire({
+                icon: "warning",
+                title: "Perhatikan Jumlah!",
+                text: "Jumlah barang harus diisi",
+                returnFocus: false,
+            }).then(() => {
+                tritier2.focus();
+            });
+            return;
         }
     }
 
@@ -1662,6 +1685,7 @@ btn_proses.addEventListener("click", function (e) {
                 sekunder2: sekunder2.value,
                 tritier2: tritier2.value,
                 subkelId: subkelId.value,
+                noPIB: noPIB.value
             },
             timeout: 30000,
             success: function (response) {

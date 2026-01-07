@@ -223,8 +223,7 @@ class MhnMasukKeluarController extends Controller
         $tritier2 = $request->input('tritier2');
         $subkelId = $request->input('subkelId');
         $kodeTransaksi = $request->input('kodeTransaksi');
-
-        // dd($request->all());
+        $noPIB = $request->input('noPIB');
 
         if ($id === 'proses') {
             // proses terjadi
@@ -243,7 +242,8 @@ class MhnMasukKeluarController extends Controller
                         @XJumlahMasukSekunder = ?,
                         @XJumlahMasukTritier = ?,
                         @XAsalIdSubKelompok = ?,
-                        @XTujuanIdSubKelompok = ?',
+                        @XTujuanIdSubKelompok = ?,
+                        @NoPIB = ?',
                         [
                             $kode,
                             '08',
@@ -255,7 +255,8 @@ class MhnMasukKeluarController extends Controller
                             $sekunder2,
                             $tritier2,
                             $subkelId,
-                            $subkelId
+                            $subkelId,
+                            $noPIB
                         ]
                     );
 
@@ -267,7 +268,7 @@ class MhnMasukKeluarController extends Controller
                 try {
                     // update
                     DB::connection('ConnInventory')->statement(
-                        'exec SP_1273_PRG_INSERT_08_TMPTRANSAKSI
+                        'exec SP_1273_PRG_Update_TmpTransaksi
                         @XIdTransaksi = ?,
                         @XUraianDetailTransaksi = ?,
                         @XJumlahKeluarPrimer = ?,
@@ -284,8 +285,6 @@ class MhnMasukKeluarController extends Controller
                         ]
                     );
 
-                    // dd($request->all());
-
                     return response()->json(['success' => 'Data sudah diKOREKSI!'], 200);
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Data Gagal ter-KOREKSI' . $e->getMessage()], 500);
@@ -300,7 +299,7 @@ class MhnMasukKeluarController extends Controller
         $kodeTransaksi = $request->input('kodeTransaksi');
         if ($id === 'hapusMutasi') {
             try {
-                DB::connection('ConnInventory')->statement('exec SP_1003_INV_Delete_TmpTransaksi  @XIdTransaksi = ?', [$kodeTransaksi]);
+                DB::connection('ConnInventory')->statement('exec SP_1273_PRG_Delete_TmpTransaksi @XIdTransaksi = ?', [$kodeTransaksi]);
 
                 // dd($request->all());
                 return response()->json(['success' => 'Data sudah diHAPUS!!'], 200);
