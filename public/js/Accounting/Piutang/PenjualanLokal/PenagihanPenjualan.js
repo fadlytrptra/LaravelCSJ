@@ -545,9 +545,10 @@ $(document).ready(function () {
             .data()
             .toArray()
             .reduce((sum, row) => {
-                let jumlahUang = row[5].replace(/,/g, "");
+                let jumlahUang = numeral(row[4]).value();
                 return sum + parseInt(jumlahUang);
             }, 0);
+
         let dppNilaiLain = (totalPelunasan * 11) / 12;
         let nilaiPPN = (dppNilaiLain * 12) / 100;
         let nilaiTotal = totalPelunasan + nilaiPPN;
