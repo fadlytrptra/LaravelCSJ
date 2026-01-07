@@ -211,7 +211,7 @@ class PenagihanPenjualanController extends Controller
                                 $item[2],
                                 $item[3],
                                 $request->idCustomer,
-                                $item[4],
+                                $item[5],
                             ]
                         );
                 }
