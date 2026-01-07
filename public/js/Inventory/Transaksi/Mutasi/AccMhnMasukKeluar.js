@@ -189,6 +189,7 @@ $(document).ready(function () {
         primer: [],
         sekunder: [],
         tritier: [],
+        NoPIB: [],
     };
 
     table = $("#tableData").DataTable({
@@ -254,7 +255,8 @@ $(document).ready(function () {
                                 data-type="${row[6]}"
                                 data-primer="${row[3]}"
                                 data-sekunder="${row[4]}"
-                                data-tritier="${row[5]}">`;
+                                data-tritier="${row[5]}"
+                                data-NoPIB="${row[23]}">`;
                 },
             },
             { targets: [1], width: "8%", className: "fixed-width" },
@@ -279,6 +281,9 @@ $(document).ready(function () {
         var primer = formatNumber($(this).data("primer"));
         var sekunder = formatNumber($(this).data("sekunder"));
         var tritier = formatNumber($(this).data("tritier"));
+        var nopib = formatNumber($(this).data("nopib"));
+        console.log($(this).data());
+
 
         if ($(this).is(":checked")) {
             selectedData.idTransaksi.push(id);
@@ -286,6 +291,7 @@ $(document).ready(function () {
             selectedData.primer.push(primer);
             selectedData.sekunder.push(sekunder);
             selectedData.tritier.push(tritier);
+            selectedData.NoPIB.push(nopib);
             // console.log(selectedData);
         } else {
             var index = selectedData.idTransaksi.indexOf(id);
@@ -295,6 +301,7 @@ $(document).ready(function () {
                 selectedData.primer.splice(index, 1);
                 selectedData.sekunder.splice(index, 1);
                 selectedData.tritier.splice(index, 1);
+                selectedData.NoPIB.splice(index, 1);
             }
             // console.log(selectedData);
         }
@@ -414,7 +421,8 @@ function updateDataTable(data) {
             escapeHtml(item.Satuan_Sekunder.trim()),
             escapeHtml(item.Satuan_Tritier.trim()),
             escapeHtml(item.SaatAwalTransaksi.trim()),
-            escapeHtml(item.kodebarang.trim())
+            escapeHtml(item.kodebarang.trim()),
+            escapeHtml(item.NoPIB.trim())
         );
 
         table.row.add(rowData);
@@ -655,6 +663,7 @@ btn_proses.addEventListener("click", function () {
             primer: selectedData.primer,
             sekunder: selectedData.sekunder,
             tritier: selectedData.tritier,
+            noPIB: selectedData.NoPIB,
             checked: masuk.checked,
             penerima: user.value,
         },
@@ -673,6 +682,7 @@ btn_proses.addEventListener("click", function () {
                         primer: [],
                         sekunder: [],
                         tritier: [],
+                        NoPIB: [],
                     };
                     btn_divisi.focus();
                     $("#checkbox2").prop("checked", false);

@@ -93,7 +93,8 @@ class AccMhnMasukKeluarController extends Controller
                     'UraianDetailTransaksi' => $detail_justData->UraianDetailTransaksi,
                     'SaatAwalTransaksi' => $formattedDate,
                     'idpemberi' => $detail_justData->idpemberi,
-                    'kodebarang' => $detail_justData->kodebarang
+                    'kodebarang' => $detail_justData->kodebarang,
+                    "NoPIB" => $detail_justData->NoPIB
                 ];
 
                 if ($mutasi === 'Mutasi Masuk') {
@@ -129,6 +130,7 @@ class AccMhnMasukKeluarController extends Controller
         $primer = $request->input('primer');
         $sekunder = $request->input('sekunder');
         $tritier = $request->input('tritier');
+        $noPIB = $request->input('noPIB');
         $responses = [];
 
         if ($id === 'accMutasi') {
@@ -138,27 +140,28 @@ class AccMhnMasukKeluarController extends Controller
                     $primerValue = $primer[$index];
                     $sekunderValue = $sekunder[$index];
                     $tritierValue = $tritier[$index];
+                    $noPIB = $noPIB[$index];
                     // Proses
                     $proses = DB::connection('ConnInventory')->select(
                         'exec SP_1273_PRG_check_penyesuaian_transaksi @idtype = ?, @idtypetransaksi = ?',
                         [$type, $transaksi]
                     );
 
-                    $jumlah = (int)$proses[0]->jumlah;
+                    $jumlah = (int) $proses[0]->jumlah;
 
                     if ($jumlah > 0) {
                         return response()->json(['warning' => 'Tidak Bisa DiAcc !!!. Karena Ada Transaksi Penyesuaian yang Belum Diacc untuk type ' . $transaksi], 200);
                     } else {
                         if ($checked == 'true') {
                             DB::connection('ConnInventory')->statement(
-                                'exec SP_1273_PRG_PROSES_ACC_MUTASI_MASUK @IdTransaksi = ?, @idPenerima = ?, @JumlahMasukPrimer = ?,@JumlahMasukSekunder = ?, @JumlahMasukTritier = ?',
-                                [$transaksi, $penerima, $primerValue, $sekunderValue, $tritierValue]
+                                'exec SP_1273_PRG_PROSES_ACC_MUTASI_MASUK @IdTransaksi = ?, @idPenerima = ?, @JumlahMasukPrimer = ?,@JumlahMasukSekunder = ?, @JumlahMasukTritier = ?, @NoPIB = ?',
+                                [$transaksi, $penerima, $primerValue, $sekunderValue, $tritierValue, $noPIB]
                             );
                             $responses[] = 'Data ' . $transaksi . ' sudah disimpan';
                         } else if ($checked == 'false') {
                             DB::connection('ConnInventory')->statement(
-                                'exec SP_1273_PRG_PROSES_ACC_MUTASI_KELUAR @IdTransaksi = ?, @idPenerima = ?, @JumlahKeluarPrimer = ?,@JumlahKeluarSekunder = ?, @JumlahKeluarTritier = ?',
-                                [$transaksi, $penerima, $primerValue, $sekunderValue, $tritierValue]
+                                'exec SP_1273_PRG_PROSES_ACC_MUTASI_KELUAR @IdTransaksi = ?, @idPenerima = ?, @JumlahKeluarPrimer = ?,@JumlahKeluarSekunder = ?, @JumlahKeluarTritier = ?, @NoPIB = ?',
+                                [$transaksi, $penerima, $primerValue, $sekunderValue, $tritierValue, $noPIB]
                             );
                             $responses[] = 'Data ' . $transaksi . ' sudah disimpan';
                         }
