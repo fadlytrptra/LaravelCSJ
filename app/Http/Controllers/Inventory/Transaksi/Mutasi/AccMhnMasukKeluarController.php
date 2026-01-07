@@ -42,7 +42,7 @@ class AccMhnMasukKeluarController extends Controller
             return response()->json(['user' => $user]);
         } else if ($id === 'getDivisi') {
             // mendapatkan daftar divisi
-            $divisi = DB::connection('ConnInventory')->select('exec SP_1003_INV_userdivisi @XKdUser = ?', [$user]);
+            $divisi = DB::connection('ConnInventory')->select('exec SP_1273_PRG_userdivisi @XKdUser = ?', [$user]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -53,7 +53,7 @@ class AccMhnMasukKeluarController extends Controller
             return datatables($divisi)->make(true);
         } else if ($id === 'getObjek') {
             // mendapatkan daftar objek
-            $objek = DB::connection('ConnInventory')->select('exec SP_1003_INV_User_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $divisiId]);
+            $objek = DB::connection('ConnInventory')->select('exec SP_1273_PRG_User_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $divisiId]);
             $data_objek = [];
             foreach ($objek as $detail_objek) {
                 $data_objek[] = [
@@ -66,7 +66,7 @@ class AccMhnMasukKeluarController extends Controller
         } else if ($id === 'getData') {
             // mendapatkan isi tabel
             $justData = DB::connection('ConnInventory')->select('
-            SP_1003_INV_List_BelumACC_TmpTransaksi @Kode = 13, @XIdTypeTransaksi = ?, @XUraian = ?, @XIdobjek = ?', ['13', $mutasi, $objekId]);
+            SP_1273_PRG_List_BelumACC_TmpTransaksi @Kode = 13, @XIdTypeTransaksi = ?, @XUraian = ?, @XIdobjek = ?', ['13', $mutasi, $objekId]);
 
             $data_justData = [];
             foreach ($justData as $detail_justData) {
@@ -140,7 +140,7 @@ class AccMhnMasukKeluarController extends Controller
                     $tritierValue = $tritier[$index];
                     // Proses
                     $proses = DB::connection('ConnInventory')->select(
-                        'exec SP_1003_INV_CHECK_PENYESUAIAN_TRANSAKSI @idtype = ?, @idtypetransaksi = ?',
+                        'exec SP_1273_PRG_check_penyesuaian_transaksi @idtype = ?, @idtypetransaksi = ?',
                         [$type, $transaksi]
                     );
 
@@ -151,13 +151,13 @@ class AccMhnMasukKeluarController extends Controller
                     } else {
                         if ($checked == 'true') {
                             DB::connection('ConnInventory')->statement(
-                                'exec SP_1003_INV_Proses_Acc_Mutasi_masuk @IdTransaksi = ?, @idPenerima = ?, @JumlahMasukPrimer = ?,@JumlahMasukSekunder = ?, @JumlahMasukTritier = ?',
+                                'exec SP_1273_PRG_PROSES_ACC_MUTASI_MASUK @IdTransaksi = ?, @idPenerima = ?, @JumlahMasukPrimer = ?,@JumlahMasukSekunder = ?, @JumlahMasukTritier = ?',
                                 [$transaksi, $penerima, $primerValue, $sekunderValue, $tritierValue]
                             );
                             $responses[] = 'Data ' . $transaksi . ' sudah disimpan';
                         } else if ($checked == 'false') {
                             DB::connection('ConnInventory')->statement(
-                                'exec SP_1003_INV_Proses_Acc_Mutasi_Keluar @IdTransaksi = ?, @idPenerima = ?, @JumlahKeluarPrimer = ?,@JumlahKeluarSekunder = ?, @JumlahKeluarTritier = ?',
+                                'exec SP_1273_PRG_PROSES_ACC_MUTASI_KELUAR @IdTransaksi = ?, @idPenerima = ?, @JumlahKeluarPrimer = ?,@JumlahKeluarSekunder = ?, @JumlahKeluarTritier = ?',
                                 [$transaksi, $penerima, $primerValue, $sekunderValue, $tritierValue]
                             );
                             $responses[] = 'Data ' . $transaksi . ' sudah disimpan';
