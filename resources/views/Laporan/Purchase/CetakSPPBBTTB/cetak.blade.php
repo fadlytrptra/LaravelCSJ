@@ -8,6 +8,7 @@
         @php
             $tanggalSPPB = date('d M Y', strtotime($dataCetak[0]->tanggal_sppb));
             $EstDate = date('d M Y', strtotime($dataCetak[0]->Tgl_Dibutuhkan));
+            $amountPerRow = 0;
             $sumAmount = 0;
             $ppn = 0;
             $amountDPP = 0;
@@ -322,8 +323,7 @@
                     $chunkSize = 5;
                     $chunks = array_chunk($dataCetak, $chunkSize);
 
-                    $sumAmount = collect($dataCetak)->sum('TotalHarga');
-                    $ppn = collect($dataCetak)->sum('Ppn_trm');
+                    $ppn = collect($dataCetak)->sum('PPN');
                     $amountDPP = collect($dataCetak)->sum('dpp_nilai_lain');
                 @endphp
                 <style>
@@ -527,6 +527,10 @@
                                     </thead>
                                     <tbody style="border-top: 1px solid black; border-bottom: 1px solid black;">
                                         @foreach ($dataCetak as $index => $item)
+                                            @php
+                                                $amountPerRow = (float) $item->quantity * (float) $item->Hrg_trm;
+                                                $sumAmount += $amountPerRow;
+                                            @endphp
                                             <tr>
                                                 <td style="text-align: center;vertical-align: top;">
                                                     <p style="margin:0;font-size: 12px;font-family: Helvetica;">
@@ -578,7 +582,7 @@
                                                 @endif
                                                 <td style="text-align: center;vertical-align: top;">
                                                     <p style="margin:0;font-size: 12px;font-family: Helvetica;">
-                                                        {{ number_format($item->TotalHarga, 2, '.', ',') }}
+                                                        {{ number_format($amountPerRow, 2, '.', ',') }}
                                                     </p>
                                                 </td>
                                             </tr>
@@ -594,19 +598,21 @@
                                 </div>
                                 <div style="width: 30%;">
                                     @if ((float) $dataCetak[0]->PPN > 0)
-                                        <div style="width: 100%; display: flex;">
-                                            <div style="width: 55%; margin-right: 10%;">
-                                                <h1
-                                                    style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                                                    Sub Total</h1>
+                                        @if (count($dataCetak) > 1)
+                                            <div style="width: 100%; display: flex;">
+                                                <div style="width: 55%; margin-right: 10%;">
+                                                    <h1
+                                                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                                                        Sub Total</h1>
+                                                </div>
+                                                <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
+                                                    <p
+                                                        style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                        {{ $dataCetak[0]->Symbol }}{{ number_format($sumAmount, 2, '.', ',') }}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
-                                                <p
-                                                    style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
-                                                    {{ $dataCetak[0]->Symbol }}{{ number_format($sumAmount, 2, '.', ',') }}
-                                                </p>
-                                            </div>
-                                        </div>
+                                        @endif
                                         <div style="width: 100%; display: flex;">
                                             <div style="width: 55%; margin-right: 10%;">
                                                 <h1
