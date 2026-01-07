@@ -79,8 +79,14 @@
                             @if (trim($user) == 'adam' || trim($user) == 'rudy' || trim($user) == 'sunyata')
                                 <button class="btn btn-sm btn-success" id="button_submitSelected"><span>&#x2713;</span>
                                     Setujui Surat Pesanan yang Dipilih</button>
-                            @endif
-                            @if (trim($user) !== 'rudy' || trim($user) !== 'sunyata')
+                                <button type="button" class="btn btn-sm btn-primary" id="btn_edit"
+                                    style="width: 80px;"><span>&#x270E;</span> Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger" id="btn_hapus"
+                                    style="width: 80px;"><span>&#x1F5D1;</span> Hapus</button>
+                            @else
+                                <button class="btn btn-sm btn-success" id="button_submitSelected"
+                                    style="display: none"><span>&#x2713;</span>
+                                    Setujui Surat Pesanan yang Dipilih</button>
                                 <button type="button" class="btn btn-sm btn-primary" id="btn_edit"
                                     style="width: 80px;"><span>&#x270E;</span> Edit</button>
                                 <button type="button" class="btn btn-sm btn-danger" id="btn_hapus"
