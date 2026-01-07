@@ -531,8 +531,8 @@ $(document).ready(function () {
                         "",
                         newRow.surat_jalan,
                         newRow.TanggalDiterima,
-                        newRow.no_sp,
                         newRow.Total,
+                        newRow.no_sp,
                         newRow.jenis,
                         newRow.id_xc,
                     ])
