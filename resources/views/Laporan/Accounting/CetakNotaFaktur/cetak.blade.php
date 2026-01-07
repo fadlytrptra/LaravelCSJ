@@ -73,7 +73,7 @@
             </div>
             <div style="position:absolute; top:{{ $top + 4.5 }}cm; left:0;">
                 <span style="position:absolute; left:1.5cm; font-size:14px;width: 6cm;">
-                    Pembayaran Harap Ditranfer ke :<br />
+                    Pembayaran Harap Ditransfer ke :<br />
                     @if ($bank == 'BCA1')
                         Bank BCA Cab. Galaxy, Surabaya<br />
                         a/c: 788.083.3639<br />
