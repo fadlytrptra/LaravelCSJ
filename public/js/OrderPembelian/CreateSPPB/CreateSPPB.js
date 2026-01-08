@@ -1448,13 +1448,46 @@ jQuery(function ($) {
             });
             return;
         }
-        if (!sppb_kodeBarang.value) {
+        if (!sppb_kodeBarang.value && !sppb_namaBarang.val()) {
             Swal.fire({
                 icon: "error",
                 title: "Error",
                 showConfirmButton: false,
                 timer: 1000,
                 text: "Barang harus dipilih",
+                returnFocus: false,
+            });
+            return;
+        }
+        if (!sppb_jenisPembelian.val()) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                showConfirmButton: false,
+                timer: 1000,
+                text: "Jenis Pembelian harus dipilih",
+                returnFocus: false,
+            });
+            return;
+        }
+        if (!sppb_supplier.val()) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                showConfirmButton: false,
+                timer: 1000,
+                text: "Supplier harus dipilih",
+                returnFocus: false,
+            });
+            return;
+        }
+        if (!sppb_mataUang.val()) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                showConfirmButton: false,
+                timer: 1000,
+                text: "Mata Uang harus dipilih",
                 returnFocus: false,
             });
             return;
@@ -1496,7 +1529,6 @@ jQuery(function ($) {
         let hargaMurniRupiah =
             hargaMurni * numeral(sppb_kursRupiah.value).value();
         let hargaDisc =
-            hargaMurni -
             (hargaMurni * numeral(sppb_discount.value).value()) / 100;
         let hargaDiscRupiah =
             hargaDisc * numeral(sppb_kursRupiah.value).value();
@@ -1507,6 +1539,19 @@ jQuery(function ($) {
         let dppNilaiLain = numeral(sppb_DPPNilaiLain.value).value();
         let dppNilaiLainRupiah =
             dppNilaiLain * numeral(sppb_kursRupiah.value).value();
+        console.log(
+            hargaMurni,
+            hargaMurniRupiah,
+            hargaDisc,
+            hargaDiscRupiah,
+            hargaNego,
+            hargaNegoRupiah,
+            hargaPPN,
+            hargaPPNRupiah,
+            dppNilaiLain,
+            dppNilaiLainRupiah
+        );
+
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
