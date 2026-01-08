@@ -20,8 +20,10 @@ let quantity_barangKolom = document.getElementById("quantity_barangKolom");
 let jenis_bayarKolom = document.getElementById("jenis_bayarKolom");
 let rencana_kirimKolom = document.getElementById("rencana_kirimKolom");
 let syarat_bayarKolom = document.getElementById("syarat_bayarKolom");
+let keterangan_ppnKolom = document.getElementById("keterangan_ppnKolom");
 let keterangan_kolom = document.getElementById("keterangan_kolom");
 let nama_salesKolom = document.getElementById("nama_salesKolom");
+let nama_direkturKolom = document.getElementById("nama_direkturKolom");
 let nama_managerKolom = document.getElementById("nama_managerKolom");
 let lihat_sp = document.getElementById("lihat_sp");
 let print_pdf = document.getElementById("print_pdf");
@@ -103,7 +105,6 @@ lihat_sp.addEventListener("click", function (event) {
 
 print_button.addEventListener("click", function (event) {
     event.preventDefault();
-    $("#loading-screen").css("display", "flex");
     if (no_spText.value == "") {
         alert("Pilih Surat Pesanan dulu!");
         no_sp.focus();
@@ -111,29 +112,90 @@ print_button.addEventListener("click", function (event) {
         contoh_print.style.display = "inline-block";
         print_pdf.style.display = "inline-block";
         contoh_printDiv.style.display = "block";
+        $("#loading-screen").css("display", "flex");
         fetch("/viewprint/" + no_spText.value)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                console.log(data[0]["TGL_SP"]);
-                tgl_pesanKolom.innerHTML = moment(data[0]["TGL_SP"]).format(
-                    "DD-MM-YY"
+                nomor_spSpan.innerHTML = "No. " + data[0].NO_SP;
+                no_poKolom.innerHTML = data[0].NO_PO;
+                let Tgl_PO = formatDateToMMDDYYYY(data[0].Tgl_PO);
+                let TGL_SP = formatDateToMMDDYYYY(data[0].TGL_SP);
+                let array_sp = [];
+                tgl_poKolom.innerHTML = Tgl_PO;
+                tgl_pesanKolom.innerHTML = TGL_SP;
+                nama_customerKolom.innerHTML = data[0].NamaCust;
+                alamat_kantorKolom.innerHTML = data[0].Alamat;
+                alamat_kirimKolom.innerHTML = data[0].AlamatKirim;
+
+                table_sp.destroy();
+                // data.forEach(function (item, index) {
+                table_sp = $("#table_sp").DataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ordering: false,
+                    data: data,
+                    columns: [
+                        {
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return meta.row + 1;
+                            },
+                        },
+                        {
+                            data: "JnsBarang",
+                            render: function (data, type, row) {
+                                return "<b>" + data + "</b><br>" + row.NamaType;
+                            },
+                        },
+                        { data: "KodeBarang" },
+                        {
+                            data: null,
+                            render: function (data, type, row) {
+                                return (
+                                    numeral(row.JmlOrder).format("0,0.00") +
+                                    " " +
+                                    row.Satuan
+                                );
+                            },
+                        },
+                        {
+                            data: null,
+                            render: function (data, type, row) {
+                                return (
+                                    row.Symbol +
+                                    " " +
+                                    numeral(row.HargaSatuan).format("0,0.00")
+                                );
+                            },
+                        },
+                    ],
+                    columnDefs: [
+                        { targets: 0, width: "1%" }, // Set the width of the first column
+                        { targets: 1, width: "49%" }, // Set the width of the second column
+                        { targets: 2, width: "18%" }, // Set the width of the third column
+                        { targets: 3, width: "17%" }, // Set the width of the fourth column
+                        { targets: 4, width: "15%" }, // Set the width of the fifth column
+                    ],
+                });
+                // });
+                // table_sp.draw();
+                // console.log(array_sp);
+                jenis_bayarKolom.innerHTML = data[0].NamaPembayaran;
+                rencana_kirimKolom.innerHTML = formatDateToMMDDYYYY(
+                    data[0].TglRencanaKirim
                 );
-                nama_customerKolom.innerHTML = data[0]["NamaCust"];
-                kota_customerKolom.innerHTML = data[0]["Kota"];
-                no_poKolom.innerHTML = data[0]["NO_PO"];
-                kode_barangKolom.innerHTML = data[0]["KodeBarang"];
-                quantity_barangKolom.innerHTML = data[0]["JmlOrder"];
-                nama_barangKolom.innerHTML = data[0]["NamaType"];
-                syarat_bayarKolom.innerHTML =
-                    "Rp. " +
-                    numeral(data[0]["HargaSatuan"]).value() +
-                    "/Kg + PPN <br>" +
-                    "Term. " +
-                    data[0]["SyaratBayar"] +
-                    " Hari";
-                nama_salesKolom.innerHTML = data[0]["NamaSales"];
-                nama_managerKolom.innerHTML = data[0]["Manager"];
+                syarat_bayarKolom.innerHTML = data[0].SyaratBayar + " Hari";
+                keterangan_ppnKolom.innerHTML = data[0].PPN;
+                let ketWithLineBreaks = "";
+                let ket = data[0].Ket; // Get the value of "Ket" from the array
+                if (ket !== null) {
+                    ketWithLineBreaks = ket.replace(/\r\n/g, " <br> "); // Replace '\r\n' with '<br>'
+                }
+                keterangan_kolom.innerHTML = ketWithLineBreaks;
+                nama_salesKolom.innerHTML = data[0].NamaSales;
+                nama_direkturKolom.innerHTML = data[0].Manager;
             })
             .finally(() => {
                 $("#loading-screen").css("display", "none");
