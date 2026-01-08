@@ -75,15 +75,14 @@ print_button.addEventListener("click", function () {
                 console.log(data);
                 contoh_printSjEksportDiv.style.width = "21cm";
                 no_spKolom.innerHTML = no_sp.value;
-                nomor_sjKolom.innerHTML = String(no_sjText.value).padStart(
-                    6,
-                    "0"
-                );
+                nomor_sjKolom.innerHTML =
+                    "<b>" + String(no_sjText.value).padStart(6, "0") + "</b>";
                 nama_typeBarangKolom.innerHTML = data[0].NamaType;
                 tanggal_kirimKolom.innerHTML = moment(tanggal_sj.value).format(
                     "DD/MMMM/YYYY"
                 );
-                truk_nopolKolom.innerHTML = data[0].TrukNopol;
+                truk_nopolKolom.innerHTML =
+                    data[0].TrukNopol === "-" ? "" : data[0].TrukNopol || "";
                 no_poKolom.innerHTML = data[0].NO_PO;
                 if (data[0].Ket !== null) {
                     var ketWithLineBreaks = data[0].Ket.replace(
@@ -99,7 +98,8 @@ print_button.addEventListener("click", function () {
                 jumlah_barangTritierKolom.innerHTML = numeral(
                     data[0].QtyTritier
                 ).format("0,0.00");
-                satuan_barangSekunderKolom.innerHTML = data[0].satSekunder.trim();
+                satuan_barangSekunderKolom.innerHTML =
+                    data[0].satSekunder.trim();
                 jumlah_barangSekunderKolom.innerHTML = numeral(
                     data[0].QtySekunder
                 ).format("0,0.00");
