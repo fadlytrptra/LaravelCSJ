@@ -54,7 +54,7 @@
                 <label for="contoh_print" id="contoh_print">Contoh print:</label>
             </div>
             <div class="acs-div-container" id="contoh_printDiv"
-                style="display: none;width: 16cm;height:20cm;position: relative;">
+                style="display: none;width: 16cm;height:20cm;position: relative;font-size: smaller;">
                 <span id="nomor_sjKolom" style="position: absolute;top: 5.5cm;left: 10.5cm;"
                     contenteditable="true">Nomor SJ</span>
                 <span id="tanggal_kirimKolom" style="position: absolute;top: 6cm;left: 10.5cm;"
@@ -66,16 +66,16 @@
                 <span id="no_poKolom" style="position: absolute;top: 7.5cm;left: 10.5cm;" contenteditable="true">Nomor
                     PO</span>
                 <span id="nama_customerKolomAlamat_kolom"
-                    style="position: absolute;top: 6cm;left: 1cm;width: 6cm;max-height: 2cm;"
+                    style="position: absolute;top: 6cm;left: 1cm;width: 8cm;height: 2cm;"
                     contenteditable="true">Customer</span>
-                <span id="nama_typeBarangKolom" style="position: absolute;top: 8cm;left: 1cm;width: 9cm;height: 5cm;" contenteditable="true"></span>
-                <span id="satuan_barangPrimerKolom" style="position: absolute;" contenteditable="true"></span>
-                <span id="jumlah_barangPrimerKolom" style="position: absolute;" contenteditable="true"></span>
-                <span id="satuan_barangSekunderKolom" style="position: absolute;" contenteditable="true"></span>
-                <span id="jumlah_barangSekunderKolom" style="position: absolute;" contenteditable="true"></span>
+                <span id="nama_typeBarangKolom" style="position: absolute;top: 10cm;left: 1cm;width: 8.5cm;height: 2cm;" contenteditable="true">Nama Barang</span>
+                <span id="satuan_barangSekunderKolom" style="position: absolute;top: 10cm;left: 10.5cm;width: 2cm;height: 2cm;" contenteditable="true"></span>
+                <span id="jumlah_barangSekunderKolom" style="position: absolute;top: 10cm;left: 12.5cm;width: 2cm;height: 2cm;" contenteditable="true"></span>
+                <span id="satuan_barangTritierKolom" style="position: absolute;top: 11cm;left: 10.5cm;width: 2cm;height: 2cm;" contenteditable="true"></span>
+                <span id="jumlah_barangTritierKolom" style="position: absolute;top: 11cm;left: 12.5cm;width: 2cm;height: 2cm;" contenteditable="true"></span>
                 <span id="keterangan_tambahanKolom" style="position: absolute;" contenteditable="true"></span>
-                <span id="alamat_kirimKolom" style="position: absolute;" contenteditable="true"></span>
-                <span id="tanda_tanganKolom" style="position: absolute;" contenteditable="true">(SUNYATA
+                <span id="alamat_kirimKolom" style="position: absolute;top: 12.5cm;left: 1cm;width: 8.5cm;height: 3cm;" contenteditable="true"></span>
+                <span id="tanda_tanganKolom" style="position: absolute;top: 18.5cm;left: 1cm;width: 6cm;height: 2cm;" contenteditable="true">(SUNYATA
                     ICHWAN)</span>
             </div>
             <div class="acs-div-container" id="contoh_printSjEksportDiv" style="display: none"

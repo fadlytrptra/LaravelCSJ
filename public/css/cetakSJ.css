@@ -17,99 +17,12 @@
     margin: 4px 0;
 }
 .acs-div-container {
-    width: 21cm;
-    aspect-ratio: 17/21;
+    width: 16cm;
     border: 2px;
     border-style: solid;
     position: relative;
     background-color: white;
 }
-
-.span-nama_typeBarangKolom,
-.span-nomor_sjKolom,
-.span-tanggal_kirimKolom,
-.span-truk_nopolKolom,
-.span-no_spKolom,
-.span-nama_barangKolomNo_poKolom,
-.span-satuan_barangPrimerKolom,
-.span-jumlah_barangPrimerKolom,
-.span-satuan_barangSekunderKolom,
-.span-jumlah_barangSekunderKolom,
-.span-nama_customerKolomAlamat_kolom,
-.span-alamat_kirimKolom,
-.span-tanda_tanganKolom,
-.span-keterangan_tambahanKolom {
-    position: absolute;
-    padding: 5px;
-    box-sizing: border-box;
-    background-color: aqua;
-    font-size: 17px;
-}
-/* letak kolom untuk print sj */
-.span-nomor_sjKolom {
-    top: 3.5cm;
-    left: 0.7cm;
-}
-.span-tanggal_kirimKolom {
-    top: 5.6cm;
-    left: 15.3cm;
-}
-.span-truk_nopolKolom {
-    top: 6.8cm;
-    left: 15.3cm;
-}
-.span-no_spKolom {
-    top: 7.9cm;
-    left: 14cm;
-}
-.span-nama_customerKolomAlamat_kolom {
-    top: 5.8cm;
-    left: 0.7cm;
-    max-width: 9cm;
-    line-height: 1.2;
-}
-.span-nama_typeBarangKolom {
-    top: 10.6cm;
-    left: 0.7cm;
-}
-.span-nama_barangKolomNo_poKolom {
-    top: 11.9cm;
-    left: 0.7cm;
-    max-width: 13cm;
-    line-height: 1.2;
-    word-break: break-all;
-}
-.span-keterangan_tambahanKolom {
-    top: 16.9cm;
-    left: 0.7cm;
-    max-width: 13cm;
-}
-.span-satuan_barangPrimerKolom {
-    top: 12.9cm;
-    left: 17.2cm;
-}
-.span-jumlah_barangPrimerKolom {
-    top: 12.9cm;
-    left: 19.7cm;
-}
-.span-satuan_barangSekunderKolom {
-    top: 11.9cm;
-    left: 17.2cm;
-}
-.span-jumlah_barangSekunderKolom {
-    top: 11.9cm;
-    left: 19.7cm;
-}
-.span-alamat_kirimKolom {
-    top: 19.6cm;
-    left: 0.7cm;
-    max-width: 18cm;
-}
-.span-tanda_tanganKolom {
-    top: 26cm;
-    left: 1.2cm;
-}
-/*letak kolom untuk print sj*/
 
 .acs-div-printsjekspor-header1 {
     text-align: center;
@@ -238,45 +151,5 @@ table tr:last-child td:last-child {
     }
     #table_barangEksport tbody tr td:nth-child(2) {
         width: 90%;
-    }
-    /*Customize Font Size every Column*/
-    .span-nomor_sjKolom {
-        font-size: 20px;
-    }
-    .span-nama_customerKolomAlamat_kolom {
-        font-size: 20px;
-    }
-    .span-tanggal_kirimKolom {
-        font-size: 23px;
-    }
-    .span-truk_nopolKolom {
-        font-size: 25px;
-    }
-    .span-no_spKolom {
-        font-size: 25px;
-    }
-    .span-nama_typeBarangKolom {
-        font-size: 20px;
-    }
-    .span-nama_barangKolomNo_poKolom {
-        font-size: 20px;
-    }
-    .span-satuan_barangPrimerKolom {
-        font-size: 20px;
-    }
-    .span-jumlah_barangPrimerKolom {
-        font-size: 20px;
-    }
-    .span-satuan_barangSekunderKolom {
-        font-size: 20px;
-    }
-    .span-jumlah_barangSekunderKolom {
-        font-size: 20px;
-    }
-    .span-alamat_kirimKolom {
-        font-size: 20px;
-    }
-    .span-tanda_tanganKolom {
-        font-size: 20px;
     }
 }

@@ -13,6 +13,7 @@ let surat_jalanNonPPN = document.getElementById("surat_jalanNonPPN");
 let surat_jalanAfalan = document.getElementById("surat_jalanAfalan");
 let surat_jalanExport = document.getElementById("surat_jalanExport");
 let no_spKolom = document.getElementById("no_spKolom");
+let no_poKolom = document.getElementById("no_poKolom");
 let tanggal_kirimKolom = document.getElementById("tanggal_kirimKolom");
 let truk_nopolKolom = document.getElementById("truk_nopolKolom");
 let table_barangEksport = $("#table_barangEksport").DataTable({
@@ -28,10 +29,10 @@ let truk_nopolExportKolom = document.getElementById("truk_nopolExportKolom");
 let tanggal_sjExportKolom = document.getElementById("tanggal_sjExportKolom");
 let nomor_spExportKolom = document.getElementById("nomor_spExportKolom");
 let nama_barangKolomNo_poKolom = document.getElementById("nama_barangKolomNo_poKolom"); // prettier-ignore
-let satuan_barangPrimerKolom = document.getElementById("satuan_barangPrimerKolom"); // prettier-ignore
-let jumlah_barangPrimerKolom = document.getElementById("jumlah_barangPrimerKolom"); // prettier-ignore
 let satuan_barangSekunderKolom = document.getElementById("satuan_barangSekunderKolom"); // prettier-ignore
 let jumlah_barangSekunderKolom = document.getElementById("jumlah_barangSekunderKolom"); // prettier-ignore
+let satuan_barangTritierKolom = document.getElementById("satuan_barangTritierKolom"); // prettier-ignore
+let jumlah_barangTritierKolom = document.getElementById("jumlah_barangTritierKolom"); // prettier-ignore
 let alamat_kirimKolom = document.getElementById("alamat_kirimKolom");
 let nama_customerKolomAlamat_kolom = document.getElementById("nama_customerKolomAlamat_kolom"); //prettier-ignore
 let nama_typeBarangKolom = document.getElementById("nama_typeBarangKolom");
@@ -71,14 +72,19 @@ print_button.addEventListener("click", function () {
         )
             .then((response) => response.json())
             .then((data) => {
+                console.log(data);
                 contoh_printSjEksportDiv.style.width = "21cm";
                 no_spKolom.innerHTML = no_sp.value;
-                nomor_sjKolom.innerHTML = "sj: " + no_sjText.value;
-                nama_typeBarangKolom.innerHTML = data[0].NAMATYPEBARANG;
-                nama_barangKolomNo_poKolom.innerHTML = data[0].NamaType;
-                tanggal_kirimKolom.innerHTML = formatDate(tanggal_sj.value); // masih salah format
+                nomor_sjKolom.innerHTML = String(no_sjText.value).padStart(
+                    6,
+                    "0"
+                );
+                nama_typeBarangKolom.innerHTML = data[0].NamaType;
+                tanggal_kirimKolom.innerHTML = moment(tanggal_sj.value).format(
+                    "DD/MMMM/YYYY"
+                );
                 truk_nopolKolom.innerHTML = data[0].TrukNopol;
-                no_spKolom.innerHTML = data[0].SuratPesanan;
+                no_poKolom.innerHTML = data[0].NO_PO;
                 if (data[0].Ket !== null) {
                     var ketWithLineBreaks = data[0].Ket.replace(
                         /\r\n/g,
@@ -86,24 +92,18 @@ print_button.addEventListener("click", function () {
                     ); // Replace '\r\n' with '<br>'
                 }
                 keterangan_tambahanKolom.innerHTML = ketWithLineBreaks;
-                nama_customerKolomAlamat_kolom.innerHTML = data[0].NamaCust;
+                nama_customerKolomAlamat_kolom.innerHTML =
+                    "<b>" + data[0].NamaCust + "</b>";
                 nama_customerKolomAlamat_kolom.innerHTML += "<br>" + data[0].Alamat; //prettier-ignore
-                satuan_barangPrimerKolom.innerHTML = data[0].satPrimer.trim();
-                jumlah_barangPrimerKolom.innerHTML = data[0].QtyPrimer;
-                satuan_barangSekunderKolom.innerHTML = data[0].Satuan.trim();
-                if (data[0].Satuan.trim() == data[0].SatTRitier.trim()) {
-                    jumlah_barangSekunderKolom.innerHTML = data[0].QtyTritier;
-                } else if (
-                    data[0].Satuan.trim() == data[0].satSekunder.trim()
-                ) {
-                    jumlah_barangSekunderKolom.innerHTML = data[0].QtySekunder;
-                } else if (data[0].Satuan.trim() == data[0].satPrimer.trim()) {
-                    jumlah_barangSekunderKolom.innerHTML = data[0].QtyPrimer;
-                }
-                if (data[0].NO_PO !== null) {
-                    nama_barangKolomNo_poKolom.innerHTML += "<br><br>PO: " + data[0].NO_PO; //prettier-ignore
-                }
-                alamat_kirimKolom.innerHTML = "Dikirim ke: <br>" + data[0].AlamatKirim; //prettier-ignore
+                satuan_barangTritierKolom.innerHTML = data[0].SatTRitier.trim();
+                jumlah_barangTritierKolom.innerHTML = numeral(
+                    data[0].QtyTritier
+                ).format("0,0.00");
+                satuan_barangSekunderKolom.innerHTML = data[0].satSekunder.trim();
+                jumlah_barangSekunderKolom.innerHTML = numeral(
+                    data[0].QtySekunder
+                ).format("0,0.00");
+                alamat_kirimKolom.innerHTML = "Dikirim ke: " + data[0].AlamatKirim; //prettier-ignore
                 contoh_print.style.display = "block";
                 contoh_printDiv.style.display = "block";
                 export_pdf.style.display = "inline-block";
