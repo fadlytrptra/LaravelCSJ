@@ -1610,7 +1610,7 @@ jQuery(function ($) {
                             selectedKodeBarang,
                             numeral(sppb_quantityBarang.value).format("0,0.00"),
                             sppb_KeteranganOrder.value,
-                            numeral(sppb_hargaSatuan.value).format("0,0.00"),
+                            numeral(sppb_hargaSatuan.value).format("0,0.000"),
                             numeral(sppb_discount.value).format("0.00"),
                             numeral(sppb_ppn.value).format("0.00"),
                             numeral(sppb_DPPNilaiLain.value).format("0,0.00"),
