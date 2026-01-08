@@ -17,10 +17,8 @@
     margin: 4px 0;
 }
 .acs-div-container {
-    width: 16cm;
     border: 2px;
     border-style: solid;
-    position: relative;
     background-color: white;
 }
 
