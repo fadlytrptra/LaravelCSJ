@@ -969,9 +969,10 @@ jQuery(function ($) {
         if (!sppb_ppn.value) {
             sppb_ppn.value = 11;
         }
-        sppb_subTotalHargaJual.value =
+        sppb_subTotalHargaJual.value = numeral(
             numeral(sppb_hargaSatuan.value).value() *
-            numeral(sppb_quantityBarang.value).value();
+                numeral(sppb_quantityBarang.value).value()
+        ).format("0.0000");
         hargaDisc =
             numeral(sppb_subTotalHargaJual.value).value() -
             (numeral(sppb_subTotalHargaJual.value).value() *
@@ -979,17 +980,21 @@ jQuery(function ($) {
                 100;
 
         if (sppb_ppn.value == "12" && sppb_dppFull.checked) {
-            sppb_DPPNilaiLain.value = (hargaDisc * 11) / 12;
+            sppb_DPPNilaiLain.value = numeral((hargaDisc * 11) / 12).format(
+                "0.0000"
+            );
         } else {
-            sppb_DPPNilaiLain.value = hargaDisc;
+            sppb_DPPNilaiLain.value = numeral(hargaDisc).format("0.0000");
         }
 
-        sppb_hargaPPN.value =
+        sppb_hargaPPN.value = numeral(
             (numeral(sppb_DPPNilaiLain.value).value() *
                 numeral(sppb_ppn.value).value()) /
-            100;
-        sppb_totalHarga.value =
-            hargaDisc + numeral(sppb_hargaPPN.value).value();
+                100
+        ).format("0.0000");
+        sppb_totalHarga.value = numeral(
+            hargaDisc + numeral(sppb_hargaPPN.value).value()
+        ).format("0.0000");
     }
     //#endregion
 
@@ -1051,7 +1056,7 @@ jQuery(function ($) {
                                     ),
                                     orderPembelian.keterangan,
                                     numeral(orderPembelian.Hrg_trm).format(
-                                        "0,0.00"
+                                        "0,0.000"
                                     ),
                                     numeral(orderPembelian.Disc_trm).format(
                                         "0.00"
