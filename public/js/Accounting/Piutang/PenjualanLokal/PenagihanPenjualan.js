@@ -1011,17 +1011,16 @@ $(document).ready(function () {
                             dokumen.value = data.TDokumen;
                             idJenisDokumen.value = data.TIdJnsDok;
                             nilaiUangMuka.value = data.TNilai_UM;
-                            dpp_nilaiLain.value = numeral((data.TNilai_Penagihan * 11) / 12).format("0,0.00"); //prettier-ignore
+                            nilaiPenagihan.value = numeral(
+                                data.TNilai_blm_Pajak
+                            ).format("0,0.00");
+                            dpp_nilaiLain.value = numeral((data.TNilai_blm_Pajak * 11) / 12).format("0,0.00"); //prettier-ignore
                             nilai_ppn.value = numeral(
                                 (numeral(dpp_nilaiLain.value).value() * 12) /
                                     100
                             ).format("0,0.00");
                             nilai_total.value = numeral(
                                 data.TNilai_Penagihan
-                            ).format("0,0.00");
-                            nilaiPenagihan.value = numeral(
-                                numeral(nilai_total.value).value() -
-                                    numeral(nilai_ppn.value).value()
                             ).format("0,0.00");
                             nama_bank.value = data.TIdBank;
                             idBank.value = data.TNamaBank;
