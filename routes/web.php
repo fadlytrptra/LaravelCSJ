@@ -276,6 +276,7 @@ Route::group(['middleware' => ['auth']], function () {
     #region EDP
     Route::get('/EDP', 'App\Http\Controllers\HomeController@EDP');
     Route::resource('MaintenanceHakAkses', App\Http\Controllers\EDP\MaintenanceHakAksesController::class);
+    Route::resource('MaintenanceUserWeb', App\Http\Controllers\EDP\MaintenanceUserWebController::class);
     Route::get('/AllFitur/{IdProgram}/{NomorPegawai}', 'App\Http\Controllers\EDP\MaintenanceHakAksesController@getAllFitur');
     Route::post('/AllFitur/edit', 'App\Http\Controllers\EDP\MaintenanceHakAksesController@EditUserFitur');
     #endregion

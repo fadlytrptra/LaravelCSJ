@@ -22,6 +22,9 @@ let rencana_kirimKolom = document.getElementById("rencana_kirimKolom");
 let syarat_bayarKolom = document.getElementById("syarat_bayarKolom");
 let keterangan_ppnKolom = document.getElementById("keterangan_ppnKolom");
 let keterangan_kolom = document.getElementById("keterangan_kolom");
+let ttd_salesKolom = document.getElementById("ttd_salesKolom");
+let ttd_managerKolom = document.getElementById("ttd_managerKolom");
+let ttd_direkturKolom = document.getElementById("ttd_direkturKolom");
 let nama_salesKolom = document.getElementById("nama_salesKolom");
 let nama_direkturKolom = document.getElementById("nama_direkturKolom");
 let nama_managerKolom = document.getElementById("nama_managerKolom");
@@ -112,6 +115,9 @@ print_button.addEventListener("click", function (event) {
         contoh_print.style.display = "inline-block";
         print_pdf.style.display = "inline-block";
         contoh_printDiv.style.display = "block";
+        ttd_salesKolom.src = "";
+        ttd_managerKolom.src = "";
+        ttd_direkturKolom.src = "";
         $("#loading-screen").css("display", "flex");
         fetch("/viewprint/" + no_spText.value)
             .then((response) => response.json())
@@ -194,8 +200,22 @@ print_button.addEventListener("click", function (event) {
                     ketWithLineBreaks = ket.replace(/\r\n/g, " <br> "); // Replace '\r\n' with '<br>'
                 }
                 keterangan_kolom.innerHTML = ketWithLineBreaks;
-                nama_salesKolom.innerHTML = data[0].NamaSales;
-                nama_direkturKolom.innerHTML = data[0].Manager;
+                console.log(data[0].TtdManager);
+                if (data[0].TtdSales) {
+                    ttd_salesKolom.src =
+                        "data:image/png;base64," + data[0].TtdSales;
+                }
+                if (data[0].TtdManager) {
+                    ttd_managerKolom.src =
+                        "data:image/png;base64," + data[0].TtdManager;
+                }
+                if (data[0].TtdDirektur) {
+                    ttd_direkturKolom.src =
+                        "data:image/png;base64," + data[0].TtdDirektur;
+                }
+                nama_salesKolom.innerHTML = data[0].Sales;
+                nama_managerKolom.innerHTML = data[0].Manager;
+                nama_direkturKolom.innerHTML = data[0].Direktur;
             })
             .finally(() => {
                 $("#loading-screen").css("display", "none");

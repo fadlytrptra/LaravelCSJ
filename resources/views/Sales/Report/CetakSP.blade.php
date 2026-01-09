@@ -168,40 +168,48 @@
                             </table>
                         </div>
                         <div class="cetak-sppdf-container10">
-                            <table style="margin-left: 8px">
+                            <table style="margin-left: 8px;width:100%">
                                 <tbody>
                                     <tr>
                                         <td style="text-align: center; white-space: nowrap">WIRANIAGA LOKAL</td>
-                                        <td>&nbsp; &nbsp;</td>
                                         <td style="text-align: center">MANAGER</td>
-                                        <td>&nbsp; &nbsp;</td>
                                         <td style="text-align: center">DIREKTUR</td>
-                                        <td>&nbsp; &nbsp;</td>
                                         <td style="text-align: center">PPIC</td>
-                                        <td>&nbsp; &nbsp;</td>
                                         <td>Lembar Ke:</td>
                                     </tr>
                                     <tr>
-                                        <th style="border: none !important;text-align: center;text-decoration: underline;vertical-align:bottom;padding-bottom: 20px;white-space: nowrap"
-                                            id="nama_salesKolom">
-                                            ADAM CHRISTIANTO</th>
-                                        <th style="border: none !important;text-align: center"></th>
-                                        <th
-                                            style="border: none !important;text-align: center;vertical-align:bottom;padding-bottom: 20px;">
-                                            ______________________</th>
-                                        <th style="border: none !important;text-align: center"></th>
-                                        <th style="border: none !important;text-align: center;text-decoration: underline;vertical-align:bottom;padding-bottom: 20px;white-space: nowrap"
-                                            id="nama_direkturKolom">
-                                            _______________________</th>
-                                        <th style="border: none !important;text-align: center"></th>
-                                        <th
-                                            style="border: none !important;text-align: center;vertical-align:bottom;padding-bottom: 20px;">
-                                            _______________________</th>
-                                        <th style="border: none !important;text-align: center"></th>
+                                        <td style="text-align: center;min-width:100px;">
+                                            <img id="ttd_salesKolom" style="width:75px; height:auto;">
+                                        </td>
+                                        <td style="text-align: center;min-width:100px;">
+                                            <img id="ttd_managerKolom" style="width:75px; height:auto;">
+                                        </td>
+                                        <td style="text-align: center;min-width:100px;">
+                                            <img id="ttd_direkturKolom" style="width:75px; height:auto;">
+                                        </td>
+                                        <td style="min-width:100px;"></td>
                                         <td style="border: none !important;">1. Putih - Produksi <br>
                                             2. Merah - QC <br>
                                             3. Kuning - Adm. Piutang <br>
-                                            4. Hijau - Arsip Pemasaran</td>
+                                            4. Hijau - Arsip Pemasaran
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border: none !important;text-align: center;text-decoration: underline;vertical-align:bottom;white-space: nowrap"
+                                            id="nama_salesKolom">
+                                            X
+                                        </th>
+                                        <th style="border: none !important;text-align: center;text-decoration: underline;vertical-align:bottom;white-space: nowrap"
+                                            id="nama_managerKolom">
+                                            X
+                                        </th>
+                                        <th style="border: none !important;text-align: center;text-decoration: underline;vertical-align:bottom;white-space: nowrap"
+                                            id="nama_direkturKolom">
+                                            X
+                                        </th>
+                                        <th style="border: none !important;text-align: center;vertical-align:bottom;">
+                                        </th>
+                                        <td style="border: none !important;">&nbsp; &nbsp;</td>
                                     </tr>
                                 </tbody>
                             </table>
