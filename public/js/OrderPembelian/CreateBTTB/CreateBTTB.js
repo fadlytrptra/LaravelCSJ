@@ -324,17 +324,15 @@ jQuery(function ($) {
                     // Insert ListBarang
                     data.ListBarang.forEach(function (item) {
                         table_barang.row.add([
-                            item.keterangan,
-                            item.Kd_brg,
-                            item.NAMA_BRG,
-                            item.nama_kategori,
-                            item.nama_sub_kategori,
+                            item.keterangan ?? "",
+                            item.Kd_brg ?? "",
+                            item.NAMA_BRG ?? "",
+                            item.nama_kategori ?? "",
+                            item.nama_sub_kategori ?? "",
                             numeral(item.Qty).format("0,0"),
-                            item.Nama_satuan.trim(),
-                            item.Tgl_order
-                                ? moment(item.Tgl_order).format("MM/DD/YYYY")
-                                : "",
-                            item.No_trans,
+                            (item.Nama_satuan ?? "").trim(),
+                            item.Tgl_order ? moment(item.Tgl_order).format("MM/DD/YYYY") : "",
+                            item.No_trans ?? "",
                             item.Flag ?? "N",
                         ]);
                     });
@@ -361,34 +359,28 @@ jQuery(function ($) {
 
                         table_terima.row.add([
                             index + 1,
-                            item.Datang
-                                ? moment(item.Datang).format("MM/DD/YYYY")
-                                : "",
+                            item.Datang ? moment(item.Datang).format("MM/DD/YYYY") : "",
                             numeral(item.Qty).format("0,0"),
-                            item.Sat_Pesan.trim(),
+                            (item.Sat_Pesan ?? "").trim(),
                             numeral(Qty_Terima).format("0,0"),
-                            item.Sat_Terima.trim(),
+                            (item.Sat_Terima ?? "").trim(),
                             numeral(Hrg_Trm).format("0,0.00"),
                             numeral(Disc_trm).format("0.00"),
                             numeral(Ppn_trm).format("0,0.00"),
                             numeral(Min_ord).format("0,0"),
                             numeral(NilaiTrans).format("0,0.00"),
-                            item.NM_SUP.trim(),
-                            item.Waktu.trim(),
-                            item.Faktur.trim(),
-                            item.Ket_trm.trim(),
-                            item.No_terima.trim(),
-                            item.No_sup.trim(),
-                            item.TglRetur
-                                ? moment(item.TglRetur).format("MM/DD/YYYY")
-                                : "",
-                            item.Nama_MataUang.trim(),
+                            (item.NM_SUP ?? "").trim(),
+                            (item.Waktu ?? "").trim(),
+                            (item.Faktur ?? "").trim(),
+                            (item.Ket_trm ?? "").trim(),
+                            (item.No_terima ?? "").trim(),
+                            (item.No_sup ?? "").trim(),
+                            item.TglRetur ? moment(item.TglRetur).format("MM/DD/YYYY") : "",
+                            (item.Nama_MataUang ?? "").trim(),
                             numeral(item.Kurs_Rp).format("0,0.00"),
-                            item.Tgl_Faktur
-                                ? moment(item.Tgl_Faktur).format("MM/DD/YYYY")
-                                : "",
-                            item.No_SuratJalan.trim(),
-                            item.Satuan_Terima.trim(),
+                            item.Tgl_Faktur ? moment(item.Tgl_Faktur).format("MM/DD/YYYY") : "",
+                            (item.No_SuratJalan ?? "").trim(),
+                            (item.Satuan_Terima ?? "").trim(),
                         ]);
                     });
 
