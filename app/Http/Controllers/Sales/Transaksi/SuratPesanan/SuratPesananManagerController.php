@@ -404,7 +404,7 @@ class SuratPesananManagerController extends Controller
                                 'UraianPesanan' => $UraianPesanan ?? null,
                                 'TglRencanaKirim' => $TglRencanaKirim[$i],
                                 'Lunas' => $Lunas[$i],
-                                'KodeBarang' => $KodeBarang[$i],
+                                'IDBarang' => $KodeBarang[$i],
                             ]);
                     }
                     return response()->json(['error' => (string) 'Surat Pesanan ' . $no_sp . ' Sudah Dibuatkan DO, Tidak bisa mengubah kode barang']);
