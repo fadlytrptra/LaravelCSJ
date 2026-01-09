@@ -1010,14 +1010,25 @@ $(document).ready(function () {
                             id_penagihanUM.value = data.Tid_PenagihanUM;
                             dokumen.value = data.TDokumen;
                             idJenisDokumen.value = data.TIdJnsDok;
-                            nilaiPenagihan.value = data.TNilai_Penagihan;
                             nilaiUangMuka.value = data.TNilai_UM;
-                            dpp_nilaiLain.value = (data.TNilai_Penagihan * 11) / 12; //prettier-ignore
-                            nilai_ppn.value = (dpp_nilaiLain * 12) / 100;
+                            dpp_nilaiLain.value = numeral((data.TNilai_Penagihan * 11) / 12).format("0,0.00"); //prettier-ignore
+                            nilai_ppn.value = numeral(
+                                (numeral(dpp_nilaiLain.value).value() * 12) /
+                                    100
+                            ).format("0,0.00");
+                            nilai_total.value = numeral(
+                                data.TNilai_Penagihan
+                            ).format("0,0.00");
+                            nilaiPenagihan.value = numeral(
+                                numeral(nilai_total.value).value() -
+                                    numeral(nilai_ppn.value).value()
+                            ).format("0,0.00");
+                            nama_bank.value = data.TIdBank;
+                            idBank.value = data.TNamaBank;
 
                             if (idMataUang.value == "1") {
                                 terbilangS = convertNumberToWordsRupiah(
-                                    nilaiPenagihan.value
+                                    numeral(nilai_total.value).value()
                                 );
                             } else {
                                 if (nilaiKurs.value <= 0) {
@@ -1054,13 +1065,16 @@ $(document).ready(function () {
                                             no_sp: item.IDSuratPesanan,
                                             jenis: item.Type,
                                             id_xc: "",
+                                            Total: item.Total,
                                         };
 
                                         table_atas.row
                                             .add([
                                                 newRow.Id_Detail,
+                                                "",
                                                 newRow.surat_jalan,
                                                 newRow.TanggalDiterima,
+                                                newRow.Total,
                                                 newRow.no_sp,
                                                 newRow.jenis,
                                                 newRow.id_xc,

@@ -640,10 +640,12 @@ class PenagihanPenjualanController extends Controller
                 $TIdUser = $penagihan->IdPenagih;
                 $TPenagih = $penagihan->Nama;
                 $TJnsPajak = $penagihan->Jns_PPN ?? '';
-                $cbPPN = $penagihan->PersenPPN;
+                $cbPPN = $penagihan->PPN;
                 $TNilai_UM = $penagihan->Nilai_UM ?? '0';
                 $Tid_PenagihanUM = $penagihan->Id_Penagihan_Acuan ?? '';
                 $TNilai_Penagihan = $penagihan->Nilai_Penagihan;
+                $TIdBank = $penagihan->KetBank;
+                $TNamaBank = $penagihan->NamaBank;
             }
 
             // Execute second stored procedure if tax type exists
@@ -726,6 +728,8 @@ class PenagihanPenjualanController extends Controller
                 'TNilai_Penagihan' => number_format($penagihan->Nilai_Penagihan, 0, '', ''),
                 'TPajak' => $TPajak ?? null,
                 'ListSJ' => $listSJ,
+                'TIdBank' => $TIdBank,
+                'TNamaBank' => $TNamaBank,
             ]);
         }
     }
