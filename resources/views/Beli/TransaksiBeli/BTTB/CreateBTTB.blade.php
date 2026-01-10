@@ -98,6 +98,7 @@
                                         <th>Tgl. Faktur</th>
                                         <th>Srt. Jalan</th>
                                         <th>No. Sat. Terima</th>
+                                        <th>Kode Barang</th>
                                     </tr>
                                 </thead>
                             </table>

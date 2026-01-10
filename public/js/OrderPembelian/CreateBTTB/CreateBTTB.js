@@ -103,6 +103,7 @@ jQuery(function ($) {
     let koreksiKurs_totalBayar = document.getElementById("koreksiKurs_totalBayar"); //prettier-ignore
     let koreksiKurs_Proses = document.getElementById("koreksiKurs_Proses");
     let dppNilaiLain = 0.0;
+    let selectedBarangRow = null;
     let proses;
     //#endregion
 
@@ -334,7 +335,9 @@ jQuery(function ($) {
                             item.nama_sub_kategori ?? "",
                             numeral(item.Qty).format("0,0"),
                             (item.Nama_satuan ?? "").trim(),
-                            item.Tgl_order ? moment(item.Tgl_order).format("MM/DD/YYYY") : "",
+                            item.Tgl_order
+                                ? moment(item.Tgl_order).format("MM/DD/YYYY")
+                                : "",
                             item.No_trans ?? "",
                             item.Flag ?? "N",
                         ]);
@@ -362,7 +365,9 @@ jQuery(function ($) {
 
                         table_terima.row.add([
                             index + 1,
-                            item.Datang ? moment(item.Datang).format("MM/DD/YYYY") : "",
+                            item.Datang
+                                ? moment(item.Datang).format("MM/DD/YYYY")
+                                : "",
                             numeral(item.Qty).format("0,0"),
                             (item.Sat_Pesan ?? "").trim(),
                             numeral(Qty_Terima).format("0,0"),
@@ -378,12 +383,17 @@ jQuery(function ($) {
                             (item.Ket_trm ?? "").trim(),
                             (item.No_terima ?? "").trim(),
                             (item.No_sup ?? "").trim(),
-                            item.TglRetur ? moment(item.TglRetur).format("MM/DD/YYYY") : "",
+                            item.TglRetur
+                                ? moment(item.TglRetur).format("MM/DD/YYYY")
+                                : "",
                             (item.Nama_MataUang ?? "").trim(),
                             numeral(item.Kurs_Rp).format("0,0.00"),
-                            item.Tgl_Faktur ? moment(item.Tgl_Faktur).format("MM/DD/YYYY") : "",
+                            item.Tgl_Faktur
+                                ? moment(item.Tgl_Faktur).format("MM/DD/YYYY")
+                                : "",
                             (item.No_SuratJalan ?? "").trim(),
                             (item.Satuan_Terima ?? "").trim(),
+                            (item.Kd_brg ?? "").trim(),
                         ]);
                     });
 
@@ -419,7 +429,7 @@ jQuery(function ($) {
                         Swal.fire({
                             icon: "success",
                             title: "Data sudah diterima.",
-                            timer: 3000,
+                            timer: 2000,
                             showConfirmButton: false,
                         }).then(loadTerima);
                     } else {
@@ -438,27 +448,20 @@ jQuery(function ($) {
             },
         });
     }
-    
 
-    function getTotalQtyTerimaExisting(excludeNoTerima = null) {
+    function getTotalQtyTerimaExisting(KodeBarang) {
         let total = 0;
-    
         table_terima.rows().every(function () {
             let row = this.data();
-            let noTerimaRow = row[15]; // kolom No_terima
-    
-            if (excludeNoTerima && noTerimaRow === excludeNoTerima) {
-                return;
+            let kodeBarangTerima = row[13];
+            console.log(kodeBarangTerima);
+            if (KodeBarang && kodeBarangTerima == KodeBarang) {
+                total += numeral(row[4]).value();
             }
-    
-            total += numeral(row[4]).value(); // Qty_Terima
         });
-    
         return total;
     }
-    
-    
-    
+
     //#endregion
 
     //#region Event Listener
@@ -536,7 +539,7 @@ jQuery(function ($) {
             );
             return;
         }
-    
+
         if (!selectedBarangRow) {
             Swal.fire({
                 icon: "error",
@@ -547,13 +550,13 @@ jQuery(function ($) {
             });
             return;
         }
-    
+
         // gunakan row yang dipilih user
         bttb_kodeBarang.value = selectedBarangRow[1];
         bttb_namaBarang.value = selectedBarangRow[2];
         bttb_satTerima.value = selectedBarangRow[6];
         bttb_satTerimaActual.value = selectedBarangRow[6];
-    
+
         $.ajax({
             url: "/CreateBTTB/loadHarga",
             type: "GET",
@@ -568,26 +571,33 @@ jQuery(function ($) {
                     bttb_noSatTerima.value = data.dataHarga[0].NoSatuan.trim();
                     bttb_supplier.value = data.dataHarga[0].NM_SUP?.trim();
                     bttb_noSupplier.value = data.dataHarga[0].No_sup?.trim();
-                    bttb_harga.value = numeral(data.dataHarga[0].Hrg_trm).value();
+                    bttb_harga.value = numeral(
+                        data.dataHarga[0].Hrg_trm
+                    ).value();
                     bttb_selectMataUang
                         .val(data.dataHarga[0].IdMataUang)
                         .trigger("change");
-                    bttb_discount.value = numeral(data.dataHarga[0].Disc_trm).value();
+                    bttb_discount.value = numeral(
+                        data.dataHarga[0].Disc_trm
+                    ).value();
                     bttb_ppn.value = numeral(data.dataHarga[0].Ppn_trm).value();
-                    bttb_kursRupiah.value = numeral(data.dataHarga[0].Kurs_Rp).value();
-                    bttb_jangkaWaktu.value = numeral(data.dataHarga[0].Waktu).value();
+                    bttb_kursRupiah.value = numeral(
+                        data.dataHarga[0].Kurs_Rp
+                    ).value();
+                    bttb_jangkaWaktu.value = numeral(
+                        data.dataHarga[0].Waktu
+                    ).value();
                     bttb_jangkaWaktu.dispatchEvent(enterKeyboardEvent);
-    
+
                     proses = "isiBTTB";
                     bttb_qtyTerima.readOnly = false;
                     bttb_qtyTerimaActual.readOnly = false;
-    
+
                     $("#createBTTBModal").modal("show");
                 }
             },
         });
     });
-    
 
     btn_koreksi.addEventListener("click", function (e) {
         if (select_noSPPB.val()) {
@@ -944,25 +954,26 @@ jQuery(function ($) {
             return;
         }
 
-        let qtyPesan = numeral(table_barang.data()[0][5]).value();
-        let qtyTerimaExisting = getTotalQtyTerimaExisting();
+        let qtyPesan = numeral(selectedBarangRow[5]).value();
+        let qtyTerimaExisting = getTotalQtyTerimaExisting(selectedBarangRow[1]);
         let qtyTerimaInput = numeral(bttb_qtyTerima.value).value();
-        let sisaQty = qtyPesan - qtyTerimaExisting;
+        let sisaQty = qtyPesan - qtyTerimaExisting - qtyTerimaInput;
 
-        if (qtyTerimaInput > sisaQty) {
+        if (sisaQty < 0) {
             Swal.fire({
                 icon: "error",
                 title: "Qty Terima melebihi sisa Qty Pesan!",
                 html: `
                     Qty Pesan : <b>${numeral(qtyPesan).format("0,0")}</b><br>
-                    Qty Terima : <b>${numeral(qtyTerimaExisting).format("0,0")}</b><br>
+                    Qty Terima : <b>${numeral(qtyTerimaExisting).format(
+                        "0,0"
+                    )}</b><br>
                     Sisa : <b>${numeral(sisaQty).format("0,0")}</b><br>
                 `,
                 showConfirmButton: true,
             });
             return;
         }
-
 
         if (bttb_keterangan.value == "") {
             bttb_keterangan.value = "-";
@@ -1081,8 +1092,7 @@ jQuery(function ($) {
                     } else {
                         Swal.fire({
                             title: "Are you sure?",
-                            text:
-                                "Qty Terima yang dimasukkan belum memenuhi Qty Pesan yang dibutuhkan. Apakah ingin melanjutkan?",
+                            text: "Qty Terima yang dimasukkan belum memenuhi Qty Pesan yang dibutuhkan. Apakah ingin melanjutkan?",
                             icon: "question",
                             confirmButtonText: "Yes",
                             cancelButtonText: "No",
@@ -1100,7 +1110,6 @@ jQuery(function ($) {
                 console.error(err.Message);
             },
         });
-
     });
 
     $("#table_terima tbody").on("click", "tr", function () {
@@ -1252,8 +1261,6 @@ jQuery(function ($) {
             },
         });
     });
-
-    let selectedBarangRow = null;
 
     $("#table_barang tbody").on("click", "tr", function () {
         let rowData = table_barang.row(this).data();
