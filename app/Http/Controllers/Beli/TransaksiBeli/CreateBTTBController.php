@@ -83,7 +83,7 @@ class CreateBTTBController extends Controller
                 $Counter = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_COUNTER');
                 $NewCounter = $Counter[0]->YTERIMA + 1;
                 $NoTerima = str_pad($NewCounter, 10, "0", STR_PAD_LEFT);
-
+                
                 DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_INSERT_YTERIMA_IMPOR
                 @no_terima_1 = ?,
                 @datang_2 = ?,
@@ -315,8 +315,7 @@ class CreateBTTBController extends Controller
             $noSPPB = $request->input('noSPPB');
             try {
                 $dataListBarang = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_SLC_DATA_SPPB @KdDivisi = ?, @NoSPPB = ?', [$idDivisi, $noSPPB]);
-                $noTrans = (string) $dataListBarang[0]->No_trans;
-                $dataListTerima = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_SLC_TERIMA_BARANG @NoTrans = ?', [$noTrans]);
+                $dataListTerima = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_SLC_TERIMA_BARANG @XKode = ?, @XNoSPPB = ?', [0, $noSPPB]);
                 return response()->json(['ListBarang' => $dataListBarang, 'ListTerima' => $dataListTerima], 200);
             } catch (Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 400);

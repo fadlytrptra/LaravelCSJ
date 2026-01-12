@@ -453,7 +453,7 @@ jQuery(function ($) {
         let total = 0;
         table_terima.rows().every(function () {
             let row = this.data();
-            let kodeBarangTerima = row[13];
+            let kodeBarangTerima = row[23];
             console.log(kodeBarangTerima);
             if (KodeBarang && kodeBarangTerima == KodeBarang) {
                 total += numeral(row[4]).value();
@@ -551,6 +551,17 @@ jQuery(function ($) {
             return;
         }
 
+        if (selectedBarangRow[9] == "Y") {
+            Swal.fire({
+                icon: "error",
+                title: "BTTB Sudah Selesai!",
+                text: "Silahkan pilih barang dengan kolom selesai 'N'",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
+
         // gunakan row yang dipilih user
         bttb_kodeBarang.value = selectedBarangRow[1];
         bttb_namaBarang.value = selectedBarangRow[2];
@@ -602,24 +613,40 @@ jQuery(function ($) {
     btn_koreksi.addEventListener("click", function (e) {
         if (select_noSPPB.val()) {
             proses = "koreksiBTTB";
-            let selectedRow = $("#table_terima tbody tr.selected");
 
-            if (selectedRow.length === 0) {
+            let selectedRow = $("#table_terima tbody tr.selected");
+            if (!selectedRow.length) {
                 errorHandling(
                     "table_terimaBelumDipilih",
-                    "Silahkan pilih data ingin diproses"
+                    "Silahkan pilih data"
                 );
                 return;
             }
 
             let rowData = table_terima.row(selectedRow).data();
 
+            let kodeBarangTerima = rowData[23];
+
+            let barangRow = null;
+            table_barang.rows().every(function () {
+                let data = this.data();
+                if (data[1] === kodeBarangTerima) {
+                    barangRow = data;
+                    return false;
+                }
+            });
+
+            if (!barangRow) {
+                Swal.fire("Error", "Barang tidak ditemukan", "error");
+                return;
+            }
+
             bttb_noTerima.value = rowData[15];
             bttb_noSupplier.value = rowData[16];
-            bttb_kodeBarang.value = table_barang.data()[0][1];
-            bttb_namaBarang.value = table_barang.data()[0][2];
-            bttb_satTerima.value = table_barang.data()[0][6];
-            bttb_satTerimaActual.value = table_barang.data()[0][6];
+            bttb_kodeBarang.value = barangRow[1];
+            bttb_namaBarang.value = barangRow[2];
+            bttb_satTerima.value = barangRow[6];
+            bttb_satTerimaActual.value = barangRow[6];
             bttb_tanggal.value = moment(rowData[1]).format("YYYY-MM-DD");
             bttb_qtyTerima.value = numeral(rowData[2]).value();
             bttb_qtyTerimaKoreksi.value = numeral(rowData[2]).value();
@@ -954,10 +981,13 @@ jQuery(function ($) {
             return;
         }
 
+        let no_trans = selectedBarangRow[8];
         let qtyPesan = numeral(selectedBarangRow[5]).value();
         let qtyTerimaExisting = getTotalQtyTerimaExisting(selectedBarangRow[1]);
         let qtyTerimaInput = numeral(bttb_qtyTerima.value).value();
         let sisaQty = qtyPesan - qtyTerimaExisting - qtyTerimaInput;
+
+        // console.log(qtyPesan, qtyTerimaExisting, qtyTerimaInput, sisaQty);
 
         if (sisaQty < 0) {
             Swal.fire({
@@ -1035,7 +1065,7 @@ jQuery(function ($) {
         formData.append("waktu", bttb_jangkaWaktu.value);
         formData.append("no_ket", bttb_jangkaWaktu.value == 0 ? "001" : "002");
         formData.append("no_sppb", select_noSPPB.val());
-        formData.append("no_trans", table_barang.data()[0][8]);
+        formData.append("no_trans", no_trans);
         formData.append("kd_div", select_divisi.val());
         formData.append("IdMataUang", bttb_selectMataUang.val());
         formData.append("Kurs", bttb_kursRupiah.value);
@@ -1080,7 +1110,7 @@ jQuery(function ($) {
                 } else {
                     loadTerima();
                     let jumlahTerima = parseFloat(
-                        total_terima.value.replace(/[^0-9.]/g, "")
+                        bttb_qtyTerima.value
                     );
                     let jumlahPesan = numeral(
                         table_barang.data()[0][5]
@@ -1088,7 +1118,8 @@ jQuery(function ($) {
                     let selisih = jumlahPesan - jumlahTerima;
 
                     if (selisih <= 0) {
-                        updateFlag(table_barang.data()[0][8], "Y", 0);
+                        updateFlag(no_trans, "Y", 0);
+                        loadTerima();
                     } else {
                         Swal.fire({
                             title: "Are you sure?",
@@ -1096,11 +1127,13 @@ jQuery(function ($) {
                             icon: "question",
                             confirmButtonText: "Yes",
                             cancelButtonText: "No",
+                            showCancelButton: true,
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                updateFlag(table_barang.data()[0][8], "Y", 1);
+                                updateFlag(no_trans, "Y", 1);
                             }
                             loadTerima();
+                            $("#createBTTBModal").modal("hide");
                         });
                     }
                 }
