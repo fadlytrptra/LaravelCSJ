@@ -1718,9 +1718,21 @@ jQuery(function ($) {
                 });
                 return;
             }
+            let qty = Number(tritier2.value);
+            let saldo = Number(saldoTritierPerPIB.value);
+
+            console.log({
+                tritier2: tritier2.value,
+                saldo_raw: saldoTritierPerPIB.value,
+                qty_num: Number(tritier2.value),
+                saldo_num: Number(saldoTritierPerPIB.value),
+            });
+
             if (
-                tritier2.value < 1 ||
-                tritier2.value > saldoTritierPerPIB.value
+                Number.isNaN(qty) ||
+                Number.isNaN(saldo) ||
+                qty < 1 ||
+                qty > saldo
             ) {
                 Swal.fire({
                     icon: "warning",
