@@ -553,6 +553,7 @@ $(document).ready(function () {
                     });
                 },
             });
+            
         } else if (createSPModalLabel.innerHTML == "Salin Surat Pesanan") {
             funcDatatablesIntoInput();
             // Ambil form data menggunakan FormData
@@ -1051,7 +1052,7 @@ $(document).ready(function () {
                 alert("Tidak ada data yang dihapus");
             }
         }
-        funcClearInputBarang();
+    funcClearInputBarang();
         jenis_brg.selectedIndex = 0;
         kategori_utama.selectedIndex = 0;
         kategori.innerHTML = "";

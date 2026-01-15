@@ -108,7 +108,14 @@ class CetakSPPBBTTBController extends Controller
                 $dataCetak = DB::connection('ConnPurchase')->select('SELECT * FROM VW_PRG_1273_SPPB_NEW WHERE kode_divisi = ? AND nomor_sppb = ?', [$divisi, $sppb]);
             }
             if (count($dataCetak) > 0) {
-                return view('Laporan.Purchase.CetakSPPBBTTB.cetak', compact('dataCetak', 'jenisCetak'));
+
+                $ttdDirektur = DB::connection('ConnEDP')
+                ->table('dbo.UserMaster')
+                ->select('NamaUser', 'FotoTtd')
+                ->where('NomorUser', 'rudy')
+                ->first();
+
+                return view('Laporan.Purchase.CetakSPPBBTTB.cetak', compact('dataCetak', 'jenisCetak', 'ttdDirektur'));
             } else {
                 return redirect()->back()->with('error', 'Data tidak ditemukan');
             }
