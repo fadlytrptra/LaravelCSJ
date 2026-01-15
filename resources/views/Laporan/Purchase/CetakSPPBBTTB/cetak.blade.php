@@ -63,14 +63,10 @@
                     <table style="width: 100%;border-collapse: collapse;margin-top: 10px;border:1px solid #000;"">
                         <tr style="white-space: nowrap">
                             <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">No</td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Quantity
-                            </td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Satuan
-                            </td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">
-                                Spesifikasi</td>
-                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Harga Sat
-                            </td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Quantity</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Satuan</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Spesifikasi</td>
+                            <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Harga Sat</td>
                             <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">PPN</td>
                             <td style="padding: 10px 5px 10px 5px; text-align: center;border:1px solid #000;">Harga</td>
                         </tr>
@@ -318,11 +314,15 @@
                         <label>( . . . . . . . . . . . . . . .)</label>
                     </div>
                 </div>
+
+<!--===========================================================
+=========================SPPB BARU=============================
+============================================================-->
+
             @elseif ($jenisCetak == 'SPPBBaru')
                 @php
                     $chunkSize = 5;
                     $chunks = array_chunk($dataCetak, $chunkSize);
-
                     $ppn = collect($dataCetak)->sum('PPN');
                     $amountDPP = collect($dataCetak)->sum('dpp_nilai_lain');
                 @endphp
@@ -335,15 +335,18 @@
                 @foreach ($chunks as $pageIndex => $items)
                     <div
                         style="
-                                width: 19.5cm;
-                                height: 27.94cm;
-                                padding: 10px 10px 0px 10px;
+                                width: 21.3cm;
+                                height: 30cm;
+                                padding: 10px 30px 0px 30px;
                                 margin: 0;
                                 background: #FFFFFF;
                                 box-sizing: border-box;
+                                border: none;
                                 page-break-after: {{ $pageIndex < count($chunks) - 1 ? 'always' : 'avoid' }};">
-                        <div style="width: 100%; height : 15%;"></div>
+                        <div style="width: 100%; height : 5.5cm;"></div>
                         <main style="width: 100%; height : 70%;">
+
+                            <!--Header-->
                             <div style="width: 100%; height: auto; display: flex;">
                                 <div style="width: 50%; height: auto; margin-right: 20px;">
                                     <h1
@@ -469,6 +472,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!--Content-->
                             <div class="details" style="margin-top: 20px;">
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <thead>
@@ -525,6 +530,7 @@
                                             </th>
                                         </tr>
                                     </thead>
+
                                     <tbody style="border-top: 1px solid black; border-bottom: 1px solid black;">
                                         @foreach ($dataCetak as $index => $item)
                                             @php
@@ -546,12 +552,6 @@
                                                     <p
                                                         style="line-height: 13.8px; font-size: 12px;font-family: Helvetica;padding-right:8px">
                                                         {{ str_replace('<', '&lt;', $item->NAMA_BRG) }}
-                                                        <br>
-                                                        {{ $item->KET ?? '-' }}
-                                                        <br>
-                                                        {{ $item->nama_sub_kategori }}
-                                                        <br>
-                                                        {{ $item->nama_kategori }}
                                                         <br>
                                                         {{ $item->No_trans }}
                                                     </p>
@@ -590,6 +590,8 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <!--Isi Content-->
                             <div style="width: 100%; display: flex;">
                                 <div style="width: 70%;">
                                     {{-- <h1
@@ -660,6 +662,9 @@
                                     </div>
                                 </div>
                             </div>
+
+
+                            <!--Footer-->
                             @if ($deliveryTerm)
                                 <div style="width: 80%; height: auto; margin-left: 20px;">
                                     <div style="width: 100%; display: flex;">
@@ -859,16 +864,68 @@
                                     </div>
                                 </div>
                             @endif
-                            <div style="width: 100%; display: flex;">
-                                <div style="width: 70%;">
-                                    <h1
-                                        style="font-size: 13px;font-family: Helvetica; font-weight: bold;margin-top:50px">
-                                        Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}</h1>
+                        </main>
+                    </div>
+
+                    <!--Tanda Tangan-->
+                    <div class="page">
+                        <div class="page-footer" style="display:flex; text-align:center;">
+                            {{-- MENYETUJUI --}}
+                            <div style="text-align:center; transform: translateX(-2.5cm); transform: translateY(-6cm);">
+                                <div style="height:22mm; display:flex; align-items:center; justify-content:center;">
+                                    @if(!empty($ttdDirektur?->FotoTtd))
+                                        <img
+                                            src="data:image/png;base64,{{ $ttdDirektur->FotoTtd }}"
+                                            style="max-height:22mm; max-width:100%; object-fit:contain;"
+                                            alt="TTD Direktur"
+                                        >
+                                    @endif
+                                </div>
+                                <div>
+                                    <strong>RUDY SANTOSO</strong>
                                 </div>
                             </div>
-                        </main>
+                        </div>
+                        <div>
+                            <h1
+                                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin-top: -165px;">
+                                Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}
+                            </h1>
+                        </div>
                     </div>
                 @endforeach
             @endif
+
+
+<!--===========================================================
+========================= END SPPB BARU========================
+============================================================-->
+
+
+
         </div>
     </body>
+
+
+<style>
+.page {
+    width: 19.5cm;
+    min-height: 27.94cm;
+    padding: 10mm;
+    box-sizing: border-box;
+    page-break-after: always;
+}
+
+
+/* Footer */
+.page-footer {
+
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    font-family: Helvetica;
+    font-size: 13px;
+}
+
+
+</style>
