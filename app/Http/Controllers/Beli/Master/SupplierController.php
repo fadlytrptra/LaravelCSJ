@@ -99,77 +99,85 @@ class SupplierController extends Controller
         //         return redirect()->back()->with('success', 'Data Id Supplier ' . $supplier_id . ' sudah dihapus.');
         //     }
         $jenis = $request->input('jenis');
-        if ($jenis == 'tambahSupplier') {
-            $NM_SUP = $request->input('NM_SUP');
-            $PERSON1 = $request->input('PERSON1');
-            $PERSON2 = $request->input('PERSON2');
-            $TLP1 = $request->input('TLP1');
-            $TLP2 = $request->input('TLP2');
-            $HPHONE1 = $request->input('HPHONE1');
-            $HPHONE2 = $request->input('HPHONE2');
-            $TELEX1 = $request->input('TELEX1');
-            $TELEX2 = $request->input('TELEX2');
-            $PAGER1 = NULL; //$request->input('PAGER1');
-            $PAGER2 = NULL; //$request->input('PAGER2');
-            $ALAMAT1 = $request->input('ALAMAT1');
-            $ALAMAT2 = $request->input('ALAMAT2');
-            $KOMPLEK1 = $request->input('KOMPLEK1');
-            $KOMPLEK2 = $request->input('KOMPLEK2');
-            $KOTA1 = $request->input('KOTA1');
-            $KOTA2 = $request->input('KOTA2');
-            $FAX1 = $request->input('FAX1');
-            $FAX2 = $request->input('FAX2');
-            $NEGARA1 = $request->input('NEGARA1');
-            $NEGARA2 = $request->input('NEGARA2');
-            $COUNTER_TRANS = 0;
-            $SALDO_HUTANG = 0;
-            $SALDO_HUTANG_Rp = 0;
-            $ID_MATAUANG = $request->input('ID_MATAUANG');
-            $STATUS = NULL; //$request->input('STATUS');
-            $IsActive = 1;
+
+        if ($jenis === 'tambahSupplier') {
+
             try {
                 DB::connection('ConnPurchase')->statement(
-                    'EXEC SP_4384_PBL_Maintenance_Supplier @XKode = ?, @XNM_SUP = ?, @XPERSON1 = ?, @XPERSON2 = ?, @XTLP1 = ?, @XTLP2 = ?, @XHPHONE1 = ?,
-                            @XHPHONE2 = ?, @XTELEX1 = ?, @XTELEX2 = ?, @XPAGER1 = ?, @XPAGER2 = ?, @XALAMAT1 = ?, @XALAMAT2 = ?, @XKOMPLEK1 = ?, @XKOMPLEK2 = ?, @XKOTA1 = ?,
-                            @XKOTA2 = ?, @XFAX1 = ?, @XFAX2 = ?, @XNEGARA1 = ?, @XNEGARA2 = ?, @XCOUNTER_TRANS = ?, @XSALDO_HUTANG = ?, @XSALDO_HUTANG_Rp = ?, @XID_MATAUANG = ?,
-                            @XSTATUS = ?, @XIsActive = ?'
-                    ,
+                    'EXEC SP_4384_PBL_Maintenance_Supplier
+                        @XKode = ?,
+                        @XNM_SUP = ?,
+                        @XPERSON1 = ?,
+                        @XPERSON2 = ?,
+                        @XTLP1 = ?,
+                        @XTLP2 = ?,
+                        @XHPHONE1 = ?,
+                        @XHPHONE2 = ?,
+                        @XTELEX1 = ?,
+                        @XTELEX2 = ?,
+                        @XPAGER1 = ?,
+                        @XPAGER2 = ?,
+                        @XALAMAT1 = ?,
+                        @XALAMAT2 = ?,
+                        @XKOMPLEK1 = ?,
+                        @XKOMPLEK2 = ?,
+                        @XKOTA1 = ?,
+                        @XKOTA2 = ?,
+                        @XFAX1 = ?,
+                        @XFAX2 = ?,
+                        @XNEGARA1 = ?,
+                        @XNEGARA2 = ?,
+                        @XCOUNTER_TRANS = ?,
+                        @XSALDO_HUTANG = ?,
+                        @XSALDO_HUTANG_Rp = ?,
+                        @XID_MATAUANG = ?,
+                        @XSTATUS = ?,
+                        @XIsActive = ?',
                     [
                         2,
-                        $NM_SUP,
-                        $PERSON1,
-                        $PERSON2,
-                        $TLP1,
-                        $TLP2,
-                        $HPHONE1,
-                        $HPHONE2,
-                        $TELEX1,
-                        $TELEX2,
-                        $PAGER1,
-                        $PAGER2,
-                        $ALAMAT1,
-                        $ALAMAT2,
-                        $KOMPLEK1,
-                        $KOMPLEK2,
-                        $KOTA1,
-                        $KOTA2,
-                        $FAX1,
-                        $FAX2,
-                        $NEGARA1,
-                        $NEGARA2,
-                        $COUNTER_TRANS,
-                        $SALDO_HUTANG,
-                        $SALDO_HUTANG_Rp,
-                        $ID_MATAUANG,
-                        $STATUS,
-                        $IsActive,
+                        $request->NM_SUP,
+                        $request->PERSON1,
+                        $request->PERSON2,
+                        $request->TLP1,
+                        $request->TLP2,
+                        $request->HPHONE1,
+                        $request->HPHONE2,
+                        $request->TELEX1,
+                        $request->TELEX2,
+                        null,
+                        null,
+                        $request->ALAMAT1,
+                        $request->ALAMAT2,
+                        $request->KOMPLEK1,
+                        $request->KOMPLEK2,
+                        $request->KOTA1,
+                        $request->KOTA2,
+                        $request->FAX1,
+                        $request->FAX2,
+                        $request->NEGARA1,
+                        $request->NEGARA2,
+                        0,
+                        0,
+                        0,
+                        $request->ID_MATAUANG,
+                        null,
+                        1
                     ]
                 );
-                return response()->json(['success' => true]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Supplier berhasil ditambahkan'
+                ]);
+
             } catch (Exception $e) {
-                return response()->json(['error' => 'Failed to insert data: ' . $e->getMessage()], 500);
+                return response()->json([
+                    'success' => false,
+                    'error' => $e->getMessage()
+                ], 500);
             }
-        } else if ($jenis == 'editSupplier') {
+        }
+        else if ($jenis == 'editSupplier') {
             try {
                 $NM_SUP = $request->input('NM_SUP');
                 $PERSON1 = $request->input('PERSON1');

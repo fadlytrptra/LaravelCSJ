@@ -78,6 +78,8 @@ jQuery(function ($) {
         ],
     });
 
+    let currentSupplierId = null;
+
     //#region Functions
     function clearModal() {
         // Clear all input type="text"
@@ -150,21 +152,22 @@ jQuery(function ($) {
 
     //#region Event Listeners
     button_tambahSupplier.addEventListener("click", function (e) {
-        $("#save_button").data("id", null);
+        currentSupplierId = null;
         tambahSupplierLabel.innerText = "Tambah Supplier";
+        clearModal();
     });
 
     save_button.addEventListener("click", function (e) {
-        let idSupplier = $("#save_button").data("id");
-        console.log(idSupplier);
+        // let idSupplier = $("#save_button").data("id");
+        console.log("SAVE:", currentSupplierId);
 
         $(document).off("focusin.modal");
         $.ajax({
             url: "/Supplier",
             type: "POST",
             data: {
-                jenis: idSupplier ? "editSupplier" : "tambahSupplier",
-                NO_SUP: idSupplier ? idSupplier : null,
+                jenis: currentSupplierId ? "editSupplier" : "tambahSupplier",
+                NO_SUP: currentSupplierId,
                 NM_SUP: supplier_text.value.trim(),
                 PERSON1: contact_person1.value.trim(),
                 PERSON2: contact_person2.value.trim(),
@@ -221,36 +224,82 @@ jQuery(function ($) {
         clearModal();
     });
 
-    $("#tambahSupplierModal").on("hidden.bs.modal", function (event) {
-        clearModal();
-    });
+    // $("#tambahSupplierModal").on("hidden.bs.modal", function (event) {
+    //     currentSupplierId = null;
+    //     clearModal();
+    // });
 
     //fungsi edit supplier
-    $(document).on("click", ".btn-edit", function (e) {
-        var rowID = $(this).data("id");
-        $("#save_button").data("id", rowID);
+    // $(document).on("click", ".btn-edit", function (e) {
+    //     currentSupplierId = $(this).attr("data-id");
+    //     tambahSupplierLabel.innerText = "Edit Supplier";
+
+    //     console.log("EDIT:", currentSupplierId);
+
+    //     // // Get the row data from the DataTable
+    //     // var rowData = table_Supplier.row($(this).closest("tr")).data();
+
+    //     if (!rowData) {
+    //         console.error("Row data not found");
+    //         return;
+    //     }
+    //     console.log(rowData);
+
+    //     $.ajax({
+    //         url: "/Supplier/getSupplierById",
+    //         type: "GET",
+    //         data: {
+    //             idSupplier: currentSupplierId,
+    //         },
+    //         success: function (response) {
+    //             console.log(response);
+    //             if (response) {
+    //                 // Assuming your server returns an array of objects for the table data
+    //                 supplier_text.value = response[0].NM_SUP.trim();
+    //                 contact_person1.value = response[0].PERSON1 ?? "".trim();
+    //                 phone1.value = response[0].TLP1 ?? "".trim();
+    //                 mobile_phone1.value = response[0].HPHONE1 ?? "".trim();
+    //                 email1.value = response[0].TELEX1 ?? "".trim();
+    //                 fax1.value = response[0].FAX1 ?? "".trim();
+    //                 alamat1.value = response[0].ALAMAT1 ?? "".trim();
+    //                 kota1.value = response[0].KOTA1 ?? "".trim();
+    //                 negara1.value = response[0].NEGARA1 ?? "".trim();
+    //                 contact_person2.value = response[0].PERSON2 ?? "".trim();
+    //                 phone2.value = response[0].TLP2 ?? "".trim();
+    //                 mobile_phone2.value = response[0].HPHONE2 ?? "".trim();
+    //                 email2.value = response[0].TELEX2 ?? "".trim();
+    //                 fax2.value = response[0].FAX2 ?? "".trim();
+    //                 alamat2.value = response[0].ALAMAT2 ?? "".trim();
+    //                 kota2.value = response[0].KOTA2 ?? "".trim();
+    //                 negara2.value = response[0].NEGARA2 ?? "".trim();
+    //                 mata_uang.value = response[0].ID_MATAUANG;
+    //             } else {
+    //                 console.error(
+    //                     "Data is not in the expected format:",
+    //                     response
+    //                 );
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("Error fetching data: ", error);
+    //         },
+    //     });
+    // });
+
+    $(document).on("click", ".btn-edit", function () {
+        currentSupplierId = $(this).attr("data-id");
         tambahSupplierLabel.innerText = "Edit Supplier";
 
-        // Get the row data from the DataTable
-        var rowData = table_Supplier.row($(this).closest("tr")).data();
-
-        if (!rowData) {
-            console.error("Row data not found");
-            return;
-        }
-        console.log(rowData);
+        console.log("EDIT:", currentSupplierId);
 
         $.ajax({
             url: "/Supplier/getSupplierById",
             type: "GET",
             data: {
-                idSupplier: rowID,
+                idSupplier: currentSupplierId,
             },
             success: function (response) {
-                console.log(response);
-                if (response) {
-                    // Assuming your server returns an array of objects for the table data
-                    supplier_text.value = response[0].NM_SUP.trim();
+                 supplier_text.value = response[0].NM_SUP.trim();
                     contact_person1.value = response[0].PERSON1 ?? "".trim();
                     phone1.value = response[0].TLP1 ?? "".trim();
                     mobile_phone1.value = response[0].HPHONE1 ?? "".trim();
@@ -268,18 +317,10 @@ jQuery(function ($) {
                     kota2.value = response[0].KOTA2 ?? "".trim();
                     negara2.value = response[0].NEGARA2 ?? "".trim();
                     mata_uang.value = response[0].ID_MATAUANG;
-                } else {
-                    console.error(
-                        "Data is not in the expected format:",
-                        response
-                    );
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching data: ", error);
-            },
+            }
         });
     });
+
 
     //fungsi hapus/nonaktif supplier
     $(document).on("click", ".btn-delete", function (e) {
