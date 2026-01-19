@@ -291,12 +291,20 @@ class CreateSPPBController extends Controller
                     }
                 }
             } else {
-                DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
-                    4,
-                    $No_sppb,
-                    $keteranganCetak
-                ]);
+                foreach ($rows as $row) {
+                    $No_trans = $row[11];
+
+                    DB::connection('ConnPurchase')->statement(
+                        'exec SP_4384_PRG_Maintenance_Order_Pembelian
+                        @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?',
+                        [
+                            4,
+                            $No_trans,
+                            $No_sppb,
+                            $keteranganCetak
+                        ]
+                    );
+                }
             }
             return response()->json(['message' => 'Sudah Berhasil Save PO!', "data" => $No_sppb]);
         } else if ($jenisStore == 'sumbitPO') {
@@ -374,12 +382,20 @@ class CreateSPPBController extends Controller
                     }
                 }
             } else {
-                DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
-                    5,
-                    $No_sppb,
-                    $keteranganCetak
-                ]);
+                foreach ($rows as $row) {
+                    $No_trans = $row[11];
+
+                    DB::connection('ConnPurchase')->statement(
+                        'exec SP_4384_PRG_Maintenance_Order_Pembelian
+                        @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?',
+                        [
+                            5,
+                            $No_trans,
+                            $No_sppb,
+                            $keteranganCetak
+                        ]
+                    );
+                }
             }
             return response()->json(['message' => 'Sudah Berhasil Submit PO!', "data" => $No_sppb]);
         } else if ($jenisStore == 'accPO') {
@@ -410,7 +426,13 @@ class CreateSPPBController extends Controller
             $listSPPB = DB::connection('ConnPurchase')
                 ->select('exec SP_4384_Maintenance_SPPB @XKode= ?', [0]);
             $dataSPPB = [];
+            $uniqueSPPB = [];
+
             foreach ($listSPPB as $SPPB) {
+                if (isset($uniqueSPPB[$SPPB->No_sppb])) {
+                    continue;
+                }
+                $uniqueSPPB[$SPPB->No_sppb] = true;
                 $dataSPPB[] = [
                     'No_sppb' => $SPPB->No_sppb,
                     'NM_SUP' => $SPPB->NM_SUP,
