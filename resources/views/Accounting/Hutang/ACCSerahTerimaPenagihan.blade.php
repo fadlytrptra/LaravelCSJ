@@ -28,19 +28,17 @@
                                 </tbody>
                             </table>
                             <p>
-                            <div class="mb-3">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="checkbox_all" value="option2">
-                                    <label class="form-check-label" for="checkbox2">Pilih Semua</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <button type="button" class="btn btn-primary" id="btn_batal">Batal Serah Terima</button>
-                                </div>
-                                <div style="text-align: right;">
-                                    <button type="button" class="btn btn-success" id="btn_proses">Proses</button>
-                                    {{-- <input id="btn_proses" name="proses" value="Proses" class="btn btn-success" style="width: 150px"> --}}
-                                    {{-- <input type="submit" name="keluar" value="Keluar" class="btn btn-primary"> --}}
-                                </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="checkbox_all" value="option2">
+                                <label class="form-check-label" for="checkbox2">Pilih Semua</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                            </div>
+                            <div style="text-align: right;">
+                                <button type="button" class="btn btn-danger" id="btn_batal">Batal Serah Terima</button>
+                                <button type="button" class="btn btn-success" id="btn_proses">Proses</button>
+                                {{-- <input id="btn_proses" name="proses" value="Proses" class="btn btn-success" style="width: 150px"> --}}
+                                {{-- <input type="submit" name="keluar" value="Keluar" class="btn btn-primary"> --}}
                             </div>
                         </form>
                         <br>

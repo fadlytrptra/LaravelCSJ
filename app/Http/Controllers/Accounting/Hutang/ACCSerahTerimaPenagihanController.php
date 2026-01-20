@@ -47,11 +47,11 @@ class ACCSerahTerimaPenagihanController extends Controller
                             ]);
                         } else {
                             $result = DB::connection('ConnAccounting')
-                                ->select('exec SP_1273_ACC_CHECK_TT_TERIMAGDG ?', [$item['Id_Penagihan']]);
+                                ->select('exec SP_1273_PRG_CHECK_TT_TERIMAGDG ?', [$item['Id_Penagihan']]);
                             // dd($result);
                             if ($result[0]->Ada > 0) {
                                 $result = DB::connection('ConnAccounting')
-                                    ->select('exec SP_1273_ACC_LIST_TT_MASUKGDG ?', [$item['Id_Penagihan']]);
+                                    ->select('exec SP_1273_PRG_LIST_TT_MASUKGDG ?', [$item['Id_Penagihan']]);
                                 // dd($result);
                                 $tmpTrans = $result[0]->NoTransaksiTmp ?? '0';
                                 if ($tmpTrans == '0') {
@@ -65,10 +65,10 @@ class ACCSerahTerimaPenagihanController extends Controller
                                 }
                             } else {
                                 DB::connection('ConnAccounting')
-                                    ->statement('exec SP_1273_ACC_UDT_TT_SERAHTRM ?', [$item['Id_Penagihan']]);
+                                    ->statement('exec SP_1273_PRG_UDT_TT_SERAHTRM ?', [$item['Id_Penagihan']]);
 
                                 DB::connection('ConnAccounting')
-                                    ->statement('exec SP_1273_ACC_INS_TT_IDBAYAR ?, ?, ?, ?', [
+                                    ->statement('exec SP_1273_PRG_INS_TT_IDBAYAR ?, ?, ?, ?', [
                                         trim($item['Id_Penagihan']),
                                         trim($item['Id_MataUang']),
                                         $item['Nilai_Penagihan'],
@@ -82,7 +82,7 @@ class ACCSerahTerimaPenagihanController extends Controller
                 foreach ($data as $item) {
                     if (!empty($item['Id_Penagihan'])) {
                         DB::connection('ConnAccounting')
-                            ->statement('exec SP_1273_ACC_TT_BATAL_SERAHTRM ?, ?', [
+                            ->statement('exec SP_1273_PRG_TT_BATAL_SERAHTRM ?, ?', [
                                 $item['Id_Pembayaran'],
                                 $item['Id_Penagihan']
                             ]);
@@ -100,7 +100,7 @@ class ACCSerahTerimaPenagihanController extends Controller
     {
         if ($id == 'getSerahTerima') {
             $data = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_LIST_TT_SERAHTRM');
+                ->select('exec SP_1273_PRG_LIST_TT_SERAHTRM');
             // dd($data);
             $response = [];
             foreach ($data as $row) {
@@ -121,7 +121,7 @@ class ACCSerahTerimaPenagihanController extends Controller
             // $listPengajuan = $request->input('checkedRows', []);
             // dd($listPengajuan);
             $data = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_BATAL_SERAHTERIMA');
+                ->select('exec SP_1273_PRG_TT_BATAL_SERAHTERIMA');
             // dd($data);
             $response = [];
             foreach ($data as $row) {

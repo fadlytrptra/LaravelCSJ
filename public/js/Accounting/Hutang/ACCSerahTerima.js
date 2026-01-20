@@ -50,7 +50,7 @@ $(document).ready(function () {
             ],
             // columnDefs: [{ targets: [7], visible: false }],
             paging: false,
-            scrollY: "400px",
+            scrollY: "350px",
             scrollCollapse: true,
         });
     }
