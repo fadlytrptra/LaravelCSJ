@@ -74,8 +74,8 @@ class CetakSPPBBTTBController extends Controller
             return datatables($dataSPPB)->make(true);
         } else if ($id == 'getDataTerima') {
             $NoSPPB = $request->NoSPPB;
-            $KdDivisi = $request->KdDivisi;
-            $dataTerima = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_DATA_BTTB @NoSPPB = ?, @KdDivisi = ?', [$NoSPPB, $KdDivisi]);
+            // $KdDivisi = $request->KdDivisi;
+            $dataTerima = DB::connection('ConnPurchase')->select('SELECT nomor_terima, tanggal_datang FROM View_terima_new WHERE nomor_sppb = ?',[$NoSPPB]);
 
             return datatables($dataTerima)->make(true);
         } else if ($id == 'print') {
