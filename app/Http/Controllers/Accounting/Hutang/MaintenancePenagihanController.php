@@ -258,6 +258,36 @@ class MaintenancePenagihanController extends Controller
             } catch (Exception $ex) {
                 return response()->json(['error' => $ex->getMessage() . ' error update Nilai Akhir'], 500);
             }
+        } else if ($jenisProses == 'simpanKeteranganPenagihan') {
+            $idPenagihan = $request->idPenagihan;
+            $keteranganText = $request->keteranganText;
+            $keteranganNilai = $request->keteranganNilai;
+
+            try {
+                DB::connection('ConnAccounting')
+                    ->statement(
+                        'exec SP_1273_PRG_INS_TT_KETERANGAN @IdPenagihan = ?, @Ket = ?, @Nilai = ?',
+                        [$idPenagihan, $keteranganText, $keteranganNilai]
+                    );
+                return response()->json(['success' => 'Keterangan sudah disimpan'], 200);
+            } catch (Exception $ex) {
+                return response()->json(['error' => $ex->getMessage() . ' error insert Keterangan'], 500);
+            }
+        } else if ($jenisProses == 'updateKeteranganPenagihan') {
+            $idPenagihan = $request->idPenagihan;
+            $keteranganText = $request->keteranganText;
+            $keteranganNilai = $request->keteranganNilai;
+
+            try {
+                DB::connection('ConnAccounting')
+                    ->statement(
+                        'exec SP_1273_PRG_UDT_TT_KETERANGAN @IdPenagihan = ?, @Ket = ?, @Nilai = ?',
+                        [$idPenagihan, $keteranganText, $keteranganNilai]
+                    );
+                return response()->json(['success' => 'Keterangan sudah diupdate'], 200);
+            } catch (Exception $ex) {
+                return response()->json(['error' => $ex->getMessage() . ' error update Keterangan'], 500);
+            }
         } else {
             return response()->json('Invalid request', 405);
         }
@@ -455,6 +485,19 @@ class MaintenancePenagihanController extends Controller
                 );
             $dataCetak = DB::connection('ConnAccounting')->select('SELECT * FROM VW_PRG_1273_ACC_CTK_TT_NONRP WHERE Id_Penagihan = ? ', [$idPenagihan]);
             return view('Accounting.Hutang.MaintenancePenagihan.cetak', compact('dataCetak'));
+        } else if ($id == 'getDataKeteranganPenagihan') {
+            $idPenagihan = $request->idPenagihan;
+            $countDataKeterangan = DB::connection('ConnAccounting')
+                ->select('exec SP_1273_PRG_CHECK_TT_KETERANGAN @IdPenagihan = ?', [$idPenagihan]);
+
+            if ($countDataKeterangan[0]->Ada > 0) {
+                $dataKeterangan = DB::connection('ConnAccounting')
+                    ->select('exec SP_1273_PRG_LIST_TT_KETERANGAN @IdPenagihan = ?', [$idPenagihan]);
+
+                return response()->json(['dataKeterangan' => $dataKeterangan], 200);
+            } else {
+                return response()->json(['error' => 'Data Keterangan Penagihan tidak ditemukan']);
+            }
         } else {
             return response()->json('Invalid request', 405);
         }

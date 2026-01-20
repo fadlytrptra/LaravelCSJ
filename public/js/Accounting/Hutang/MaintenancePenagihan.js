@@ -108,6 +108,10 @@ jQuery(function ($) {
     let pajak_hargaPPN = document.getElementById("pajak_hargaPPN");
     let pajak_kursPajak = document.getElementById("pajak_kursPajak");
     let pajak_buttonSimpan = document.getElementById("pajak_buttonSimpan");
+    let keterangan_id = document.getElementById("keterangan_id");
+    let keterangan_text = document.getElementById("keterangan_text");
+    let keterangan_nilai = document.getElementById("keterangan_nilai");
+    let keterangan_buttonSimpan = document.getElementById("keterangan_buttonSimpan"); // prettier-ignore
     let modeForm;
     let selectedRowDataDetailSPPB;
     let selectedRowDataDetailFakturPajak;
@@ -1091,7 +1095,7 @@ jQuery(function ($) {
     });
 
     button_nilaiAkhir.addEventListener("click", function (e) {
-        if ((nilai_akhir.value == "" || nilai_akhir.value <= 0)) {
+        if (nilai_akhir.value == "" || nilai_akhir.value <= 0) {
             Swal.fire({
                 icon: "error",
                 title: "Error",
@@ -1144,6 +1148,158 @@ jQuery(function ($) {
                     icon: "error",
                     title: "Error",
                     text: "Failed to post Nilai Pembulatan.",
+                });
+            },
+        });
+    });
+
+    button_keterangan.addEventListener("click", function (e) {
+        if (id_penagihan.value == "") {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                showConfirmButton: false,
+                timer: 1000,
+                text: "Harus input Detail Penagihan dulu",
+                returnFocus: false,
+            });
+            button_browseIdPenagihan.focus();
+            return;
+        }
+
+        $.ajax({
+            url: "/MaintenancePenagihan/getDataKeteranganPenagihan",
+            method: "GET",
+            data: {
+                _token: csrfToken,
+                idPenagihan: id_penagihan.value,
+            },
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        showConfirmButton: false,
+                        timer: 1000,
+                        text: "fetching data Keterangan Penagihan failed ",
+                        returnFocus: false,
+                    });
+                } else {
+                    console.log(data);
+
+                    if (data.error) {
+                        keterangan_text.value = "";
+                        keterangan_nilai.value = "";
+                        keterangan_id.value = "";
+                    } else {
+                        keterangan_id.value = data.dataKeterangan[0].Id_Detail;
+                        keterangan_text.value =
+                            data.dataKeterangan[0].Keterangan;
+                        keterangan_nilai.value = numeral(
+                            data.dataKeterangan[0].Nilai,
+                        ).format("0,0.0000");
+                    }
+                    $("#modalTTKeterangan").modal("show");
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to load data Keterangan Penagihan.",
+                });
+            },
+        });
+    });
+
+    keterangan_text.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            keterangan_nilai.focus();
+        }
+    });
+
+    keterangan_nilai.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            this.value = numeral(this.value).format("0,0.0000");
+            keterangan_buttonSimpan.focus();
+        }
+    });
+
+    keterangan_buttonSimpan.addEventListener("click", function (e) {
+        if (keterangan_text.value == "") {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                showConfirmButton: false,
+                timer: 1000,
+                text: "Harus input keterangan dulu",
+                returnFocus: false,
+            });
+            keterangan_text.focus();
+            return;
+        }
+
+        if (keterangan_nilai.value == "") {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                showConfirmButton: false,
+                timer: 1000,
+                text: "Harus input nilai dulu",
+                returnFocus: false,
+            });
+            keterangan_nilai.focus();
+            return;
+        }
+
+        $.ajax({
+            url: "/MaintenancePenagihan",
+            method: "POST",
+            data: {
+                _token: csrfToken,
+                jenisProses:
+                    keterangan_id.value == ""
+                        ? "simpanKeteranganPenagihan"
+                        : "updateKeteranganPenagihan",
+                idPenagihan: id_penagihan.value,
+                keteranganText: keterangan_text.value,
+                keteranganNilai: numeral(keterangan_nilai.value).value(),
+            },
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        showConfirmButton: false,
+                        timer: 1000,
+                        text: "Post data Keterangan Penagihan failed ",
+                        returnFocus: false,
+                    });
+                } else {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Success",
+                            showConfirmButton: false,
+                            timer: 1000,
+                            text: data.success,
+                            returnFocus: false,
+                        });
+                        $("#modalTTKeterangan").modal("hide");
+                    } else {
+                        console.error(data);
+                    }
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to post Keterangan Penagihan.",
                 });
             },
         });
