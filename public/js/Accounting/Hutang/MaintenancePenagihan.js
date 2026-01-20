@@ -647,7 +647,7 @@ jQuery(function ($) {
 
     button_koreksiPenagihan.addEventListener("click", function (e) {
         init("koreksiPenagihan");
-        tanggal_penagihan.focus();
+        button_browseSupplier.focus();
         modeForm = "koreksiPenagihan";
     });
 
@@ -1091,7 +1091,7 @@ jQuery(function ($) {
     });
 
     button_nilaiAkhir.addEventListener("click", function (e) {
-        if ((nilai_akhir.value = "" || nilai_akhir.value <= 0)) {
+        if ((nilai_akhir.value == "" || nilai_akhir.value <= 0)) {
             Swal.fire({
                 icon: "error",
                 title: "Error",
