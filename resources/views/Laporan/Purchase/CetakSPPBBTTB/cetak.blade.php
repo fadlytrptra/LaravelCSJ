@@ -51,6 +51,19 @@
     <body>
         <div style="height: 20cm; overflow: overflow;gap: 5px;">
             @if ($jenisCetak == 'SPPB')
+              <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .sppb-page {
+                    margin-top: 2cm;
+                    margin-right: 1cm;
+                    margin-left: 0.5cm;
+                }
+            </style>
+             <div class="sppb-page">
                 <div style="display: flex;flex-direction: column;text-align: right;">
                     <label>{{ $dataCetak[0]->kode_divisi }} {{ $dataCetak[0]->nomor_sppb }}</label>
                     <label>{{ $tanggalSPPB }}</label>
@@ -77,13 +90,12 @@
                                 $sumTotalHarga += (float) $item->TotalHarga;
                             @endphp
                             <tr>
-                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">{{ $index + 1 }}
-                                </td>
-                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
+                                <td style="padding: 4px; font-size: 13px;border:1px solid #000;">{{ $index + 1 }}</td>
+                                <td style="padding: 4px; font-size: 13px;border:1px solid #000;">
                                     {{ number_format($item->quantity, 2, '.', ',') }}</td>
-                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
+                                <td style="padding: 4px; font-size: 13px;border:1px solid #000;">
                                     {{ trim($item->Nama_satuan) }}</td>
-                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
+                                <td style="padding: 4px; font-size: 13px;border:1px solid #000;">
                                     <div style="display: flex;flex-direction: row;">
                                         <div style="display: flex;flex-direction: column;flex:0.2;">
                                             <label>
@@ -96,24 +108,24 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
+                                <td style="padding: 4px; font-size: 13px;border:1px solid #000;">
                                     {{ $hargaSatFormatted }}
                                 </td>
-                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
+                                <td style="padding: 4px; font-size: 13px;border:1px solid #000;">
                                     @if ($item->PPN > 0)
                                         {{ number_format($item->PPN, 2, '.', ',') }}
                                     @else
                                         0
                                     @endif
                                 </td>
-                                <td style="padding: 4px; font-size: 10px;border:1px solid #000;">
+                                <td style="padding: 4px; font-size: 13px;border:1px solid #000;">
                                     {{ $hargaFormatted }}
                                 </td>
                             </tr>
                         @endforeach
                     </table>
                     <div
-                        style="display: flex;flex-direction: row;border-bottom: solid 3px grey;margin: 10px 0 5px 0;gap: 5px;font-size: 12px;">
+                        style="display: flex;flex-direction: row;border-bottom: solid 3px grey;margin: 10px 0 5px 0;gap: 5px;font-size: 13px;">
                         <div style="display: flex;flex-direction: column;flex:0.15;margin: 0 0 10px 0;">
                             <label>Supplier</label>
                         </div>
@@ -133,7 +145,27 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+<!--===========================================================
+=========================BTTB BARU=============================
+============================================================-->
+
+
             @elseif ($jenisCetak == 'BTTB')
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .bttb-page {
+                    margin-top: 2cm;
+                    margin-right: 1cm;
+                    margin-left: 1cm;
+                }
+            </style>
+            <div class="bttb-page">
                 <div style="display: flex;flex-direction: row;">
                     <div style="display: flex;flex-direction: column;flex: 0.5;text-align: left;">
                         <label style="font-weight: bold">PT. CAHAYA SANTOSO JAYA</label>
@@ -198,7 +230,7 @@
                             border-right: 1px solid grey;
                             border-bottom: 1px solid grey;
                             border-left: 1px solid grey;
-                            font-size: 10px;
+                            font-size: 13px;
                             gap: 2px;">
                     <div style="display: flex;flex-direction: row;">
                         <div style="display: flex;flex-direction: column;flex: 0.245;padding: 0 0 0 5px;gap: 2px;">
@@ -314,6 +346,14 @@
                         <label>( . . . . . . . . . . . . . . .)</label>
                     </div>
                 </div>
+            </div>
+<!--===========================================================
+=========================END BTTB BARU==========================
+============================================================-->
+
+
+
+
 
 <!--===========================================================
 =========================SPPB BARU=============================
