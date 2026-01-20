@@ -167,6 +167,20 @@
                         <td style="border: none;padding: 0 0 0 5px;">{{ $item->Symbol }}
                             {{ number_format($total, 4, '.', ',') }} </td>
                     </tr>
+                    @if ($dataCetak[0]->Id_MataUang_BC !== 'IDR')
+                        <tr>
+                            <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">
+                                Kurs IDR</td>
+                            <td style="border: none;padding: 0 0 0 5px;">Rp.
+                                {{ number_format($dataCetak[0]->Kurs_Rp, 4, '.', ',') }} </td>
+                        </tr>
+                        <tr>
+                            <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">
+                                Total IDR</td>
+                            <td style="border: none;padding: 0 0 0 5px;">Rp.
+                                {{ number_format($dataCetak[0]->Harga_TerbayarRp, 4, '.', ',') }} </td>
+                        </tr>
+                    @endif
                 @endif
             </table>
             <div style="display: flex;flex-direction: row;margin-top: 10px;font-size: 12px;">

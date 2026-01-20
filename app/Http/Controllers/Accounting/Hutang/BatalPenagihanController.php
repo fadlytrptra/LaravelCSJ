@@ -20,7 +20,7 @@ class BatalPenagihanController extends Controller
         $bulan = now()->format('m');
         $tahun = now()->format('y');
         $penagihan = DB::connection('ConnAccounting')
-            ->select('exec [SP_1273_ACC_LIST_IDTT_BTLTT] @Bln = ?, @Thn = ?', [$bulan, $tahun]);
+            ->select('exec [SP_1273_PRG_LIST_IDTT_BTLTT] @Bln = ?, @Thn = ?', [$bulan, $tahun]);
 
         return view('Accounting.Hutang.BatalPenagihan', compact('access', 'penagihan'));
 
@@ -59,7 +59,7 @@ class BatalPenagihanController extends Controller
             // dd($confirmation);
             if ($confirmation === 'yes') {
                 // Execute the stored procedure to cancel TT
-                DB::connection('ConnAccounting')->statement('EXEC Sp_1273_ACC_BATAL_TT @IdTT = ?, @Alasan = ?', [$idTT, $alasan]);
+                DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_BATAL_TT @IdTT = ?, @Alasan = ?', [$idTT, $alasan]);
 
                 return redirect()->back()->with('success', 'Data sudah dibatalkan...!!');
             } else {
@@ -78,7 +78,7 @@ class BatalPenagihanController extends Controller
             $tahun = $request->input('tahun');
 
             $result1 = DB::connection('ConnAccounting')
-                ->select('EXEC SP_1273_ACC_LIST_IDTT_BTLTT @Bln = ?, @Thn = ?', [$bulan, $tahun]);
+                ->select('EXEC SP_1273_PRG_LIST_IDTT_BTLTT @Bln = ?, @Thn = ?', [$bulan, $tahun]);
             $dataSupplier = [];
             foreach ($result1 as $Supplier) {
                 $dataSupplier[] = [
@@ -95,7 +95,7 @@ class BatalPenagihanController extends Controller
             // dd($request);
             // Second stored procedure call
             $result2 = DB::connection('ConnAccounting')
-                ->select('EXEC SP_1273_ACC_LIST_TT_BTLTT @idtt = ?', [trim($penagihanId)]);
+                ->select('EXEC SP_1273_PRG_LIST_TT_BTLTT @idtt = ?', [trim($penagihanId)]);
             // dd($result2);
             $uang = $result2[0]->Nama_MataUang ?? '';
             $nilai = (float) ($result2[0]->Nilai_Penagihan ?? 0);
@@ -105,7 +105,7 @@ class BatalPenagihanController extends Controller
 
             // Third stored procedure call
             $result3 = DB::connection('ConnAccounting')
-                ->select('EXEC SP_1273_ACC_CHECK_IDTT_BTLTT @idtt = ?', [trim($penagihanId)]);
+                ->select('EXEC SP_1273_PRG_CHECK_IDTT_BTLTT @idtt = ?', [trim($penagihanId)]);
             // dd($result3);
             $status = '';
             if ($result3[0]->ada > 1) {
