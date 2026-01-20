@@ -29,14 +29,12 @@
                                 value="BTTB">
                             <label style="margin: 0; align-content: center;" for="radio_jenisBTTB">BTTB</label>
                         </div>
-                        @if ($user == 'adam')
-                            <div class="p-2" style="display: flex; flex-direction: row;">
-                                <input style="margin-right: 5px" type="radio" name="radio_jenisCetak"
-                                    id="radio_jenisEmail" value="Email">
-                                <label style="margin: 0; align-content: center;" for="radio_jenisEmail">Email
-                                    PO</label>
-                            </div>
-                        @endif
+                        <div class="p-2" style="display: none; flex-direction: row;" id="div_radioButtonEmail">
+                            <input style="margin-right: 5px" type="radio" name="radio_jenisCetak"
+                                id="radio_jenisEmail" value="Email">
+                            <label style="margin: 0; align-content: center;" for="radio_jenisEmail">Email
+                                PO</label>
+                        </div>
                         {{-- <div class="p-2" style="display: flex; flex-direction: row;">
                             <input style="margin-right: 5px" type="radio" name="radio_jenisCetak"
                                 id="radio_jenisRetur" value="Retur">
