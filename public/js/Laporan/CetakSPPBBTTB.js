@@ -391,6 +391,26 @@ jQuery(function ($) {
     });
 
     button_browseDataNomorTerima.addEventListener("click", function (e) {
+         if (!sppb.value) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'SPPB belum dipilih',
+                text: 'Silakan pilih SPPB terlebih dahulu.',
+            });
+            button_browseDataSPPB.focus();
+            return;
+        }
+
+        if (!id_divisi.value) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Divisi belum dipilih',
+                text: 'Silakan pilih Divisi terlebih dahulu.',
+            });
+            button_browseDataDivisi.focus();
+            return;
+        }
+
         try {
             Swal.fire({
                 title: "No. Terima",
@@ -442,9 +462,9 @@ jQuery(function ($) {
                                 },
                             },
                             columns: [
-                                { data: "No_terima" },
+                                { data: "nomor_terima" },
                                 {
-                                    data: "Datang",
+                                    data: "tanggal_datang",
                                     render: function (data, type, row) {
                                         return moment(data).format(
                                             "MM/DD/YYYY"
@@ -480,8 +500,8 @@ jQuery(function ($) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     console.log(result.value);
-                    no_terima.value = result.value.No_terima;
-                    tgl_datang.value = moment(result.value.Datang).format(
+                    no_terima.value = result.value.nomor_terima;
+                    tgl_datang.value = moment(result.value.tanggal_datang).format(
                         "YYYY-MM-DD"
                     );
                     button_cetak.focus();
