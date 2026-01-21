@@ -115,9 +115,14 @@ class SuratPesananManagerController extends Controller
     {
         // dd($request->all());
         $nosp = $request->nomorSPs;
-        $idManager = Auth::user()->NomorUser;
+        $idManager = trim(Auth::user()->NomorUser);
         for ($i = 0; $i < count($nosp); $i++) {
             DB::connection('ConnSales')->statement('exec SP_1273_PRG_ACC_SURATPESANAN @AccManager = ?, @IDSuratPesanan = ?', [$idManager, $nosp[$i]]);
+            DB::connection('ConnSales')
+                ->statement('exec SP_1273_PRG_ACC_SURATPESANAN_DIREKTUR @IDSuratPesanan = ?, @AccDir = ?', [
+                    $nosp[$i],
+                    $idManager
+                ]);
         }
         return redirect()->back()->with('success', 'Surat Pesanan yang Dipilih Sudah Disetujui!');
     }
@@ -331,7 +336,7 @@ class SuratPesananManagerController extends Controller
             // JIKA DATA BARU (INSERT)
             // ===============================
             if (is_null($id_pesanan[$i])) {
-        
+
                 DB::connection('ConnSales')->statement(
                     'exec SP_1273_PRG_MAINT_DETAILPESANAN1
                         @Kode = ?,
@@ -361,15 +366,15 @@ class SuratPesananManagerController extends Controller
                         $ppn[$i],
                     ]
                 );
-        
+
                 continue;
             }
-        
+
             DB::connection('ConnSales')
                 ->table('T_DETAILPESANAN')
-                ->where('IDPesanan', $id_pesanan[$i]) 
+                ->where('IDPesanan', $id_pesanan[$i])
                 ->update([
-                    'Qty' => $Qty[$i],                     
+                    'Qty' => $Qty[$i],
                     'HargaSatuan' => $HargaSatuan[$i],
                     'Satuan' => $Satuan[$i],
                     'PPN' => $ppn[$i],
@@ -381,14 +386,14 @@ class SuratPesananManagerController extends Controller
                     'Discount' => 0.0,
                 ]);
         }
-        
+
         return response()->json([
             'message' => 'Update berhasil dan sudah masuk ke database'
         ]);
-        
 
 
-        
+
+
         return response()->json(['message' => (string) 'Surat Pesanan ' . $no_sp . ' Sudah Disesuaikan!',]);
         // return redirect()->back()->with('success', 'Surat Pesanan ' . $no_sp . ' Sudah Disesuaikan!');
         //SP_1486_SLS_MAINT_HEADERPESANAN @kode = 2
