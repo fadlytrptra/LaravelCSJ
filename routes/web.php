@@ -147,6 +147,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('SuratPesananEkspor', App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananEksportController::class);
     Route::resource('SuratPesanan', App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananController::class);
     Route::resource('SuratPesananManager', App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananManagerController::class);
+    Route::resource('SuratPesananDirektur', App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananDirekturController::class);
     Route::resource('PenyesuaianSuratPesanan', App\Http\Controllers\Sales\Transaksi\SuratPesanan\PenyesuaianSuratPesananController::class);
     Route::resource('BarcodeKerta2', App\Http\Controllers\Sales\ToolPenjualan\BarcodeKerta2Controller::class);
     Route::resource('BatalJual', App\Http\Controllers\Sales\ToolPenjualan\BatalJualController::class);
@@ -171,7 +172,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/Expeditor/{id}/up', 'App\Http\Controllers\Sales\Master\ExpeditorController@update')->name('expeditor.update');
     // Route::get('Expeditor/{IDCust}', 'ExpeditorController@show');
     Route::post('/Expeditor/{id}', 'App\Http\Controllers\Sales\Master\ExpeditorController@destroy')->name('expeditor.destroy');
-    // Route::resource('SuratPesananDirektur', SuratPesananDirekturController::class);
     //Route::get('SuratPesanan', [SuratPesananController::class, 'index'])->name('suratpesanan.index');
     Route::get('/SuratPesanan/{id}/show', 'App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananController@show')->name('suratpesanan.show');
     Route::post('/SuratPesanan/{id}/up', 'App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananController@update')->name('suratpesanan.update');
