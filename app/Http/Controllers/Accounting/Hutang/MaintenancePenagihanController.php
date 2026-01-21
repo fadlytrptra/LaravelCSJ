@@ -143,7 +143,7 @@ class MaintenancePenagihanController extends Controller
             } catch (Exception $ex) {
                 return response()->json(['error' => $ex->getMessage() . ' error input Detail Penagihan PO'], 500);
             }
-            return response()->json(['success' => 'Berhasil input penagihan SPPB', 'idPenagihan' => $idPenagihanFormatted], 405);
+            return response()->json(['success' => 'Berhasil input penagihan SPPB', 'idPenagihan' => $idPenagihanFormatted], 200);
         } else if ($jenisProses == 'insertDataPajak') {
             $nomorFaktur = $request->nomorFaktur;
             $hargaMurni = $request->hargaMurni;
