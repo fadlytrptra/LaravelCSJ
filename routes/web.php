@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Accounting\Piutang\BKMDPPelunasanController;
 use App\Http\Controllers\Inventory\Master\StokBarangController;
 use App\Http\Controllers\Inventory\Informasi\KartuStokController;
 use App\Http\Controllers\Inventory\Master\KodePerkiraanController;

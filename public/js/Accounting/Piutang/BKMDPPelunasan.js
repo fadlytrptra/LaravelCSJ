@@ -1818,24 +1818,14 @@ var IdBank1, IdBank;
 $("#uraian1").on("keydown", function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
-        if (idBank1.value === "KRR1" || idBank1.value === "KRR2") {
-            if (idBank1.value === "KRR2") {
-                IdBank1 = "KI";
-            }
-            if ((idBank1.value = "KRR1")) {
-                IdBank1 = "KKK";
-            }
-        } else {
-            IdBank1 = idBank1.value;
-        }
-
         $.ajax({
             type: "GET",
             url: "MaintenanceBKMUntukDPPelunasan/getIdBKK",
             data: {
                 _token: csrfToken,
-                bank: IdBank1.trim(),
-                tahun: new Date(tglInput.value).getFullYear(),
+                bank: idBank1.value.trim(),
+                jenisBank: jenisBank1.value.trim(),
+                tanggalInput: tglInput.value,
             },
             success: function (result) {
                 if (result) {
@@ -2061,24 +2051,14 @@ btnPerkiraan.addEventListener("click", function (e) {
 $("#uraian").on("keydown", function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
-        if (idBank.value === "KRR1" || idBank.value === "KRR2") {
-            if (idBank.value === "KRR2") {
-                IdBank = "KI";
-            }
-            if ((idBank.value = "KRR1")) {
-                IdBank = "KKM";
-            }
-        } else {
-            IdBank = idBank.value;
-        }
-
         $.ajax({
             type: "GET",
             url: "MaintenanceBKMUntukDPPelunasan/getIdBKM",
             data: {
                 _token: csrfToken,
-                bank: IdBank.trim(),
-                tahun: new Date(tglInput.value).getFullYear(),
+                bank: idBank.value.trim(),
+                jenisBank: jenisBank.value.trim(),
+                tanggalInput: tglInput.value,
             },
             success: function (result) {
                 if (result) {
@@ -2593,17 +2573,6 @@ btnCetakBKM.addEventListener("click", function () {
                 console.log(result);
 
                 if (result.length !== 0) {
-                    if (
-                        result[0].Id_bank === "KRR1" ||
-                        result[0].Id_bank === "KRR2"
-                    ) {
-                        keteranganCetakBKM.innerHTML =
-                            "<h5><b>BUKTI PENERIMAAN KAS</b></h5>";
-                    } else {
-                        keteranganCetakBKM.innerHTML =
-                            "<h5><b>BUKTI PENERIMAAN BANK</b></h5>";
-                    }
-
                     nomerBKM.innerHTML =
                         "<h5><b>Nomer: " +
                         decodeHtmlEntities(result[0].Id_BKM) +

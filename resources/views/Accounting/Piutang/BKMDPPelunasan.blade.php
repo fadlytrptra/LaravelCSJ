@@ -955,7 +955,7 @@
                             <div class="row" style="font-weight: bold;">
                                 <div class="col-sm-5 text-center" style="border: 1px black solid">
                                     <label>
-                                        <h5><b>P.T. Kerta Rajasa Raya</b></h5>
+                                        <h5><b>PT. CAHAYA SANTOSO JAYA</b></h5>
                                     </label>
                                 </div>
                                 <div class="col-sm-6 ml-3 text-center" style="border: 1px black solid">
@@ -1117,7 +1117,7 @@
                             <div class="row" style="font-weight: bold;">
                                 <div class="col-sm-5 text-center" style="border: 1px black solid">
                                     <label>
-                                        <h5><b>P.T. Kerta Rajasa Raya</b></h5>
+                                        <h5><b>PT. CAHAYA SANTOSO JAYA</b></h5>
                                     </label>
                                 </div>
                                 <div class="col-sm-6 ml-3 text-center" style="border: 1px black solid">

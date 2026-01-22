@@ -146,7 +146,7 @@ class BKMDPPelunasanController extends Controller
 
         $id_bkm = $request->id_bkm;
 
-        DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN]
         @idBKK = ?,
         @tgl = ?,
         @userinput = ?,
@@ -161,7 +161,7 @@ class BKMDPPelunasanController extends Controller
             $idBankBKK
         ]);
 
-        DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN_TAG]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN_TAG]
         @idBKK = ?,
         @idUang = ?,
         @idJenis = ?,
@@ -180,7 +180,7 @@ class BKMDPPelunasanController extends Controller
             $idBKM
         ]);
 
-        DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_INSERT_BKK_TDETAILPEMB]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_INSERT_BKK_TDETAILPEMB]
         @idpembayaran = ?,
         @keterangan = ?,
         @biaya = ?,
@@ -191,7 +191,7 @@ class BKMDPPelunasanController extends Controller
             $idKodePerkiraanBKK,
         ]);
 
-        DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_UPDATE_COUNTER_IDBKK]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UPDATE_COUNTER_IDBKK]
         @idbkk = ?,
         @idBank = ?,
         @jenis = ?,
@@ -202,7 +202,7 @@ class BKMDPPelunasanController extends Controller
             $tanggal,
         ]);
 
-        DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN]
         @idBKM = ?,
         @tglinput = ?,
         @userinput = ?,
@@ -217,7 +217,7 @@ class BKMDPPelunasanController extends Controller
             $idBankBKM
         ]);
 
-        DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN_TAG]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN_TAG]
         @idBKM = ?,
         @tgl = ?,
         @idUang = ?,
@@ -246,7 +246,7 @@ class BKMDPPelunasanController extends Controller
             $kursRupiah
         ]);
 
-        DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_UPDATE_COUNTER_IDBKM]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UPDATE_COUNTER_IDBKM]
         @idbkm = ?,
         @idBank = ?,
         @jenis = ?,
@@ -257,7 +257,7 @@ class BKMDPPelunasanController extends Controller
             $tgl
         ]);
 
-        DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_UPDATE_SALDO_PELUNASAN]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UPDATE_SALDO_PELUNASAN]
         @idBKM = ?,
         @idPelunasan = ?,
         @nilai = ?', [
@@ -275,7 +275,7 @@ class BKMDPPelunasanController extends Controller
     {
         // get cust
         if ($id === 'getCust') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_CUSTOMER');
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_CUSTOMER');
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -290,7 +290,7 @@ class BKMDPPelunasanController extends Controller
         else if ($id === 'tampil1') {
             $idCust = $request->input('idCust');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_SALDO_PELUNASAN
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_SALDO_PELUNASAN
             @kode = 3, @idCust = ?', [$idCust]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
@@ -314,7 +314,7 @@ class BKMDPPelunasanController extends Controller
 
         // get divisi
         else if ($id === 'tampil2') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_SALDO_PELUNASAN
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_SALDO_PELUNASAN
             @kode = 2');
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
@@ -338,7 +338,7 @@ class BKMDPPelunasanController extends Controller
 
         // get divisi
         else if ($id === 'getMataUang') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_MATA_UANG @kode = ?', [1]);
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_MATA_UANG @kode = ?', [1]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -351,7 +351,7 @@ class BKMDPPelunasanController extends Controller
 
         // get divisi
         else if ($id === 'getBank') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BANK');
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BANK');
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -366,7 +366,7 @@ class BKMDPPelunasanController extends Controller
         else if ($id === 'getAccBank') {
             $idBank = $request->input('idBank');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BANK_1 @idBank = ?', [$idBank]);
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BANK_1 @idBank = ?', [$idBank]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -378,7 +378,7 @@ class BKMDPPelunasanController extends Controller
 
         // get divisi
         else if ($id === 'getPerkiraan') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_KODE_PERKIRAAN @Kode = ?', [1]);
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_KODE_PERKIRAAN @Kode = ?', [1]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -391,37 +391,73 @@ class BKMDPPelunasanController extends Controller
 
         // id bkk
         else if ($id === 'getIdBKK') {
-            $tahun = $request->input('tahun');
             $bank = $request->input('bank');
+            $jenisBank = $request->input('jenisBank');
+            $tanggalInput = $request->input('tanggalInput');
+            $day = date('d', strtotime($tanggalInput));
+            $month = date('m', strtotime($tanggalInput));
+            $twoDigitsYear = date('y', strtotime($tanggalInput));
+            $fourDigitsYear = date('Y', strtotime($tanggalInput));
+            $periode = (string) $month . $twoDigitsYear;
 
             $ada = DB::connection('ConnAccounting')
                 ->table('T_COUNTER_BKK')
-                ->where('Periode', $tahun)
+                ->where('Periode', $periode)
                 ->count();
 
             if ($ada === 1) {
-                $noUrut = DB::connection('ConnAccounting')
-                    ->table('T_COUNTER_BKK')
-                    ->where('Periode', $tahun)
-                    ->increment('Id_BKK_E_Rp');
-                $noUrut = DB::connection('ConnAccounting')
-                    ->table('T_COUNTER_BKK')
-                    ->where('Periode', $tahun)
-                    ->value('Id_BKK_E_Rp');
-
+                if ($bank == 'BCA1') {
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_COUNTER_BKK')
+                        ->where('Periode', $periode)
+                        ->increment('Id_BKK_BCA_Rp');
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_COUNTER_BKK')
+                        ->where('Periode', $periode)
+                        ->value('Id_BKK_BCA_Rp');
+                } else if ($bank == 'BCA$') {
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_COUNTER_BKK')
+                        ->where('Periode', $periode)
+                        ->increment('Id_BKK_BCA_$');
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_COUNTER_BKK')
+                        ->where('Periode', $periode)
+                        ->value('Id_BKK_BCA_$');
+                }
             } else if ($ada === 0) {
                 $noUrut = 1;
+                $bankColumnMap = [
+                    'BCA1' => 'Id_BKK_BCA_Rp',
+                    'BCA$' => 'Id_BKK_BCA_$',
+                    // add future banks here
+                ];
+
+                $data = [
+                    'Periode' => $periode,
+                    'Id_BKK_BCA_Rp' => 0,
+                    'Id_BKK_BCA_$' => 0,
+                    'Id_BKK_E_$' => 0,
+                    'Id_BKK_I_$' => 0,
+                    'Id_BKK_CIMB_$' => 0,
+                    'Id_BKK_T_Rp' => 0,
+                    'Id_BKK_I_Rp' => 0,
+                    'Id_BKK_E_Rp' => 0,
+                    'Id_BKK_Mojosari' => 0,
+                    'Id_BKK_CIMB_Rp' => 0,
+                ];
+
+                if (isset($bankColumnMap[$bank])) {
+                    $data[$bankColumnMap[$bank]] = 1;
+                }
+
                 DB::connection('ConnAccounting')
                     ->table('T_COUNTER_BKK')
-                    ->insert([
-                        'Periode' => $tahun,
-                        'Id_BKK_E_Rp' => $noUrut
-                    ]);
+                    ->insert($data);
             }
 
-            $idBKK = str_pad($noUrut, 5, '0', STR_PAD_LEFT);
-            $idBKK = 'KKK' . '-P' . substr($tahun, -2) . substr($idBKK, -5);
-
+            $idBKK = $bank . $month . $twoDigitsYear . '-' . str_pad($noUrut, 3, '0', STR_PAD_LEFT);
+            // dd($idBKK);
             // DB::connection('ConnAccounting')
             //     ->table('T_COUNTER_BKK')
             //     ->where('Periode', $tahun)
@@ -432,36 +468,85 @@ class BKMDPPelunasanController extends Controller
 
         // id bkm
         else if ($id === 'getIdBKM') {
-            $tahun = $request->input('tahun');
             $bank = $request->input('bank');
+            $jenisBank = $request->input('jenisBank');
+            $tanggalInput = $request->input('tanggalInput');
+            $day = date('d', strtotime($tanggalInput));
+            $month = date('m', strtotime($tanggalInput));
+            $twoDigitsYear = date('y', strtotime($tanggalInput));
+            $fourDigitsYear = date('Y', strtotime($tanggalInput));
+            $periode = (string) $month . $twoDigitsYear;
 
             $ada = DB::connection('ConnAccounting')
                 ->table('T_Counter_BKM')
-                ->where('Periode', $tahun)
+                ->where('Periode', $periode)
                 ->count();
 
             if ($ada === 1) {
-                $noUrut = DB::connection('ConnAccounting')
-                    ->table('T_Counter_BKM')
-                    ->where('Periode', $tahun)
-                    ->increment('Id_BKM_E_Rp');
-                $noUrut = DB::connection('ConnAccounting')
-                    ->table('T_Counter_BKM')
-                    ->where('Periode', $tahun)
-                    ->value('Id_BKM_E_Rp');
-
+                if ($bank == 'BCA1') {
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_Counter_BKM')
+                        ->where('Periode', $periode)
+                        ->increment('Id_BKM_BCA_Rp');
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_Counter_BKM')
+                        ->where('Periode', $periode)
+                        ->value('Id_BKM_BCA_Rp');
+                } else if ($bank == 'BCA$') {
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_Counter_BKM')
+                        ->where('Periode', $periode)
+                        ->increment('Id_BKM_BCA_$');
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_Counter_BKM')
+                        ->where('Periode', $periode)
+                        ->value('Id_BKM_BCA_$');
+                } else if ($bank == 'OCBC') {
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_Counter_BKM')
+                        ->where('Periode', $periode)
+                        ->increment('Id_BKM_OCBC_Rp');
+                    $noUrut = DB::connection('ConnAccounting')
+                        ->table('T_Counter_BKM')
+                        ->where('Periode', $periode)
+                        ->value('Id_BKM_OCBC_Rp');
+                }
             } else if ($ada === 0) {
                 $noUrut = 1;
+                $bankColumnMap = [
+                    'BCA1' => 'Id_BKM_BCA_Rp',
+                    'BCA$' => 'Id_BKM_BCA_$',
+                    'OCBC' => 'Id_BKM_OCBC_Rp',
+                    // add future banks here
+                ];
+
+                $data = [
+                    'Periode' => $periode,
+                    'Id_BKM_besar' => 0,
+                    'Id_BKM_kecil' => 0,
+                    'Id_BKM_bank' => 0,
+                    'Id_BKM_E_Rp' => 0,
+                    'Id_BKM_E_$' => 0,
+                    'Id_BKM_I_$' => 0,
+                    'Id_BKM_Mojosari' => 0,
+                    'Id_BKM_BCA_Rp' => 0,
+                    'Id_BKM_BCA_$' => 0,
+                    'Id_BKM_CIMB_Rp' => 0,
+                    'Id_BKM_CIMB_$' => 0,
+                    'Id_BKM_OCBC_Rp' => 0,
+                ];
+
+                if (isset($bankColumnMap[$bank])) {
+                    $data[$bankColumnMap[$bank]] = 1;
+                }
+
                 DB::connection('ConnAccounting')
                     ->table('T_Counter_BKM')
-                    ->insert([
-                        'Periode' => $tahun,
-                        'Id_BKM_E_Rp' => $noUrut
-                    ]);
+                    ->insert($data);
             }
 
-            $idBKM = str_pad($noUrut, 5, '0', STR_PAD_LEFT);
-            $idBKM = 'KKM' . '-R' . substr($tahun, -2) . substr($idBKM, -5);
+            $idBKM = $bank . $month . $twoDigitsYear . '-' . str_pad($noUrut, 3, '0', STR_PAD_LEFT);
+            // dd($idBKM);
 
             // DB::connection('ConnAccounting')
             //     ->table('T_Counter_BKM')
@@ -473,7 +558,7 @@ class BKMDPPelunasanController extends Controller
 
         // perkiraan
         else if ($id === 'getPerkiraanChange') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_KODE_PERKIRAAN @Kode = ?', [2]);
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_KODE_PERKIRAAN @Kode = ?', [2]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -510,7 +595,7 @@ class BKMDPPelunasanController extends Controller
             $tgl1 = $request->input('tgl1');
             $tgl2 = $request->input('tgl2');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKM_DP_PERTGL
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKM_DP_PERTGL
             @tgl1 = ?, @tgl2 = ?', [$tgl1, $tgl2]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
@@ -527,7 +612,7 @@ class BKMDPPelunasanController extends Controller
         // list bkm
         else if ($id === 'getListFullBKM') {
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKM_DP');
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKM_DP');
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -545,7 +630,7 @@ class BKMDPPelunasanController extends Controller
             $tgl1 = $request->input('tgl1');
             $tgl2 = $request->input('tgl2');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKK_DP_PERTGL
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK_DP_PERTGL
             @tgl1 = ?, @tgl2 = ?', [$tgl1, $tgl2]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
@@ -562,7 +647,7 @@ class BKMDPPelunasanController extends Controller
         // list bkm
         else if ($id === 'getListFullBKK') {
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKK_DP');
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK_DP');
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -685,7 +770,7 @@ class BKMDPPelunasanController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN]
+                    ->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN]
                 @idBKK = ?,
                 @tgl = ?,
                 @terjemahan = ?,
@@ -720,7 +805,7 @@ class BKMDPPelunasanController extends Controller
             if (intval($kurs) === 0) {
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN_TAG]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN_TAG]
                     @idBKK = ?,
                     @idUang = ?,
                     @idJenis = ?,
@@ -744,7 +829,7 @@ class BKMDPPelunasanController extends Controller
             } else if (intval($kurs) !== 0) {
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN_TAG]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN_TAG]
                     @idBKK = ?,
                     @idUang = ?,
                     @idJenis = ?,
@@ -778,7 +863,7 @@ class BKMDPPelunasanController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_UPDATE_COUNTER_IDBKK]
+                    ->statement('exec [SP_1273_PRG_UPDATE_COUNTER_IDBKK]
                     @idbkk = ?,
                     @idBank = ?,
                     @jenis = ?,
@@ -805,7 +890,7 @@ class BKMDPPelunasanController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_INSERT_BKK_TDETAILPEMB]
+                    ->statement('exec [SP_1273_PRG_INSERT_BKK_TDETAILPEMB]
                     @idpembayaran = ?,
                     @keterangan = ?,
                     @biaya = ?,
@@ -833,7 +918,7 @@ class BKMDPPelunasanController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN]
+                    ->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN]
                 @idBKM = ?,
                 @tglinput = ?,
                 @terjemahan = ?,
@@ -873,7 +958,7 @@ class BKMDPPelunasanController extends Controller
             if ($kurs === null) {
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN_TAG]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN_TAG]
                     @idBKM = ?,
                     @tgl = ?,
                     @idUang = ?,
@@ -907,7 +992,7 @@ class BKMDPPelunasanController extends Controller
             } else if ($kurs !== null) {
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN_TAG]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN_TAG]
                     @idBKM = ?,
                     @tgl = ?,
                     @idUang = ?,
@@ -953,7 +1038,7 @@ class BKMDPPelunasanController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_UPDATE_COUNTER_IDBKM]
+                    ->statement('exec [SP_1273_PRG_UPDATE_COUNTER_IDBKM]
                 @idbkm = ?,
                 @idBank = ?,
                 @jenis = ?,
@@ -981,7 +1066,7 @@ class BKMDPPelunasanController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_UPDATE_SALDO_PELUNASAN]
+                    ->statement('exec [SP_1273_PRG_UPDATE_SALDO_PELUNASAN]
                 @idBKM = ?,
                 @idPelunasan = ?,
                 @nilai = ?', [
