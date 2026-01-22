@@ -83,7 +83,7 @@ class CreateBTTBController extends Controller
                 $Counter = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_COUNTER');
                 $NewCounter = $Counter[0]->YTERIMA + 1;
                 $NoTerima = str_pad($NewCounter, 10, "0", STR_PAD_LEFT);
-                
+
                 DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_INSERT_YTERIMA_IMPOR
                 @no_terima_1 = ?,
                 @datang_2 = ?,
@@ -310,7 +310,50 @@ class CreateBTTBController extends Controller
             } catch (Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 400);
             }
-        } else if ($id == 'getDataDetailSPPB') {
+        } else if ($id == 'getDataSPPBKoreksi') {
+            $idDivisi = $request->idDivisi;
+
+            try {
+                // PAKAI SP YANG SAMA
+                $dataSPPB = DB::connection('ConnPurchase')->select(
+                    'exec SP_1273_PRG_SLC_NOMOR_SPPB @XKode = ?, @KdDivisi = ?',
+                    [0, $idDivisi]
+                );
+
+                return response()->json([
+                    'dataSPPB' => $dataSPPB
+                ], 200);
+
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
+            }
+        }  else if ($id == 'cekSPPBKoreksi') {
+            $idDivisi = $request->idDivisi;
+            $noSPPB = $request->noSPPB;
+
+            try {
+                $data = DB::connection('ConnPurchase')->select(
+                    'exec SP_1273_PRG_SLC_NOMOR_SPPB_KOREKSI
+                    @KdDivisi = ?, @NoSPPB = ?',
+                    [$idDivisi, $noSPPB]
+                );
+
+                if (count($data) === 0) {
+                    return response()->json([
+                        'valid' => false,
+                        'message' => 'SPPB tidak valid untuk koreksi'
+                    ]);
+                }
+
+                return response()->json([
+                    'valid' => true,
+                    'data' => $data[0]
+                ]);
+
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        }  else if ($id == 'getDataDetailSPPB') {
             $idDivisi = $request->input('idDivisi');
             $noSPPB = $request->input('noSPPB');
             try {

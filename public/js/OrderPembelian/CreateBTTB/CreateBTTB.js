@@ -462,6 +462,47 @@ jQuery(function ($) {
         return total;
     }
 
+    // function getDataDetailSPPB(noSPPB) {
+    //     let idDivisi = select_divisi.val();
+
+    //     if (!noSPPB || !idDivisi) return;
+
+    //     $.ajax({
+    //         url: "/CreateBTTB/getDataDetailSPPB",
+    //         type: "GET",
+    //         data: {
+    //             idDivisi: idDivisi,
+    //             noSPPB: noSPPB
+    //         },
+    //         success: function (res) {
+    //             // bersihkan table dulu
+    //             table_barang.clear().draw();
+    //             table_terima.clear().draw();
+
+    //             // isi table barang
+    //             if (res.ListBarang && res.ListBarang.length > 0) {
+    //                 res.ListBarang.forEach(function (row) {
+    //                     table_barang.row.add(row);
+    //                 });
+    //                 table_barang.draw();
+    //             }
+
+    //             // isi table terima
+    //             if (res.ListTerima && res.ListTerima.length > 0) {
+    //                 res.ListTerima.forEach(function (row) {
+    //                     table_terima.row.add(row);
+    //                 });
+    //                 table_terima.draw();
+    //             }
+    //         },
+    //         error: function (xhr) {
+    //             alert("Gagal load detail SPPB");
+    //             console.error(xhr.responseText);
+    //         }
+    //     });
+    // }
+
+
     //#endregion
 
     //#region Event Listener
@@ -497,6 +538,44 @@ jQuery(function ($) {
             },
         });
     });
+
+
+    $(document).on('keydown', '.select2-search__field', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+
+            let noSPPB = $(this).val().trim();
+            let idDivisi = select_divisi.val();
+
+            if (!noSPPB || !idDivisi) return;
+
+            $.ajax({
+                url: '/CreateBTTB/getDataSPPBKoreksi',
+                type: 'GET',
+                data: {
+                    idDivisi: idDivisi
+                },
+                success: function (res) {
+
+                    if (!res.dataSPPB || res.dataSPPB.length === 0) {
+                        alert('Tidak ada data BTTB yang bisa dikoreksi di divisi ini');
+                        return;
+                    }
+                    select_noSPPB.append(new Option(noSPPB, noSPPB, true, true));
+                    select_noSPPB.trigger('change');
+                    select_noSPPB.select2('close');
+
+                    loadTerima();
+                    setModeKoreksi();
+                },
+                error: function () {
+                    alert('Gagal cek data koreksi');
+                }
+            });
+        }
+    });
+
+
 
     select_divisi.on("select2:clear", function () {
         select_noSPPB.empty();
