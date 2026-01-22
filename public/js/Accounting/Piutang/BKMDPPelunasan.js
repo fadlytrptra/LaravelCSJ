@@ -2266,7 +2266,7 @@ btnProses.addEventListener("click", function (e) {
                 data: {
                     _token: csrfToken,
                     idbkm: id_bkm,
-                    idBank: IdBank.trim(),
+                    idBank: idBank.value.trim(),
                     jenis: jenisBank.value.trim(),
                     tgl: String(bln1.value) + String(thn1.value),
                 },

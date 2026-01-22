@@ -456,7 +456,7 @@ class BKMDPPelunasanController extends Controller
                     ->insert($data);
             }
 
-            $idBKK = $bank . $month . $twoDigitsYear . '-' . str_pad($noUrut, 3, '0', STR_PAD_LEFT);
+            $idBKK = $bank . $month . $twoDigitsYear . '-' . str_pad($noUrut, 4, '0', STR_PAD_LEFT);
             // dd($idBKK);
             // DB::connection('ConnAccounting')
             //     ->table('T_COUNTER_BKK')
@@ -545,7 +545,7 @@ class BKMDPPelunasanController extends Controller
                     ->insert($data);
             }
 
-            $idBKM = $bank . $month . $twoDigitsYear . '-' . str_pad($noUrut, 3, '0', STR_PAD_LEFT);
+            $idBKM = $bank . $month . $twoDigitsYear . '-' . str_pad($noUrut, 4, '0', STR_PAD_LEFT);
             // dd($idBKM);
 
             // DB::connection('ConnAccounting')
