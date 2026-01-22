@@ -1186,8 +1186,6 @@ jQuery(function ($) {
                         returnFocus: false,
                     });
                 } else {
-                    console.log(data);
-
                     if (data.error) {
                         keterangan_text.value = "";
                         keterangan_nilai.value = "";
@@ -1691,6 +1689,8 @@ jQuery(function ($) {
             }
 
             this.value = this.value.toUpperCase();
+            sppb_tableDataSPPB.clear().draw();
+            sppb_tableDataPenagihan.clear().draw();
             $.ajax({
                 url: "/MaintenancePenagihan/getDataSPPB",
                 method: "GET",
@@ -1720,6 +1720,9 @@ jQuery(function ($) {
                                 html: data.error,
                                 returnFocus: false,
                             });
+                            if (data.dataSPPB.length < 1) {
+                                return;
+                            }
                         }
                         console.log(data);
                         clearBagianSPPBModalSPPB("reloadTabelSPPB");
@@ -1743,7 +1746,7 @@ jQuery(function ($) {
                                 ).format("0,0.00"),
                                 numeral(item.Kurs_Rp).format("0,0.00"),
                                 numeral(item.Harga_disc).format("0,0.00"),
-                                numeral(item.Harga_ppn).format("0,0.00"),
+                                numeral(item.Harga_Ppn).format("0,0.00"),
                                 numeral(item.Harga_terbayar).format("0,0.00"),
                                 numeral(
                                     parseFloat(item.Harga_terbayar) *
