@@ -352,6 +352,13 @@ jQuery(function ($) {
                         let Ppn_trm = parseFloat(item.Ppn_trm);
                         let Min_ord = parseFloat(item.Min_ord);
                         let Qty_Terima = parseFloat(item.Qty_Terima);
+                        let satTerima = item.Sat_Terima
+                            ? item.Sat_Terima.toString().trim()
+                            : (item.Sat_Pesan || "").toString().trim();
+
+                        let noSatTerima = item.No_Sat_Terima
+                            ? item.No_Sat_Terima.toString().trim()
+                            : (item.Satuan_Terima || "").toString().trim();
 
                         let TNlTrans = Hrg_Trm - Hrg_Trm * (Disc_trm / 100);
                         let NilaiTrans =
@@ -360,9 +367,8 @@ jQuery(function ($) {
                             Qty_Terima;
                         if (!item.TglRetur) {
                             lngQty += numeral(item.Qty).value();
-                            satuanQtyTerima = item.Sat_Terima.trim();
+                            satuanQtyTerima = (item.Sat_Terima || "").toString().trim();
                         }
-
                         table_terima.row.add([
                             index + 1,
                             item.Datang
@@ -371,29 +377,29 @@ jQuery(function ($) {
                             numeral(item.Qty).format("0,0"),
                             (item.Sat_Pesan ?? "").trim(),
                             numeral(Qty_Terima).format("0,0"),
-                            (item.Sat_Terima ?? "").trim(),
+                            satTerima,
                             numeral(Hrg_Trm).format("0,0.00"),
                             numeral(Disc_trm).format("0.00"),
                             numeral(Ppn_trm).format("0,0.00"),
                             numeral(Min_ord).format("0,0"),
                             numeral(NilaiTrans).format("0,0.00"),
-                            (item.NM_SUP ?? "").trim(),
-                            (item.Waktu ?? "").trim(),
-                            (item.Faktur ?? "").trim(),
-                            (item.Ket_trm ?? "").trim(),
-                            (item.No_terima ?? "").trim(),
-                            (item.No_sup ?? "").trim(),
+                            (item.NM_SUP || "").toString().trim(),
+                            (item.Waktu || "").toString().trim(),
+                            (item.Faktur || "").toString().trim(),
+                            (item.Ket_trm || "").toString().trim(),
+                            (item.No_terima || "").toString().trim(),
+                            (item.No_sup || "").toString().trim(),
                             item.TglRetur
                                 ? moment(item.TglRetur).format("MM/DD/YYYY")
                                 : "",
-                            (item.Nama_MataUang ?? "").trim(),
+                            (item.Nama_MataUang || "").toString().trim(),
                             numeral(item.Kurs_Rp).format("0,0.00"),
                             item.Tgl_Faktur
                                 ? moment(item.Tgl_Faktur).format("MM/DD/YYYY")
                                 : "",
-                            (item.No_SuratJalan ?? "").trim(),
-                            (item.Satuan_Terima ?? "").trim(),
-                            (item.Kd_brg ?? "").trim(),
+                            (item.No_SuratJalan || "").toString().trim(),
+                            noSatTerima,
+                            (item.Kd_brg || "").toString().trim(),
                         ]);
                     });
 
@@ -449,18 +455,26 @@ jQuery(function ($) {
         });
     }
 
-    function getTotalQtyTerimaExisting(KodeBarang) {
+    function getTotalQtyTerimaExisting(KodeBarang, excludeNoTerima = null) {
         let total = 0;
+
         table_terima.rows().every(function () {
             let row = this.data();
             let kodeBarangTerima = row[23];
-            console.log(kodeBarangTerima);
-            if (KodeBarang && kodeBarangTerima == KodeBarang) {
+            let noTerima = row[15];
+
+            if (
+                KodeBarang &&
+                kodeBarangTerima == KodeBarang &&
+                (!excludeNoTerima || noTerima !== excludeNoTerima)
+            ) {
                 total += numeral(row[4]).value();
             }
         });
+
         return total;
     }
+
 
     // function getDataDetailSPPB(noSPPB) {
     //     let idDivisi = select_divisi.val();
@@ -566,7 +580,6 @@ jQuery(function ($) {
                     select_noSPPB.select2('close');
 
                     loadTerima();
-                    setModeKoreksi();
                 },
                 error: function () {
                     alert('Gagal cek data koreksi');
@@ -719,6 +732,8 @@ jQuery(function ($) {
                 Swal.fire("Error", "Barang tidak ditemukan", "error");
                 return;
             }
+
+            selectedBarangRow = barangRow;
 
             bttb_noTerima.value = rowData[15];
             bttb_noSupplier.value = rowData[16];
@@ -1051,44 +1066,13 @@ jQuery(function ($) {
         }
     });
 
-    button_modalProses.addEventListener("click", function (e) {
-        if (bttb_qtyTerima.value == 0 || !bttb_qtyTerima.value) {
-            errorHandling(
-                "qtyTerimaKosong",
-                "Quantity Terima tidak boleh kosong"
-            );
+    button_modalProses.addEventListener("click", function () {
+        if (!bttb_qtyTerima.value || bttb_qtyTerima.value == 0) {
+            errorHandling("qtyTerimaKosong", "Quantity Terima tidak boleh kosong");
             return;
         }
 
-        let no_trans = selectedBarangRow[8];
-        let qtyPesan = numeral(selectedBarangRow[5]).value();
-        let qtyTerimaExisting = getTotalQtyTerimaExisting(selectedBarangRow[1]);
-        let qtyTerimaInput = numeral(bttb_qtyTerima.value).value();
-        let sisaQty = qtyPesan - qtyTerimaExisting - qtyTerimaInput;
-
-        // console.log(qtyPesan, qtyTerimaExisting, qtyTerimaInput, sisaQty);
-
-        if (sisaQty < 0) {
-            Swal.fire({
-                icon: "error",
-                title: "Qty Terima melebihi sisa Qty Pesan!",
-                html: `
-                    Qty Pesan : <b>${numeral(qtyPesan).format("0,0")}</b><br>
-                    Qty Terima : <b>${numeral(qtyTerimaExisting).format(
-                        "0,0"
-                    )}</b><br>
-                    Sisa : <b>${numeral(sisaQty).format("0,0")}</b><br>
-                `,
-                showConfirmButton: true,
-            });
-            return;
-        }
-
-        if (bttb_keterangan.value == "") {
-            bttb_keterangan.value = "-";
-        }
-
-        if (bttb_qtyTerimaActual.value == 0 || !bttb_qtyTerimaActual.value) {
+        if (!bttb_qtyTerimaActual.value || bttb_qtyTerimaActual.value == 0) {
             errorHandling(
                 "qtyTerimaKosongActual",
                 "Quantity Terima Actual tidak boleh kosong"
@@ -1096,60 +1080,54 @@ jQuery(function ($) {
             return;
         }
 
-        let hrg_murni = 0.0;
-        let hrg_murni_rp = 0.0;
-        let hrg_disc = 0.0;
-        let hrg_disc_rp = 0.0;
-        let hrg_nego = 0.0;
-        let hrg_nego_rp = 0.0;
-        let hrg_ppn = 0.0;
-        let hrg_ppn_rp = 0.0;
-        console.log(
-            hrg_murni,
-            hrg_murni_rp,
-            hrg_disc,
-            hrg_disc_rp,
-            hrg_nego,
-            hrg_nego_rp,
-            hrg_ppn,
-            hrg_ppn_rp
-        );
+        if (!selectedBarangRow) {
+            Swal.fire("Error", "Data barang tidak valid", "error");
+            return;
+        }
 
-        hrg_murni =
+        let no_trans = selectedBarangRow[8];
+        let hrg_murni =
             parseFloat(bttb_qtyTerimaActual.value) *
             parseFloat(bttb_harga.value);
-        hrg_murni_rp = hrg_murni * parseFloat(bttb_kursRupiah.value);
-        hrg_disc = (parseFloat(bttb_discount.value) / 100) * hrg_murni;
-        hrg_disc_rp = hrg_disc * parseFloat(bttb_kursRupiah.value);
-        hrg_nego = hrg_murni - hrg_disc;
-        hrg_nego_rp = hrg_murni_rp - hrg_disc_rp;
-        hrg_ppn = hrg_nego * (parseFloat(bttb_ppn.value) / 100);
-        hrg_ppn_rp = hrg_ppn * parseFloat(bttb_kursRupiah.value);
+        let hrg_murni_rp =
+            hrg_murni * parseFloat(bttb_kursRupiah.value);
+        let hrg_disc =
+            (parseFloat(bttb_discount.value) / 100) * hrg_murni;
+        let hrg_disc_rp =
+            hrg_disc * parseFloat(bttb_kursRupiah.value);
+        let hrg_nego = hrg_murni - hrg_disc;
+        let hrg_nego_rp = hrg_murni_rp - hrg_disc_rp;
+        let hrg_ppn =
+            hrg_nego * (parseFloat(bttb_ppn.value) / 100);
+        let hrg_ppn_rp =
+            hrg_ppn * parseFloat(bttb_kursRupiah.value);
+
 
         const formData = new FormData();
-
         formData.append("_token", csrfToken);
         formData.append("jenisProses", proses);
         formData.append("no_terima", bttb_noTerima.value ?? "");
+        formData.append("no_trans", no_trans);
+        formData.append("no_sppb", select_noSPPB.val());
+        formData.append("kd_div", select_divisi.val());
+
         formData.append("datang", bttb_tanggal.value);
         formData.append("qty", bttb_qtyTerima.value);
         formData.append("QtyTerima", bttb_qtyTerimaActual.value);
         formData.append("SatuanTerima", bttb_noSatTerima.value);
+
         formData.append("faktur", bttb_noFaktur.value);
         formData.append("no_sup", bttb_noSupplier.value);
-        formData.append("min_ord", bttb_hargaPer.value);
         formData.append("hrg_trm", bttb_harga.value);
         formData.append("disc_trm", bttb_discount.value);
         formData.append("ppn_trm", bttb_ppn.value);
+        formData.append("min_ord", bttb_hargaPer.value);
         formData.append("waktu", bttb_jangkaWaktu.value);
-        formData.append("no_ket", bttb_jangkaWaktu.value == 0 ? "001" : "002");
-        formData.append("no_sppb", select_noSPPB.val());
-        formData.append("no_trans", no_trans);
-        formData.append("kd_div", select_divisi.val());
         formData.append("IdMataUang", bttb_selectMataUang.val());
         formData.append("Kurs", bttb_kursRupiah.value);
         formData.append("TglFaktur", bttb_tanggalFaktur.value);
         formData.append("NoSJ", bttb_nomorSJ.value);
+
         formData.append("hrg_murni", hrg_murni);
         formData.append("hrg_murni_rp", hrg_murni_rp);
         formData.append("hrg_disc", hrg_disc);
@@ -1158,6 +1136,8 @@ jQuery(function ($) {
         formData.append("hrg_nego_rp", hrg_nego_rp);
         formData.append("hrg_ppn", hrg_ppn);
         formData.append("hrg_ppn_rp", hrg_ppn_rp);
+
+        // dokumen
         formData.append("Jenis_Dokumen", bttb_jenisDokumen.value);
         formData.append("No_Seri_Barang", bttb_noSeriBarang.value);
         formData.append("No_PIB_KRR", bttb_noPIBKRR.value);
@@ -1171,11 +1151,9 @@ jQuery(function ($) {
         formData.append("Tgl_Kontrak", bttb_tglKontrak.value);
         formData.append("No_SPPB_BC", bttb_noSPPBBC.value);
         formData.append("Tgl_SPPB_BC", bttb_tglSPPBBC.value);
+
         formData.append("qty_koreksi", bttb_qtyTerimaKoreksi.value ?? 0);
-        formData.append(
-            "QtyTerimakoreksi",
-            bttb_qtyTerimaActualKoreksi.value ?? 0
-        );
+        formData.append("QtyTerimakoreksi", bttb_qtyTerimaActualKoreksi.value ?? 0);
 
         $.ajax({
             url: "/CreateBTTB",
@@ -1183,46 +1161,33 @@ jQuery(function ($) {
             data: formData,
             processData: false,
             contentType: false,
-            success: function (data) {
-                if (data.error || data.length == 0) {
-                    errorHandling("ajaxGetDataResponse", data.error);
-                } else {
-                    loadTerima();
-                    let jumlahTerima = parseFloat(
-                        bttb_qtyTerima.value
-                    );
-                    let jumlahPesan = numeral(
-                        table_barang.data()[0][5]
-                    ).value();
-                    let selisih = jumlahPesan - jumlahTerima;
-
-                    if (selisih <= 0) {
-                        updateFlag(no_trans, "Y", 0);
-                        loadTerima();
-                    } else {
-                        Swal.fire({
-                            title: "Are you sure?",
-                            text: "Qty Terima yang dimasukkan belum memenuhi Qty Pesan yang dibutuhkan. Apakah ingin melanjutkan?",
-                            icon: "question",
-                            confirmButtonText: "Yes",
-                            cancelButtonText: "No",
-                            showCancelButton: true,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                updateFlag(no_trans, "Y", 1);
-                            }
-                            loadTerima();
-                            $("#createBTTBModal").modal("hide");
-                        });
-                    }
+            success: function (res) {
+                if (res.error) {
+                    errorHandling("ajaxGetDataResponse", res.error);
+                    return;
                 }
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text:
+                        proses === "koreksiBTTB"
+                            ? "Data berhasil dikoreksi"
+                            : "Data berhasil disimpan",
+                    timer: 1500,
+                    showConfirmButton: false,
+                }).then(() => {
+                    $("#createBTTBModal").modal("hide");
+                    loadTerima();
+                });
             },
-            error: function (xhr, status, error) {
-                var err = eval("(" + xhr.responseText + ")");
-                console.error(err.Message);
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                Swal.fire("Error", "Gagal menyimpan data", "error");
             },
         });
     });
+
 
     $("#table_terima tbody").on("click", "tr", function () {
         let rowData = table_terima.row(this).data();
