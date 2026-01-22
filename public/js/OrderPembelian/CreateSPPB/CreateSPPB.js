@@ -17,7 +17,7 @@ jQuery(function ($) {
         serverSide: true,
         order: [2, "desc"],
         ajax: {
-            url: "/CreateSPPB/getDataSPPB",
+            url: "/CreateSPPB/getAllSPPB",
             type: "GET",
         },
         columns: [
@@ -1864,7 +1864,6 @@ jQuery(function ($) {
     });
 
     sppb_buttonSave.addEventListener("click", function (e) {
-        let nomorSPPB = $(this).data("id");
         let keteranganCetak =
             sppb_deliveryTerm.value +
             " | " +
@@ -1885,6 +1884,7 @@ jQuery(function ($) {
             sppb_otherConditions.value +
             " | " +
             sppb_payments.value;
+
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
@@ -1897,7 +1897,7 @@ jQuery(function ($) {
                     .toArray(),
                 idDivisi: sppb_divisi.val(),
                 Tgl_sppb: sppb_tanggal.value,
-                No_sppb: nomorSPPB,
+                // No_sppb: nomorSPPB,
                 keteranganCetak: keteranganCetak,
             },
             dataType: "json",
@@ -1907,17 +1907,27 @@ jQuery(function ($) {
                         icon: "error",
                         title: "Error",
                         showConfirmButton: false,
-                        timer: 1000,
+                        confirmButtonText: "OK",
                         text: "Save PO failed ",
                         returnFocus: false,
                     });
                 } else {
                     console.log(response);
+                    let nomorSPPB = response.data;
+
                     Swal.fire({
                         icon: "success",
-                        title: "Success",
-                        showConfirmButton: false,
-                        timer: 1000,
+                        title: "Save PO Berhasil",
+                        html: `
+                            <div style="text-align:center">
+                                <p><b>Nomor SPPB:</b></p>
+                                <h3 style="margin:0;color:#573bf5">${nomorSPPB}</h3>
+                                <hr>
+                                <p>${response.message}</p>
+                            </div>
+                        `,
+                        showConfirmButton: true,
+                        confirmButtonText: "OK",
                         text: response.message,
                         returnFocus: false,
                     });
@@ -1981,7 +1991,7 @@ jQuery(function ($) {
                         icon: "error",
                         title: "Error",
                         showConfirmButton: false,
-                        timer: 1000,
+                        confirmButtonText: "OK",
                         text: "Save PO failed ",
                         returnFocus: false,
                     });
@@ -1991,7 +2001,7 @@ jQuery(function ($) {
                         icon: "success",
                         title: "Error",
                         showConfirmButton: false,
-                        timer: 1000,
+                        confirmButtonText: "OK",
                         text: response.message,
                         returnFocus: false,
                     });

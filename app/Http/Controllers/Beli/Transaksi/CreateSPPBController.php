@@ -504,6 +504,54 @@ class CreateSPPBController extends Controller
             $dataDetailPO = DB::connection('ConnPurchase')
                 ->select('exec SP_4384_Maintenance_SPPB @XKode = ?, @XNoSPPB = ?', [3, $no_sppb]);
             return response()->json($dataDetailPO, 200);
+        } else if ($id == 'getDraftSPPB') {$listSPPB = DB::connection('ConnPurchase')
+            ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [4]);
+            $dataSPPB = [];
+            $uniqueSPPB = [];
+
+            foreach ($listSPPB as $SPPB) {
+                if (isset($uniqueSPPB[$SPPB->No_sppb])) {
+                    continue;
+                }
+                $uniqueSPPB[$SPPB->No_sppb] = true;
+
+                $dataSPPB[] = [
+                    'No_sppb'      => $SPPB->No_sppb,
+                    'NM_SUP'       => $SPPB->NM_SUP,
+                    'Tgl_sppb'     => $SPPB->Tgl_sppb,
+                    'Tgl_acc'      => $SPPB->Tgl_acc,
+                    'Tgl_Direktur' => $SPPB->Tgl_Direktur,
+                    'Kd_div'       => $SPPB->Kd_div,
+                ];
+            }
+
+            return datatables($dataSPPB)->make(true);
+        } else if ($id == 'getAllSPPB') {
+            //menggabungkan @XKode 0 dan 4
+            $dataLama = DB::connection('ConnPurchase')
+                ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [0]);
+            $dataDraft = DB::connection('ConnPurchase')
+                ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [4]);
+
+            $merged = array_merge($dataDraft, $dataLama);
+            $unique = [];
+            $final = [];
+
+            foreach ($merged as $row) {
+                if (!isset($unique[$row->No_sppb])) {
+                    $unique[$row->No_sppb] = true;
+                    $final[] = [
+                        'No_sppb'       => $row->No_sppb,
+                        'NM_SUP'        => $row->NM_SUP,
+                        'Tgl_sppb'      => $row->Tgl_sppb,
+                        'Tgl_acc'       => $row->Tgl_acc,
+                        'Tgl_Direktur'  => $row->Tgl_Direktur,
+                        'Kd_div'        => $row->Kd_div,
+                    ];
+                }
+            }
+
+            return datatables($final)->make(true);
         } else {
             return response()->json('Invalid request', 405);
         }
