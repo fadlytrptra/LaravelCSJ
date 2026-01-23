@@ -83,25 +83,25 @@
                                     <table>
                                         <tbody>
                                             <tr>
-                                                <td>Tanggal Pesanan</td>
-                                                <td>:</td>
-                                                <td id="tgl_pesanKolom"></td>
+                                                <td style="font-size: 13px;">Tanggal Pesanan</td>
+                                                <td style="font-size: 13px;">:</td>
+                                                <td id="tgl_pesanKolom" style="font-size: 13px;"></td>
                                             </tr>
                                             <tr>
-                                                <td>Nama Langganan</td>
-                                                <td>:</td>
-                                                <td id="nama_customerKolom"></td>
+                                                <td style="font-size: 13px;">Nama Langganan</td>
+                                                <td style="font-size: 13px;">:</td>
+                                                <td id="nama_customerKolom" style="font-size: 13px;"></td>
                                             </tr>
                                             <tr>
-                                                <td style="white-space: nowrap;vertical-align:top;">Alamat Langganan
+                                                <td style="white-space: nowrap;vertical-align:top; font-size:13px;">Alamat Langganan
                                                 </td>
-                                                <td style="vertical-align:top;">:</td>
-                                                <td id="alamat_kantorKolom"></td>
+                                                <td style="vertical-align:top; font-size: 13px;">:</td>
+                                                <td id="alamat_kantorKolom" style="font-size:13px;"></td>
                                             </tr>
                                             <tr>
-                                                <td style="vertical-align:top;">Alamat Kirim</td>
-                                                <td style="vertical-align:top;">:</td>
-                                                <td id="alamat_kirimKolom" contenteditable="true"></td>
+                                                <td style="vertical-align:top; font-size:13px;">Alamat Kirim</td>
+                                                <td style="vertical-align:top; font-size: 13px;" >:</td>
+                                                <td id="alamat_kirimKolom" contenteditable="true" style="font-size:13px;"></td>
                                             </tr>
                                         </tbody>
                                     </table>
