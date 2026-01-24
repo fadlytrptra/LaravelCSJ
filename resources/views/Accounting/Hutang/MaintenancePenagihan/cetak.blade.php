@@ -109,11 +109,13 @@
                         @php
                             $hargaSatuan =
                                 $dataCetak[0]->Id_MataUang_BC == 'IDR' ? $item->Hrg_Satuan_Rp : $item->Hrg_Sat;
+                            $hargaMurni =
+                                $dataCetak[0]->Id_MataUang_BC == 'IDR' ? $item->Hrg_Murni_Rp : $item->Harga_Murni;
                             $hargaTerbayar =
                                 $dataCetak[0]->Id_MataUang_BC == 'IDR'
                                     ? $item->Harga_TerbayarRp
                                     : $item->Harga_Terbayar;
-                            $subTotal += (float) $hargaTerbayar;
+                            $subTotal += (float) $hargaMurni;
                         @endphp
                         <td style="padding: 0 5px 0 5px">{{ $index + 1 }}</td>
                         <td style="padding: 0 5px 0 5px">{{ date('d-M-Y', strtotime($item->Datang)) }}</td>
@@ -129,33 +131,38 @@
                         <td style="padding: 0 5px 0 5px">{{ number_format($item->Disc, 2, '.', ',') }}</td>
                         <td style="padding: 0 5px 0 5px; white-space: nowrap;">
                             {{ $item->Symbol }}
-                            {{ number_format($hargaTerbayar, 4, '.', ',') }}
+                            {{ number_format($hargaMurni, 4, '.', ',') }}
                         </td>
 
                     </tr>
                 @endforeach
                 @if ($dataCetak[0]->Status_PPN == 'Y')
+                @php
+                    $dppAmount = $subTotal * 11 / 12;
+                @endphp
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">Subtotal</td>
-                        <td style="border: none;padding: 0 0 0 5px;">{{ $item->Symbol }}
+                        <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
                             {{ number_format($subTotal, 4, '.', ',') }} </td>
                     </tr>
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">DPP</td>
-                        <td style="border: none;padding: 0 0 0 5px;">{{ $item->Symbol }}
-                            {{ number_format($subTotal, 4, '.', ',') }} </td>
+                        <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
+                            {{ number_format($dppAmount, 4, '.', ',') }} </td>
                     </tr>
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">PPN</td>
-                        <td style="border: none;padding: 0 0 0 5px;">{{ $item->Symbol }}
-                            {{ number_format($subTotal, 4, '.', ',') }} </td>
+                        <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
+                            {{ number_format($dataCetak[0]->Harga_Ppn, 4, '.', ',') }} </td>
                     </tr>
                     @php
-                        $total = $subTotal + (float) $dataCetak[0]->Harga_Ppn;
+                        $total = collect($dataCetak)->sum(function ($item) {
+                            return (float) $item->Harga_Terbayar;
+                        });
                     @endphp
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">Total</td>
-                        <td style="border: none;padding: 0 0 0 5px;">{{ $item->Symbol }}
+                        <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
                             {{ number_format($total, 4, '.', ',') }} </td>
                     </tr>
                 @else
@@ -164,7 +171,7 @@
                     @endphp
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">Total</td>
-                        <td style="border: none;padding: 0 0 0 5px;">{{ $item->Symbol }}
+                        <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
                             {{ number_format($total, 4, '.', ',') }} </td>
                     </tr>
                     @if ($dataCetak[0]->Id_MataUang_BC !== 'IDR')
