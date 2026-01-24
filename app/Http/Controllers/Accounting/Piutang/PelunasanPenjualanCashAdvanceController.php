@@ -37,29 +37,29 @@ class PelunasanPenjualanCashAdvanceController extends Controller
 
     public function LihatHeaderPelunasanCashAdvance($noPelunasan)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PELUNASAN_TAGIHAN @Kode = ?, @Id_Pelunasan = ?', [2, $noPelunasan]);
+        $tabel = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PELUNASAN_TAGIHAN1 @Kode = ?, @Id_Pelunasan = ?', [2, $noPelunasan]);
         return response()->json($tabel);
     }
 
     public function LihatDetailPelunasanCashAdvance($noPelunasan)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PELUNASAN_TAGIHAN @Kode = ?, @Id_Pelunasan = ?', [3, $noPelunasan]);
+        $tabel = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PELUNASAN_TAGIHAN1 @Kode = ?, @Id_Pelunasan = ?', [3, $noPelunasan]);
         return response()->json($tabel);
     }
 
-    public function getLihat_PenagihanCashAdvance($no_Pen)
-    {
-        $noPen = str_replace('.', '/', $no_Pen);
-        $tabel = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PELUNASAN_TAGIHAN1 @Kode = ?, @Id_Penagihan = ?', [5, $noPen]);
-        return response()->json($tabel);
-    }
+    // public function getLihat_PenagihanCashAdvance($no_Pen)
+    // {
+    //     $noPen = str_replace('.', '/', $no_Pen);
+    //     $tabel = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PELUNASAN_TAGIHAN1 @Kode = ?, @Id_Penagihan = ?', [5, $noPen]);
+    //     return response()->json($tabel);
+    // }
 
-    public function getLihat_PenagihanCashAdvance2($no_Pen)
-    {
-        $noPen = str_replace('.', '/', $no_Pen);
-        $tabel = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PELUNASAN_TAGIHAN1 @Kode = ?, @Id_Penagihan = ?', [4, $noPen]);
-        return response()->json($tabel);
-    }
+    // public function getLihat_PenagihanCashAdvance2($no_Pen)
+    // {
+    //     $noPen = str_replace('.', '/', $no_Pen);
+    //     $tabel = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PELUNASAN_TAGIHAN1 @Kode = ?, @Id_Penagihan = ?', [4, $noPen]);
+    //     return response()->json($tabel);
+    // }
 
     public function getNoPenagihanCashAdvance($IdCustomer)
     {
