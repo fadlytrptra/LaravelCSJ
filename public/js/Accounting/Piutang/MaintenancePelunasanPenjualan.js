@@ -2349,6 +2349,7 @@ btnKoreksi.addEventListener('click', function (event) {
     btn_pelunasan.disabled = false;
     btn_bank.disabled = true;
 
+    tanggalInput.removeAttribute("readonly");
     namaCustomerSelect.setAttribute("readonly", true);
     mataUangSelect.setAttribute("readonly", true);
     informasiBankSelect.setAttribute("readonly", true);
