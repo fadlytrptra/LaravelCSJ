@@ -576,7 +576,7 @@ function LihatHeaderPelunasan(idPelunasan) {
             console.log(result);
             // totalKembalian = result.value.TotalKembalian ? parseFloat(result.value.TotalKembalian.trim()) : 0;
 
-            tanggalInput.value = formatDate(result[0].Tgl_Pelunasan.trim());
+            tanggalInput.value = moment(result[0].Tgl_Pelunasan).format('YYYY-MM-DD');
             idJenisPembayaran.value = result[0].Id_Jenis_Bayar.trim();
             jenisPembayaranSelect.value = result[0].Jenis_Pembayaran.trim();
             idMataUang.value = result[0].Id_MataUang.trim();
