@@ -91,7 +91,7 @@ class MaintenancePelunasanPenjualanController extends Controller
     public function getDataPelunasanTagihan($Id_Pelunasan)
     {
         $IdPelunasan = str_replace('.', '/', $Id_Pelunasan);
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PELUNASAN_TAGIHAN] @Kode = ?, @Id_Pelunasan = ?', [2, $IdPelunasan]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PELUNASAN_TAGIHAN1] @Kode = ?, @Id_Pelunasan = ?', [2, $IdPelunasan]);
         // dd($tabel);
         return response()->json($tabel);
     }
@@ -99,7 +99,7 @@ class MaintenancePelunasanPenjualanController extends Controller
     public function LihatDetailPelunasan($Id_Pelunasan)
     {
         // $IdPelunasan = str_replace('.', '/', $Id_Pelunasan);
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PELUNASAN_TAGIHAN] @Kode = ?, @Id_Pelunasan = ?', [3, $Id_Pelunasan]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PELUNASAN_TAGIHAN1] @Kode = ?, @Id_Pelunasan = ?', [3, $Id_Pelunasan]);
         // dd($tabel);
         return response()->json($tabel);
     }
