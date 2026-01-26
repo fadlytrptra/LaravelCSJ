@@ -37,7 +37,7 @@
                         <td style="border:none;" colspan="3">Receipt Invoice</td>
                     </tr>
                     <tr>
-                        <td style="border:none;">Invoice Number</td>
+                        <td style="border:none;">Receipt Number</td>
                         <td style="border:none;">:</td>
                         <td style="border:none;">{{ $dataCetak[0]->Id_Penagihan }}</td>
                     </tr>
@@ -93,7 +93,7 @@
                 <tr style="white-space: nowrap">
                     <td style="padding: 10px 5px 10px 5px; text-align: center;">No.</td>
                     <td style="padding: 10px 5px 10px 5px; text-align: center;">Receive Date</td>
-                    <td style="padding: 10px 5px 10px 5px; text-align: center;">Receipt No.</td>
+                    <td style="padding: 10px 5px 10px 5px; text-align: center;">Delivery Order</td>
                     <td style="padding: 10px 5px 10px 5px; text-align: center;">PO</td>
                     <td style="padding: 10px 5px 10px 5px; text-align: center;">Description</td>
                     <td style="padding: 10px 5px 10px 5px; text-align: center;">Qty</td>
@@ -137,32 +137,32 @@
                     </tr>
                 @endforeach
                 @if ($dataCetak[0]->Status_PPN == 'Y')
-                @php
-                    $dppAmount = $subTotal * 11 / 12;
-                @endphp
+                    @php
+                        $dppAmount = ($subTotal * 11) / 12;
+                    @endphp
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">Subtotal</td>
                         <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
-                            {{ number_format($subTotal, 4, '.', ',') }} </td>
+                            {{ number_format($subTotal, 2, '.', ',') }} </td>
                     </tr>
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">DPP</td>
                         <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
-                            {{ number_format($dppAmount, 4, '.', ',') }} </td>
+                            {{ number_format($dppAmount, 2, '.', ',') }} </td>
                     </tr>
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">PPN</td>
                         <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
-                            {{ number_format($dataCetak[0]->Harga_Ppn, 4, '.', ',') }} </td>
+                            {{ number_format($dataCetak[0]->Harga_Ppn, 2, '.', ',') }} </td>
                     </tr>
                     @php
                         $total = collect($dataCetak)->sum(function ($item) {
-                            return (float) $item->Harga_Terbayar;
+                            return number_format((float) $item->Harga_Terbayar, 2, '.', ',');
                         });
                     @endphp
                     <tr>
                         <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">Total</td>
-                        <td style="border: none;padding: 0 0 0 5px;">{{ $dataCetak[0]->Symbol }}
+                        <td style="border: none;padding: 0 0 0 5px;white-space: nowrap;">{{ $dataCetak[0]->Symbol }}
                             {{ number_format($total, 4, '.', ',') }} </td>
                     </tr>
                 @else
@@ -179,13 +179,13 @@
                             <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">
                                 Kurs IDR</td>
                             <td style="border: none;padding: 0 0 0 5px;">Rp.
-                                {{ number_format($dataCetak[0]->Kurs_Rp, 4, '.', ',') }} </td>
+                                {{ number_format($dataCetak[0]->Kurs_Rp, 2, '.', ',') }} </td>
                         </tr>
                         <tr>
                             <td colspan="9" style="border: none;text-align: right;padding-right: 5px;">
                                 Total IDR</td>
-                            <td style="border: none;padding: 0 0 0 5px;">Rp.
-                                {{ number_format($dataCetak[0]->Harga_TerbayarRp, 4, '.', ',') }} </td>
+                            <td style="border: none;padding: 0 0 0 5px;white-space: nowrap;">Rp.
+                                {{ number_format($dataCetak[0]->Harga_TerbayarRp, 2, '.', ',') }} </td>
                         </tr>
                     @endif
                 @endif

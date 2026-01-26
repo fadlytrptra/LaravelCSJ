@@ -518,22 +518,23 @@ jQuery(function ($) {
                         returnFocus: false,
                     });
                 } else {
-                    console.log(data);
-                    table_detailFakturPajak.clear().draw();
-                    data.forEach((item) => {
-                        table_detailFakturPajak.row.add([
-                            item.Id_Detail_Faktur,
-                            item.No_Faktur,
-                            numeral(item.Nilai_Faktur).format("0,0.0000"),
-                            numeral(item.Nilai_Pajak).format("0,0.00"),
-                            numeral(item.Hrg_Ppn).format("0,0.0000"),
-                            numeral(item.Kurs_Rupiah).format("0,0.0000"),
-                        ]);
-                    });
-                    table_detailFakturPajak.draw();
-                    total_detailFakturPajak.value = numeral(
-                        data[0].TotalPajak,
-                    ).format("0,0.0000");
+                    if (data.length > 0) {
+                        table_detailFakturPajak.clear().draw();
+                        data.forEach((item) => {
+                            table_detailFakturPajak.row.add([
+                                item.Id_Detail_Faktur,
+                                item.No_Faktur,
+                                numeral(item.Nilai_Faktur).format("0,0.0000"),
+                                numeral(item.Nilai_Pajak).format("0,0.00"),
+                                numeral(item.Hrg_Ppn).format("0,0.0000"),
+                                numeral(item.Kurs_Rupiah).format("0,0.0000"),
+                            ]);
+                        });
+                        table_detailFakturPajak.draw();
+                        total_detailFakturPajak.value = numeral(
+                            data[0].TotalPajak,
+                        ).format("0,0.0000");
+                    }
                 }
             },
             error: function () {
