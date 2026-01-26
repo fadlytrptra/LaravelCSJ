@@ -140,7 +140,7 @@ jQuery(function ($) {
                     select_divisi.empty();
                     data.forEach(function (item) {
                         select_divisi.append(
-                            new Option(item.NM_DIV.trim(), item.KD_DIV) // prettier-ignore
+                            new Option(item.NM_DIV.trim(), item.KD_DIV), // prettier-ignore
                         );
                     });
                     select_divisi.val(null).trigger("change");
@@ -167,7 +167,7 @@ jQuery(function ($) {
                     bttb_selectMataUang.empty();
                     data.forEach(function (item) {
                         bttb_selectMataUang.append(
-                            new Option(item.Nama_MataUang.trim(), item.Id_MataUang) // prettier-ignore
+                            new Option(item.Nama_MataUang.trim(), item.Id_MataUang), // prettier-ignore
                         );
                     });
                     bttb_selectMataUang.val(null).trigger("change");
@@ -347,7 +347,7 @@ jQuery(function ($) {
                     let satuanQtyTerima;
                     // Insert ListTerima
                     data.ListTerima.forEach(function (item, index) {
-                        let Hrg_Trm = parseFloat(item.Hrg_Trm);
+                        let Hrg_Trm = parseFloat(item.Hrg_trm);
                         let Disc_trm = parseFloat(item.Disc_trm);
                         let Ppn_trm = parseFloat(item.Ppn_trm);
                         let Min_ord = parseFloat(item.Min_ord);
@@ -365,10 +365,14 @@ jQuery(function ($) {
                             (TNlTrans +
                                 (TNlTrans * (Ppn_trm / 100)) / Min_ord) *
                             Qty_Terima;
+
                         if (!item.TglRetur) {
                             lngQty += numeral(item.Qty).value();
-                            satuanQtyTerima = (item.Sat_Terima || "").toString().trim();
+                            satuanQtyTerima = (item.Sat_Terima || "")
+                                .toString()
+                                .trim();
                         }
+
                         table_terima.row.add([
                             index + 1,
                             item.Datang
@@ -378,7 +382,7 @@ jQuery(function ($) {
                             (item.Sat_Pesan ?? "").trim(),
                             numeral(Qty_Terima).format("0,0"),
                             satTerima,
-                            numeral(Hrg_Trm).format("0,0.00"),
+                            numeral(Hrg_Trm).format("0,0.0000"),
                             numeral(Disc_trm).format("0.00"),
                             numeral(Ppn_trm).format("0,0.00"),
                             numeral(Min_ord).format("0,0"),
@@ -475,7 +479,6 @@ jQuery(function ($) {
         return total;
     }
 
-
     // function getDataDetailSPPB(noSPPB) {
     //     let idDivisi = select_divisi.val();
 
@@ -516,7 +519,6 @@ jQuery(function ($) {
     //     });
     // }
 
-
     //#endregion
 
     //#region Event Listener
@@ -539,7 +541,7 @@ jQuery(function ($) {
                     select_noSPPB.empty();
                     data.dataSPPB.forEach(function (item) {
                         select_noSPPB.append(
-                            new Option(item.no_sppb, item.no_sppb) // prettier-ignore
+                            new Option(item.no_sppb, item.no_sppb), // prettier-ignore
                         );
                     });
                     select_noSPPB.val(null).trigger("change");
@@ -553,9 +555,8 @@ jQuery(function ($) {
         });
     });
 
-
-    $(document).on('keydown', '.select2-search__field', function (e) {
-        if (e.key === 'Enter') {
+    $(document).on("keydown", ".select2-search__field", function (e) {
+        if (e.key === "Enter") {
             e.preventDefault();
 
             let noSPPB = $(this).val().trim();
@@ -564,31 +565,32 @@ jQuery(function ($) {
             if (!noSPPB || !idDivisi) return;
 
             $.ajax({
-                url: '/CreateBTTB/getDataSPPBKoreksi',
-                type: 'GET',
+                url: "/CreateBTTB/getDataSPPBKoreksi",
+                type: "GET",
                 data: {
-                    idDivisi: idDivisi
+                    idDivisi: idDivisi,
                 },
                 success: function (res) {
-
                     if (!res.dataSPPB || res.dataSPPB.length === 0) {
-                        alert('Tidak ada data BTTB yang bisa dikoreksi di divisi ini');
+                        alert(
+                            "Tidak ada data BTTB yang bisa dikoreksi di divisi ini",
+                        );
                         return;
                     }
-                    select_noSPPB.append(new Option(noSPPB, noSPPB, true, true));
-                    select_noSPPB.trigger('change');
-                    select_noSPPB.select2('close');
+                    select_noSPPB.append(
+                        new Option(noSPPB, noSPPB, true, true),
+                    );
+                    select_noSPPB.trigger("change");
+                    select_noSPPB.select2("close");
 
                     loadTerima();
                 },
                 error: function () {
-                    alert('Gagal cek data koreksi');
-                }
+                    alert("Gagal cek data koreksi");
+                },
             });
         }
     });
-
-
 
     select_divisi.on("select2:clear", function () {
         select_noSPPB.empty();
@@ -627,7 +629,7 @@ jQuery(function ($) {
         if (!select_noSPPB.val()) {
             errorHandling(
                 "sppbKosong",
-                "Silahkan pilih nomor sppb yang ingin diproses"
+                "Silahkan pilih nomor sppb yang ingin diproses",
             );
             return;
         }
@@ -675,20 +677,20 @@ jQuery(function ($) {
                     bttb_supplier.value = data.dataHarga[0].NM_SUP?.trim();
                     bttb_noSupplier.value = data.dataHarga[0].No_sup?.trim();
                     bttb_harga.value = numeral(
-                        data.dataHarga[0].Hrg_trm
+                        data.dataHarga[0].Hrg_trm,
                     ).value();
                     bttb_selectMataUang
                         .val(data.dataHarga[0].IdMataUang)
                         .trigger("change");
                     bttb_discount.value = numeral(
-                        data.dataHarga[0].Disc_trm
+                        data.dataHarga[0].Disc_trm,
                     ).value();
                     bttb_ppn.value = numeral(data.dataHarga[0].Ppn_trm).value();
                     bttb_kursRupiah.value = numeral(
-                        data.dataHarga[0].Kurs_Rp
+                        data.dataHarga[0].Kurs_Rp,
                     ).value();
                     bttb_jangkaWaktu.value = numeral(
-                        data.dataHarga[0].Waktu
+                        data.dataHarga[0].Waktu,
                     ).value();
                     bttb_jangkaWaktu.dispatchEvent(enterKeyboardEvent);
 
@@ -710,12 +712,13 @@ jQuery(function ($) {
             if (!selectedRow.length) {
                 errorHandling(
                     "table_terimaBelumDipilih",
-                    "Silahkan pilih data"
+                    "Silahkan pilih data",
                 );
                 return;
             }
 
             let rowData = table_terima.row(selectedRow).data();
+            console.log(rowData);
 
             let kodeBarangTerima = rowData[23];
 
@@ -749,6 +752,7 @@ jQuery(function ($) {
             bttb_tanggalFaktur.value = moment(rowData[20]).format("YYYY-MM-DD");
             bttb_noFaktur.value = rowData[13];
             bttb_nomorSJ.value = rowData[21];
+            bttb_noSatTerima.value = rowData[22];
 
             let option = bttb_selectMataUang.find("option").filter(function () {
                 return (
@@ -791,7 +795,7 @@ jQuery(function ($) {
                     if (data.error || data.length == 0) {
                         errorHandling(
                             "ajaxGetDataResponse",
-                            data.error ?? "Tidak ada data detail terima"
+                            data.error ?? "Tidak ada data detail terima",
                         );
                         return;
                     } else {
@@ -801,24 +805,24 @@ jQuery(function ($) {
                         bttb_noPIBExternal.value =
                             data[0].No_PIB_External ?? "";
                         bttb_tglPIBExternal.value = moment(
-                            data[0].Tgl_PIB_External
+                            data[0].Tgl_PIB_External,
                         ).format("YYYY-MM-DD");
                         bttb_noRegisPIB.value =
                             data[0].No_Registration_PIB ?? "";
                         bttb_tglRegisPIB.value = moment(
-                            data[0].Tgl_Registration_PIB
+                            data[0].Tgl_Registration_PIB,
                         ).format("YYYY-MM-DD");
                         bttb_noBL.value = data[0].No_BL ?? "";
                         bttb_tglBL.value = moment(data[0].Tgl_BL).format(
-                            "YYYY-MM-DD"
+                            "YYYY-MM-DD",
                         );
                         bttb_noKontrak.value = data[0].No_Kontrak ?? "";
                         bttb_tglKontrak.value = moment(
-                            data[0].Tgl_Kontrak
+                            data[0].Tgl_Kontrak,
                         ).format("YYYY-MM-DD");
                         bttb_noSPPBBC.value = data[0].No_SPPB_BC ?? "";
                         bttb_tglSPPBBC.value = moment(
-                            data[0].Tgl_SPPB_BC
+                            data[0].Tgl_SPPB_BC,
                         ).format("YYYY-MM-DD");
                         $("#createBTTBModal").modal("show");
                     }
@@ -831,7 +835,7 @@ jQuery(function ($) {
         } else {
             errorHandling(
                 "sppbKosong",
-                "Silahkan pilih nomor sppb yang ingin diproses"
+                "Silahkan pilih nomor sppb yang ingin diproses",
             );
         }
     });
@@ -1068,14 +1072,17 @@ jQuery(function ($) {
 
     button_modalProses.addEventListener("click", function () {
         if (!bttb_qtyTerima.value || bttb_qtyTerima.value == 0) {
-            errorHandling("qtyTerimaKosong", "Quantity Terima tidak boleh kosong");
+            errorHandling(
+                "qtyTerimaKosong",
+                "Quantity Terima tidak boleh kosong",
+            );
             return;
         }
 
         if (!bttb_qtyTerimaActual.value || bttb_qtyTerimaActual.value == 0) {
             errorHandling(
                 "qtyTerimaKosongActual",
-                "Quantity Terima Actual tidak boleh kosong"
+                "Quantity Terima Actual tidak boleh kosong",
             );
             return;
         }
@@ -1089,19 +1096,13 @@ jQuery(function ($) {
         let hrg_murni =
             parseFloat(bttb_qtyTerimaActual.value) *
             parseFloat(bttb_harga.value);
-        let hrg_murni_rp =
-            hrg_murni * parseFloat(bttb_kursRupiah.value);
-        let hrg_disc =
-            (parseFloat(bttb_discount.value) / 100) * hrg_murni;
-        let hrg_disc_rp =
-            hrg_disc * parseFloat(bttb_kursRupiah.value);
+        let hrg_murni_rp = hrg_murni * parseFloat(bttb_kursRupiah.value);
+        let hrg_disc = (parseFloat(bttb_discount.value) / 100) * hrg_murni;
+        let hrg_disc_rp = hrg_disc * parseFloat(bttb_kursRupiah.value);
         let hrg_nego = hrg_murni - hrg_disc;
         let hrg_nego_rp = hrg_murni_rp - hrg_disc_rp;
-        let hrg_ppn =
-            hrg_nego * (parseFloat(bttb_ppn.value) / 100);
-        let hrg_ppn_rp =
-            hrg_ppn * parseFloat(bttb_kursRupiah.value);
-
+        let hrg_ppn = hrg_nego * (parseFloat(bttb_ppn.value) / 100);
+        let hrg_ppn_rp = hrg_ppn * parseFloat(bttb_kursRupiah.value);
 
         const formData = new FormData();
         formData.append("_token", csrfToken);
@@ -1123,6 +1124,7 @@ jQuery(function ($) {
         formData.append("ppn_trm", bttb_ppn.value);
         formData.append("min_ord", bttb_hargaPer.value);
         formData.append("waktu", bttb_jangkaWaktu.value);
+        formData.append("no_ket", bttb_jangkaWaktu.value == 0 ? "001" : "002");
         formData.append("IdMataUang", bttb_selectMataUang.val());
         formData.append("Kurs", bttb_kursRupiah.value);
         formData.append("TglFaktur", bttb_tanggalFaktur.value);
@@ -1153,7 +1155,10 @@ jQuery(function ($) {
         formData.append("Tgl_SPPB_BC", bttb_tglSPPBBC.value);
 
         formData.append("qty_koreksi", bttb_qtyTerimaKoreksi.value ?? 0);
-        formData.append("QtyTerimakoreksi", bttb_qtyTerimaActualKoreksi.value ?? 0);
+        formData.append(
+            "QtyTerimakoreksi",
+            bttb_qtyTerimaActualKoreksi.value ?? 0,
+        );
 
         $.ajax({
             url: "/CreateBTTB",
@@ -1187,7 +1192,6 @@ jQuery(function ($) {
             },
         });
     });
-
 
     $("#table_terima tbody").on("click", "tr", function () {
         let rowData = table_terima.row(this).data();
@@ -1290,7 +1294,7 @@ jQuery(function ($) {
             let harga = parseFloat(koreksiKurs_harga.value);
             let kurs = parseFloat(this.value);
             koreksiKurs_totalBayar.value = numeral(harga * kurs).format(
-                "0.000"
+                "0,0.0000",
             );
             koreksiKurs_Proses.disabled = false;
             koreksiKurs_Proses.focus();
@@ -1320,7 +1324,7 @@ jQuery(function ($) {
                         timer: 2500,
                     }).then(() => {
                         $("#koreksiKurs_tableBarang tbody tr").removeClass(
-                            "selected"
+                            "selected",
                         );
                         koreksiKurs_noFaktur.value = "";
                         koreksiKurs_kodeBarang.value = "";
