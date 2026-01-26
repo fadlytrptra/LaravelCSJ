@@ -125,6 +125,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/FinalApprove/{id}/show', 'App\Http\Controllers\Beli\Transaksi\FinalApproveController@show')->name('finalapprove.show');
     Route::post('/FinalApprove/{id}/up', 'App\Http\Controllers\Beli\Transaksi\FinalApproveController@update')->name('finalapprove.update');
 
+
     #region Sales
     Route::get('Sales', 'App\Http\Controllers\HomeController@Sales');
 
@@ -660,4 +661,5 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('CetakBKM', CetakBKMController::class);
     Route::resource('CetakBKK', CetakBKKController::class);
     Route::resource('CetakSPPBBTTB', CetakSPPBBTTBController::class);
+
 });

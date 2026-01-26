@@ -170,7 +170,7 @@ class PemberiBarangController extends Controller
     //Update the specified resource in storage.
     public function update(Request $request, $id)
     {
-        $user = Auth::user()->NomorUser;
+        $user = trim(Auth::user()->NomorUser);
         // dd($user);
         if ($id === 'proses') {
             $IdTransaksi = $request->input('IdTransaksi');
@@ -416,7 +416,7 @@ class PemberiBarangController extends Controller
 
                 // prosesnya
                 DB::connection('ConnInventory')
-                    ->statement('exec [SP_4384_INV_Proses_ACC_Pemberi]
+                    ->statement('exec [SP_4384_INV_roses_ACC_Pemberi]
                                         @IdTransaksi = ?, @UserACC = ?, @JumlahKeluarPrimer = ?, @JumlahKeluarSekunder = ?, @JumlahKeluarTritier = ?',
                         [
                             $IdTransaksi,

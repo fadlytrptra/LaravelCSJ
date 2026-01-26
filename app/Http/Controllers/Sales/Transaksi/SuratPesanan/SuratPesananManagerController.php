@@ -329,14 +329,115 @@ class SuratPesananManagerController extends Controller
                 $faktur_pjk
             ],
         );
+
+
+        // for ($i = 0; $i < count($id_pesanan); $i++) {
+        //     // dd($inv->isEmpty(), $adaDo == 0 or $terkirim < 1);
+        //     if ($inv->isEmpty() || $inv[0]->IdPenagihan == null) {
+        //         // dd('masuk atas',$HargaSatuan);
+        //         // if ($adaDo == 0 or (int) $terkirim < 1) {
+        //         if ((int) $terkirim < 1) {
+        //             if (is_null($id_pesanan[$i])) {
+        //                 // dd('hehe1');
+        //                 DB::connection('ConnSales')->statement(
+        //                     'exec SP_1273_PRG_MAINT_DETAILPESANAN1 @Kode = ?,
+        //                             @IDSuratPesanan = ?,
+        //                             @KodeBarang = ?,
+        //                             @IdJnsBarang = ?,
+        //                             @Qty = ?,
+        //                             @Satuan = ?,
+        //                             @HargaSatuan = ?,
+        //                             @Discount = ?,
+        //                             @UraianPesanan = ?,
+        //                             @TglRencanaKirim = ?,
+        //                             @Lunas = ?,
+        //                             @PPN = ?',
+        //                     [
+        //                         1,
+        //                         $no_spText,
+        //                         $KodeBarang[$i],
+        //                         $IdJnsBarang[$i],
+        //                         $Qty[$i],
+        //                         $Satuan[$i],
+        //                         $HargaSatuan[$i],
+        //                         0.0,
+        //                         $UraianPesanan ?? null,
+        //                         $TglRencanaKirim[$i],
+        //                         $Lunas ?? null,
+        //                         $ppn[$i],
+        //                     ],
+        //                 );
+        //             } else {
+        //                 // dd($Lunas[$i]);
+        //                 DB::connection('ConnSales')->statement(
+        //                     'exec SP_1273_PRG_MAINT_DETAILPESANAN1 @Kode = ?,
+        //                             @IdPesanan = ?,
+        //                             @KodeBarang = ?,
+        //                             @IdJnsBarang = ?,
+        //                             @Qty = ?,
+        //                             @Satuan = ?,
+        //                             @HargaSatuan = ?,
+        //                             @Discount = ?,
+        //                             @UraianPesanan = ?,
+        //                             @TglRencanaKirim = ?,
+        //                             @Lunas = ?,
+        //                             @PPN = ?',
+        //                     [
+        //                         $kode,
+        //                         $id_pesanan[$i],
+        //                         $KodeBarang[$i],
+        //                         $IdJnsBarang[$i],
+        //                         $Qty[$i],
+        //                         $Satuan[$i],
+        //                         $HargaSatuan[$i],
+        //                         0.0,
+        //                         $UraianPesanan ?? null,
+        //                         $TglRencanaKirim[$i],
+        //                         $Lunas[$i] ?? null,
+        //                         $ppn[$i],
+        //                     ],
+        //                 );
+        //             }
+        //         } else {
+        //             //yang digunakan
+        //             for ($i = 0; $i < count($id_pesanan); $i++) {
+        //                 DB::connection('ConnSales')->table('T_DETAILPESANAN')->where('IDPesanan', $id_pesanan)
+        //                     ->update([
+        //                             'IdJnsBarang' => $IdJnsBarang[$i],
+        //                             'Qty' => $Qty[$i],
+        //                             'Satuan' => $Satuan[$i],
+        //                             'HargaSatuan' => $HargaSatuan[$i],
+        //                             'ppn' => $ppn[$i],
+        //                             'Discount' => 0.0,
+        //                             'UraianPesanan' => $UraianPesanan ?? null,
+        //                             'TglRencanaKirim' => $TglRencanaKirim[$i],
+        //                             'Lunas' => $Lunas[$i],
+        //                             'IDBarang' => $KodeBarang[$i],
+        //                         ]);
+        //             }
+        //             return response()->json(['error' => (string) 'Surat Pesanan ' . $no_sp . ' Sudah Dibuatkan DO, Tidak bisa mengubah kode barang']);
+        //             // return redirect()->back()->with('error', 'Surat Pesanan ' . $no_sp . ' Sudah Dibuatkan DO, Tidak bisa mengubah kode barang');
+        //         }
+        //     } else {
+        //         // dd('Masuk sini', $inv);
+        //         for ($i = 0; $i < count($id_pesanan); $i++) {
+        //             DB::connection('ConnSales')->table('T_DETAILPESANAN')->where('IDPesanan', $id_pesanan)
+        //                 ->update(['Lunas' => $Lunas[$i]]);
+        //         }
+        //         return response()->json(['error' => (string) 'Status Lunas BISA diproses. Surat Pesanan ' . $no_sp . ' Sudah Ada ID Penagihannya: ' . $inv[0]->IdPenagihan]);
+        //         // return redirect()->back()->with('error', 'Status Lunas BISA diproses. Surat Pesanan ' . $no_sp . ' Sudah Ada ID Penagihannya: ' . $inv[0]->IdPenagihan);
+        //     }
+        // }
+
+
+
         // dd($inv, $adaDo, $terkirim, $id_pesanan, $adaDo == 0, $terkirim < 1, $inv->isEmpty(), $inv[0]->IdPenagihan);
         for ($i = 0; $i < count($id_pesanan); $i++) {
-
-            // ===============================
-            // JIKA DATA BARU (INSERT)
-            // ===============================
             if (is_null($id_pesanan[$i])) {
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
                 DB::connection('ConnSales')->statement(
                     'exec SP_1273_PRG_MAINT_DETAILPESANAN1
                         @Kode = ?,
@@ -390,10 +491,14 @@ class SuratPesananManagerController extends Controller
         return response()->json([
             'message' => 'Update berhasil dan sudah masuk ke database'
         ]);
+<<<<<<< Updated upstream
 
 
 
 
+=======
+        
+>>>>>>> Stashed changes
         return response()->json(['message' => (string) 'Surat Pesanan ' . $no_sp . ' Sudah Disesuaikan!',]);
         // return redirect()->back()->with('success', 'Surat Pesanan ' . $no_sp . ' Sudah Disesuaikan!');
         //SP_1486_SLS_MAINT_HEADERPESANAN @kode = 2
