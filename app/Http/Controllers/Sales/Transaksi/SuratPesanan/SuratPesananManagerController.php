@@ -434,10 +434,7 @@ class SuratPesananManagerController extends Controller
         // dd($inv, $adaDo, $terkirim, $id_pesanan, $adaDo == 0, $terkirim < 1, $inv->isEmpty(), $inv[0]->IdPenagihan);
         for ($i = 0; $i < count($id_pesanan); $i++) {
             if (is_null($id_pesanan[$i])) {
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
                 DB::connection('ConnSales')->statement(
                     'exec SP_1273_PRG_MAINT_DETAILPESANAN1
                         @Kode = ?,
@@ -491,14 +488,11 @@ class SuratPesananManagerController extends Controller
         return response()->json([
             'message' => 'Update berhasil dan sudah masuk ke database'
         ]);
-<<<<<<< Updated upstream
 
 
 
 
-=======
-        
->>>>>>> Stashed changes
+
         return response()->json(['message' => (string) 'Surat Pesanan ' . $no_sp . ' Sudah Disesuaikan!',]);
         // return redirect()->back()->with('success', 'Surat Pesanan ' . $no_sp . ' Sudah Disesuaikan!');
         //SP_1486_SLS_MAINT_HEADERPESANAN @kode = 2
