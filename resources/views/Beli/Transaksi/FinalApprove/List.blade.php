@@ -4,15 +4,6 @@
 
 @section('content')
     @include('Beli/Transaksi/FinalApprove/modalDetailFinal')
-    <script src="{{ asset('js/OrderPembelian/FinalApprove/FinalApprove.js') }}"></script>
-
-    <style>
-        .table-striped>tbody>tr:nth-child(even)>td,
-        .table-striped>tbody>tr:nth-child(even)>th {
-            background-color: #e5de00;
-        }
-    </style>
-
     <style>
         thead th {
             text-align: center !important;
@@ -22,6 +13,41 @@
         .card-footer .btn {
             min-width: 100px;
         }
+
+        .table-striped>tbody>tr:nth-child(even)>td,
+        .table-striped>tbody>tr:nth-child(even)>th {
+            background-color: #e5de00;
+        }
+
+        .row-approved td {
+            background-color: #d4edda !important;
+        }
+
+        .row-pending td {
+            background-color: #e5de00 !important;
+        }
+
+        .row-approved {
+            opacity: 0.85;
+        }
+
+        .lbl_approved {
+            background-color: #00ff00;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .lbl_pending {
+            background-color: #de8f21;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            display: inline-block;
+        }
     </style>
 
     <div class="container-fluid">
@@ -29,12 +55,11 @@
             <div class="col-md-10 RDZMobilePaddingLR0">
                 <div class="card">
                     <div class="card-header">ACC Direktur</div>
-
                     {{-- kirim ke FinalApproveController@store --}}
                     <form class="form" method="POST" enctype="multipart/form-data" action="{{ url('/FinalApprove') }}">
                         @csrf
+                        <input type="hidden" name="action" id="actionInput">
                         <div id="DataCheckbox"></div>
-
                         <div class="card-body">
                             @if (\Session::has('danger'))
                                 <div class="alert alert-danger">{!! \Session::get('danger') !!}</div>
@@ -56,22 +81,26 @@
                                         <th>Jumlah</th>
                                         <th>Satuan</th>
                                         <th>HargaPerkiraan</th>
+                                        <th>No. PO</th>
                                         <th>Keterangan Beli</th>
                                         <th>Kd.Barang</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     @foreach ($data as $index => $item)
-                                        <tr id="{{ $index }}">
+                                        <tr id="{{ $index }}"
+                                            class = "{{ $item->Dir_Agree ? 'row_approved' : 'row_pending' }} ">
                                             <td class="text-center">
                                                 <input type="checkbox" name="Checked[]" onclick="x('{{ $item->No_trans }}')"
                                                     value="{{ $item->No_trans }}" id="{{ $item->No_trans }}"
                                                     style="width:20px;height:20px;" />
                                             </td>
                                             <td class="RDZPaddingTable">{{ $item->Kd_div }}</td>
-                                            <td class="RDZPaddingTable RDZCenterTable">
-                                                {{ date('m-d-Y', strtotime($item->Tgl_order)) }}
+                                            <td class="RDZPaddingTable RDZCenterTable" style="white-space: nowrap"
+                                                data-order="{{ \Carbon\Carbon::parse($item->Tgl_order)->format('Y-m-d H:i:s') }}">
+                                                {{ \Carbon\Carbon::parse($item->Tgl_order)->format('m-d-Y') }}
                                             </td>
                                             <td class="RDZPaddingTable">{{ $item->nama_sub_kategori }}</td>
                                             <td class="RDZPaddingTable">{{ $item->NAMA_BRG }}</td>
@@ -80,24 +109,38 @@
                                             <td class="RDZPaddingTable text-end">
                                                 {{ number_format($item->HargaPerkiraan ?? 0, 2) }}
                                             </td>
+                                            <td class="RDZPaddingTable" style="white-space: nowrap;">{{ trim($item->No_sppb) }}</td>
                                             <td class="RDZPaddingTable">{{ $item->keterangan }}</td>
                                             <td class="RDZPaddingTable">{{ $item->Kd_brg }}</td>
+                                            <td class="text-center">
+                                                @if ($item->Dir_Agree)
+                                                    <span class="lbl_approved">Approved</span>
+                                                @else
+                                                    <span class="lbl_pending">Pending</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="card-footer">
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-md btn-primary" name="action" value="Approve">
                                     Proses
                                 </button>
-
-                                <button type="submit" class="btn btn-md btn-warning" name="action" value="DownToManager">
-                                    Turunkan ke Level Manager
+                                <button type="submit" class="btn btn-md btn-warning btn_revisi" name="action"
+                                    value="Revisi">
+                                    Revisi
                                 </button>
-
+                                {{-- BATAL --}}
+                                <button type="submit" class="btn btn-md btn-danger btn_batal" name="action"
+                                    value="Dibatalkan">
+                                    Dibatalkan
+                                </button>
+                                {{-- <button type="submit" class="btn btn-md btn-warning" name="action" value="DownToManager">
+                                    Turunkan ke Level Manager
+                                </button> --}}
                             </div>
                         </div>
 
@@ -109,26 +152,10 @@
 
     <script>
         $(document).ready(function() {
-
-            const table = $('#table_Approve').DataTable({
-                searching: true,
-                order: [
-                    [2, 'desc']
-                ], // index 2 = kolom Tanggal
-                columnDefs: [{
-                    orderable: false,
-                    targets: 0
-                }]
-            });
-
-            $(document).on('auxclick', '.DetailApprove', function(e) {
-                if (e.button === 1) e.preventDefault();
-            });
-
             // checkbox per baris
             window.x = function(No_trans) {
-                const item = document.getElementById(No_trans);
-                const add = document.getElementById("DataCheckbox");
+                let item = document.getElementById(No_trans);
+                let add = document.getElementById("DataCheckbox");
                 if (!item) return;
 
                 if (item.checked) {
@@ -141,24 +168,24 @@
                         );
                     }
                 } else {
-                    const Input = document.getElementById("ID" + No_trans);
+                    let Input = document.getElementById("ID" + No_trans);
                     if (Input) Input.remove();
                 }
             };
 
             // checkbox "pilih semua"
             $('#CheckedAll').on('click', function() {
-                const rows = table.rows({
+                let rows = table.rows({
                     search: 'applied'
                 }).nodes();
                 $('input[type="checkbox"]', rows).prop('checked', this.checked);
 
-                const add = document.getElementById("DataCheckbox");
-                const Data = {!! json_encode($data, JSON_HEX_TAG) !!};
+                let add = document.getElementById("DataCheckbox");
+                let Data = {!! json_encode($data, JSON_HEX_TAG) !!};
 
                 if (this.checked) {
                     Data.forEach(row => {
-                        const id = "ID" + row.No_trans;
+                        let id = "ID" + row.No_trans;
                         if (!document.getElementById(id)) {
                             add.insertAdjacentHTML(
                                 'beforeend',
@@ -170,12 +197,12 @@
                     });
                 } else {
                     Data.forEach(row => {
-                        const Input = document.getElementById("ID" + row.No_trans);
+                        let Input = document.getElementById("ID" + row.No_trans);
                         if (Input) Input.remove();
                     });
                 }
             });
         });
     </script>
-
+    <script src="{{ asset('js/OrderPembelian/FinalApprove/FinalApprove.js') }}"></script>
 @endsection

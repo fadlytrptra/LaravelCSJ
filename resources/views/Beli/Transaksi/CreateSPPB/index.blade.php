@@ -8,6 +8,8 @@
     }
 </style>
 <input type="hidden" name="idUser" id="idUser" value={{ $user_id }}>
+<input type="hidden" name="no_trans_revisi" id="no_trans_revisi" value="{{ $noTransRevisi ?? '' }}">
+<input type="hidden" id="no_sppb_revisi" value="{{ $noSppbRevisi ?? '' }}">
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-10 RDZMobilePaddingLR0">

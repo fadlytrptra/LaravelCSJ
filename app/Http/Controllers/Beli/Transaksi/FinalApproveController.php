@@ -17,73 +17,223 @@ class FinalApproveController extends Controller
     public function index()
     {
         $kdUser = trim(Auth::user()->NomorUser);
-
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Final Approve');
 
         $data = DB::connection('ConnPurchase')->select(
-            'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @kd_user = ?',
-            [$kdUser]
+            'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @XKode = ?, @kd_user = ?',
+            [1, $kdUser]
         );
 
         return view('Beli.Transaksi.FinalApprove.List', compact('data', 'access'));
     }
 
+    // public function store(Request $request)
+    // {
+    //     $checked = $request->input('checkedBOX', []);
+
+    //     if (empty($checked)) {
+    //         return back()->with('danger', 'Gagal Approve/Reject, Karena Tidak Ada Data yang Dipilih');
+    //     }
+
+    //     $date = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
+    //     $now  = $date->format('Y-m-d H:i:s');
+    //     $user = trim(Auth::user()->NomorUser);
+
+    //     switch ($request->input('action')) {
+
+    //         case 'Approve':
+    //             TransBL::whereIn('No_trans', $checked)->update([
+    //                 'Tgl_Direktur' => $now,
+    //                 'Direktur'     => $user,
+    //                 'Dir_Agree'    => 1,
+    //             ]);
+    //             return back();
+
+    //         case 'DownToManager':
+    //             TransBL::whereIn('No_trans', $checked)->update([
+    //                 // batalkan acc manager
+    //                 'Tgl_acc'       => null,
+    //                 'Manager'       => null,
+    //                 // bersihkan jejak direktur
+    //                 'Tgl_Direktur'  => null,
+    //                 'Direktur'      => null,
+    //                 'Dir_Agree'     => 0,
+    //                 // tandai sebagai DITOLAK (oleh direktur)
+    //                 'Tgl_Batal_acc' => $now,
+    //                 'Batal_acc'     => $user,
+    //             ]);
+    //             return back();
+    //
+
+    //         case 'Reject':
+    //             TransBL::whereIn('No_trans', $checked)->update([
+    //                 'Tgl_Direktur'  => $now,
+    //                 'Direktur'      => $user,
+    //                 'Tgl_Batal_acc' => $now,
+    //                 'Batal_acc'     => $user,
+    //                 'Dir_Agree'     => 0,
+    //             ]);
+    //             return back();
+
+    //         case 'Revisi':
+    //             $noTrans = $checked[0];
+    //             $old = TransBL::where('No_trans', $noTrans)->firstOrFail();
+    //             $noSppbBaru = $this->generateNoSppbRevisi($old->No_sppb);
+
+    //             $new = $old->replicate();
+    //             $new->No_sppb = $noSppbBaru;
+    //             $new->Dir_Agree     = null;
+    //             $new->Direktur      = null;
+    //             $new->Tgl_Direktur  = null;
+    //             $new->Manager       = null;
+    //             $new->Tgl_acc       = null;
+    //             $new->Batal_acc     = null;
+    //             $new->Tgl_Batal_acc = null;
+
+    //             $new->save();
+    //             TransBL::where('No_trans', $noTrans)->update([
+    //                 'Dir_Agree'     => 0,
+    //                 'Batal_acc'     => $user,
+    //                 'Tgl_Batal_acc' => $now,
+    //             ]);
+
+    //             return back()->with('success', 'Revisi berhasil: ' . $noSppbBaru);
+
+    //         default:
+    //             return back();
+    //     }
+    // }
+
+
+    //TESTING FUNGSI ACCEPT, REVISI DAN DIBATALKAN
     public function store(Request $request)
     {
-        $checked = $request->input('checkedBOX', []);
+        DB::beginTransaction();
 
-        if (empty($checked)) {
-            return back()->with('danger', 'Gagal Approve/Reject, Karena Tidak Ada Data yang Dipilih');
-        }
+        try {
 
-        $date = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
-        $now  = $date->format('Y-m-d H:i:s');
-        $user = trim(Auth::user()->NomorUser);
+            $checked = $request->input('checkedBOX', []);
+            if (empty($checked)) {
+                DB::rollBack();
+                return back()->with('danger', 'Tidak ada data dipilih');
+            }
 
-        switch ($request->input('action')) {
+            $now  = now('Asia/Jakarta');
+            $user = trim(Auth::user()->NomorUser);
 
-            case 'Approve':
-                TransBL::whereIn('No_trans', $checked)->update([
-                    'Tgl_Direktur' => $now,
-                    'Direktur'     => $user,
-                    'Dir_Agree'    => 1,
-                ]);
-                return back();
+            switch ($request->input('action')) {
 
-            // ⬇️ ini yang diubah
-            case 'DownToManager':
-                TransBL::whereIn('No_trans', $checked)->update([
-                    // batalkan acc manager
-                    'Tgl_acc'       => null,
-                    'Manager'       => null,
+                /* =========================
+                * APPROVE
+                * ========================= */
+                case 'Approve':
 
-                    // bersihkan jejak direktur
-                    'Tgl_Direktur'  => null,
-                    'Direktur'      => null,
-                    'Dir_Agree'     => 0,
+                    TransBL::whereIn('No_trans', $checked)->update([
+                        'Tgl_Direktur' => $now,
+                        'Direktur'     => $user,
+                        'Dir_Agree'    => 1,
+                    ]);
 
-                    // tandai sebagai DITOLAK (oleh direktur)
-                    'Tgl_Batal_acc' => $now,
-                    'Batal_acc'     => $user,
-                ]);
-                return back();
+                    DB::commit();
+                    return back()->with('success', 'Data berhasil di-approve');
 
-            case 'Reject':
-                TransBL::whereIn('No_trans', $checked)->update([
-                    'Tgl_Direktur'  => $now,
-                    'Direktur'      => $user,
-                    'Tgl_Batal_acc' => $now,
-                    'Batal_acc'     => $user,
-                    'Dir_Agree'     => 0,
-                ]);
-                return back();
 
-            default:
-                return back();
+                /* =========================
+                * REVISI
+                * ========================= */
+                case 'Revisi':
+                $noTrans = $checked[0];
+
+                $old = DB::table('YTRANSBL')
+                    ->where('No_trans', $noTrans)
+                    ->first();
+
+                if (!$old) {
+                    DB::rollBack();
+                    return back()->with('danger', 'Data tidak ditemukan');
+                }
+
+                DB::table('YTRANSBL')
+                    ->where('No_trans', $noTrans)
+                    ->update([
+                        'Dir_Agree' => 1,
+                        'Batal_acc' => $user,
+                        'Tgl_batal_Acc' => $now,
+                    ]);
+
+
+                $newData = (array) $old;
+
+                $newData['No_trans'] = $this->generateNoTransBaru();
+                $newData['No_sppb']  = substr(
+                    rtrim($this->generateNoSppbRevisi($old->No_sppb)),
+                    0,
+                    25
+                );
+
+                // reset
+                $newData['Dir_Agree'] = null;
+                $newData['Direktur'] = null;
+                $newData['Tgl_Direktur'] = null;
+                $newData['Manager'] = null;
+                $newData['Tgl_acc'] = null;
+                $newData['Batal_acc'] = null;
+                $newData['Tgl_batal_Acc'] = null;
+
+
+                DB::table('YTRANSBL')->insert($newData);
+                DB::commit();
+
+                $newNoTrans = $newData['No_trans'];
+                $newNoSppb = $newData['No_sppb'];
+
+                return redirect()
+                    ->route('CreateSPPB.index', ['no_trans' => $newNoTrans])
+                    ->with('success', 'Data sudah berhasil direvisi.');
+
+                /* =========================
+                * DIBATALKAN
+                * ========================= */
+                case 'Dibatalkan':
+
+                    TransBL::whereIn('No_trans', $checked)->update([
+                        'Dir_Agree'     => 1,
+                        'Batal_acc'     => $user,
+                        'Tgl_batal_Acc' => $now,
+                    ]);
+
+                    DB::commit();
+                    return back()->with('success', 'Data berhasil dibatalkan');
+
+
+                default:
+                    DB::rollBack();
+                    return back()->with('danger', 'Aksi tidak valid');
+            }
+
+        // } catch (\Throwable $e) {
+
+        //     DB::rollBack();
+
+        //     // PENTING: simpan error detail
+        //     \Log::error('FinalApprove Error', [
+        //         'message' => $e->getMessage(),
+        //         'trace'   => $e->getTraceAsString(),
+        //     ]);
+
+        //     return back()->with('danger', 'Terjadi kesalahan sistem');
+        // }
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            dd([
+                'ERROR_MESSAGE' => $e->getMessage(),
+                'ERROR_FILE'    => $e->getFile(),
+                'ERROR_LINE'    => $e->getLine(),
+                'TRACE'         => collect($e->getTrace())->take(5),
+            ]);
         }
     }
-
 
     public function show($id)
     {
@@ -173,4 +323,42 @@ class FinalApproveController extends Controller
                 return back();
         }
     }
+
+    public function generateNoSppbRevisi(string $oldNo): string
+    {
+        $base = trim($oldNo);
+
+        // Jika sudah ada REVxx di akhir
+        if (preg_match('/REV(\d+)$/', $base, $m)) {
+            $next = str_pad(((int) $m[1]) + 1, 2, '0', STR_PAD_LEFT);
+
+            return preg_replace(
+                '/\sREV\d+$/',
+                ' REV' . $next,
+                $base
+            );
+        }
+
+        // Jika belum pernah direvisi
+        return $base . ' REV01';
+    }
+
+
+
+
+    public function generateNoTransBaru()
+    {
+        return DB::transaction(function () {
+
+            // lock table agar tidak race condition
+            $last = DB::table('YTRANSBL')
+                ->lockForUpdate()
+                ->selectRaw('MAX(CAST(No_trans AS INT)) as max_no')
+                ->value('max_no');
+
+            $next = ($last ?? 0) + 1;
+            return str_pad($next, 8, '0', STR_PAD_LEFT);
+        });
+    }
+
 }

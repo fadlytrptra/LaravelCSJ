@@ -11,13 +11,15 @@ use DB;
 
 class CreateSPPBController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Create SPPB');
         $user_id = trim(Auth::user()->NomorUser);
+        $noTransRevisi = $request->query('no_trans');
+
         if ($result > 0) {
-            return view('Beli.Transaksi.CreateSPPB.index', compact('access', 'user_id'));
+            return view('Beli.Transaksi.CreateSPPB.index', compact('access', 'user_id', 'noTransRevisi'));
         } else {
             abort(403);
         }
@@ -218,6 +220,7 @@ class CreateSPPBController extends Controller
             } else {
                 return response()->json('Parameter harus diisi');
             }
+
         } else if ($jenisStore == 'savePO') {
             $rows = $request->table_orderPembelian;
             $idDivisi = $request->idDivisi;
@@ -274,6 +277,8 @@ class CreateSPPBController extends Controller
                     );
                     $sppbFormatted = str_pad((string) $sppbCounter, 4, '0', STR_PAD_LEFT);
                     $No_sppb = 'PO-' . $yearShort . 'CSJ' . $sppbFormatted;
+                } else {
+                    $No_sppb = $No_sppb[0]->No_sppb;
                 }
                 foreach ($rows as $index => $row) {
                     $No_trans = $row[11];
@@ -291,14 +296,18 @@ class CreateSPPBController extends Controller
                     }
                 }
             } else {
+                $isRevisi = str_contains($No_sppb, 'REV');
+                $XKodeSave = $isRevisi ? 14 : 4;
                 foreach ($rows as $row) {
                     $No_trans = $row[11];
+
+                    $isRevisi = str_contains($No_sppb, 'REV');
 
                     DB::connection('ConnPurchase')->statement(
                         'exec SP_4384_PRG_Maintenance_Order_Pembelian
                         @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?',
                         [
-                            4,
+                            $XKodeSave,
                             $No_trans,
                             $No_sppb,
                             $keteranganCetak
@@ -307,98 +316,90 @@ class CreateSPPBController extends Controller
                 }
             }
             return response()->json(['message' => 'Sudah Berhasil Save PO!', "data" => $No_sppb]);
-        } else if ($jenisStore == 'sumbitPO') {
-            $rows = $request->table_orderPembelian;
-            $idDivisi = $request->idDivisi;
-            $Tgl_sppb = $request->Tgl_sppb;
-            $No_sppb = $request->No_sppb;
-            $keteranganCetak = $request->keteranganCetak;
 
-            if (!$No_sppb) {
-                $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                        @XKode = ?, @No_trans = ?', [
-                    3,
-                    $rows[0][11],
-                ]);
-                if (!$No_sppb[0]->No_sppb) {
+        } else if ($jenisStore == 'submitPO') {
 
-                    // $counter = DB::connection('ConnPurchase')->select(
-                    //     'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
-                    //     [$idDivisi]
-                    // );
-                    // if (empty($counter)) {
-                    //     throw new \Exception('Counter SPPB tidak ditemukan');
-                    // }
+            DB::beginTransaction();
+            try {
 
-                    // $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
-                    // $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
-                    // $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
-                    // $tahun = date('y', strtotime($Tgl_sppb));
-                    // $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
+                $rows = $request->table_orderPembelian;
+                $keteranganCetak = $request->keteranganCetak;
+                $operator = trim(Auth::user()->NomorUser);
 
-                    // DB::connection('ConnPurchase')->statement(
-                    //     'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
-                    //                 @kd_div_1 = ?,
-                    //                 @no_sppb_2 = ?',
-                    //     [$idDivisi, $no_sppb_counter]
-                    // );
-
-                    $year = date("Y");
-                    $yearShort = date('y');
-                    $counter = DB::connection('ConnPurchase')->select(
-                        'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
-                        [0, $year]
-                    );
-                    if (count($counter) < 1) {
-                        DB::connection('ConnPurchase')->statement(
-                            'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
-                            [2, $year]
-                        );
-                        $sppbCounter = 1;
-                    } else {
-                        $sppbCounter = $counter[0]->SPPB + 1;
-                    }
-                    DB::connection('ConnPurchase')->statement(
-                        'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?, @XSPPB = ?',
-                        [1, $year, $sppbCounter]
-                    );
-                    $sppbFormatted = str_pad((string) $sppbCounter, 4, '0', STR_PAD_LEFT);
-                    $No_sppb = 'PO-' . $yearShort . 'CSJ' . $sppbFormatted;
+                if (empty($rows)) {
+                    return response()->json('Data order kosong', 422);
                 }
 
-                foreach ($rows as $index => $row) {
-                    $No_trans = $row[11];
-                    try {
-                        DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
-                            5,
-                            $No_trans,
-                            $No_sppb,
-                            $keteranganCetak
-                        ]);
+                $firstRow = $rows[0];
+                $noTrans  = $firstRow[11];
 
-                    } catch (Exception $Ex) {
-                        return response()->json($Ex->getMessage());
-                    }
+                $lastNoSppb = $this->getLastNoSppbByTrans($noTrans);
+
+                if (!empty($lastNoSppb)) {
+                    $No_sppb = $lastNoSppb;
+                } else {
+                    $No_sppb = $this->generateNoSppbBaru();
                 }
-            } else {
+
                 foreach ($rows as $row) {
+
+                    if (!isset($row[11])) continue;
                     $No_trans = $row[11];
 
+                    // SAVE
                     DB::connection('ConnPurchase')->statement(
                         'exec SP_4384_PRG_Maintenance_Order_Pembelian
-                        @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?',
+                        @XKode = ?,
+                        @No_trans = ?,
+                        @No_sppb = ?,
+                        @Informasi_Cetak = ?,
+                        @Operator = ?',
+                        [
+                            4,
+                            $No_trans,
+                            $No_sppb,
+                            $keteranganCetak,
+                            $operator
+                        ]
+                    );
+
+                    // SUBMIT
+                    DB::connection('ConnPurchase')->statement(
+                        'exec SP_4384_PRG_Maintenance_Order_Pembelian
+                        @XKode = ?,
+                        @No_trans = ?,
+                        @No_sppb = ?,
+                        @Informasi_Cetak = ?,
+                        @Operator = ?',
                         [
                             5,
                             $No_trans,
                             $No_sppb,
-                            $keteranganCetak
+                            $keteranganCetak,
+                            $operator
                         ]
                     );
                 }
+
+                DB::commit();
+
+                return response()->json([
+                    'message' => 'SPPB berhasil disubmit',
+                    'no_sppb' => $No_sppb
+                ]);
+
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'Submit gagal',
+                    'error'   => $e->getMessage()
+                ], 500);
             }
-            return response()->json(['message' => 'Sudah Berhasil Submit PO!', "data" => $No_sppb]);
-        } else if ($jenisStore == 'accPO') {
+        }
+
+
+
+         else if ($jenisStore == 'accPO') {
             $nomorSPPB = $request->nomorSPPB;
             $user_id = trim(Auth::user()->NomorUser);
             try {
@@ -407,7 +408,10 @@ class CreateSPPBController extends Controller
             } catch (Exception $ex) {
                 return response()->json($ex->getMessage());
             }
-        } else if ($jenisStore == 'deletePO') {
+        }
+
+
+        else if ($jenisStore == 'deletePO') {
             $nomorSPPB = $request->nomorSPPB;
             try {
                 DB::connection('ConnPurchase')->statement('exec SP_4384_Maintenance_SPPB @XKode= ?, @XNoSPPB = ?', [2, $nomorSPPB]);
@@ -415,9 +419,15 @@ class CreateSPPBController extends Controller
             } catch (Exception $ex) {
                 return response()->json($ex->getMessage());
             }
-        } else {
+        }
+
+        //Revisi
+
+
+        else {
             return response()->json('Invalid request', 405);
         }
+
     }
 
     public function show($id, Request $request)
@@ -463,7 +473,6 @@ class CreateSPPBController extends Controller
                 ->select('Id_MataUang', 'Nama_MataUang')
                 ->orderBy('Id_MataUang')
                 ->get();
-
             return response()->json($mataUang);
         } else if ($id == 'getGolongan') {
             $kd_div = $request->kd_div;
@@ -541,12 +550,12 @@ class CreateSPPBController extends Controller
                 if (!isset($unique[$row->No_sppb])) {
                     $unique[$row->No_sppb] = true;
                     $final[] = [
-                        'No_sppb'       => $row->No_sppb,
-                        'NM_SUP'        => $row->NM_SUP,
-                        'Tgl_sppb'      => $row->Tgl_sppb,
-                        'Tgl_acc'       => $row->Tgl_acc,
+                        'No_sppb' => $row->No_sppb,
+                        'NM_SUP' => $row->NM_SUP,
+                        'Tgl_sppb' => $row->Tgl_sppb,
+                        'Tgl_acc' => $row->Tgl_acc,
                         'Tgl_Direktur'  => $row->Tgl_Direktur,
-                        'Kd_div'        => $row->Kd_div,
+                        'Kd_div' => $row->Kd_div,
                     ];
                 }
             }
@@ -556,6 +565,56 @@ class CreateSPPBController extends Controller
             return response()->json('Invalid request', 405);
         }
     }
+
+    public function generateNoSppbBaru(): string
+    {
+        $tahun  = date('y');
+        $prefix = "PO-{$tahun}CSJ";
+
+        $last = DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->lockForUpdate()
+            ->whereRaw('LTRIM(RTRIM(No_sppb)) LIKE ?', [$prefix . '%'])
+            ->whereRaw('LTRIM(RTRIM(No_sppb)) NOT LIKE ?', ['%REV%'])
+            ->selectRaw("
+                MAX(
+                    CAST(
+                        RIGHT(LTRIM(RTRIM(No_sppb)), 4) AS INT
+                    )
+                ) AS max_no
+            ")
+            ->value('max_no');
+
+        $next = ($last ?? 0) + 1;
+
+        return $prefix . str_pad($next, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function generateNoSppbRevisi(string $oldNo): string
+    {
+        $base = trim($oldNo);
+
+        if (preg_match('/REV(\d+)$/', $base, $m)) {
+            $next = str_pad(((int) $m[1]) + 1, 2, '0', STR_PAD_LEFT);
+            return preg_replace('/REV\d+$/', ' REV' . $next, $base);
+        }
+
+        return $base . ' REV01';
+    }
+
+    public function getLastNoSppbByTrans(string $noTrans): ?string
+    {
+        return DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->where('No_trans', $noTrans)
+            ->value('No_sppb');
+    }
+
+
+
+
+
+
 
     public function edit($id)
     {

@@ -130,6 +130,7 @@ jQuery(function ($) {
     let selectedKodeBarang;
     let selectedNamaBarang;
     var selectedRowData;
+
     //#endregion
 
     //#region Load Form
@@ -1820,7 +1821,7 @@ jQuery(function ($) {
             data: {
                 _token: csrfToken,
                 jenisStore: "deleteOrderPembelian",
-                No_trans: selectedRowData[11],
+                No_trans: noTransRevisi && noTransRevisi != '' ? noTransRevisi : selectedRowData[11],
             },
             dataType: "json",
             success: function (response) {
@@ -1864,6 +1865,11 @@ jQuery(function ($) {
     });
 
     sppb_buttonSave.addEventListener("click", function (e) {
+        let noTransRevisi = $("#noTransRevisi").val();
+        let tableData = sppb_tableOrderPembelian
+            .rows()
+            .data()
+            .toArray();
         let keteranganCetak =
             sppb_deliveryTerm.value +
             " | " +
@@ -1891,10 +1897,7 @@ jQuery(function ($) {
             data: {
                 _token: csrfToken,
                 jenisStore: "savePO",
-                table_orderPembelian: sppb_tableOrderPembelian
-                    .rows()
-                    .data()
-                    .toArray(),
+                table_orderPembelian: tableData,
                 idDivisi: sppb_divisi.val(),
                 Tgl_sppb: sppb_tanggal.value,
                 // No_sppb: nomorSPPB,
@@ -1949,7 +1952,8 @@ jQuery(function ($) {
     });
 
     sppb_buttonSubmit.addEventListener("click", function (e) {
-        let nomorSPPB = $(this).data("id");
+        let noSppbRevisi = $('#no_sppb_revisi').val();
+        let nomorSPPB = $('#no_trans_revisi').val() || $(this).data("id");
         let keteranganCetak =
             sppb_deliveryTerm.value +
             " | " +
@@ -1975,7 +1979,7 @@ jQuery(function ($) {
             method: "POST",
             data: {
                 _token: csrfToken,
-                jenisStore: "sumbitPO",
+                jenisStore: "submitPO",
                 table_orderPembelian: sppb_tableOrderPembelian
                     .rows()
                     .data()
@@ -1999,7 +2003,7 @@ jQuery(function ($) {
                     console.log(response);
                     Swal.fire({
                         icon: "success",
-                        title: "Error",
+                        title: "Success",
                         showConfirmButton: false,
                         confirmButtonText: "OK",
                         text: response.message,
@@ -2037,6 +2041,7 @@ jQuery(function ($) {
 
     $(document).on("click", ".btn-acc", function (e) {
         let nomorSPPB = $(this).data("id");
+        console.log("ACC nomorSPPB", nomorSPPB);
 
         $.ajax({
             url: "/CreateSPPB",

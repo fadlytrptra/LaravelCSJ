@@ -29,6 +29,7 @@
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="{{ asset('css/fonts.font-awesome@5.15.4.all.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/FontsGoogleapisIconFamilyMaterialIcons.css') }}" rel="stylesheet">
 
     <!-- Styles -->

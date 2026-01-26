@@ -444,9 +444,19 @@
                                                 Number
                                             </h1>
                                         </div>
+                                        @php
+                                            $nomorSppb = $dataCetak[0]->nomor_sppb;
+
+                                            // Bold REV + angka (REV01, REV02, dst)
+                                            $nomorSppbFormatted = preg_replace(
+                                                '/\bREV\d+\b/i',
+                                                '<b>$0</b>',
+                                                e($nomorSppb),
+                                            );
+                                        @endphp
                                         <div style="width: 70%; height: auto;">
                                             <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
-                                                {{ $dataCetak[0]->nomor_sppb }}
+                                                {!! $nomorSppbFormatted !!}
                                             </p>
                                         </div>
                                     </div>

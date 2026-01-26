@@ -41,6 +41,7 @@
                             <label style="margin: 0; align-content: center;" for="radio_jenisRetur">Retur</label>
                         </div> --}}
                     </div>
+
                     <div style="display: flex; flex-direction: row;margin-top: 1rem; gap: 5px">
                         <div style="display: flex; flex-direction: column;">
                             <label for="divisi">Divisi</label>
@@ -48,7 +49,7 @@
                             <input type="hidden" name="id_divisi" id="id_divisi" class="form-control">
                         </div>
                         <div style="align-content: end">
-                            <button class="btn btn-info" id="button_browseDataDivisi">...</button>
+                            <button type = "button" class="btn btn-info" id="button_browseDataDivisi">...</button>
                         </div>
                         <div style="display: flex; flex-direction: column;">
                             <label for="sppb">SPPB</label>
@@ -56,7 +57,7 @@
                             <input type="hidden" name="no_trans" id="no_trans" class="form-control" readonly>
                         </div>
                         <div style="align-content: end">
-                            <button class="btn btn-info" id="button_browseDataSPPB">...</button>
+                            <button type = "button" class="btn btn-info" id="button_browseDataSPPB">...</button>
                         </div>
                         <div style="display: none; flex-direction: column;" id="div_noTerima">
                             <label for="no_terima">No. Terima</label>
@@ -65,13 +66,14 @@
                                 style="display: none" readonly>
                         </div>
                         <div style="align-content: end">
-                            <button class="btn btn-info" id="button_browseDataNomorTerima"
+                            <button type = "button" class="btn btn-info" id="button_browseDataNomorTerima"
                                 style="display: none">...</button>
                         </div>
                         <div style="align-content: end">
-                            <button class="btn btn-success" id="button_cetak">Cetak</button>
+                            <button type="button" class="btn btn-success" id="button_cetak">Cetak</button>
                         </div>
                     </div>
+
                     <div id="div_emailPO" style="display: none;">
                         <div style="display: flex; flex-direction: row;margin-top: 1rem; gap: 5px">
                             <div style="display: flex; flex-direction: column;flex: 0.4;">
