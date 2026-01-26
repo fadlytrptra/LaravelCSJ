@@ -546,8 +546,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('getNoPelunasanCashAdvance/{idCustomer}', 'App\Http\Controllers\Accounting\Piutang\PelunasanPenjualanCashAdvanceController@getNoPelunasanCashAdvance');
     Route::get('LihatHeaderPelunasanCashAdvance/{noPelunasan}', 'App\Http\Controllers\Accounting\Piutang\PelunasanPenjualanCashAdvanceController@LihatHeaderPelunasanCashAdvance');
     Route::get('LihatDetailPelunasanCashAdvance/{noPelunasan}', 'App\Http\Controllers\Accounting\Piutang\PelunasanPenjualanCashAdvanceController@LihatDetailPelunasanCashAdvance');
-    Route::get('getLihat_PenagihanCashAdvance/{noPen}', 'App\Http\Controllers\Accounting\Piutang\PelunasanPenjualanCashAdvanceController@getLihat_PenagihanCashAdvance');
-    Route::get('getLihat_PenagihanCashAdvance2/{noPen}', 'App\Http\Controllers\Accounting\Piutang\PelunasanPenjualanCashAdvanceController@getLihat_PenagihanCashAdvance2');
+    // Route::get('getLihat_PenagihanCashAdvance/{noPen}', 'App\Http\Controllers\Accounting\Piutang\PelunasanPenjualanCashAdvanceController@getLihat_PenagihanCashAdvance');
+    // Route::get('getLihat_PenagihanCashAdvance2/{noPen}', 'App\Http\Controllers\Accounting\Piutang\PelunasanPenjualanCashAdvanceController@getLihat_PenagihanCashAdvance2');
     Route::get('getNoPenagihanCashAdvance/{idCustomer}', 'App\Http\Controllers\Accounting\Piutang\MaintenancePelunasanPenjualanController@getListPenagihanSJ');
 
     Route::resource('AnalisaStatusPelunasan', App\Http\Controllers\Accounting\Piutang\AnalisaStatusPenjualanController::class);
@@ -661,5 +661,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('CetakBKM', CetakBKMController::class);
     Route::resource('CetakBKK', CetakBKKController::class);
     Route::resource('CetakSPPBBTTB', CetakSPPBBTTBController::class);
+
+
+    Route::get('/test-email', function () {
+        Mail::raw('Test email via company SMTP SSL', function ($message) {
+            $message->to('adamchristianto@gmail.com')
+                ->subject('SMTP SSL Test');
+        });
+
+        return 'Email sent (check inbox)';
+    });
 
 });
