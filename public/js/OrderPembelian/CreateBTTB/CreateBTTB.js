@@ -397,7 +397,7 @@ jQuery(function ($) {
                                 ? moment(item.TglRetur).format("MM/DD/YYYY")
                                 : "",
                             (item.Nama_MataUang || "").toString().trim(),
-                            numeral(item.Kurs_Rp).format("0,0.00"),
+                            numeral(item.Kurs_BeliRp).format("0,0.00"),
                             item.Tgl_Faktur
                                 ? moment(item.Tgl_Faktur).format("MM/DD/YYYY")
                                 : "",
@@ -687,7 +687,7 @@ jQuery(function ($) {
                     ).value();
                     bttb_ppn.value = numeral(data.dataHarga[0].Ppn_trm).value();
                     bttb_kursRupiah.value = numeral(
-                        data.dataHarga[0].Kurs_Rp,
+                        data.dataHarga[0].Kurs_BeliRp,
                     ).value();
                     bttb_jangkaWaktu.value = numeral(
                         data.dataHarga[0].Waktu,
@@ -1126,7 +1126,7 @@ jQuery(function ($) {
         formData.append("waktu", bttb_jangkaWaktu.value);
         formData.append("no_ket", bttb_jangkaWaktu.value == 0 ? "001" : "002");
         formData.append("IdMataUang", bttb_selectMataUang.val());
-        formData.append("Kurs", bttb_kursRupiah.value);
+        formData.append("KursBeli", bttb_kursRupiah.value);
         formData.append("TglFaktur", bttb_tanggalFaktur.value);
         formData.append("NoSJ", bttb_nomorSJ.value);
 

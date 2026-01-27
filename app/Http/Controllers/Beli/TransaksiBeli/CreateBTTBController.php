@@ -54,7 +54,7 @@ class CreateBTTBController extends Controller
         $no_trans = $request->no_trans;
         $kd_div = $request->kd_div;
         $IdMataUang = $request->IdMataUang;
-        $Kurs = $request->Kurs;
+        $KursBeli = $request->KursBeli;
         $TglFaktur = $request->TglFaktur;
         $NoSJ = $request->NoSJ;
         $hrg_murni = $request->hrg_murni;
@@ -146,7 +146,7 @@ class CreateBTTBController extends Controller
                         $no_trans,
                         $kd_div,
                         $IdMataUang,
-                        $Kurs,
+                        $KursBeli,
                         $TglFaktur,
                         $NoSJ,
                         $hrg_murni,
@@ -249,7 +249,7 @@ class CreateBTTBController extends Controller
             $no_ket,                 // 15
             $ket_trm,                // 16
             $IdMataUang,             // 17
-            $Kurs,                   // 18
+            $KursBeli,               // 18
             $TglFaktur,              // 19
             $NoSJ,                   // 20
             $hrg_murni,              // 21
