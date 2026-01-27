@@ -11,7 +11,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10 RDZMobilePaddingLR0">
             <div class="card font-weight-bold">
-                <div class="card-header">Cetak BKM</div>
+                <div class="card-header">Cetak BKK</div>
                 <div class="card-body">
                     <div style="display: flex; flex-direction: row">
                         <div class="p-2" style="display: flex; flex-direction: row;">
@@ -30,7 +30,7 @@
                             <button class="btn btn-info" id="button_browseData" class="form-control">...</button>
                         </div>
                         <div style="display: flex; flex-direction: column;">
-                            <label for="id_bkk">ID BKM</label>
+                            <label for="id_bkk">ID BKK</label>
                             <input type="text" name="id_bkk" id="id_bkk" class="form-control" readonly>
                         </div>
                         {{-- <div style="display: flex; flex-direction: column;">

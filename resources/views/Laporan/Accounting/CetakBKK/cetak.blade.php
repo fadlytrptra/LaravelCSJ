@@ -32,7 +32,7 @@
                 <div style="display: flex;flex-direction: column;flex:0.6;border: solid 1px grey">
                     <div
                         style="display: flex;flex-direction: column;border-bottom: solid 1px grey;width: 100%; text-align: center;">
-                        <h3 style="margin: 0">BUKTI PENERIMAAN BANK</h3>
+                        <h3 style="margin: 0">BUKTI PENGELUARAN KAS</h3>
                     </div>
                     <div style="display: flex;flex-direction: column;width: 100%; text-align: center;">
                         <div style="display: flex;flex-direction: row;">
