@@ -106,7 +106,7 @@ class ACCSerahTerimaPenagihanController extends Controller
             foreach ($data as $row) {
                 $statusPpn = $row->Status_PPN == 'N' ? 'Tidak Ada' : 'Ada Pajak';
                 $response[] = [
-                    'Waktu_Penagihan' => \Carbon\Carbon::parse($row->Waktu_Penagihan)->format('m/d/Y'),
+                    'Waktu_Penagihan' => $row->Waktu_Penagihan,
                     'Id_Penagihan' => trim($row->Id_Penagihan),
                     'NM_SUP' => trim($row->NM_SUP),
                     'Nama_Dokumen' => trim($row->Nama_Dokumen),

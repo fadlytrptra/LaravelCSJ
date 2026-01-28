@@ -37,7 +37,7 @@ $(document).ready(function () {
                 {
                     data: "Waktu_Penagihan",
                     render: function (data, type, row) {
-                        return `<input type="checkbox" name="penerimaCheckbox" value="${row.Id_Penagihan}" /> ${data}`;
+                        return `<input type="checkbox" name="penerimaCheckbox" value="${row.Id_Penagihan}" /> ${moment(data).format("MM/DD/YYYY")}`;
                     },
                 },
                 { data: "Id_Penagihan" },
@@ -83,7 +83,7 @@ $(document).ready(function () {
 
     checkbox_all.addEventListener("change", function () {
         const checkboxes = document.querySelectorAll(
-            '#table_terima input[type="checkbox"][name="penerimaCheckbox"]'
+            '#table_terima input[type="checkbox"][name="penerimaCheckbox"]',
         );
         checkedRows = []; // Reset checkedRows when selecting/deselecting all
 
@@ -109,12 +109,12 @@ $(document).ready(function () {
                 checkedRows.push(rowData); // Add checked row data to the array
             } else {
                 checkedRows = checkedRows.filter(
-                    (row) => row.Id_Penagihan !== rowData.Id_Penagihan
+                    (row) => row.Id_Penagihan !== rowData.Id_Penagihan,
                 ); // Remove unchecked row data
             }
 
             console.log(checkedRows); // Debugging output
-        }
+        },
     );
 
     btn_proses.addEventListener("click", function (event) {
