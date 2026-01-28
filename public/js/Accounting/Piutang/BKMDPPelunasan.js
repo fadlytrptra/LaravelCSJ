@@ -1047,7 +1047,7 @@ function handleTableKeydown(e, tableId) {
                     currentIndex = 0;
                     const newRows = $(`#${tableId} tbody tr`);
                     const selectedRow = $(newRows[currentIndex]).addClass(
-                        "selected"
+                        "selected",
                     );
                     scrollRowIntoView(selectedRow[0]);
                 });
@@ -1063,7 +1063,7 @@ function handleTableKeydown(e, tableId) {
                     currentIndex = 0;
                     const newRows = $(`#${tableId} tbody tr`);
                     const selectedRow = $(newRows[currentIndex]).addClass(
-                        "selected"
+                        "selected",
                     );
                     scrollRowIntoView(selectedRow[0]);
                 });
@@ -1079,7 +1079,7 @@ function updateDataTable(data, angka) {
             tableData.row.add([
                 `<div>
                 <input type="checkbox" name="divisiCheckbox" value="${formatDateToMMDDYYYY(
-                    item.Tgl_Input
+                    item.Tgl_Input,
                 )}" />
                 <span>${formatDateToMMDDYYYY(item.Tgl_Input)}</span>
             </div>`,
@@ -1225,7 +1225,7 @@ btnCust.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -1233,7 +1233,7 @@ btnCust.addEventListener("click", function (e) {
             if (result.isConfirmed) {
                 cust.value = decodeHtmlEntities(result.value.NamaCust.trim());
                 idCust.value = decodeHtmlEntities(
-                    result.value.IdCust.trim().slice(-5)
+                    result.value.IdCust.trim().slice(-5),
                 );
 
                 btnOk.focus();
@@ -1446,17 +1446,17 @@ btnMataUang.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idUang.value = decodeHtmlEntities(
-                    result.value.Id_MataUang.trim()
+                    result.value.Id_MataUang.trim(),
                 );
                 mataUang.value = decodeHtmlEntities(
-                    result.value.Nama_MataUang.trim()
+                    result.value.Nama_MataUang.trim(),
                 );
 
                 if (idUang.value !== "") {
@@ -1663,7 +1663,7 @@ btnBank1.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -1775,17 +1775,17 @@ btnPerkiraan1.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idPerkiraan1.value = decodeHtmlEntities(
-                    result.value.NoKodePerkiraan.trim()
+                    result.value.NoKodePerkiraan.trim(),
                 );
                 perkiraan1.value = decodeHtmlEntities(
-                    result.value.Keterangan.trim()
+                    result.value.Keterangan.trim(),
                 );
 
                 $.ajax({
@@ -1915,7 +1915,7 @@ btnBank.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -2027,17 +2027,17 @@ btnPerkiraan.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idPerkiraan.value = decodeHtmlEntities(
-                    result.value.NoKodePerkiraan.trim()
+                    result.value.NoKodePerkiraan.trim(),
                 );
                 perkiraan.value = decodeHtmlEntities(
-                    result.value.Keterangan.trim()
+                    result.value.Keterangan.trim(),
                 );
 
                 uraian.focus();
@@ -2110,12 +2110,8 @@ btnBatal.addEventListener("click", function (e) {
 });
 
 btnProses.addEventListener("click", function (e) {
-    let idbkk = isNaN(parseInt(idBKK.value.substring(0, 3)))
-        ? 0
-        : parseInt(idBKK.value.substring(0, 3));
-    let id_bkm = isNaN(parseInt(idBKM.value.substring(0, 3)))
-        ? 0
-        : parseInt(idBKM.value.substring(0, 3));
+    let idbkk = parseInt(idBKK.value.split("-")[1]);
+    let id_bkm = parseInt(idBKM.value.split("-")[1]);
     let nilai = 0,
         nilai1 = 0,
         biaya = 0,
@@ -2133,8 +2129,6 @@ btnProses.addEventListener("click", function (e) {
             konversi = convertNumberToWordsDollar(nilai);
         }
 
-        console.log(total1, " + ", konversi);
-
         let ajax1 = $.ajax({
             type: "PUT",
             url: "MaintenanceBKMUntukDPPelunasan/insertBKK",
@@ -2145,6 +2139,12 @@ btnProses.addEventListener("click", function (e) {
                 terjemahan: konversi,
                 nilai: numeral(parseFloat(nilai)).value(),
                 IdBank: idBank1.value.trim(),
+            },
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseJSON);
             },
         });
 
@@ -2165,6 +2165,12 @@ btnProses.addEventListener("click", function (e) {
                             ? numeral(parseFloat(kurs.value)).value()
                             : null,
                 },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseJSON);
+                },
             });
         });
 
@@ -2174,6 +2180,12 @@ btnProses.addEventListener("click", function (e) {
                 url: "MaintenanceBKMUntukDPPelunasan/getIdPembayaran",
                 data: {
                     _token: csrfToken,
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseJSON);
                 },
             }).then((result) => {
                 if (result.length !== 0) {
@@ -2190,6 +2202,12 @@ btnProses.addEventListener("click", function (e) {
                             biaya: numeral(uang1.value).value(),
                             kodeperkiraan: idPerkiraan1.value,
                         },
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseJSON);
+                        },
                     });
                 }
             });
@@ -2205,6 +2223,12 @@ btnProses.addEventListener("click", function (e) {
                     idBank: bank1.value.trim(),
                     jenis: jenisBank1.value.trim(),
                     tgl: tglInput.value,
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseJSON);
                 },
             });
         });
@@ -2232,6 +2256,12 @@ btnProses.addEventListener("click", function (e) {
                 nilai: numeral(parseFloat(nilai1)).value(),
                 IdBank: idBank.value.trim(),
             },
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseJSON);
+            },
         });
 
         let ajax6 = ajax5.then(() => {
@@ -2256,6 +2286,12 @@ btnProses.addEventListener("click", function (e) {
                             ? numeral(parseFloat(kurs.value)).value()
                             : null,
                 },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseJSON);
+                },
             });
         });
 
@@ -2269,6 +2305,12 @@ btnProses.addEventListener("click", function (e) {
                     idBank: idBank.value.trim(),
                     jenis: jenisBank.value.trim(),
                     tgl: String(bln1.value) + String(thn1.value),
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseJSON);
                 },
             });
         });
@@ -2298,6 +2340,12 @@ btnProses.addEventListener("click", function (e) {
                     idPelunasan: dataSelected[0].IdPelunasan,
                     nilai: nilaiBaru,
                 },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseJSON);
+                },
             });
         } else {
             ajax8 = $.ajax({
@@ -2308,6 +2356,12 @@ btnProses.addEventListener("click", function (e) {
                     idBKM: dataSelected[0].idbkm.trim(),
                     idPelunasan: dataSelected[0].IdPelunasan,
                     nilai: nilai,
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseJSON);
                 },
             });
         }
@@ -2327,6 +2381,8 @@ btnProses.addEventListener("click", function (e) {
                 location.reload();
             });
         });
+
+        //#endregion
     } else {
         Swal.fire({
             icon: "error",
@@ -2604,19 +2660,19 @@ btnCetakBKM.addEventListener("click", function () {
                         "<h5><b>Tanggal: " + formattedDate + "</b></h5>";
 
                     symbolBKM.textContent = decodeHtmlEntities(
-                        result[0].Symbol
+                        result[0].Symbol,
                     );
                     nilaiBKM.textContent = numeral(
-                        parseFloat(result[0].Nilai_Pelunasan)
+                        parseFloat(result[0].Nilai_Pelunasan),
                     ).format("0,0.00");
 
                     terbilangBKM.textContent = decodeHtmlEntities(
-                        result[0].Terjemahan
+                        result[0].Terjemahan,
                     );
 
                     if (result[0].NamaCust === "-") {
                         rincianBKM.textContent = decodeHtmlEntities(
-                            result[0].Uraian
+                            result[0].Uraian,
                         );
                     } else {
                         if (result[0].NamaCust !== "-") {
@@ -2628,27 +2684,27 @@ btnCetakBKM.addEventListener("click", function () {
                     }
 
                     perkiraanBKM.textContent = decodeHtmlEntities(
-                        result[0].KodePerkiraan
+                        result[0].KodePerkiraan,
                     );
                     jumlahBKM.textContent = numeral(
-                        parseFloat(result[0].Nilai_Pelunasan)
+                        parseFloat(result[0].Nilai_Pelunasan),
                     ).format("0,0.00");
 
                     symbolgtBKM.textContent = decodeHtmlEntities(
-                        result[0].Symbol
+                        result[0].Symbol,
                     );
                     grandTotalBKM.textContent = numeral(
-                        parseFloat(result[0].Nilai_Pelunasan)
+                        parseFloat(result[0].Nilai_Pelunasan),
                     ).format("0,0.00");
 
                     bkmAcuanBKK.textContent = decodeHtmlEntities(
-                        result[0].Id_BKK_Acuan
+                        result[0].Id_BKK_Acuan,
                     );
                     bkmTanggalBKK.textContent =
                         "Tanggal: " + formatDateToMMDDYYYY(result[0].Tgl_BKK);
 
                     bkmAcuanBKM.textContent = decodeHtmlEntities(
-                        result[0].Id_BKM_Acuan
+                        result[0].Id_BKM_Acuan,
                     );
                     bkmTanggalBKM.textContent =
                         "Tanggal: " + formatDateToMMDDYYYY(result[0].Tgl_BKM);
@@ -2746,7 +2802,7 @@ btnCetakBKK.addEventListener("click", function () {
                 if (result.length !== 0) {
                     let totalBKK = 0;
                     var bkmDetailsContainer = document.getElementById(
-                        "bkkDetailsContainer"
+                        "bkkDetailsContainer",
                     );
 
                     bkmDetailsContainer.innerHTML = "";
@@ -2779,18 +2835,18 @@ btnCetakBKK.addEventListener("click", function () {
                         "</b></h5>";
 
                     symbolBKK.textContent = decodeHtmlEntities(
-                        result[0].Symbol
+                        result[0].Symbol,
                     );
                     nilaiBKK.textContent = numeral(
-                        parseFloat(result[0].Nilai_Pembulatan)
+                        parseFloat(result[0].Nilai_Pembulatan),
                     ).format("0,0.00");
 
                     terbilangBKK.textContent = decodeHtmlEntities(
-                        result[0].Terjemahan
+                        result[0].Terjemahan,
                     );
 
                     jenisBayarBKK.textContent = decodeHtmlEntities(
-                        result[0].Jenis_Pembayaran
+                        result[0].Jenis_Pembayaran,
                     );
 
                     result.forEach(function (item, index) {
@@ -2857,14 +2913,14 @@ btnCetakBKK.addEventListener("click", function () {
                     });
 
                     symbolgtBKK.textContent = decodeHtmlEntities(
-                        result[0].Symbol
+                        result[0].Symbol,
                     );
                     grandTotalBKK.textContent = numeral(
-                        parseFloat(totalBKK)
+                        parseFloat(totalBKK),
                     ).format("0,0.00");
 
                     pelunasanBKK.textContent = decodeHtmlEntities(
-                        result[0].Id_BKM_Acuan
+                        result[0].Id_BKM_Acuan,
                     );
 
                     bkkTanggalBKK.textContent =
