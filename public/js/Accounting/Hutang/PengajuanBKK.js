@@ -7,9 +7,7 @@ $(document).ready(function () {
     let supplier1 = document.getElementById("supplier1");
     let supplier2 = document.getElementById("supplier2");
     let radiogrup_penagihan = document.getElementById("radiogrup_penagihan");
-    let radiogrup_nopenagihan = document.getElementById(
-        "radiogrup_nopenagihan"
-    );
+    let radiogrup_nopenagihan = document.getElementById("radiogrup_nopenagihan"); //prettier-ignore
     let radiogrup_adadp = document.getElementById("radiogrup_adadp");
     let radiogrup_tidakdp = document.getElementById("radiogrup_tidakdp");
     let btn_bkkuangmuka = document.getElementById("btn_bkkuangmuka");
@@ -19,9 +17,7 @@ $(document).ready(function () {
     let rincian = document.getElementById("rincian");
     let mata_uang = document.getElementById("mata_uang");
     let mata_uang_kanan = document.getElementById("mata_uang_kanan");
-    let nilai_pembayaran_kanan = document.getElementById(
-        "nilai_pembayaran_kanan"
-    );
+    let nilai_pembayaran_kanan = document.getElementById("nilai_pembayaran_kanan"); //prettier-ignore
     let nilai_pembayaran = document.getElementById("nilai_pembayaran");
     let btn_isi = document.getElementById("btn_isi");
     let btn_koreksi = document.getElementById("btn_koreksi");
@@ -31,6 +27,9 @@ $(document).ready(function () {
     let btn_bank = document.getElementById("btn_bank");
     let btn_jenispembayaran = document.getElementById("btn_jenispembayaran");
     let btn_matauang = document.getElementById("btn_matauang");
+    let kode_perkiraanNomor = document.getElementById("kode_perkiraanNomor");
+    let kode_perkiraanNama = document.getElementById("kode_perkiraanNama");
+    let btn_kodePerkiraan = document.getElementById("btn_kodePerkiraan");
     let id_bank = document.getElementById("id_bank");
     let kurs = document.getElementById("kurs");
     let jns_pembayaran = document.getElementById("jns_pembayaran");
@@ -97,11 +96,11 @@ $(document).ready(function () {
     jumlah_bayar.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
-            if (!TT) {
-                btn_matauang.focus();
-            } else {
-                nilai_pembayaran.focus();
-            }
+            // if (!TT) {
+            btn_matauang.focus();
+            // } else {
+            //     nilai_pembayaran.focus();
+            // }
         }
     });
 
@@ -289,12 +288,12 @@ $(document).ready(function () {
                     const date = new Date(dateString);
                     const offset = date.getTimezoneOffset();
                     const adjustedDate = new Date(
-                        date.getTime() - offset * 60 * 1000
+                        date.getTime() - offset * 60 * 1000,
                     );
                     return adjustedDate.toISOString().split("T")[0];
                 };
             }
-        }
+        },
     );
 
     btn_supplier.addEventListener("click", async function (event) {
@@ -350,11 +349,11 @@ $(document).ready(function () {
                             function () {
                                 table.$("tr.selected").removeClass("selected");
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "supplierTable")
+                            handleTableKeydownInSwal(e, "supplierTable"),
                         );
                     });
                 },
@@ -405,7 +404,9 @@ $(document).ready(function () {
                                 // { data: "TT_NoLunas" },
                                 // { data: "isRed" },
                             ],
-                            columnDefs: [{ targets: [6, 7, 8], visible: false }],
+                            columnDefs: [
+                                { targets: [6, 7, 8], visible: false },
+                            ],
                             paging: false,
                             scrollY: "300px",
                             scrollCollapse: true,
@@ -449,7 +450,9 @@ $(document).ready(function () {
                                 // { data: "TT_NoLunas" },
                                 // { data: "isRed" },
                             ],
-                            columnDefs: [{ targets: [6, 7, 8], visible: false }],
+                            columnDefs: [
+                                { targets: [6, 7, 8], visible: false },
+                            ],
                             paging: false,
                             scrollY: "300px",
                             scrollCollapse: true,
@@ -464,7 +467,7 @@ $(document).ready(function () {
 
     $("#tablebkkpenagihan tbody").off(
         "change",
-        'input[name="penerimaCheckbox"]'
+        'input[name="penerimaCheckbox"]',
     );
 
     $("#tablebkkpenagihan tbody").on(
@@ -483,12 +486,12 @@ $(document).ready(function () {
                     const date = new Date(dateString);
                     const offset = date.getTimezoneOffset();
                     const adjustedDate = new Date(
-                        date.getTime() - offset * 60 * 1000
+                        date.getTime() - offset * 60 * 1000,
                     );
                     return adjustedDate.toISOString().split("T")[0];
                 };
             }
-        }
+        },
     );
 
     btn_isi.addEventListener("click", function (event) {
@@ -660,14 +663,14 @@ $(document).ready(function () {
                             } else if (xhr.responseText) {
                                 try {
                                     const response = JSON.parse(
-                                        xhr.responseText
+                                        xhr.responseText,
                                     );
                                     errorMessage =
                                         response.error || errorMessage;
                                 } catch (e) {
                                     console.error(
                                         "Error parsing JSON response:",
-                                        e
+                                        e,
                                     );
                                 }
                             }
@@ -726,6 +729,7 @@ $(document).ready(function () {
                                 ada_bkm: ada_bkm.value,
                                 Id_Penagihan: rowData.Id_Penagihan,
                                 pjk: pjk,
+                                NoKodePerkiraan: kode_perkiraanNomor.value,
                             },
                             success: function (response) {
                                 if (response.message) {
@@ -779,14 +783,14 @@ $(document).ready(function () {
                                 } else if (xhr.responseText) {
                                     try {
                                         const response = JSON.parse(
-                                            xhr.responseText
+                                            xhr.responseText,
                                         );
                                         errorMessage =
                                             response.error || errorMessage;
                                     } catch (e) {
                                         console.error(
                                             "Error parsing JSON response:",
-                                            e
+                                            e,
                                         );
                                     }
                                 }
@@ -833,6 +837,7 @@ $(document).ready(function () {
                                 ada_bkm: ada_bkm.value,
                                 Id_Penagihan: rowData.Id_Penagihan,
                                 pjk: pjk,
+                                NoKodePerkiraan: kode_perkiraanNomor.value,
                             },
                             success: function (response) {
                                 if (response.message) {
@@ -886,18 +891,17 @@ $(document).ready(function () {
                                 } else if (xhr.responseText) {
                                     try {
                                         const response = JSON.parse(
-                                            xhr.responseText
+                                            xhr.responseText,
                                         );
                                         errorMessage =
                                             response.error || errorMessage;
                                     } catch (e) {
                                         console.error(
                                             "Error parsing JSON response:",
-                                            e
+                                            e,
                                         );
                                     }
                                 }
-
                                 Swal.fire({
                                     icon: "error",
                                     title: "Error!",
@@ -951,6 +955,7 @@ $(document).ready(function () {
                                 ada_bkm: ada_bkm.value,
                                 // Id_Penagihan: rowData.Id_Penagihan,
                                 pjk: pjk,
+                                NoKodePerkiraan: kode_perkiraanNomor.value,
                             },
                             success: function (response) {
                                 if (response.message) {
@@ -1004,14 +1009,14 @@ $(document).ready(function () {
                                 } else if (xhr.responseText) {
                                     try {
                                         const response = JSON.parse(
-                                            xhr.responseText
+                                            xhr.responseText,
                                         );
                                         errorMessage =
                                             response.error || errorMessage;
                                     } catch (e) {
                                         console.error(
                                             "Error parsing JSON response:",
-                                            e
+                                            e,
                                         );
                                     }
                                 }
@@ -1058,6 +1063,7 @@ $(document).ready(function () {
                                 ada_bkm: ada_bkm.value,
                                 // Id_Penagihan: rowData.Id_Penagihan,
                                 pjk: pjk,
+                                NoKodePerkiraan: kode_perkiraanNomor.value,
                             },
                             success: function (response) {
                                 if (response.message) {
@@ -1111,14 +1117,14 @@ $(document).ready(function () {
                                 } else if (xhr.responseText) {
                                     try {
                                         const response = JSON.parse(
-                                            xhr.responseText
+                                            xhr.responseText,
                                         );
                                         errorMessage =
                                             response.error || errorMessage;
                                     } catch (e) {
                                         console.error(
                                             "Error parsing JSON response:",
-                                            e
+                                            e,
                                         );
                                     }
                                 }
@@ -1246,7 +1252,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "bkkTable")
+                            handleTableKeydownInSwal(e, "bkkTable"),
                         );
                     });
                 },
@@ -1269,7 +1275,7 @@ $(document).ready(function () {
                                     .data();
                                 if (!selectedData) {
                                     Swal.showValidationMessage(
-                                        "Please select a row"
+                                        "Please select a row",
                                     );
                                     return false;
                                 }
@@ -1328,7 +1334,7 @@ $(document).ready(function () {
                                                 .removeClass("selected");
                                             // Add 'selected' class to the clicked row
                                             $(this).addClass("selected");
-                                        }
+                                        },
                                     );
                                     currentIndex = null;
                                     Swal.getPopup().addEventListener(
@@ -1336,8 +1342,8 @@ $(document).ready(function () {
                                         (e) =>
                                             handleTableKeydownInSwal(
                                                 e,
-                                                "bkkTable2"
-                                            )
+                                                "bkkTable2",
+                                            ),
                                     );
                                 });
                             },
@@ -1345,13 +1351,13 @@ $(document).ready(function () {
                             if (result.isConfirmed && result.value) {
                                 const selectedRow = result.value;
                                 nilai_pembayaran2.value = escapeHTML(
-                                    selectedRow.TNilaiByrSbl.trim()
+                                    selectedRow.TNilaiByrSbl.trim(),
                                 );
                                 belum_dibayar.value = escapeHTML(
-                                    selectedRow.TSisaByr.trim()
+                                    selectedRow.TSisaByr.trim(),
                                 );
                                 rincian_dp.value = escapeHTML(
-                                    selectedRow.TRincian_DP.trim()
+                                    selectedRow.TRincian_DP.trim(),
                                 );
                                 setTimeout(() => {
                                     btn_bank.focus();
@@ -1436,7 +1442,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "bankTable")
+                            handleTableKeydownInSwal(e, "bankTable"),
                         );
                     });
                 },
@@ -1520,11 +1526,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "jnsbayarTable")
+                            handleTableKeydownInSwal(e, "jnsbayarTable"),
                         );
                     });
                 },
@@ -1625,11 +1631,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "matauangTable")
+                            handleTableKeydownInSwal(e, "matauangTable"),
                         );
                     });
                 },
@@ -1639,6 +1645,119 @@ $(document).ready(function () {
                     // sp1.value = decodeHtml(selectedRow.Supplier).trim();
                     mata_uang.value = selectedRow.Nama_MataUang.trim();
                     mata_uang_kanan.value = selectedRow.Id_MataUang.trim();
+
+                    setTimeout(() => {
+                        btn_kodePerkiraan.focus();
+                    }, 300);
+                }
+            });
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
+    });
+
+    btn_kodePerkiraan.addEventListener("click", async function (e) {
+        e.preventDefault();
+        try {
+            const result = await Swal.fire({
+                title: "Select a Kode Perkiraan",
+                html: `<table id="kodePerkiraanTable" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Keterangan</th>
+                                    <th>No. Kode Perkiraan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>`,
+                showCancelButton: true,
+                preConfirm: () => {
+                    const selectedData = $("#kodePerkiraanTable")
+                        .DataTable()
+                        .row(".selected")
+                        .data();
+                    if (!selectedData) {
+                        Swal.showValidationMessage("Please select a row");
+                        return false;
+                    }
+                    return selectedData;
+                },
+                didOpen: () => {
+                    $(document).ready(function () {
+                        const table = $("#kodePerkiraanTable").DataTable({
+                            responsive: true,
+                            processing: true,
+                            serverSide: true,
+                            returnFocus: true,
+                            ajax: {
+                                url: "MaintenancePengajuanBKK/GetKodePerkiraan",
+                                dataType: "json",
+                                type: "GET",
+                                data: {
+                                    _token: csrfToken,
+                                },
+                                error: function (xhr, errorType, exception) {
+                                    console.log(xhr);
+                                    alert(xhr.responseJSON.message);
+                                },
+                                // dataSrc: function (json) {
+                                //     // Check for error status from the server
+                                //     if (json.status && json.status === 'error') {
+                                //         // Display an alert with the error message
+                                //         alert('Error: ' + json.message);
+                                //         return []; // Return an empty array to prevent DataTables from processing data
+                                //     } else {
+                                //         // Return the data array for DataTables to process
+                                //         return json;
+                                //     }
+                                // },
+                            },
+                            columns: [
+                                {
+                                    data: "Keterangan",
+                                },
+                                {
+                                    data: "NoKodePerkiraan",
+                                },
+                            ],
+                            order: [[1, "asc"]],
+                        });
+                        setTimeout(() => {
+                            $("#kodePerkiraanTable_filter input").focus();
+                        }, 300);
+                        // $("#matauangTable_filter input").on(
+                        //     "keyup",
+                        //     function () {
+                        //         table
+                        //             .columns(1) // Kolom kedua (Kode_KodePerkiraan)
+                        //             .search(this.value) // Cari berdasarkan input pencarian
+                        //             .draw(); // Perbarui hasil pencarian
+                        //     }
+                        // );
+                        $("#kodePerkiraanTable tbody").on(
+                            "click",
+                            "tr",
+                            function () {
+                                // Remove 'selected' class from all rows
+                                table.$("tr.selected").removeClass("selected");
+                                // Add 'selected' class to the clicked row
+                                $(this).addClass("selected");
+                            },
+                        );
+                        currentIndex = null;
+                        Swal.getPopup().addEventListener("keydown", (e) =>
+                            handleTableKeydownInSwal(e, "kodePerkiraanTable"),
+                        );
+                    });
+                },
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const selectedRow = result.value;
+                    // sp1.value = decodeHtml(selectedRow.Supplier).trim();
+                    kode_perkiraanNomor.value =
+                        selectedRow.NoKodePerkiraan.trim();
+                    kode_perkiraanNama.value = selectedRow.Keterangan.trim();
 
                     setTimeout(() => {
                         nilai_pembayaran.focus();

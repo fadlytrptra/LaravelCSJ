@@ -126,9 +126,9 @@
                             <br>
                             <div class="card">
                                 <div class="card-container" style="display: flex;">
-                                    <div class="card" style="width: 50%;">
+                                    <div class="card" style="width: 50%;gap: 5px;">
                                         <p>
-                                        <div style="display: flex;">
+                                        <div style="display: flex;display: none;">
                                             <div class="col-md-3">
                                                 <label id="bkm" for="bkm">BKM</label>
                                             </div>
@@ -138,7 +138,7 @@
                                             </div>
                                         </div>
                                         <div style="display: flex;">
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <label for="id">Bank</label>
                                             </div>
                                             <div class="col-md-3">
@@ -159,7 +159,7 @@
                                             </div>
                                         </div>
                                         <div style="display: flex;">
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <label for="id">Jenis Pembayaran</label>
                                             </div>
                                             <div class="col-md-3">
@@ -181,7 +181,7 @@
                                             </div>
                                         </div>
                                         <div style="display: flex;">
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <label for="id">Mata Uang</label>
                                             </div>
                                             <div class="col-md-3">
@@ -195,14 +195,34 @@
                                                 <div class="col-md-6" style="margin-left: 8px;">
                                                     <input id="id_jnsbayar" type="number" name="id_jnsbayar"
                                                         class="form-control" style="width: 145%">
+                                                </div>
+                                                <div class="col-md-6">
                                                     <input id="mata_uang_kanan" type="number" name="mata_uang_kanan"
                                                         class="form-control" style="width: 145%">
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div style="display: flex;">
+                                            <div class="col-md-3">
+                                                <label for="id">Kode Perkiraan</label>
+                                            </div>
                                             <div class="col-md-2">
+                                                <input id="kode_perkiraanNomor" type="text"
+                                                    name="kode_perkiraanNomor" class="form-control"
+                                                    style="width: 100%">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="kode_perkiraanNama" type="text"
+                                                    name="kode_perkiraanNama" class="form-control"
+                                                    style="width: 100%">
+                                            </div>
+                                            <div class="col-md-1" style="vertical-align: middle;">
+                                                <button class="btn" type="button"
+                                                    id="btn_kodePerkiraan">...</button>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex;">
+                                            <div class="col-md-3">
                                                 <label for="id">Nilai Pembayaran</label>
                                             </div>
                                             <div class="col-md-4">

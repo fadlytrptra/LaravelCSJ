@@ -43,12 +43,13 @@ class PengajuanBKKController extends Controller
         // $cleaned_value = str_replace(",", ".", $cleaned_value);
         $TNilaiBayar = (float) str_replace(",", "", $request->input('nilai_pembayaran'));
         $TIdTT = trim($request->input('Id_Penagihan'));
+        $TKodePerkiraan = trim($request->input('NoKodePerkiraan'));
         $TRincian_DP = $request->input('rincian_dp');
         $TNilaiByrSbl = $request->input('nilai_pembayaran2');
         $TIDBKK_DP = $request->input('id_bkk');
         $TBKK_DP = $request->input('bkk_uangmuka');
         $TIDByr_DP = $request->input('id_bayardp');
-        $TSisaByr = (float)str_replace(",", "", $request->input('belum_dibayar'));
+        $TSisaByr = (float) str_replace(",", "", $request->input('belum_dibayar'));
         $Bayar = (bool) $request->input('bayar');
         $DP = (bool) $request->input('dp');
         $TIDSupplier = $request->input('supplier1');
@@ -80,9 +81,10 @@ class PengajuanBKKController extends Controller
 
                     if ($Pjk) {
                         DB::connection('ConnAccounting')
-                            ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_TDKPENUH @IdPembayaran = ?, @UserId = ?', [
+                            ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_TDKPENUH @IdPembayaran = ?, @UserId = ?, @KodePerkiraan = ?', [
                                 $TIDPembayaran,
                                 $nomorUser,
+                                $TKodePerkiraan
                             ]);
                     }
 
@@ -96,19 +98,20 @@ class PengajuanBKKController extends Controller
                         //     $TIdTT
                         // );
                         DB::connection('ConnAccounting')
-                            ->statement('EXEC SP_1273_PRG_UDT_BKK2_ACUAN_TTNODP @IdPembayaran = ?, @IdBank = ?, @IdJenisBayar = ?, @JmlJenisBayar = ?, @NilaiRincian = ?, @IdPenagihan = ?', [
+                            ->statement('EXEC SP_1273_PRG_UDT_BKK2_ACUAN_TTNODP @IdPembayaran = ?, @IdBank = ?, @IdJenisBayar = ?, @JmlJenisBayar = ?, @NilaiRincian = ?, @IdPenagihan = ?, @KodePerkiraan = ?', [
                                 (int) $TIDPembayaran,
                                 $TBank,
                                 (int) $TIdJnsByr,
                                 (int) $TJmlByr,
                                 $TNilaiBayar,
-                                $TIdTT
+                                $TIdTT,
+                                $TKodePerkiraan
                             ]);
                         return response()->json(['message' => 'Data Pengajuan Penagihan sudah diSIMPAN !!..']);
                     } elseif ($TNilaiBayar && $AdaDP) {
                         if ($DP_lagi == 0) {
                             DB::connection('ConnAccounting')
-                                ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_TTDP_1 @IdPembayaran = ?, @IdPenagihan = ?, @IdBank = ?, @IdJenisBayar = ?, @IdMataUang = ?, @JmlJenisBayar = ?, @Rincian = ?, @NilaiRincian = ?, @UserId = ?, @idBKK = ?', [
+                                ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_TTDP_1 @IdPembayaran = ?, @IdPenagihan = ?, @IdBank = ?, @IdJenisBayar = ?, @IdMataUang = ?, @JmlJenisBayar = ?, @Rincian = ?, @NilaiRincian = ?, @UserId = ?, @idBKK = ?, @KodePerkiraan = ?', [
                                     $TIDPembayaran,
                                     $TIdTT,
                                     $TBank,
@@ -119,16 +122,18 @@ class PengajuanBKKController extends Controller
                                     $TNilaiByrSbl,
                                     $nomorUser,
                                     $TIDBKK_DP,
+                                    $TKodePerkiraan
                                 ]);
                         } else {
                             DB::connection('ConnAccounting')
-                                ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_TTDP_2 @IdPembayaran = ?, @IdPenagihan = ?, @Rincian = ?, @NilaiRincian = ?, @UserId = ?, @idBKK = ?', [
+                                ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_TTDP_2 @IdPembayaran = ?, @IdPenagihan = ?, @Rincian = ?, @NilaiRincian = ?, @UserId = ?, @idBKK = ?, @KodePerkiraan = ?', [
                                     $TIDPembayaran,
                                     $TIdTT,
                                     $TRincian_DP,
                                     $TNilaiByrSbl,
                                     $nomorUser,
-                                    $TBKK_DP
+                                    $TBKK_DP,
+                                    $TKodePerkiraan
                                 ]);
                         }
                         DB::connection('ConnAccounting')
@@ -143,7 +148,7 @@ class PengajuanBKKController extends Controller
                 } else {
                     if ($Bayar) {
                         $recTrans = DB::connection('ConnAccounting')
-                            ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_NOTT_BAYAR @IdBank = ?, @IdJenisBayar = ?, @IdMataUang = ?, @JmlJenisBayar = ?, @Rincian = ?, @NilaiRincian = ?, @UserId = ?, @supp = ?, @kurs = ?', [
+                            ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_NOTT_BAYAR @IdBank = ?, @IdJenisBayar = ?, @IdMataUang = ?, @JmlJenisBayar = ?, @Rincian = ?, @NilaiRincian = ?, @UserId = ?, @supp = ?, @kurs = ?, @KodePerkiraan = ?', [
                                 $TBank,
                                 $TIdJnsByr,
                                 $idMataUang,
@@ -153,6 +158,7 @@ class PengajuanBKKController extends Controller
                                 $nomorUser,
                                 $TIDSupplier,
                                 $txtKurs,
+                                $TKodePerkiraan
                             ]);
                         if ($recTrans) {
                             $IdPenagihan = DB::connection('ConnAccounting')
@@ -165,7 +171,7 @@ class PengajuanBKKController extends Controller
                         }
                     } else if ($DP) {
                         $recTrans = DB::connection('ConnAccounting')
-                            ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_NOTT_DP @IdBank = ?, @IdJenisBayar = ?, @IdMataUang = ?, @JmlJenisBayar = ?, @Rincian = ?, @NilaiRincian = ?, @idSuplier = ?, @UserId = ?, @kurs = ?, @saldo = ?', [
+                            ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_NOTT_DP @IdBank = ?, @IdJenisBayar = ?, @IdMataUang = ?, @JmlJenisBayar = ?, @Rincian = ?, @NilaiRincian = ?, @idSuplier = ?, @UserId = ?, @kurs = ?, @saldo = ?, @KodePerkiraan = ?', [
                                 $TBank,
                                 $TIdJnsByr,
                                 $idMataUang,
@@ -176,6 +182,7 @@ class PengajuanBKKController extends Controller
                                 $nomorUser,
                                 $txtKurs,
                                 $TNilaiBayar,
+                                $TKodePerkiraan
                             ]);
                         if ($recTrans) {
                             $IdPenagihan = DB::connection('ConnAccounting')
@@ -200,12 +207,13 @@ class PengajuanBKKController extends Controller
 
             case 2:
                 DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_1273_PRG_UDT_BKK2_ACUAN ?, ?, ?, ?, ?', [
+                    ->statement('EXEC SP_1273_PRG_UDT_BKK2_ACUAN ?, ?, ?, ?, ?, ?', [
                         $TIDPembayaran,
                         $TBank,
                         $TIdJnsByr,
                         $idMataUang,
-                        $TJmlByr
+                        $TJmlByr,
+                        $TKodePerkiraan
                     ]);
                 return response()->json(['message' => 'Data Pengajuan sudah diKOREKSI !!..'], 200);
 
@@ -284,7 +292,7 @@ class PengajuanBKKController extends Controller
 
             $ttNoLunasDetails = DB::connection('ConnAccounting')
                 ->select('exec Sp_1273_PRG_LIST_BKK2_TT_NOLUNAS @IDSupplier = ?', [$supplierId]);
-                // dd($ttNoLunasDetails);
+            // dd($ttNoLunasDetails);
             foreach ($ttNoLunasDetails as $row) {
                 $item = [];
                 $item['Waktu_Penagihan'] = \Carbon\Carbon::parse($row->Waktu_Penagihan)->format('m/d/Y');
@@ -518,6 +526,23 @@ class PengajuanBKKController extends Controller
                     ->with('focus', 'TNilaiBayar')
                     ->make(true);
             }
+        } else if ($id == 'GetKodePerkiraan') {
+            $response = [];
+
+            $kodePerkiraans = DB::connection('ConnAccounting')
+                ->select('exec SP_1273_PRG_LIST_BKK1_KODEPERKIRAAN');
+            // dd($kodePerkiraans);
+            foreach ($kodePerkiraans as $kodePerkiraan) {
+                $response[] = [
+                    'NoKodePerkiraan' => $kodePerkiraan->NoKodePerkiraan,
+                    'Keterangan' => $kodePerkiraan->Keterangan,
+                ];
+            }
+
+            if (empty($response)) {
+                return response()->json(['error' => 'Pilih dulu Kode Perkiraannya !!..']);
+            }
+            return datatables($response)->make(true);
         }
     }
     // Show the form for editing the specified resource.
