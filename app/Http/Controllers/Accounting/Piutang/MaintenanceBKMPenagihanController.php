@@ -597,14 +597,14 @@ class MaintenanceBKMPenagihanController extends Controller
                         ->table('T_PELUNASAN')
                         ->where('Id_BKM', 'LIKE', $bankCode . $periode . '%')
                         ->selectRaw('MAX(CAST(RIGHT(Id_BKM, 4) AS INT)) AS no_urut')
-                        ->value('no_urut');
+                        ->value('no_urut') + 1;
 
                     // Increment number
                     DB::connection('ConnAccounting')
                         ->table('T_Counter_BKM')
                         ->where('Periode', $periode)
                         ->update([
-                            $column => DB::raw($column . ' + 1')
+                            $column => DB::raw($noUrut)
                         ]);
 
                     // Format with leading zeros (4 digits)
