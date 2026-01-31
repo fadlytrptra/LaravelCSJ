@@ -222,46 +222,35 @@ class CreateSPPBController extends Controller
             }
 
         } else if ($jenisStore == 'savePO') {
-            $rows = $request->table_orderPembelian;
-            $idDivisi = $request->idDivisi;
-            $Tgl_sppb = $request->Tgl_sppb;
-            $No_sppb = $request->No_sppb;
+
+            $rows            = $request->table_orderPembelian;
+            $idDivisi        = $request->idDivisi;
+            $Tgl_sppb        = $request->Tgl_sppb;
+            $No_sppb         = $request->No_sppb; // dari frontend
             $keteranganCetak = $request->keteranganCetak;
 
-            if (!$No_sppb) {
-                $No_sppb = DB::connection('ConnPurchase')->select('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                        @XKode = ?, @No_trans = ?', [
-                    3,
-                    $rows[0][11],
-                ]);
-                if (!$No_sppb[0]->No_sppb) {
+            if (empty($rows)) {
+                return response()->json('Data order kosong', 422);
+            }
 
-                    // $counter = DB::connection('ConnPurchase')->select(
-                    //     'EXEC SP_1273_PRG_LIST_COUNTER_SPPB @kd_div_1 = ?',
-                    //     [$idDivisi]
-                    // );
-                    // if (empty($counter)) {
-                    //     throw new \Exception('Counter SPPB tidak ditemukan');
-                    // }
+            DB::beginTransaction();
+            try {
 
-                    // $no_sppb_counter = ((int) $counter[0]->no_sppb) + 1;
-                    // $noSppbRight = str_pad($no_sppb_counter, 4, '0', STR_PAD_LEFT);
-                    // $bulan = chr(64 + (int) date('n', strtotime($Tgl_sppb)));
-                    // $tahun = date('y', strtotime($Tgl_sppb));
-                    // $No_sppb = "{$bulan}{$tahun}/{$noSppbRight}";
+                /**
+                 * =========================
+                 * 1. TENTUKAN No_sppb
+                 * =========================
+                 */
+                if (!$No_sppb) {
+                    // === BUAT SPPB BARU ===
+                    $year       = date("Y");
+                    $yearShort  = date("y");
 
-                    // DB::connection('ConnPurchase')->statement(
-                    //     'EXEC SP_1273_PRG_UPDATE_COUNTER_SPPB
-                    //                 @kd_div_1 = ?,
-                    //                 @no_sppb_2 = ?',
-                    //     [$idDivisi, $no_sppb_counter]
-                    // );
-                    $year = date("Y");
-                    $yearShort = date('y');
                     $counter = DB::connection('ConnPurchase')->select(
                         'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
                         [0, $year]
                     );
+
                     if (count($counter) < 1) {
                         DB::connection('ConnPurchase')->statement(
                             'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
@@ -271,40 +260,40 @@ class CreateSPPBController extends Controller
                     } else {
                         $sppbCounter = $counter[0]->SPPB + 1;
                     }
+
                     DB::connection('ConnPurchase')->statement(
-                        'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?, @XSPPB = ?',
+                        'EXEC SP_4384_PRG_Maintenance_Counter_SPPB
+                        @XKode = ?, @XTahun = ?, @XSPPB = ?',
                         [1, $year, $sppbCounter]
                     );
-                    $sppbFormatted = str_pad((string) $sppbCounter, 4, '0', STR_PAD_LEFT);
-                    $No_sppb = 'PO-' . $yearShort . 'CSJ' . $sppbFormatted;
-                } else {
-                    $No_sppb = $No_sppb[0]->No_sppb;
-                }
-                foreach ($rows as $index => $row) {
-                    $No_trans = $row[11];
-                    try {
-                        DB::connection('ConnPurchase')->statement('exec SP_4384_PRG_Maintenance_Order_Pembelian
-                    @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?', [
-                            4,
-                            $No_trans,
-                            $No_sppb,
-                            $keteranganCetak
-                        ]);
 
-                    } catch (Exception $Ex) {
-                        return response()->json($Ex->getMessage());
+                    $No_sppb = 'PO-' . $yearShort . 'CSJ' . str_pad($sppbCounter, 4, '0', STR_PAD_LEFT);
+                }
+
+                /**
+                 * =========================
+                 * 2. VALIDASI DATA
+                 * =========================
+                 */
+                foreach ($rows as $row) {
+                    if (!isset($row[11])) {
+                        throw new \Exception('No_trans tidak valid');
                     }
                 }
-            } else {
-                $isRevisi = str_contains($No_sppb, 'REV');
+
+                /**
+                 * =========================
+                 * 3. SIMPAN KE SPPB
+                 * =========================
+                 */
+                $isRevisi   = str_contains($No_sppb, 'REV');
                 $XKodeSave = $isRevisi ? 14 : 4;
+
                 foreach ($rows as $row) {
                     $No_trans = $row[11];
 
-                    $isRevisi = str_contains($No_sppb, 'REV');
-
                     DB::connection('ConnPurchase')->statement(
-                        'exec SP_4384_PRG_Maintenance_Order_Pembelian
+                        'EXEC SP_4384_PRG_Maintenance_Order_Pembelian
                         @XKode = ?, @No_trans = ?, @No_sppb = ?, @Informasi_Cetak = ?',
                         [
                             $XKodeSave,
@@ -314,10 +303,23 @@ class CreateSPPBController extends Controller
                         ]
                     );
                 }
-            }
-            return response()->json(['message' => 'Sudah Berhasil Save PO!', "data" => $No_sppb]);
 
-        } else if ($jenisStore == 'submitPO') {
+                DB::commit();
+
+                return response()->json([
+                    'message' => 'Sudah Berhasil Save PO!',
+                    'data'    => $No_sppb
+                ]);
+
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'Save PO gagal',
+                    'error'   => $e->getMessage()
+                ], 500);
+            }
+        }
+         else if ($jenisStore == 'submitPO') {
 
             DB::beginTransaction();
             try {
