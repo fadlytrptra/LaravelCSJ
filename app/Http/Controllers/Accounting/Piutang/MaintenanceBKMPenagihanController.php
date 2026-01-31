@@ -588,10 +588,16 @@ class MaintenanceBKMPenagihanController extends Controller
                 if ($column) {
 
                     // Get current number
+                    // $noUrut = DB::connection('ConnAccounting')
+                    //     ->table('T_Counter_BKM')
+                    //     ->where('Periode', $periode)
+                    //     ->value($column);
+
                     $noUrut = DB::connection('ConnAccounting')
-                        ->table('T_Counter_BKM')
-                        ->where('Periode', $periode)
-                        ->value($column);
+                        ->table('T_PELUNASAN')
+                        ->where('Id_BKM', 'LIKE', $bankCode . $periode . '%')
+                        ->selectRaw('MAX(CAST(RIGHT(Id_BKM, 4) AS INT)) AS no_urut')
+                        ->value('no_urut');
 
                     // Increment number
                     DB::connection('ConnAccounting')
