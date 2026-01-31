@@ -175,6 +175,86 @@ jQuery(function ($) {
             },
         });
     }
+
+    function previewSuratPesanan(noSP) {
+        $("#modalPreviewSP").modal("show");
+        $("#preview_table_sp tbody").empty();
+        $("#loading-screen").css("display", "flex");
+
+        fetch("/viewprint/" + noSP)
+            .then(res => res.json())
+            .then(data => {
+                let h = data[0];
+
+                /* ================= HEADER ================= */
+                $("#preview_no_sp").text("No. " + h.NO_SP);
+                $("#preview_tgl_sp").text(moment(h.TGL_SP).format("DD-MM-YYYY"));
+                $("#preview_tgl_po").text(
+                    h.Tgl_PO ? moment(h.Tgl_PO).format("DD-MM-YYYY") : "-"
+                );
+                $("#preview_no_po").text(h.NO_PO ?? "-");
+
+                $("#preview_customer").text(h.NamaCust);
+                $("#preview_alamat").text(h.Alamat);
+                $("#preview_alamat_kirim").text(
+                    h.AlamatKirim ?? h.Alamat
+                );
+
+                $("#preview_jenis_bayar").text(h.NamaPembayaran);
+                $("#preview_syarat_bayar").text(
+                    h.SyaratBayar ? h.SyaratBayar + " Hari" : "-"
+                );
+                $("#preview_ppn").text(h.PPN ?? "-");
+
+                /* ================= DETAIL BARANG ================= */
+                data.forEach((row, i) => {
+                    $("#preview_table_sp tbody").append(`
+                        <tr>
+                            <td class="text-center">${i + 1}</td>
+                            <td>
+                                <b>${row.JnsBarang}</b><br>
+                                ${row.NamaType}
+                            </td>
+                            <td>${row.KodeBarang}</td>
+                            <td class="text-end">
+                                ${numeral(row.JmlOrder).format("0,0.00")} ${row.Satuan}
+                            </td>
+                            <td class="text-end">
+                                ${row.Symbol} ${numeral(row.HargaSatuan).format("0,0.00")}
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                /* ================= FOOTER ================= */
+                $("#preview_jenis_bayar").text(h.NamaPembayaran ?? "-");
+                $("#preview_syarat_bayar").text(
+                    h.SyaratBayar ? h.SyaratBayar + " Hari" : "-"
+                );
+                $("#preview_ppn").text(h.PPN ?? "-");
+
+                $("#preview_rencana_kirim").text(
+                    h.TglRencanaKirim
+                        ? moment(h.TglRencanaKirim).format("MM-DD-YYYY")
+                        : "-"
+                );
+
+                $("#preview_keterangan").html(
+                    h.Ket && h.Ket.trim() !== ""
+                        ? h.Ket.replace(/\r\n/g, "<br>")
+                        : "-"
+                );
+                /* ================= TANDA TANGAN ================= */
+                $("#preview_sales").text(h.Sales ?? "");
+                $("#preview_manager").text(h.Manager ?? "");
+                $("#preview_direktur").text(h.Direktur ?? "");
+            })
+            .finally(() => {
+                $("#loading-screen").css("display", "none");
+            });
+    }
+
+
     //#endregion
 
     //#region Event Listener
@@ -268,47 +348,54 @@ jQuery(function ($) {
         }
     });
 
-    $(document).on("click", ".DetailSP", function (e) {
-        let no_spValue = $(this).data("id");
-        $.ajax({
-            url: "/SuratPesananDirektur/getDetailSP",
-            type: "GET",
-            data: {
-                _token: csrfToken,
-                no_spValue: no_spValue,
-            },
-            success: function (response) {
-                console.log(response);
+    // $(document).on("click", ".DetailSP", function (e) {
+    //     let no_spValue = $(this).data("id");
+    //     $.ajax({
+    //         url: "/SuratPesananDirektur/getDetailSP",
+    //         type: "GET",
+    //         data: {
+    //             _token: csrfToken,
+    //             no_spValue: no_spValue,
+    //         },
+    //         success: function (response) {
+    //             console.log(response);
 
-                if (response.length > 0) {
-                    $("#detailSPModal").modal("show");
-                    nama_barangSP.value = response[0].NamaType;
-                    quantitySP.value = numeral(response[0].Qty).format(
-                        "0,0.00",
-                    );
-                    satuanSP.value = response[0].Satuan;
-                    harga_satuanSP.value = numeral(
-                        response[0].HargaSatuan,
-                    ).format("0,0.0000");
-                    uraianSP.value = response[0].UraianPesanan ?? "";
-                    tgl_deliverySP.value = moment(
-                        response[0].TglRencanaKirim,
-                    ).format("YYYY-MM-DD");
-                } else if (response.error || response.length < 1) {
-                    Swal.fire({
-                        icon: "info",
-                        title: "Info!",
-                        text: response.error,
-                        showConfirmButton: false,
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                var err = eval("(" + xhr.responseText + ")");
-                alert(err.Message);
-            },
-        });
+    //             if (response.length > 0) {
+    //                 $("#detailSPModal").modal("show");
+    //                 nama_barangSP.value = response[0].NamaType;
+    //                 quantitySP.value = numeral(response[0].Qty).format(
+    //                     "0,0.00",
+    //                 );
+    //                 satuanSP.value = response[0].Satuan;
+    //                 harga_satuanSP.value = numeral(
+    //                     response[0].HargaSatuan,
+    //                 ).format("0,0.0000");
+    //                 uraianSP.value = response[0].UraianPesanan ?? "";
+    //                 tgl_deliverySP.value = moment(
+    //                     response[0].TglRencanaKirim,
+    //                 ).format("YYYY-MM-DD");
+    //             } else if (response.error || response.length < 1) {
+    //                 Swal.fire({
+    //                     icon: "info",
+    //                     title: "Info!",
+    //                     text: response.error,
+    //                     showConfirmButton: false,
+    //                 });
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             var err = eval("(" + xhr.responseText + ")");
+    //             alert(err.Message);
+    //         },
+    //     });
+    // });
+
+    $(document).on("click", ".DetailSP", function (e) {
+        e.preventDefault();
+        let noSP = $(this).data("id");
+        previewSuratPesanan(noSP);
     });
+
 
     $("#checkAllSuratPesanan").on("change", function () {
         let isChecked = this.checked;

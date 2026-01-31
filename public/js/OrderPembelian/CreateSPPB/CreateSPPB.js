@@ -95,6 +95,7 @@ jQuery(function ($) {
     let sppb_quantityBarang = document.getElementById("sppb_quantityBarang");
     let sppb_KeteranganOrder = document.getElementById("sppb_KeteranganOrder");
     let sppb_hargaSatuan = document.getElementById("sppb_hargaSatuan");
+    let sppb_satuanBarang = document.getElementById("sppb_satuanBarang");
     let sppb_discount = document.getElementById("sppb_discount");
     let sppb_ppn = document.getElementById("sppb_ppn");
     let sppb_divDppFull = document.getElementById("sppb_divDppFull");
@@ -915,6 +916,7 @@ jQuery(function ($) {
                     sppb_keteranganKhusus.value = data[0].KET_KHUSUS;
                     sppb_keteranganBarang.value = data[0].KET;
                     sppb_nomorSatuan.value = data[0].ST_TRI;
+                    sppb_satuanBarang.value = data[0].Nm_Sat_Tri ?? '';
                     if (jenisInput == "manual") {
                         // mungkin akan ada tambahan
                     } else if (jenisInput == "auto") {
