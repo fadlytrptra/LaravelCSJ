@@ -223,12 +223,12 @@ class CreateSPPBController extends Controller
 
         } else if ($jenisStore == 'savePO') {
 
-            $rows            = $request->table_orderPembelian;
-            $idDivisi        = $request->idDivisi;
-            $Tgl_sppb        = $request->Tgl_sppb;
-            $No_sppb         = $request->No_sppb; // dari frontend
+            $rows = $request->table_orderPembelian;
+            $idDivisi = $request->idDivisi;
+            $Tgl_sppb = $request->Tgl_sppb;
+            $No_sppb = $request->No_sppb; // dari frontend
             $keteranganCetak = $request->keteranganCetak;
-
+            // dd($request->all());
             if (empty($rows)) {
                 return response()->json('Data order kosong', 422);
             }
@@ -243,8 +243,8 @@ class CreateSPPBController extends Controller
                  */
                 if (!$No_sppb) {
                     // === BUAT SPPB BARU ===
-                    $year       = date("Y");
-                    $yearShort  = date("y");
+                    $year = date("Y");
+                    $yearShort = date("y");
 
                     $counter = DB::connection('ConnPurchase')->select(
                         'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
@@ -286,7 +286,7 @@ class CreateSPPBController extends Controller
                  * 3. SIMPAN KE SPPB
                  * =========================
                  */
-                $isRevisi   = str_contains($No_sppb, 'REV');
+                $isRevisi = str_contains($No_sppb, 'REV');
                 $XKodeSave = $isRevisi ? 14 : 4;
 
                 foreach ($rows as $row) {
@@ -308,18 +308,17 @@ class CreateSPPBController extends Controller
 
                 return response()->json([
                     'message' => 'Sudah Berhasil Save PO!',
-                    'data'    => $No_sppb
+                    'data' => $No_sppb
                 ]);
 
             } catch (\Throwable $e) {
                 DB::rollBack();
                 return response()->json([
                     'message' => 'Save PO gagal',
-                    'error'   => $e->getMessage()
+                    'error' => $e->getMessage()
                 ], 500);
             }
-        }
-         else if ($jenisStore == 'submitPO') {
+        } else if ($jenisStore == 'submitPO') {
 
             DB::beginTransaction();
             try {
@@ -333,7 +332,7 @@ class CreateSPPBController extends Controller
                 }
 
                 $firstRow = $rows[0];
-                $noTrans  = $firstRow[11];
+                $noTrans = $firstRow[11];
 
                 $lastNoSppb = $this->getLastNoSppbByTrans($noTrans);
 
@@ -345,7 +344,8 @@ class CreateSPPBController extends Controller
 
                 foreach ($rows as $row) {
 
-                    if (!isset($row[11])) continue;
+                    if (!isset($row[11]))
+                        continue;
                     $No_trans = $row[11];
 
                     // SAVE
@@ -394,14 +394,10 @@ class CreateSPPBController extends Controller
                 DB::rollBack();
                 return response()->json([
                     'message' => 'Submit gagal',
-                    'error'   => $e->getMessage()
+                    'error' => $e->getMessage()
                 ], 500);
             }
-        }
-
-
-
-         else if ($jenisStore == 'accPO') {
+        } else if ($jenisStore == 'accPO') {
             $nomorSPPB = $request->nomorSPPB;
             $user_id = trim(Auth::user()->NomorUser);
             try {
@@ -410,10 +406,7 @@ class CreateSPPBController extends Controller
             } catch (Exception $ex) {
                 return response()->json($ex->getMessage());
             }
-        }
-
-
-        else if ($jenisStore == 'deletePO') {
+        } else if ($jenisStore == 'deletePO') {
             $nomorSPPB = $request->nomorSPPB;
             try {
                 DB::connection('ConnPurchase')->statement('exec SP_4384_Maintenance_SPPB @XKode= ?, @XNoSPPB = ?', [2, $nomorSPPB]);
@@ -424,8 +417,6 @@ class CreateSPPBController extends Controller
         }
 
         //Revisi
-
-
         else {
             return response()->json('Invalid request', 405);
         }
@@ -515,8 +506,9 @@ class CreateSPPBController extends Controller
             $dataDetailPO = DB::connection('ConnPurchase')
                 ->select('exec SP_4384_Maintenance_SPPB @XKode = ?, @XNoSPPB = ?', [3, $no_sppb]);
             return response()->json($dataDetailPO, 200);
-        } else if ($id == 'getDraftSPPB') {$listSPPB = DB::connection('ConnPurchase')
-            ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [4]);
+        } else if ($id == 'getDraftSPPB') {
+            $listSPPB = DB::connection('ConnPurchase')
+                ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [4]);
             $dataSPPB = [];
             $uniqueSPPB = [];
 
@@ -527,12 +519,12 @@ class CreateSPPBController extends Controller
                 $uniqueSPPB[$SPPB->No_sppb] = true;
 
                 $dataSPPB[] = [
-                    'No_sppb'      => $SPPB->No_sppb,
-                    'NM_SUP'       => $SPPB->NM_SUP,
-                    'Tgl_sppb'     => $SPPB->Tgl_sppb,
-                    'Tgl_acc'      => $SPPB->Tgl_acc,
+                    'No_sppb' => $SPPB->No_sppb,
+                    'NM_SUP' => $SPPB->NM_SUP,
+                    'Tgl_sppb' => $SPPB->Tgl_sppb,
+                    'Tgl_acc' => $SPPB->Tgl_acc,
                     'Tgl_Direktur' => $SPPB->Tgl_Direktur,
-                    'Kd_div'       => $SPPB->Kd_div,
+                    'Kd_div' => $SPPB->Kd_div,
                 ];
             }
 
@@ -556,7 +548,7 @@ class CreateSPPBController extends Controller
                         'NM_SUP' => $row->NM_SUP,
                         'Tgl_sppb' => $row->Tgl_sppb,
                         'Tgl_acc' => $row->Tgl_acc,
-                        'Tgl_Direktur'  => $row->Tgl_Direktur,
+                        'Tgl_Direktur' => $row->Tgl_Direktur,
                         'Kd_div' => $row->Kd_div,
                     ];
                 }
@@ -570,7 +562,7 @@ class CreateSPPBController extends Controller
 
     public function generateNoSppbBaru(): string
     {
-        $tahun  = date('y');
+        $tahun = date('y');
         $prefix = "PO-{$tahun}CSJ";
 
         $last = DB::connection('ConnPurchase')

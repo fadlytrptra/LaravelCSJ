@@ -937,64 +937,28 @@
                                     </div>
                                 </div>
                             @endif
-                        </main>
-                    </div>
 
-                    <!--Tanda Tangan-->
-                    <div class="page">
-                        <div class="page-footer" style="display:flex; text-align:center;">
-                            {{-- MENYETUJUI --}}
-                            <div
-                                style="text-align:center; transform: translateX(-2.5cm); transform: translateY(-6cm);">
-                                <div style="height:22mm; display:flex; align-items:center; justify-content:center;">
-                                    @if (!empty($ttdDirektur?->FotoTtd))
-                                        <img src="data:image/png;base64,{{ $ttdDirektur->FotoTtd }}"
-                                            style="max-height:22mm; max-width:100%; object-fit:contain;"
-                                            alt="TTD Direktur">
-                                    @endif
-                                </div>
-                                <div>
-                                    <strong>RUDY SANTOSO</strong>
+                            <div style="width: 100%; display: flex;">
+                                <div style="width: 70%;">
+                                    <h1
+                                        style="font-size: 13px;font-family: Helvetica; font-weight: bold;margin-top:50px">
+                                        Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}</h1>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <h1 style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin-top: -165px;">
-                                Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}
-                            </h1>
-                        </div>
+                            @if (!empty($ttdDirektur?->FotoTtd) && $dataCetak[0]->Manager)
+                                <div style="width: 15%; text-align: center;">
+                                    <img src="data:image/png;base64,{{ $ttdDirektur->FotoTtd }}"
+                                        style="max-height:25mm; max-width:100%; object-fit:contain;"
+                                        alt="TTD Direktur">
+                                    <h5>RUDY SANTOSO</h5>
+                                </div>
+                            @endif
+                        </main>
                     </div>
                 @endforeach
             @endif
-
-
             <!--===========================================================
 ========================= END SPPB BARU========================
 ============================================================-->
-
-
-
         </div>
     </body>
-
-
-    <style>
-        .page {
-            width: 19.5cm;
-            min-height: 27.94cm;
-            padding: 10mm;
-            box-sizing: border-box;
-            page-break-after: always;
-        }
-
-
-        /* Footer */
-        .page-footer {
-
-            display: flex;
-            justify-content: space-between;
-            text-align: center;
-            font-family: Helvetica;
-            font-size: 13px;
-        }
-    </style>

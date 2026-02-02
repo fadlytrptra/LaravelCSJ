@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Beli\Transaksi;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Beli\TransBL;
@@ -20,12 +21,7 @@ class FinalApproveController extends Controller
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Final Approve');
 
-        $data = DB::connection('ConnPurchase')->select(
-            'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @XKode = ?, @kd_user = ?',
-            [1, $kdUser]
-        );
-
-        return view('Beli.Transaksi.FinalApprove.List', compact('data', 'access'));
+        return view('Beli.Transaksi.FinalApprove.List', compact('access'));
     }
 
     // public function store(Request $request)
@@ -112,151 +108,189 @@ class FinalApproveController extends Controller
         DB::beginTransaction();
 
         try {
-
-            $checked = $request->input('checkedBOX', []);
+            $checked = array_column($request->input('checkedBOX', []), 'No_trans');
             if (empty($checked)) {
                 DB::rollBack();
-                return back()->with('danger', 'Tidak ada data dipilih');
+                return response()->json(['error' => 'Tidak ada data dipilih', 404]);
+                // return back()->with('danger', 'Tidak ada data dipilih');
             }
 
-            $now  = now('Asia/Jakarta');
+            $now = now('Asia/Jakarta');
             $user = trim(Auth::user()->NomorUser);
 
             switch ($request->input('action')) {
 
                 /* =========================
-                * APPROVE
-                * ========================= */
+                 * APPROVE
+                 * ========================= */
                 case 'Approve':
 
                     TransBL::whereIn('No_trans', $checked)->update([
                         'Tgl_Direktur' => $now,
-                        'Direktur'     => $user,
-                        'Dir_Agree'    => 1,
+                        'Direktur' => $user,
+                        'Dir_Agree' => 1,
                     ]);
 
                     DB::commit();
-                    return back()->with('success', 'Data berhasil di-approve');
+                    return response()->json(['success' => 'Data berhasil di-approve'], 200);
+                // return back()->with('success', 'Data berhasil di-approve');
 
 
                 /* =========================
-                * REVISI
-                * ========================= */
+                 * REVISI
+                 * ========================= */
                 case 'Revisi':
-                $noTrans = $checked[0];
+                    try {
+                        //generate no_sppb rev
+                        $noTrans = $checked[0];
 
-                $old = DB::table('YTRANSBL')
-                    ->where('No_trans', $noTrans)
-                    ->first();
+                        $old = DB::table('YTRANSBL')
+                            ->where('No_trans', $noTrans)
+                            ->first();
 
-                if (!$old) {
-                    DB::rollBack();
-                    return back()->with('danger', 'Data tidak ditemukan');
-                }
+                        if (!$old) {
+                            DB::rollBack();
+                            // return back()->with('danger', 'Data tidak ditemukan');
+                            return response()->json(['error' => 'Data tidak ditemukan', 404]);
+                        }
+                        $noSPPB = substr(
+                            rtrim($this->generateNoSppbRevisi($old->No_sppb)),
+                            0,
+                            25
+                        );
 
-                DB::table('YTRANSBL')
-                    ->where('No_trans', $noTrans)
-                    ->update([
+                        foreach ($checked as $row) {
+
+                            $noTrans = $row['No_trans'];
+
+                            $old = DB::table('YTRANSBL')
+                                ->where('No_trans', $noTrans)
+                                ->first();
+
+                            if (!$old) {
+                                DB::rollBack();
+                                return response()->json([
+                                    'error' => "Data tidak ditemukan: {$noTrans}"
+                                ], 404);
+                            }
+
+                            // 1️⃣ Batalkan data lama
+                            DB::table('YTRANSBL')
+                                ->where('No_trans', $noTrans)
+                                ->update([
+                                    'Dir_Agree' => 1,
+                                    'Batal_acc' => $user,
+                                    'Tgl_batal_Acc' => $now,
+                                ]);
+
+                            // 2️⃣ Duplikasi data untuk revisi
+                            $newData = (array) $old;
+
+                            $newData['No_trans'] = $this->generateNoTransBaru();
+                            $newData['No_sppb'] = $noSPPB;
+                            // reset approval fields
+                            $newData['Dir_Agree'] = null;
+                            $newData['Direktur'] = null;
+                            $newData['Tgl_Direktur'] = null;
+                            $newData['Manager'] = null;
+                            $newData['Tgl_acc'] = null;
+                            $newData['Batal_acc'] = null;
+                            $newData['Tgl_batal_Acc'] = null;
+
+                            DB::table('YTRANSBL')->insert($newData);
+                        }
+
+                        DB::commit();
+
+                        return response()->json([
+                            'success' => 'Data berhasil direvisi'
+                        ], 200);
+
+                    } catch (\Throwable $e) {
+                        DB::rollBack();
+
+                        return response()->json([
+                            'error' => $e->getMessage()
+                        ], 500);
+                    }
+
+                /* =========================
+                 * DIBATALKAN
+                 * ========================= */
+                case 'Dibatalkan':
+
+                    TransBL::whereIn('No_trans', $checked)->update([
                         'Dir_Agree' => 1,
                         'Batal_acc' => $user,
                         'Tgl_batal_Acc' => $now,
                     ]);
 
-
-                $newData = (array) $old;
-
-                $newData['No_trans'] = $this->generateNoTransBaru();
-                $newData['No_sppb']  = substr(
-                    rtrim($this->generateNoSppbRevisi($old->No_sppb)),
-                    0,
-                    25
-                );
-
-                // reset
-                $newData['Dir_Agree'] = null;
-                $newData['Direktur'] = null;
-                $newData['Tgl_Direktur'] = null;
-                $newData['Manager'] = null;
-                $newData['Tgl_acc'] = null;
-                $newData['Batal_acc'] = null;
-                $newData['Tgl_batal_Acc'] = null;
-
-
-                DB::table('YTRANSBL')->insert($newData);
-                DB::commit();
-
-                $newNoTrans = $newData['No_trans'];
-                $newNoSppb = $newData['No_sppb'];
-
-                return redirect()
-                    ->route('CreateSPPB.index', ['no_trans' => $newNoTrans])
-                    ->with('success', 'Data sudah berhasil direvisi.');
-
-                /* =========================
-                * DIBATALKAN
-                * ========================= */
-                case 'Dibatalkan':
-
-                    TransBL::whereIn('No_trans', $checked)->update([
-                        'Dir_Agree'     => 1,
-                        'Batal_acc'     => $user,
-                        'Tgl_batal_Acc' => $now,
-                    ]);
-
                     DB::commit();
-                    return back()->with('success', 'Data berhasil dibatalkan');
+                    return response()->json(['success' => 'Data berhasil dibatalkan'], 200);
+                // return back()->with('success', 'Data berhasil dibatalkan');
 
 
                 default:
                     DB::rollBack();
-                    return back()->with('danger', 'Aksi tidak valid');
+                    return response()->json(['error' => 'Request invalid'], 405);
+                // return back()->with('danger', 'Aksi tidak valid');
             }
 
-        // } catch (\Throwable $e) {
+            // } catch (\Throwable $e) {
 
-        //     DB::rollBack();
+            //     DB::rollBack();
 
-        //     // PENTING: simpan error detail
-        //     \Log::error('FinalApprove Error', [
-        //         'message' => $e->getMessage(),
-        //         'trace'   => $e->getTraceAsString(),
-        //     ]);
+            //     // PENTING: simpan error detail
+            //     \Log::error('FinalApprove Error', [
+            //         'message' => $e->getMessage(),
+            //         'trace'   => $e->getTraceAsString(),
+            //     ]);
 
-        //     return back()->with('danger', 'Terjadi kesalahan sistem');
-        // }
-        } catch (\Throwable $e) {
+            //     return back()->with('danger', 'Terjadi kesalahan sistem');
+            // }
+        } catch (Exception $e) {
             DB::rollBack();
-            dd([
-                'ERROR_MESSAGE' => $e->getMessage(),
-                'ERROR_FILE'    => $e->getFile(),
-                'ERROR_LINE'    => $e->getLine(),
-                'TRACE'         => collect($e->getTrace())->take(5),
-            ]);
+            return response()->json(['error' => $e], 405);
+
+            // dd([
+            //     'ERROR_MESSAGE' => $e->getMessage(),
+            //     'ERROR_FILE' => $e->getFile(),
+            //     'ERROR_LINE' => $e->getLine(),
+            //     'TRACE' => collect($e->getTrace())->take(5),
+            // ]);
         }
     }
 
     public function show($id)
     {
+        if ($id == 'getAllSPPB') {
+            $kdUser = trim(Auth::user()->NomorUser);
+            $data = DB::connection('ConnPurchase')->select(
+                'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @XKode = ?, @kd_user = ?',
+                [1, $kdUser]
+            );
+            return datatables(source: $data)->make(true);
+        }
         // PERINGATAN:
         // Di sini kamu MASIH punya join ke STATUS_ORDER dan whereIn(StatusOrder, ...)
         // Kalau tabel YTRANSBL saat ini benar-benar tidak punya StatusOrder,
         // bagian itu juga harus dibersihkan seperti di controller Manager.
 
         $data = TransBL::select(
-                'Y_KATEGORI_UTAMA.nama as KatUtama',
-                'Y_KATEGORY.nama_kategori as kategori',
-                'Y_KATEGORI_SUB.nama_sub_kategori as SubKat',
-                'Y_BARANG.NAMA_BRG as NamaBarang',
-                'Qty',
-                'Nama_satuan',
-                'Pemesan',
-                'YUSER.Nama as User',
-                'StatusBeli',
-                'Tgl_Dibutuhkan',
-                'Ket_Internal',
-                'keterangan',
-                'Kd_div'
-            )
+            'Y_KATEGORI_UTAMA.nama as KatUtama',
+            'Y_KATEGORY.nama_kategori as kategori',
+            'Y_KATEGORI_SUB.nama_sub_kategori as SubKat',
+            'Y_BARANG.NAMA_BRG as NamaBarang',
+            'Qty',
+            'Nama_satuan',
+            'Pemesan',
+            'YUSER.Nama as User',
+            'StatusBeli',
+            'Tgl_Dibutuhkan',
+            'Ket_Internal',
+            'keterangan',
+            'Kd_div'
+        )
             ->leftJoin('Y_BARANG', 'Y_BARANG.KD_BRG', 'YTRANSBL.Kd_brg')
             ->leftJoin('YUSER', 'YUSER.kd_user', 'YTRANSBL.Operator')
             ->leftJoin('YSATUAN', 'YSATUAN.No_satuan', 'YTRANSBL.NoSatuan')
@@ -287,35 +321,35 @@ class FinalApproveController extends Controller
     {
         // Versi single-row dari store()
         $date = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
-        $now  = $date->format('Y-m-d H:i:s');
+        $now = $date->format('Y-m-d H:i:s');
         $user = trim(Auth::user()->NomorUser);
 
         switch ($request->input('action')) {
             case 'Approve':
                 TransBL::where('No_trans', $id)->update([
                     'Tgl_Direktur' => $now,
-                    'Direktur'     => $user,
-                    'Dir_Agree'    => 1,
+                    'Direktur' => $user,
+                    'Dir_Agree' => 1,
                 ]);
                 return back();
 
             case 'DownToManager':
                 TransBL::where('No_trans', $id)->update([
-                    'Tgl_acc'      => null,
-                    'Manager'      => null,
+                    'Tgl_acc' => null,
+                    'Manager' => null,
                     'Tgl_Direktur' => null,
-                    'Direktur'     => null,
-                    'Dir_Agree'    => 0,
+                    'Direktur' => null,
+                    'Dir_Agree' => 0,
                 ]);
                 return back();
 
             case 'Reject':
                 TransBL::where('No_trans', $id)->update([
-                    'Tgl_Direktur'  => $now,
-                    'Direktur'      => $user,
+                    'Tgl_Direktur' => $now,
+                    'Direktur' => $user,
                     'Tgl_Batal_acc' => $now,
-                    'Batal_acc'     => $user,
-                    'Dir_Agree'     => 0,
+                    'Batal_acc' => $user,
+                    'Dir_Agree' => 0,
                 ]);
                 return back();
 

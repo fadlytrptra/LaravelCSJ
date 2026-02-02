@@ -1870,7 +1870,7 @@ jQuery(function ($) {
     });
 
     sppb_buttonSave.addEventListener("click", function (e) {
-        let No_sppb = $("#noTransRevisi").val();
+        let nomorSPPB = $(this).data("id");
         let tableData = sppb_tableOrderPembelian
             .rows()
             .data()
@@ -1905,7 +1905,7 @@ jQuery(function ($) {
                 table_orderPembelian: tableData,
                 idDivisi: sppb_divisi.val(),
                 Tgl_sppb: sppb_tanggal.value,
-                No_sppb: No_sppb,
+                No_sppb: nomorSPPB,
                 keteranganCetak: keteranganCetak,
             },
             dataType: "json",
@@ -1940,7 +1940,7 @@ jQuery(function ($) {
                         returnFocus: false,
                     });
 
-                    $('#noTransRevisi').val(nomorSPPB);
+                    $('#no_trans_revisi').val(nomorSPPB);
 
                     selectedRowData = null;
                     table_sppb.ajax.reload(function () {
@@ -1960,8 +1960,7 @@ jQuery(function ($) {
     });
 
     sppb_buttonSubmit.addEventListener("click", function (e) {
-        let noSppbRevisi = $('#no_sppb_revisi').val();
-        let nomorSPPB = $('#no_trans_revisi').val() || $(this).data("id");
+        let nomorSPPB =$(this).data("id");
         let keteranganCetak =
             sppb_deliveryTerm.value +
             " | " +
