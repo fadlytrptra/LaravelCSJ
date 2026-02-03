@@ -86,6 +86,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('DaftarHarga', App\Http\Controllers\Beli\Informasi\DaftarHargaController::class);
     Route::resource('Approve', App\Http\Controllers\Beli\Transaksi\ApproveController::class);
     Route::resource('FinalApprove', App\Http\Controllers\Beli\Transaksi\FinalApproveController::class);
+    Route::resource('RevisiPO', App\Http\Controllers\Beli\Transaksi\RevisiPOController::class);
     Route::resource('MaintenanceOrderPembelian', App\Http\Controllers\Beli\Transaksi\MaintenanceOrderPembelianController::class);
     Route::resource('CariType', App\Http\Controllers\Beli\Informasi\CariTypeController::class);
     Route::resource('Supplier', App\Http\Controllers\Beli\Master\SupplierController::class);

@@ -1,9 +1,9 @@
 @extends('layouts.appOrderPembelian')
 
-@section('title', 'ACC Direktur')
+@section('title', 'Revisi PO')
 
 @section('content')
-    @include('Beli/Transaksi/FinalApprove/modalDetailFinal')
+    @include('Beli/Transaksi/RevisiPO/modalDetailFinal')
     <style>
         thead th {
             text-align: center !important;
@@ -37,10 +37,10 @@
         <div class="row justify-content-center">
             <div class="col-md-11 RDZMobilePaddingLR0">
                 <div class="card">
-                    <div class="card-header">ACC Direktur</div>
+                    <div class="card-header">Revisi PO</div>
                     <div class="card-body">
                         <div style="overflow: auto;">
-                            <table id="table_Approve" class="table table-bordered table-striped" style="max-width:100%;">
+                            <table id="table_Revisi" class="table table-bordered table-striped" style="max-width:100%;">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th></th>
@@ -62,28 +62,15 @@
                                 <tbody></tbody>
                             </table>
                         </div>
-                        <div style="display: flex;flex-direction: row;width: 100%;">
-                            <div style="flex: 0.5">
-                                <button type="submit" class="btn btn-md btn-success checkedAll" name="action"
-                                    value="Approve">
-                                    Check All
-                                </button>
-                            </div>
-                            <div class="d-flex justify-content-end mt-2" style="flex: 0.5">
-                                <button type="submit" class="btn btn-md btn-primary btn_approve" name="action"
-                                    value="Approve">
-                                    Proses
-                                </button>
-                                <button type="submit" class="btn btn-md btn-danger btn_batal" name="action"
-                                    value="Dibatalkan">
-                                    Dibatalkan
-                                </button>
-                            </div>
+                        <div class="d-flex justify-content-end mt-2">
+                            <button class="btn btn-md btn-warning btn_revisi" name="action" value="Revisi">
+                                Revisi
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/OrderPembelian/FinalApprove/FinalApprove.js') }}"></script>
+    <script src="{{ asset('js/OrderPembelian/RevisiPO/RevisiPO.js') }}"></script>
 @endsection

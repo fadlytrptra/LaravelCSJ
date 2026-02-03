@@ -158,10 +158,8 @@ class FinalApproveController extends Controller
                             0,
                             25
                         );
-
                         foreach ($checked as $row) {
-
-                            $noTrans = $row['No_trans'];
+                            $noTrans = $row;
 
                             $old = DB::table('YTRANSBL')
                                 ->where('No_trans', $noTrans)
@@ -261,7 +259,7 @@ class FinalApproveController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
         if ($id == 'getAllSPPB') {
             $kdUser = trim(Auth::user()->NomorUser);
@@ -270,7 +268,42 @@ class FinalApproveController extends Controller
                 [1, $kdUser]
             );
             return datatables(source: $data)->make(true);
+        } else if ($id == 'getAllNoTrans') {
+
+            $kdUser = trim(Auth::user()->NomorUser);
+
+            // 1️⃣ Execute SP → ARRAY result
+            $data = DB::connection('ConnPurchase')->select(
+                'EXEC dbo.SP_1273_PRG_Select_AccPermohonan @XKode = ?, @kd_user = ?',
+                [1, $kdUser]
+            );
+
+            // 2️⃣ Convert to Collection
+            $collection = collect($data);
+
+            // 3️⃣ Apply DataTables search filter (optional)
+            if ($request->filled('search.value')) {
+                $search = $request->input('search.value');
+
+                $collection = $collection->filter(function ($row) use ($search) {
+                    return str_contains(
+                        strtoupper(trim($row->No_sppb)),
+                        strtoupper($search)
+                    );
+                });
+            }
+
+            // 4️⃣ Return only needed fields
+            return $collection
+                ->map(function ($row) {
+                    return [
+                        'No_trans' => trim($row->No_trans),
+                        'No_sppb' => trim($row->No_sppb),
+                    ];
+                })
+                ->values(); // reset index
         }
+
         // PERINGATAN:
         // Di sini kamu MASIH punya join ke STATUS_ORDER dan whereIn(StatusOrder, ...)
         // Kalau tabel YTRANSBL saat ini benar-benar tidak punya StatusOrder,
