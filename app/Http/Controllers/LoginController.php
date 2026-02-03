@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Auth;
 use Validator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -71,14 +72,33 @@ class LoginController extends Controller
             return redirect()->route('login')->withInput()->withErrors(['error' => 'Akun Anda tidak aktif.']);
         }
 
+
         Auth::attempt($data);
 
         if (Auth::check()) {
-            DB::connection('ConnEDP')->table('UserMaster')->where('NomorUser', $request->input('username'))->update(['LastLogIn' => $currentTime]);
+            // Ambil IP publik user
+            $ipUser = $request->ip();
+
+            DB::connection('ConnEDP')->table('UserMaster')
+                ->where('NomorUser', $request->input('username'))
+                ->update(['LastLogIn' => $currentTime]);
+
+            // log
+            Log::info('User Login', [
+                'user' => $request->input('username'),
+                'ip_address' => $ipUser,
+                'login_time' => $currentTime,
+            ]);
+
             return redirect()->route('home');
         } else {
-            return redirect()->route('login')->withInput()->withErrors(['error' => 'Username atau Password tidak ditemukan!']);
+            return redirect()->route('login')->withInput()->withErrors([
+                'error' => 'Username atau Password tidak ditemukan!'
+            ]);
         }
+
+
+
     }
     public function logout(Request $request)
     {
