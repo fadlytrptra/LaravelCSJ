@@ -140,7 +140,6 @@ $(document).ready(function () {
                                 },
                             },
                             { data: "NO_PO" },
-                            { data: "No_BTTB" },
                             { data: "Harga_terbayar" },
                             { data: "Kd_brg" },
                             { data: "NAMA_BRG" },

@@ -148,7 +148,17 @@ class PengajuanBKKController extends Controller
                 } else {
                     if ($Bayar) {
                         $recTrans = DB::connection('ConnAccounting')
-                            ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_NOTT_BAYAR @IdBank = ?, @IdJenisBayar = ?, @IdMataUang = ?, @JmlJenisBayar = ?, @Rincian = ?, @NilaiRincian = ?, @UserId = ?, @supp = ?, @kurs = ?, @KodePerkiraan = ?', [
+                            ->statement('EXEC SP_1273_PRG_INS_BKK2_ACUAN_NOTT_BAYAR
+                            @IdBank = ?,
+                            @IdJenisBayar = ?,
+                            @IdMataUang = ?,
+                            @JmlJenisBayar = ?,
+                            @Rincian = ?,
+                            @NilaiRincian = ?,
+                            @UserId = ?,
+                            @supp = ?,
+                            @kurs = ?,
+                            @KodePerkiraan = ?', [
                                 $TBank,
                                 $TIdJnsByr,
                                 $idMataUang,

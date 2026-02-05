@@ -115,7 +115,20 @@ class MaintenanceTTKRR1Controller extends Controller
 
         foreach ($ListPO as $item) {
             DB::connection('ConnAccounting')
-                ->statement('exec SP_1273_PRG_INS_BKK1_SPPB @IdPenagihan=?, @IdDivisi=?, @NoSppb=?, @NoBTTB=?, @NoTerima=?, @HrgSat=?, @Disc=?, @PPN=?, @Kurs=?, @HrgDisc=?, @HrgPpn=?, @QtyTagih=?, @SatTagih=?', [
+                ->statement('exec SP_1273_PRG_INS_BKK1_SPPB
+                                                                @IdPenagihan=?,
+                                                                @IdDivisi=?,
+                                                                @NoSppb=?,
+                                                                @NoBTTB=?,
+                                                                @NoTerima=?,
+                                                                @HrgSat=?,
+                                                                @Disc=?,
+                                                                @PPN=?,
+                                                                @Kurs=?,
+                                                                @HrgDisc=?,
+                                                                @HrgPpn=?,
+                                                                @QtyTagih=?,
+                                                                @SatTagih=?', [
                     $TIDPenagihan,
                     $item['Kd_div'],
                     $item['NO_PO'],
@@ -196,8 +209,7 @@ class MaintenanceTTKRR1Controller extends Controller
             foreach ($poDetails as $row) {
                 $response[] = [
                     'Kd_div' => trim($row->Kd_div),
-                    'NO_PO' => trim($row->NO_PO),
-                    'No_BTTB' => trim($row->No_BTTB),
+                    'NO_PO' => trim($row->No_sppb),
                     'Harga_terbayar' => number_format($row->Harga_terbayar, 2, '.', ','),
                     'Kd_brg' => trim($row->Kd_brg),
                     'NAMA_BRG' => trim($row->NAMA_BRG),
