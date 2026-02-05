@@ -83,13 +83,10 @@ class LoginController extends Controller
                 ->where('NomorUser', $request->input('username'))
                 ->update(['LastLogIn' => $currentTime]);
 
-            // log
-            Log::info('User Login', [
-                'user' => $request->input('username'),
-                'ip_address' => $ipUser,
-                'login_time' => $currentTime,
-            ]);
-
+            DB::connection('ConnEDP')->table('Test_IP')
+                ->insert([
+                    'IPAddress' => $ipUser,
+                ]);
             return redirect()->route('home');
         } else {
             return redirect()->route('login')->withInput()->withErrors([
