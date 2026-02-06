@@ -143,7 +143,7 @@ class MaintenanceTTKRR1Controller extends Controller
                 ]);
             $hrgTotBttb = DB::connection('ConnPurchase')->table('Yterima')
                 ->where('No_terima', $item['No_terima'])
-                ->value(DB::raw('hrg_nego * hrg_ppn'));
+                ->value(DB::raw('CAST(hrg_nego AS DECIMAL(18,6)) + CAST(hrg_ppn AS DECIMAL(18,6))'));
             $cekHrg_tot_bttb += (float) $hrgTotBttb;
         }
         $cekHrg_tot_bttb = number_format($cekHrg_tot_bttb, 2, '.', '');
