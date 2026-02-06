@@ -350,6 +350,7 @@ jQuery(function ($) {
                         let Hrg_Trm = parseFloat(item.Hrg_trm);
                         let Disc_trm = parseFloat(item.Disc_trm);
                         let Ppn_trm = parseFloat(item.Ppn_trm);
+                        let Hrg_Ppn = parseFloat(item.hrg_ppn);
                         let Min_ord = parseFloat(item.Min_ord);
                         let Qty_Terima = parseFloat(item.Qty_Terima);
                         let satTerima = item.Sat_Terima
@@ -361,10 +362,11 @@ jQuery(function ($) {
                             : (item.Satuan_Terima || "").toString().trim();
 
                         let TNlTrans = Hrg_Trm - Hrg_Trm * (Disc_trm / 100);
-                        let NilaiTrans =
-                            (TNlTrans +
-                                (TNlTrans * (Ppn_trm / 100)) / Min_ord) *
-                            Qty_Terima;
+                        // let NilaiTrans =
+                        //     (TNlTrans +
+                        //         (TNlTrans * (Ppn_trm / 100)) / Min_ord) *
+                        //     Qty_Terima;
+                        let NilaiTrans = Hrg_Trm * Qty_Terima + Hrg_Ppn;
 
                         if (!item.TglRetur) {
                             lngQty += numeral(item.Qty).value();
@@ -1101,7 +1103,12 @@ jQuery(function ($) {
         let hrg_disc_rp = hrg_disc * parseFloat(bttb_kursRupiah.value);
         let hrg_nego = hrg_murni - hrg_disc;
         let hrg_nego_rp = hrg_murni_rp - hrg_disc_rp;
-        let hrg_ppn = hrg_nego * (parseFloat(bttb_ppn.value) / 100);
+        if (parseFloat(bttb_ppn.value) == 12 && bttb_checkboxDPP.checked) {
+            dppNilaiLain = (hrg_nego * 11) / 12;
+        } else {
+            dppNilaiLain = hrg_nego;
+        }
+        let hrg_ppn = dppNilaiLain * (parseFloat(bttb_ppn.value) / 100);
         let hrg_ppn_rp = hrg_ppn * parseFloat(bttb_kursRupiah.value);
 
         const formData = new FormData();
