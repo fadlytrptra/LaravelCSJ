@@ -119,7 +119,6 @@ class MaintenanceTTKRR1Controller extends Controller
                                                                 @IdPenagihan=?,
                                                                 @IdDivisi=?,
                                                                 @NoSppb=?,
-                                                                @NoBTTB=?,
                                                                 @NoTerima=?,
                                                                 @HrgSat=?,
                                                                 @Disc=?,
@@ -132,7 +131,6 @@ class MaintenanceTTKRR1Controller extends Controller
                     $TIDPenagihan,
                     $item['Kd_div'],
                     $item['NO_PO'],
-                    $item['No_BTTB'],
                     $item['No_terima'],
                     (float) $item['Hrg_trm'],
                     (float) $item['Disc_trm'],
@@ -145,7 +143,7 @@ class MaintenanceTTKRR1Controller extends Controller
                 ]);
             $hrgTotBttb = DB::connection('ConnPurchase')->table('Yterima')
                 ->where('No_terima', $item['No_terima'])
-                ->value('Hrg_tot_bttb');
+                ->value(DB::raw('hrg_nego * hrg_ppn'));
             $cekHrg_tot_bttb += (float) $hrgTotBttb;
         }
         $cekHrg_tot_bttb = number_format($cekHrg_tot_bttb, 2, '.', '');
