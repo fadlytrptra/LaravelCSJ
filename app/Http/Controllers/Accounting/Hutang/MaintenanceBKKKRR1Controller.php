@@ -433,7 +433,7 @@ class MaintenanceBKKKRR1Controller extends Controller
             }
 
             // dd($totalBayar);
-            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UPDATE_BKK1_NILAIBKK_WEWE @BKK = ?, @nilaibulat = ?', [
+            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UPDATE_BKK1_NILAIBKK @BKK = ?, @nilaibulat = ?', [
                 $idbkk,
                 $nilaiRincian,
             ]);
