@@ -53,6 +53,7 @@
                                             <tr>
                                                 <th>Tanggal</th>
                                                 <th>ID. Tagihan</th>
+                                                <th>Invoice Supplier</th>
                                                 <th>Nama Supplier</th>
                                                 <th>Mata Uang</th>
                                                 <th>Nilai Penagihan</th>

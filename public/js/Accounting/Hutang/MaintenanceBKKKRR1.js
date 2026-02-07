@@ -162,6 +162,7 @@ $(document).ready(function () {
                     },
                 },
                 { data: "Id_Penagihan" },
+                { data: "Id_Inv_Supp" },
                 { data: "NM_SUP" },
                 { data: "Nama_MataUang" },
                 { data: "Nilai_Penagihan" },

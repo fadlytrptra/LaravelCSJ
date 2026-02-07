@@ -270,6 +270,7 @@ class MaintenanceBKKKRR1Controller extends Controller
                 $response[] = [
                     'Waktu_Penagihan' => \Carbon\Carbon::parse($row->Waktu_Penagihan)->format('m/d/Y'),
                     'Id_Penagihan' => trim($row->Id_Penagihan),
+                    'Id_Inv_Supp' => trim($row->Id_Inv_Supp),
                     'NM_SUP' => trim($row->NM_SUP),
                     'Nama_MataUang' => trim($row->Nama_MataUang),
                     'Nilai_Penagihan' => number_format($row->Nilai_Penagihan, 2, '.', ','),
