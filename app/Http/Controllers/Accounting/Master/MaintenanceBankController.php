@@ -14,7 +14,7 @@ class MaintenanceBankController extends Controller
     public function index()
     {
         $access = (new HakAksesController)->HakAksesFiturMaster('Accounting');
-        $kodePerkiraan = DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_KODE_PERKIRAAN] @Kode = 1');
+        $kodePerkiraan = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_KODE_PERKIRAAN] @Kode = 1');
         return view('Accounting.Master.MaintenanceBank', compact(['kodePerkiraan', 'access']));
     }
 
@@ -41,7 +41,7 @@ class MaintenanceBankController extends Controller
             $kodePerkiraanSelect = $request->kodePerkiraanSelect;
             $Aktif = 'Y';
 
-            DB::connection('ConnAccounting')->statement('exec [SP_1273_ACC_UDT_BANK_TBANK]
+            DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UDT_BANK_TBANK]
             @Kode = ?,
             @IdBank = ?,
             @NamaBank = ?,
@@ -81,10 +81,10 @@ class MaintenanceBankController extends Controller
     {
         try {
             if ($id == 'getAllBank') {
-                $listBank = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_LIST_BANK_IDBANK_TBANK]'); //Get All data Bank where aktif == 'Y'
+                $listBank = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BANK_IDBANK_TBANK]'); //Get All data Bank where aktif == 'Y'
                 return datatables($listBank)->make(true);
             } else if ($id == 'getCertainBank') {
-                $data = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_LIST_BANK_IDBANK_TBANK] @IdBank = ?', [$request->idBank]);
+                $data = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BANK_IDBANK_TBANK] @IdBank = ?', [$request->idBank]);
                 return response()->json($data);
             }
         } catch (Exception $ex) {
@@ -116,7 +116,7 @@ class MaintenanceBankController extends Controller
             $kodePerkiraan = $request->kodePerkiraanSelect;
 
             // Perform the database update for the selected namaBank
-            DB::connection('ConnAccounting')->statement('exec [SP_1273_ACC_UDT_BANK_TBANK]
+            DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UDT_BANK_TBANK]
             @Kode = ?,
             @IdBank = ?,
             @NamaBank = ?,
@@ -154,7 +154,7 @@ class MaintenanceBankController extends Controller
     public function destroy($id)
     {
         try {
-            DB::connection('ConnAccounting')->statement('exec [SP_1273_ACC_UDT_BANK_TBANK]
+            DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UDT_BANK_TBANK]
             @Kode = ?,
             @IdBank = ?', [
                 3,
