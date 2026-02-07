@@ -379,7 +379,7 @@ class MaintenanceBKKKRR1Controller extends Controller
                 if ($index == 0) {
                     // Call the stored procedure to create the initial BKK entry
                     $createBKKResult = DB::connection('ConnAccounting')
-                        ->statement('exec SP_1273_PRG_INS_BKK1_IDBKK @UserId = ?, @IdPembayaran = ?, @StatusPenagihan = ?, @TglNow = ?', [
+                        ->statement('exec SP_5409_ACC_INS_BKK1_IDBKK @UserId = ?, @IdPembayaran = ?, @StatusPenagihan = ?, @TglNow = ?', [
                             $user_id,
                             $item['Id_Pembayaran'],
                             substr($item['Id_Penagihan'], 0, 1) !== 'Y' ? 'Y' : 'N',
@@ -396,20 +396,35 @@ class MaintenanceBKKKRR1Controller extends Controller
                             ->where('Periode', $periode)
                             ->value('Id_BKK_E_Rp');
 
-                        if ($idBKK_E_Rp !== null) {
-                            // Subtract 1 from the retrieved Id_BKK_E_Rp
-                            $idBKK_E_RpMinusOne = $idBKK_E_Rp - 1;
-
-                            // Format the idBKK as 'KKK-PYYxxxxx'
-                            $formattedIdBKK = 'KKK-P' . substr($periode, -2) . str_pad($idBKK_E_RpMinusOne, 5, '0', STR_PAD_LEFT);
-
-                            // Retrieve the IdBKK from the T_Pembayaran table
-                            $tPembayaranRecord = DB::connection('ConnAccounting')
-                                ->table('T_Pembayaran')
-                                ->where('Id_BKK', $formattedIdBKK)
-                                ->first();
-                            // dd($tPembayaranRecord);
+                        if ($idBKK_E_Rp == null) {
+                            DB::connection('ConnAccounting')
+                                ->table('T_COUNTER_BKK')
+                                ->insert([
+                                    'Periode' => $periode,
+                                    'Id_BKK_T_Rp' => 0,
+                                    'Id_BKK_E_$' => 0,
+                                    'Id_BKK_I_Rp' => 0,
+                                    'Id_BKK_I_$' => 0,
+                                    'Id_BKK_E_Rp' => 2,
+                                    'Id_BKK_Mojosari' => 0,
+                                    'Id_BKK_BCA_Rp' => 0,
+                                    'Id_BKK_BCA_$' => 0,
+                                    'Id_BKK_CIMB_Rp' => 0,
+                                    'Id_BKK_CIMB_$' => 0,
+                                ]);
                         }
+                        // Subtract 1 from the retrieved Id_BKK_E_Rp
+                        $idBKK_E_RpMinusOne = $idBKK_E_Rp - 1;
+
+                        // Format the idBKK as 'KKK-PYYxxxxx'
+                        $formattedIdBKK = 'KKK-P' . substr($periode, -2) . str_pad($idBKK_E_RpMinusOne, 5, '0', STR_PAD_LEFT);
+
+                        // Retrieve the IdBKK from the T_Pembayaran table
+                        $tPembayaranRecord = DB::connection('ConnAccounting')
+                            ->table('T_Pembayaran')
+                            ->where('Id_BKK', $formattedIdBKK)
+                            ->first();
+                        // dd($tPembayaranRecord, $formattedIdBKK, $periode);
                     }
                 } else {
                     DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_INS_BKK1_RINCBKK @IdBKK = ?, @IdPembayaran = ?, @TglNow = ?', [
