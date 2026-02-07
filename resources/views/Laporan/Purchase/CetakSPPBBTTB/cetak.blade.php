@@ -945,7 +945,8 @@
                                         Document Copy of {{ $dataCetak[0]->Kounter_Cetak }}</h1>
                                 </div>
                             </div>
-                            @if (!empty($ttdDirektur?->FotoTtd) && $dataCetak[0]->Manager)
+                            @if (!empty($ttdDirektur?->FotoTtd) && $dataCetak[0]->Direktur)
+                                {{-- nama user yang acc tidak pengaruh --}}
                                 <div style="width: 15%; text-align: center;">
                                     <img src="data:image/png;base64,{{ $ttdDirektur->FotoTtd }}"
                                         style="max-height:25mm; max-width:100%; object-fit:contain;"
