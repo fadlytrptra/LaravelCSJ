@@ -104,7 +104,7 @@
                                         <label for="id" style="margin-left: 10px;">Bank</label>
                                         <div class="col-md-2">
                                             <input type="text" name="supplierSelect" class="form-control"
-                                                style="width: 100%" value="KRR1">
+                                                style="width: 100%" value="CSJ1">
                                         </div>
                                     </div>
                                 </div>
