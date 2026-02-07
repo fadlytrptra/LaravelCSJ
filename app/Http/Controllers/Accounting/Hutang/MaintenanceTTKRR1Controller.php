@@ -208,6 +208,7 @@ class MaintenanceTTKRR1Controller extends Controller
                 $response[] = [
                     'Kd_div' => trim($row->Kd_div),
                     'NO_PO' => trim($row->No_sppb),
+                    'Faktur' => trim($row->Faktur),
                     'Harga_terbayar' => number_format($row->Harga_terbayar, 2, '.', ','),
                     'Kd_brg' => trim($row->Kd_brg),
                     'NAMA_BRG' => trim($row->NAMA_BRG),

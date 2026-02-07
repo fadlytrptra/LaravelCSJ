@@ -97,11 +97,11 @@ $(document).ready(function () {
                             function () {
                                 table.$("tr.selected").removeClass("selected");
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "supplierTable")
+                            handleTableKeydownInSwal(e, "supplierTable"),
                         );
                     });
                 },
@@ -140,6 +140,7 @@ $(document).ready(function () {
                                 },
                             },
                             { data: "NO_PO" },
+                            { data: "Faktur" },
                             { data: "Harga_terbayar" },
                             { data: "Kd_brg" },
                             { data: "NAMA_BRG" },
@@ -174,7 +175,7 @@ $(document).ready(function () {
         function () {
             let rowData = table_atas.row($(this).closest("tr")).data();
             let hargaTerbayar = parseFloat(
-                rowData.Harga_terbayar.replace(/,/g, "")
+                rowData.Harga_terbayar.replace(/,/g, ""),
             );
 
             if (this.checked) {
@@ -182,20 +183,21 @@ $(document).ready(function () {
                 totalHargaTerbayar += hargaTerbayar;
             } else {
                 const index = rowDataArray.findIndex(
-                    (row) => row.Kd_div === rowData.Kd_div
+                    (row) => row.Kd_div === rowData.Kd_div,
                 );
                 if (index > -1) {
                     rowDataArray.splice(index, 1);
                     totalHargaTerbayar -= hargaTerbayar;
                 }
             }
+            id_inv.value = rowData.Faktur;
 
             nilai_penagihan.value = numeral(
-                parseFloat(totalHargaTerbayar)
+                parseFloat(totalHargaTerbayar),
             ).format("0,0.00");
 
             console.log(rowDataArray);
-        }
+        },
     );
 
     btn_proses.addEventListener("click", async function (event) {
@@ -235,7 +237,7 @@ $(document).ready(function () {
                         //     .forEach((input) => (input.value = ""));
                         id_penagihan.value = "";
                         id_inv.value = "";
-                        nilai_penagihan.value = numeral(0).format('0,0.00');
+                        nilai_penagihan.value = numeral(0).format("0,0.00");
                         nofaktur_pajak.value = "";
                         nilai_pajak.value = "";
                         pajak.value = "";

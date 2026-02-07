@@ -53,11 +53,13 @@
                                         <col style="width: 20%;">
                                         <col style="width: 20%;">
                                         <col style="width: 20%;">
+                                        <col style="width: 20%;">
                                     </colgroup>
                                     <thead class="table-dark">
                                         <tr>
                                             <th>Divisi</th>
                                             <th>PO</th>
+                                            <th>Faktur</th>
                                             <th>Nilai Tagih</th>
                                             <th>Kd. Barang</th>
                                             <th>Nama Barang</th>
