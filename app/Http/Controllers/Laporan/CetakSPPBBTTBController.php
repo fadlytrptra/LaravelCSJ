@@ -119,7 +119,58 @@ class CetakSPPBBTTBController extends Controller
             } else {
                 return redirect()->back()->with('error', 'Data tidak ditemukan');
             }
-        } else {
+        } else if ($id == "exportPdf") {
+            $divisi = $request->divisi;
+            $jenisCetak = $request->jenisCetak;
+            $sppb = $request->sppb;
+
+            if ($jenisCetak == 'SPPB') {
+                $ada = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?', [2, $divisi, $sppb]);
+                if ($ada[0]->Ada == 0) {
+                    DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?', [1, $divisi, $sppb]);
+                } else {
+                    DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?, @Alasan = \'Cetak Ulang\'', [4, $divisi, $sppb]);
+                }
+                $dataCetak = DB::connection('ConnPurchase')->select('SELECT * FROM VW_PRG_1273_SPPB_NEW WHERE kode_divisi = ? AND nomor_sppb = ?', [$divisi, $sppb]);
+            } else if ($jenisCetak == 'BTTB') {
+                $noTerima = $request->noTerima;
+                if ($noTerima) {
+                    $dataCetak = DB::connection('ConnPurchase')->select('SELECT * FROM View_terima_new WHERE nomor_terima = ?', [$noTerima]);
+                } else {
+                    return redirect()->back()->with('error', 'Data tidak ditemukan');
+                }
+            } else if ($jenisCetak == 'SPPBBaru') {
+                $ada = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?', [2, $divisi, $sppb]);
+                if ($ada[0]->Ada == 0) {
+                    DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?', [1, $divisi, $sppb]);
+                } else {
+                    DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @KdDiv = ?, @NoSppb = ?, @Alasan = \'Cetak Ulang\'', [4, $divisi, $sppb]);
+                }
+                $dataCetak = DB::connection('ConnPurchase')->select('SELECT * FROM VW_PRG_1273_SPPB_NEW WHERE kode_divisi = ? AND nomor_sppb = ?', [$divisi, $sppb]);
+            }
+
+               if (count($dataCetak) > 0) {
+                $manager = $dataCetak[0]->Manager ?? null;
+                $showTtd = !empty($manager);
+
+                $ttdDirektur = null;
+                if ($showTtd) {
+                    $ttdDirektur = DB::connection('ConnEDP')
+                        ->table('dbo.UserMaster')
+                        ->select('NamaUser', 'FotoTtd')
+                        ->where('NomorUser', 'rudy')
+                        ->first();
+                }
+
+                return view(
+                    'Beli.Transaksi.exportToPdf',
+                    compact('dataCetak', 'jenisCetak', 'ttdDirektur', 'showTtd')
+                );
+            } else {
+                return redirect()->back()->with('error', 'Data tidak ditemukan');
+            }
+        }
+        else {
             return response()->json(['error' => 'Invalid request'], 404);
         }
     }

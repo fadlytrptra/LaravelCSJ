@@ -38,6 +38,12 @@ jQuery(function ($) {
                         '"data-div="' +
                         full.Kd_div +
                         '">Cetak PO</button>';
+                    let buttonExport =
+                        '<button class="btn btn-secondary btn-exp" data-id="' +
+                        data +
+                        '"data-div="' +
+                        full.Kd_div +
+                        '">Export To PDF</button>';
                     let buttonEdit =
                         '<button class="btn btn-primary btn-edit" data-id="' +
                         data +
@@ -51,12 +57,12 @@ jQuery(function ($) {
                         data +
                         '">Hapus</button>';
                     if (full.Tgl_Direktur) {
-                        return buttonCetak;
+                        return buttonCetak + buttonExport;
                     } else if (full.Tgl_acc) {
-                        return buttonCetak + buttonEdit + buttonHapus;
+                        return buttonCetak + buttonExport + buttonEdit + buttonHapus;
                     } else {
                         return (
-                            buttonCetak + buttonACC + buttonEdit + buttonHapus
+                            buttonCetak + buttonExport + buttonACC + buttonEdit + buttonHapus
                         );
                     }
                 },
@@ -2045,6 +2051,29 @@ jQuery(function ($) {
             "_blank"
         );
     });
+
+    $(document).on("click", ".btn-exp", function (e) {
+        let nomorSPPB = $(this).data("id");
+        let urlEncodedNomorSPPB = encodeURIComponent(nomorSPPB);
+        let kdDiv = $(this).data("div");
+
+        // URL endpoint PDF
+        let pdfUrl = `/CetakSPPBBTTB/exportPdf?divisi=` +
+            kdDiv +
+            `&jenisCetak=SPPBBaru&sppb=` +
+            urlEncodedNomorSPPB +
+            `&noTerima=`;
+
+        // Membuka PDF di tab baru
+        let printWindow = window.open(pdfUrl, "_blank");
+
+        // Tunggu PDF load, lalu panggil print
+        printWindow.onload = function () {
+            printWindow.focus();
+            printWindow.print();
+        };
+    });
+
 
     $(document).on("click", ".btn-acc", function (e) {
         let nomorSPPB = $(this).data("id");

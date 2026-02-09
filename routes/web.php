@@ -120,12 +120,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/MaintenanceOrderPembeliann/Save', 'App\Http\Controllers\Beli\Transaksi\MaintenanceOrderPembelianController@save')->name('maintenanceorderpembelian.save');
     Route::put('/MaintenanceOrderPembeliann/Submit', 'App\Http\Controllers\Beli\Transaksi\MaintenanceOrderPembelianController@submit')->name('maintenanceorderpembelian.submit');
     Route::delete('/MaintenanceOrderPembeliann/Delete', 'App\Http\Controllers\Beli\Transaksi\MaintenanceOrderPembelianController@delete')->name('maintenanceorderpembelian.delete');
-
     Route::get('/Approve/{id}/show', 'App\Http\Controllers\Beli\Transaksi\ApproveController@show')->name('approve.show');
     Route::post('/Approve/{id}/up', 'App\Http\Controllers\Beli\Transaksi\ApproveController@update')->name('approve.update');
     Route::get('/FinalApprove/{id}/show', 'App\Http\Controllers\Beli\Transaksi\FinalApproveController@show')->name('finalapprove.show');
     Route::post('/FinalApprove/{id}/up', 'App\Http\Controllers\Beli\Transaksi\FinalApproveController@update')->name('finalapprove.update');
-
+    Route::get('/exp-pdf', function () {return view('Beli.Transaksi.exportToPdf');});
 
     #region Sales
     Route::get('Sales', 'App\Http\Controllers\HomeController@Sales');
@@ -656,12 +655,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('TransaksiHarian', TransaksiHarianController::class);
     #endregion
 
-    #region Lapporan
+    #region Laporan
     Route::get('Laporan', 'App\Http\Controllers\HomeController@Laporan');
     Route::resource('CetakNotaFaktur', CetakNotaFakturController::class);
     Route::resource('CetakBKM', CetakBKMController::class);
     Route::resource('CetakBKK', CetakBKKController::class);
     Route::resource('CetakSPPBBTTB', CetakSPPBBTTBController::class);
+    Route::get('/sppb/export-pdf', [CetakSPPBBTTBController::class, 'exportToPdf'])->name('sppb.export.pdf');
+
 
 
     Route::get('/test-email', function () {
