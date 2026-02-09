@@ -15,6 +15,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/jquery-3.1.0.js') }}" loading=lazy></script>
+    <script src="{{ asset('js/bootstrap@5.0.2.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/numeral.min.js') }}"></script>
     <script src="{{ asset('js/datatables.min.js') }}"></script>

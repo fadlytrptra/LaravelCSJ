@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HakAksesController;
+use Exception;
 
 class KodePerkiraanController extends Controller
 {
@@ -14,7 +15,7 @@ class KodePerkiraanController extends Controller
     public function index()
     {
         $access = (new HakAksesController)->HakAksesFiturMaster('Inventory'); //tidak perlu menu di navbar
-        return view('Inventory.Master.KodePerkiraan', compact('access'));
+        return view('Inventory.Master.KodePerkiraan.index', compact('access'));
     }
 
     //Show the form for creating a new resource.
@@ -25,71 +26,75 @@ class KodePerkiraanController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $jenisStore = $request->jenisStore;
+        if ($jenisStore == 'TambahKP') {
+            try {
+                $keterangan = $request->keterangan;
+                $no_kp = $request->no_kp;
+
+                DB::connection('ConnInventory')->statement('exec SP_4384_Maintenance_KodePerkiraan
+                    @XKode = ?, @XKeterangan = ?, @XNoKodePerkiraan = ?',
+                    [
+                        3,
+                        $keterangan,
+                        $no_kp
+                    ]
+                );
+                return response()->json(['message' => 'Data Berhasil Ditambahkan!']);
+
+            } catch (Exception $Ex) {
+                return response()->json($Ex->getMessage());
+            }
+        } else if ($jenisStore == 'EditKP') {
+            try {
+                $keterangan = $request->keterangan;
+                $no_kp = $request->no_kp;
+
+                DB::connection('ConnInventory')->statement('exec SP_4384_Maintenance_KodePerkiraan
+                    @XKode = ?, @XKeterangan = ?, @XNoKodePerkiraan = ?',
+                    [
+                        4,
+                        $keterangan,
+                        $no_kp
+                    ]
+                );
+                return response()->json(['message' => 'Data Berhasil Diedit!']);
+
+            } catch (Exception $Ex) {
+                return response()->json($Ex->getMessage());
+            }
+        } else if ($jenisStore == 'deleteKP') {
+            try {
+                $no_kp = $request->no_kp;
+
+                DB::connection('ConnInventory')->statement('exec SP_4384_Maintenance_KodePerkiraan
+                    @XKode = ?, @XNoKodePerkiraan = ?',
+                    [
+                        5,
+                        $no_kp,
+                    ]
+                );
+                return response()->json(['message' => 'Data Berhasil Dihapus!']);
+
+            } catch (Exception $Ex) {
+                return response()->json($Ex->getMessage());
+            }
+        } else {
+            return response()->json('Invalid request', 405);
+        }
     }
 
     public function show($id, Request $request)
-    {   $a = (int)$request->input('a');
-        $kode = $request->input('kode');
-        $keterangan = $request->input('keterangan');
-
-        if ($id === 'getPerkiraan') {
-            if ($a === 1) {
-                // cek kode perkiraan
-                $cekKodePerkiraan = DB::connection('ConnInventory')->select('exec SP_1273_PRG_CheckNo_Perkiraan @XNoKodePerkiraan = ?', [$kode]);
-                if ($cekKodePerkiraan && $cekKodePerkiraan[0]->Jumlah === "0") {
-                    // insert
-                    DB::connection('ConnInventory')->statement(
-                        'exec SP_1273_PRG_insert_perkiraan @XNoKodePerkiraan = ? , @XKeterangan = ?',
-                        [$kode, $keterangan]
-                    );
-                    return response()->json(['success' => 'Data Berhasil Disimpan'], 200);
-                }
-                return response()->json(['error' => 'Kode Perkiraan already exists'], 400);
-
-            } else if ($a === 2) {
-                // Update
-                DB::connection('ConnInventory')->statement(
-                    'exec SP_1273_PRG_update_perkiraan @XNoKodePerkiraan = ? , @XKeterangan = ?',
-                    [$kode, $keterangan]
-                );
-                return response()->json(['success' => 'Data Berhasil Dikoreksi'], 200);
-
-            } else if ($a === 3) {
-                // Delete
-                DB::connection('ConnInventory')->statement(
-                    'exec SP_1273_PRG_delete_perkiraan @XNoKodePerkiraan = ?', [$kode]
-                );
-                return response()->json(['success' => 'Data Berhasil Dihapus'], 200);
-            }
-
-            // daftar kode perkiraan
-        } else if ($id === 'getAllKodePerkiraan') {
-            $dataPerkiraan = DB::connection('ConnInventory')->select('exec SP_1273_PRG_list_perkiraan');
-            $data_perkiraan = [];
-            foreach ($dataPerkiraan as $detail_kodeperkiraan) {
-                $data_perkiraan[] = [
-                    'NoKodePerkiraan' => $detail_kodeperkiraan->NoKodePerkiraan,
-                    'Keterangan' => $detail_kodeperkiraan->Keterangan
-                ];
-            }
-            // dd($dataPerkiraan);
-            return datatables($dataPerkiraan)->make(true);
-
-        } else if ($id === 'cekKode') {
-            $dataPerkiraan = DB::connection('ConnInventory')->select('exec SP_1273_PRG_checkno_perkiraan @XNoKodePerkiraan = ?', [$kode]);
-            $jumlah = (int)$dataPerkiraan[0]->Jumlah;
-            // dd($jumlah, $request->all());
-
-            if ($jumlah === 0) {
-                return response()->json(['success' => true]);
-
-            } else {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'Kode Perkiraan sudah ada !'
-                ]);
-            }
+    {
+        if ($id == 'getAllKodePerkiraan') {
+            $listKodePerkiraan = DB::connection('ConnInventory')->select('exec SP_4384_Maintenance_KodePerkiraan @XKode = ?', [1]);
+            return datatables($listKodePerkiraan)->make(true);
+        } else if ($id == 'getDetailPerkiraan') {
+            $NoKodePerkiraan = $request->no_kp;
+            $dataKodePerkiraan = DB::connection('ConnInventory')->select('exec SP_4384_Maintenance_KodePerkiraan @XKode = ?, @XNoKodePerkiraan = ?', [2, $NoKodePerkiraan]);
+            return response()->json($dataKodePerkiraan, 200);
+        } else {
+            return response()->json('Invalid request', 405);
         }
     }
 
