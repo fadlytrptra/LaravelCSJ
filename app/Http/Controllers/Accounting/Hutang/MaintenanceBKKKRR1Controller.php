@@ -212,7 +212,7 @@ class MaintenanceBKKKRR1Controller extends Controller
 
             // Execute the second stored procedure
             $results2 = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_PRG_LIST_BKK1_NOBKK_NOTT');
+                ->select('exec SP_1273_PRG_LIST_BKK1_NOBKK_NOTT @XKode = ?', [1]);
 
             // Process the results of the second stored procedure and add them to the response
             foreach ($results2 as $row) {
@@ -228,25 +228,26 @@ class MaintenanceBKKKRR1Controller extends Controller
 
             // Return combined response as datatables result
             return datatables($response)->make(true);
-        } else if ($id == 'getDataAwalBawah') {
-            $response = [];
+        // } else if ($id == 'getDataAwalBawah') {
+        //     $response = [];
 
-            $results2 = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_PRG_LIST_BKK1_NOBKK_NOTT');
-            // dd($results2);
-            foreach ($results2 as $row) {
-                $response[] = [
-                    'Id_Pembayaran' => trim($row->Id_Pembayaran),
-                    'Id_Penagihan' => trim($row->Id_Penagihan),
-                    'NM_SUP' => trim($row->NM_SUP),
-                    'Rincian_Bayar' => trim($row->Rincian_Bayar),
-                    'Nilai_Rincian' => number_format($row->Nilai_Rincian, 2, '.', ','),
-                    'Id_Supplier' => $row->Id_Supplier,
-                ];
-            }
+        //     $results2 = DB::connection('ConnAccounting')
+        //         ->select('exec SP_1273_PRG_LIST_BKK1_NOBKK_NOTT');
+        //     // dd($results2);
+        //     foreach ($results2 as $row) {
+        //         $response[] = [
+        //             'Id_Pembayaran' => trim($row->Id_Pembayaran),
+        //             'Id_Penagihan' => trim($row->Id_Penagihan),
+        //             'NM_SUP' => trim($row->NM_SUP),
+        //             'Rincian_Bayar' => trim($row->Rincian_Bayar),
+        //             'Nilai_Rincian' => number_format($row->Nilai_Rincian, 2, '.', ','),
+        //             'Id_Supplier' => $row->Id_Supplier,
+        //         ];
+        //     }
 
-            return datatables($response)->make(true);
-        } else if ($id == 'getKira') {
+        //     return datatables($response)->make(true);
+        }
+        else if ($id == 'getKira') {
             // Execute the stored procedure
             $results = DB::connection('ConnAccounting')
                 ->select('exec SP_1273_PRG_LIST_BKK1_KODEPERKIRAAN');

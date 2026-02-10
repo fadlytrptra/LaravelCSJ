@@ -195,7 +195,7 @@ $(document).ready(function () {
         TT = false;
     });
 
-    let = table_atas = $("#table_atas").DataTable({
+    let table_atas = $("#table_atas").DataTable({
         responsive: true,
         processing: true,
         serverSide: true,
