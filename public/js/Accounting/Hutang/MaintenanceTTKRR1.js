@@ -208,6 +208,9 @@ $(document).ready(function () {
             terbilang = convertNumberToWordsDollar(totalHargaTerbayar);
         }
         console.log(terbilang);
+        if (rowDataArray.length < 1) {
+            return;
+        }
         $.ajax({
             url: "MaintenanceTTKRR1",
             type: "POST",
