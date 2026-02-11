@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
 
-   <style>
+    <style>
         @page {
             size: 21cm 30cm;
             margin: 1.5cm;
@@ -69,14 +69,14 @@
         }
 
         .signature_box {
-            height: 50px;
+            height: 55px;
             text-align: center;
         }
 
         .signature_img {
-            max-height: 60px;
+            max-height: 75px;
             max-width: 100%;
-            margin-top: -10px;
+            margin-top: -18px;
         }
 
     </style>
@@ -210,14 +210,18 @@
 
             <h1
                 style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin-top: 10px; margin-bottom: 2px;">
-                Delivery To:</h1>
+                Delivery To:
+            </h1>
             <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">PT. Cahaya Santoso
                 Jaya
-                Raya</p>
+                Raya
+            </p>
             <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">Jl. Raya Tropodo
-                No. 1</p>
+                No. 1
+            </p>
             <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">Waru - Sidoarjo
-                61256 East Java, Indonesia</p>
+                61256 East Java, Indonesia
+            </p>
         </div>
         <div style="width: 50%; height: auto; margin-left: 20px;">
             <div style="width: 100%; display: flex;">
@@ -259,7 +263,8 @@
                 <div style="width: 30%; height: auto;">
                     <h1
                         style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                        Delivery Date</h1>
+                        Delivery Date
+                    </h1>
                 </div>
                 <div style="width: 70%; height: auto;">
                     <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
@@ -273,7 +278,8 @@
                     <div style="width: 30%; height: auto;">
                         <h1
                             style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                            Payment Term</h1>
+                            Payment Term
+                        </h1>
                     </div>
                     <div style="width: 70%; height: auto;">
                         <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
@@ -288,7 +294,8 @@
                 <div style="width: 30%; height: auto;">
                     <h1
                         style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                        Divisi</h1>
+                        Divisi
+                    </h1>
                 </div>
                 <div style="width: 70%; height: auto;">
                     <div
@@ -305,7 +312,8 @@
                 <div style="width: 30%; height: auto;">
                     <h1
                         style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
-                        Requester</h1>
+                        Requester
+                    </h1>
                 </div>
                 <div style="width: 70%; height: auto;">
                     <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
@@ -340,27 +348,32 @@
                     <th>
                         <h1
                             style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                            No.</h1>
+                            No.
+                        </h1>
                     </th>
                     <th style="text-align: center;">
                         <h1
                             style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                            Item Number</h1>
+                            Item Number
+                        </h1>
                     </th>
                     <th style="text-align: center;">
                         <h1
                             style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                            Description</h1>
+                            Description
+                        </h1>
                     </th>
                     <th style="text-align: center;">
                         <h1
                             style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                            Qty</h1>
+                            Qty
+                        </h1>
                     </th>
                     <th style="text-align: center;">
                         <h1
                             style="font-size: 13px;font-family: Helvetica; font-weight: bold; line-height: 13.8px">
-                            Unit</h1>
+                            Unit
+                        </h1>
                     </th>
                     <th style="text-align: center;">
                         <h1
@@ -645,7 +658,8 @@
                 </div>
                 <div style="width: 69%; height: auto;">
                     <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">
-                        {{ $payment }} </p>
+                        {{ $payment }}
+                    </p>
                 </div>
             </div>
         </div>
@@ -654,15 +668,15 @@
 @php
     $itemCount = count($dataCetak);
     if ($itemCount <= 1) {
-        $spacerHeight = '59mm';
+        $spacerHeight = '56mm';
     } elseif ($itemCount == 2) {
-        $spacerHeight = '46mm';
+        $spacerHeight = '44mm';
     } elseif ($itemCount == 3) {
-        $spacerHeight = '33mm';
+        $spacerHeight = '31mm';
     } elseif ($itemCount == 4) {
-        $spacerHeight = '20mm';
+        $spacerHeight = '18mm';
     } else {
-        $spacerHeight = '7mm';
+        $spacerHeight = '17mm';
     }
 @endphp
 
@@ -679,7 +693,7 @@
 
 
 {{-- FOOTER --}}
-<table width="100%" style="text-align:center; margin-top:10px;">
+<table width="100%" style="text-align:center; margin-top:8px; font-size:11px;">
     <tr>
         <td width="33%">MENYETUJUI,</td>
         <td width="33%">PEMESAN,</td>
@@ -690,13 +704,14 @@
             <div class="signature_box">
                 @if (!empty($ttdDirektur?->FotoTtd))
                     <img src="data:image/png;base64,{{ $ttdDirektur->FotoTtd }}" class="signature_img"><br>
-                    <b>RUDY SANTOSO</b>
+                    <b style="font-size:12px;">RUDY SANTOSO</b>
                 @endif
             </div>
         </td>
         <td><div class="signature_box"></div></td>
         <td><div class="signature_box"></div></td>
     </tr>
+
     <tr>
         <td>(................................)</td>
         <td>(................................)</td>
@@ -707,7 +722,7 @@
 
 
 
-<p style="font-size:12px;margin-top:5px;">
+<p style="font-size:11px;margin-top:5px;">
     <b>PERHATIAN:</b> UNTUK PENAGIHAN YANG TIDAK DILENGKAPI LEMBAR INI TIDAK DAPAT KAMI LAYANI
 </p>
 
