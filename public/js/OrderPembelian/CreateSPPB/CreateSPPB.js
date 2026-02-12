@@ -961,8 +961,10 @@ jQuery(function ($) {
         });
     }
 
+    //perhitungan
     function hitungHarga() {
         let hargaDisc = 0.0;
+        let ppnValue = numeral(sppb_ppn.value).value();
         if (!sppb_kursRupiah.value) {
             sppb_kursRupiah.value = 0;
         }
@@ -988,7 +990,11 @@ jQuery(function ($) {
                 numeral(sppb_discount.value).value()) /
                 100;
 
-        if (sppb_ppn.value == "12" && sppb_dppFull.checked) {
+        if(ppnValue === 0) {
+            sppb_DPPNilaiLain.value = numeral(0).format("0.0000");
+            sppb_hargaPPN.value = numeral(0).format("0.0000");
+
+        } else if (sppb_ppn.value == "12" && sppb_dppFull.checked) {
             sppb_DPPNilaiLain.value = numeral((hargaDisc * 11) / 12).format(
                 "0.0000"
             );
@@ -1450,6 +1456,7 @@ jQuery(function ($) {
         sppb_buttonAdd.disabled = true;
     });
 
+    //perhitungan
     sppb_buttonAdd.addEventListener("click", function (e) {
         if (!sppb_kelompok.val()) {
             Swal.fire({

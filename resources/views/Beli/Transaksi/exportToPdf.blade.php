@@ -192,34 +192,34 @@
     <div style="width: 100%; height: auto; display: flex;">
         <div style="width: 50%; height: auto; margin-right: 20px;">
             <h1
-                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin:2px 0 10px 0;">
+                style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin:2px 0 10px 0;">
                 Issued To:
             </h1>
-            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+            <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">
                 {{ $dataCetak[0]->NM_SUP }}
             </p>
-            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+            <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">
                 {{ $dataCetak[0]->ALAMAT1 }}
             </p>
-            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+            <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">
                 {{ $dataCetak[0]->KOTA1 }}
             </p>
-            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+            <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">
                 {{ $dataCetak[0]->NEGARA1 }}
             </p>
 
             <h1
-                style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin-top: 10px; margin-bottom: 2px;">
+                style="font-size: 12px;font-family: Helvetica; font-weight: bold; margin-top: 10px; margin-bottom: 2px;">
                 Delivery To:
             </h1>
-            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">PT. Cahaya Santoso
+            <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">PT. Cahaya Santoso
                 Jaya
                 Raya
             </p>
-            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">Jl. Raya Tropodo
+            <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">Jl. Raya Tropodo
                 No. 1
             </p>
-            <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">Waru - Sidoarjo
+            <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">Waru - Sidoarjo
                 61256 East Java, Indonesia
             </p>
         </div>
@@ -227,7 +227,7 @@
             <div style="width: 100%; display: flex;">
                 <div style="width: 30%; height: auto;">
                     <h1
-                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                        style="font-size: 11px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
                         Number
                     </h1>
                 </div>
@@ -242,7 +242,7 @@
                     );
                 @endphp
                 <div style="width: 70%; height: auto;">
-                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                    <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">:
                         {!! $nomorSppbFormatted !!}
                     </p>
                 </div>
@@ -250,11 +250,11 @@
             <div style="width: 100%; display: flex;">
                 <div style="width: 30%; height: auto;">
                     <h1
-                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                        style="font-size: 11px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
                         Date</h1>
                 </div>
                 <div style="width: 70%; height: auto;">
-                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                    <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">:
                         {{ $tanggalSPPB }}
                     </p>
                 </div>
@@ -262,12 +262,12 @@
             <div style="width: 100%; display: flex;">
                 <div style="width: 30%; height: auto;">
                     <h1
-                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                        style="font-size: 11px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
                         Delivery Date
                     </h1>
                 </div>
                 <div style="width: 70%; height: auto;">
-                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                    <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">:
                         {{ $EstDate }}
                     </p>
                 </div>
@@ -277,12 +277,12 @@
                 <div style="width: 100%; display: flex;">
                     <div style="width: 30%; height: auto;">
                         <h1
-                            style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                            style="font-size: 11px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
                             Payment Term
                         </h1>
                     </div>
                     <div style="width: 70%; height: auto;">
-                        <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                        <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">:
                             {{ $dataCetak[0]->Waktu }} Days
                         </p>
                     </div>
@@ -293,15 +293,15 @@
             <div style="width: 100%; display: flex;">
                 <div style="width: 30%; height: auto;">
                     <h1
-                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                        style="font-size: 11px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
                         Divisi
                     </h1>
                 </div>
                 <div style="width: 70%; height: auto;">
                     <div
-                        style="font-size: 13px;font-family: Helvetica; margin: 2px 0; display:flex">
+                        style="font-size: 11px;font-family: Helvetica; margin: 2px 0; display:flex">
                         <span>:</span>
-                        <p style="font-size: 13px;font-family: Helvetica; margin: 0 0 0 4px">
+                        <p style="font-size: 11px;font-family: Helvetica; margin: 0 0 0 4px">
                             {{ trim($dataCetak[0]->kode_divisi) }} -
                             {{ trim($dataCetak[0]->nama_divisi) }}
                         </p>
@@ -311,12 +311,12 @@
             <div style="width: 100%; display: flex;">
                 <div style="width: 30%; height: auto;">
                     <h1
-                        style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                        style="font-size: 11px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
                         Requester
                     </h1>
                 </div>
                 <div style="width: 70%; height: auto;">
-                    <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">:
+                    <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">:
                         {{ ucwords(strtolower(trim($dataCetak[0]->Operator))) }}
                     </p>
                 </div>
@@ -325,12 +325,12 @@
             <div style="{{ $pageIndex < count($chunks) - 1 ? 'always' : 'avoid' }};">
                 <div style="width: 100%; display: flex;">
                     <div style="width: 30%; height: auto;">
-                        <h1 style="font-size: 13px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
+                        <h1 style="font-size: 11px;font-family: Helvetica; font-weight: bold; margin: 2px 0;">
                             Page
                         </h1>
                     </div>
                     <div style="width: 70%; height: auto;">
-                        <p style="font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                        <p style="font-size: 11px;font-family: Helvetica; margin: 2px 0;">
                         : Page {{ $pageIndex + 1 }} of {{ count($chunks) }}
                         </p>
                     </div>
@@ -406,7 +406,7 @@
             <tbody style="border-top: 1px solid black; border-bottom: 1px solid black;">
                 @foreach ($dataCetak as $index => $item)
                     @php
-                        $amountPerRow = (float) $item->quantity * (float) $item->Hrg_trm;
+                        $amountPerRow = ((float) $item->quantity * (float) $item->Hrg_trm) - (float) $item->hrg_disc;
                         $sumAmount += $amountPerRow;
                     @endphp
                     <tr>
@@ -424,6 +424,8 @@
                             <p
                                 style="line-height: 13.8px; margin:0;padding:0; font-size: 12px;font-family: Helvetica;padding-right:8px;">
                                 {{ str_replace('<', '&lt;', $item->NAMA_BRG) }}
+                                <br>
+                                {{ $item->keterangan }}
                                 <br>
                                 {{ $item->No_trans }}
                             </p>
@@ -670,13 +672,13 @@
     if ($itemCount <= 1) {
         $spacerHeight = '56mm';
     } elseif ($itemCount == 2) {
-        $spacerHeight = '44mm';
+        $spacerHeight = '42mm';
     } elseif ($itemCount == 3) {
-        $spacerHeight = '31mm';
+        $spacerHeight = '28mm';
     } elseif ($itemCount == 4) {
-        $spacerHeight = '18mm';
+        $spacerHeight = '15mm';
     } else {
-        $spacerHeight = '17mm';
+        $spacerHeight = '13mm';
     }
 @endphp
 
@@ -686,7 +688,6 @@
         <td style="height:{{ $spacerHeight }};"></td>
     </tr>
 </table>
-
 
 </div>
 

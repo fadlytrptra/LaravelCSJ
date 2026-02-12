@@ -603,7 +603,7 @@
                                     <tbody style="border-top: 1px solid black; border-bottom: 1px solid black;">
                                         @foreach ($dataCetak as $index => $item)
                                             @php
-                                                $amountPerRow = (float) $item->quantity * (float) $item->Hrg_trm;
+                                                $amountPerRow = (float) $item->quantity * (float) $item->Hrg_trm - (float) $item->hrg_disc;
                                                 $sumAmount += $amountPerRow;
                                             @endphp
                                             <tr>
@@ -621,6 +621,8 @@
                                                     <p
                                                         style="line-height: 13.8px; font-size: 12px;font-family: Helvetica;padding-right:8px">
                                                         {{ str_replace('<', '&lt;', $item->NAMA_BRG) }}
+                                                        <br>
+                                                        {{ $item->keterangan }}
                                                         <br>
                                                         {{ $item->No_trans }}
                                                     </p>
