@@ -150,8 +150,8 @@ class CetakSPPBBTTBController extends Controller
             }
 
                if (count($dataCetak) > 0) {
-                $manager = $dataCetak[0]->Manager ?? null;
-                $showTtd = !empty($manager);
+                $direktur = $dataCetak[0]->Direktur ?? null;
+                $showTtd = !empty($direktur);
 
                 $ttdDirektur = null;
                 if ($showTtd) {
