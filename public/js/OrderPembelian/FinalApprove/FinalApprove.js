@@ -298,7 +298,7 @@ jQuery(function ($) {
     let table = $("#table_Approve").DataTable({
         processing: true,
         responsive: true,
-        serverSide: true,
+        serverSide: false,
         order: [[2, "desc"]], // index 2 = kolom Tanggal
         ajax: {
             url: "/FinalApprove/getAllSPPB",
@@ -342,7 +342,7 @@ jQuery(function ($) {
             },
             { data: "Nama_satuan" },
             {
-                data: "HargaPerkiraan",
+                data: "hrg_nego",
                 render: function (data, type, full, meta) {
                     return numeral(data).format("0,0.0000");
                 },

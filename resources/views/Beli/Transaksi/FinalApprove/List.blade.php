@@ -52,7 +52,7 @@
                                         <th>Type</th>
                                         <th>Jumlah</th>
                                         <th>Satuan</th>
-                                        <th>HargaPerkiraan</th>
+                                        <th>Total Harga</th>
                                         <th>No. PO</th>
                                         <th>Keterangan Beli</th>
                                         <th>Kd.Barang</th>
