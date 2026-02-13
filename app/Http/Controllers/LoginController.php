@@ -37,28 +37,10 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
 
         $currentTime = Carbon::now();
-
         $currentTime->setTimezone('Asia/Bangkok');
-
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput($request->all);
         }
-        //     $user = User::where('kd_user', $request->input('username'))->first();
-        //     if(!empty($user))
-        //     {
-        //     	if(Hash::check($request->input('password'), $user->password)==true)
-        //     	{
-        // return redirect()->route('home');
-        //     	}
-        //     	else
-        //     	{
-        //     		return redirect()->route('login')->withInput()->withErrors(['error' => 'Password Salah!']);
-        //     	}
-        //     }
-        //     else
-        //     {
-        //     	return redirect()->route('login')->withInput()->withErrors(['error' => 'Username tidak ditemukan!']);
-        //     }
 
         $data = [
             'NomorUser' => $request->input('username'),
@@ -66,37 +48,69 @@ class LoginController extends Controller
         ];
 
         // Cek apakah user aktif sebelum melakukan login
-        $user = DB::connection('ConnEDP')->table('UserMaster')->where('NomorUser', $request->input('username'))->first();
+        $user = DB::connection('ConnEDP')
+            ->table('UserMaster')
+            ->where('NomorUser', $request->input('username'))
+            ->first();
 
         if ($user && $user->IsActive == 0) {
             return redirect()->route('login')->withInput()->withErrors(['error' => 'Akun Anda tidak aktif.']);
         }
 
+        //cek ip
+        if ($user) {
+            $ipUser = $request->ip();
+
+            if ($user->IsOnline == 0) {
+                $allowedIPAddress = [
+                    '192.168.10.',
+                    '192.168.11.',
+                    '192.168.12.',
+                    '192.168.13.',
+                    '192.168.60.',
+                    '192.168.100.',
+                    '192.168.101.',
+                    '127.0.0.1',
+                ];
+
+                $isAllowed = false;
+                foreach ($allowedIPAddress as $prefix) {
+                    if (str_starts_with($ipUser, $prefix)) {
+                        $isAllowed = true;
+                        break;
+                    }
+                }
+
+                if (!$isAllowed) {
+                    return redirect()->route('login')
+                        ->withInput()
+                        ->withErrors(['error' => 'Tidak Memiliki Akses Online terhadap Website']);
+                }
+            }
+        }
 
         Auth::attempt($data);
-
         if (Auth::check()) {
             // Ambil IP publik user
             $ipUser = $request->ip();
 
+            // ganti dengan menggunakan database UserMaster
             DB::connection('ConnEDP')->table('UserMaster')
                 ->where('NomorUser', $request->input('username'))
-                ->update(['LastLogIn' => $currentTime]);
-
-            DB::connection('ConnEDP')->table('Test_IP')
-                ->insert([
+                ->update([
+                    'LastLogIn' => $currentTime,
                     'IPAddress' => $ipUser,
-                ]);
+                    ]);
+
             return redirect()->route('home');
+
         } else {
             return redirect()->route('login')->withInput()->withErrors([
                 'error' => 'Username atau Password tidak ditemukan!'
             ]);
         }
-
-
-
     }
+
     public function logout(Request $request)
     {
         Auth::logout();

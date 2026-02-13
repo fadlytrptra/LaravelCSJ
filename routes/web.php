@@ -281,6 +281,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('MaintenanceUserWeb', App\Http\Controllers\EDP\MaintenanceUserWebController::class);
     Route::get('/AllFitur/{IdProgram}/{NomorPegawai}', 'App\Http\Controllers\EDP\MaintenanceHakAksesController@getAllFitur');
     Route::post('/AllFitur/edit', 'App\Http\Controllers\EDP\MaintenanceHakAksesController@EditUserFitur');
+    Route::resource('IsOnline', App\Http\Controllers\EDP\IsOnlineController::class);
+    Route::post('/MaintenanceIsOnline/update', [App\Http\Controllers\EDP\IsOnlineController::class, 'updateIsOnline'])->name('maintenance.isonline.update');
     #endregion
 
     #region Accounting
