@@ -514,7 +514,7 @@ class MaintenanceBKKKRR1Controller extends Controller
 
             // Assuming you're using a reporting tool to generate and display the report
             $data = DB::connection('ConnAccounting')
-                ->select("SELECT * FROM VW_PRG_1273_PRG_Cetak_BAYAR_BKK1 WHERE Id_BKK = ?", [$idBKK]);
+                ->select("SELECT * FROM VW_PRG_1273_ACC_CETAK_BAYAR_BKK1 WHERE Id_BKK = ?", [$idBKK]);
             return response()->json([
                 'data' => $data,
                 'message' => 'Data sudah diSIMPAN!'
