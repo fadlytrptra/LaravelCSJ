@@ -680,6 +680,7 @@ function ClearText() {
     no_sekunder.value = "";
     no_tritier.value = "";
     alasan.value = "";
+    no_pib.value = "";
     tritier2.value = formatNumber(0);
     sekunder2.value = formatNumber(0);
     primer2.value = formatNumber(0);
@@ -707,7 +708,7 @@ btn_proses.addEventListener("click", function () {
             keluarPrimer: selectedData.keluarPrimer,
             keluarSekunder: selectedData.keluarSekunder,
             keluarTritier: selectedData.keluarTritier,
-            noPIB: no_pib.value
+            noPIB: no_pib.value,
         },
         success: function (response) {
             if (response.success) {
