@@ -44,7 +44,7 @@ class AccPenghangusanBarangController extends Controller
 
         } else if ($id === 'getDivisi') {
             // mendapatkan daftar divisi
-            $divisi = DB::connection('ConnInventory')->select('exec SP_1003_INV_userdivisi @XKdUser = ?', [$user]);
+            $divisi = DB::connection('ConnInventory')->select('exec SP_1273_PRG_userdivisi @XKdUser = ?', [$user]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -57,7 +57,7 @@ class AccPenghangusanBarangController extends Controller
 
         } else if ($id === 'getObjek') {
             // mendapatkan daftar objek
-            $objek = DB::connection('ConnInventory')->select('exec SP_1003_INV_user_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $divisiId]);
+            $objek = DB::connection('ConnInventory')->select('exec SP_1273_PRG_user_Objek @XKdUser = ?, @XIdDivisi = ?', [$user, $divisiId]);
             $data_objek = [];
             foreach ($objek as $detail_objek) {
                 $data_objek[] = [
@@ -73,10 +73,10 @@ class AccPenghangusanBarangController extends Controller
 
             if ($objekId !== null) {
                 $allData = DB::connection('ConnInventory')->select('
-                exec SP_1003_INV_List_Mohon_TmpTransaksi @kode = 15, @XIdObjek = ?, @XIdDivisi = ?, @XIdTypeTransaksi = ?', [$objekId, $divisiId, '05']);
+                exec SP_1273_PRG_List_Mohon_TmpTransaksi @kode = 15, @XIdObjek = ?, @XIdDivisi = ?, @XIdTypeTransaksi = ?', [$objekId, $divisiId, '05']);
             } else {
                 $allData = DB::connection('ConnInventory')->select('
-                exec SP_1003_INV_List_Mohon_TmpTransaksi @kode = 2, @XIdDivisi = ?, @XIdTypeTransaksi = ?', [$divisiId, '05']);
+                exec SP_1273_PRG_List_Mohon_TmpTransaksi @kode = 2, @XIdDivisi = ?, @XIdTypeTransaksi = ?', [$divisiId, '05']);
             }
 
             $data_allData = [];
@@ -100,7 +100,8 @@ class AccPenghangusanBarangController extends Controller
                     'IdSubkelompok' => $detail_allData->IdSubkelompok,
                     'JumlahPengeluaranPrimer' => $detail_allData->JumlahPengeluaranPrimer,
                     'JumlahPengeluaranSekunder' => $detail_allData->JumlahPengeluaranSekunder,
-                    'JumlahPengeluaranTritier' => $detail_allData->JumlahPengeluaranTritier
+                    'JumlahPengeluaranTritier' => $detail_allData->JumlahPengeluaranTritier,
+                    'NoPIB' => $detail_allData->NoPIB
                 ];
             }
 
@@ -109,7 +110,7 @@ class AccPenghangusanBarangController extends Controller
             return response()->json($data_allData);
         } else if ($id === 'getType') {
             // mendapatkan nama type & id type
-            $type = DB::connection('ConnInventory')->select('exec SP_1003_INV_AsalSubKelompok_TmpTransaksi @XIdTransaksi = ?', [$idTransaksi]);
+            $type = DB::connection('ConnInventory')->select('exec SP_1273_PRG_AsalSubKelompok_TmpTransaksi @XIdTransaksi = ?', [$idTransaksi]);
             $data_type = [];
             foreach ($type as $detail_type) {
                 $data_type[] = [
@@ -146,6 +147,7 @@ class AccPenghangusanBarangController extends Controller
             $keluarPrimer = $request->input('keluarPrimer');
             $keluarSekunder = $request->input('keluarSekunder');
             $keluarTritier = $request->input('keluarTritier');
+            $noPIB = $request->input('noPIB');
             // dd($request->all());
 
             try {
@@ -157,18 +159,18 @@ class AccPenghangusanBarangController extends Controller
 
                     // Proses
                     $proses = DB::connection('ConnInventory')->select(
-                        'exec SP_1003_INV_check_penyesuaian_transaksi @IdTypeTransaksi = ?, @IdType = ?',
+                        'exec SP_1273_PRG_check_penyesuaian_transaksi @IdTypeTransaksi = ?, @IdType = ?',
                         ['06', $type]
                     );
 
-                    $jumlah = (int)$proses[0]->jumlah;
+                    $jumlah = (int) $proses[0]->jumlah;
 
                     if ($jumlah > 0) {
                         return response()->json(['warning' => 'Ada Transaksi Penyesuaian yang Belum Diacc untuk type ' . $transaksi], 200);
                     } else {
                         DB::connection('ConnInventory')->statement(
-                            'exec SP_1003_INV_Proses_ACC_Hangus @IdTransaksi = ?, @idpenerima = ?, @JumlahKeluarPrimer = ?, @JumlahKeluarSekunder = ?, @JumlahKeluarTritier = ?',
-                            [$transaksi, $user, $primer, $sekunder, $tritier]
+                            'exec SP_1273_PRG_Proses_ACC_Hangus @IdTransaksi = ?, @idpenerima = ?, @JumlahKeluarPrimer = ?, @JumlahKeluarSekunder = ?, @JumlahKeluarTritier = ?, @NoPIB = ?',
+                            [$transaksi, $user, $primer, $sekunder, $tritier, $noPIB]
                         );
                     }
                     // dd($request->all());

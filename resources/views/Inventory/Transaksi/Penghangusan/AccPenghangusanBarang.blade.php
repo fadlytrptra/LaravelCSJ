@@ -111,6 +111,14 @@
                                         <input type="text" class="form-control" id="alasan" name="alasan">
                                     </div>
                                 </div>
+                                <div class="row pt-2 pl-3">
+                                    <div class="col-2">
+                                        <label for="no_pib">Nomor PIB</label>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="no_pib" name="no_pib" readonly>
+                                    </div>
+                                </div>
 
                                 <div class="row" id="divSaldoAkhir">
                                     <div class="col-12">

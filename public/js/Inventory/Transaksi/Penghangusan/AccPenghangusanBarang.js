@@ -16,6 +16,7 @@ var kelutNama = document.getElementById("kelutNama");
 var subkelNama = document.getElementById("subkelNama");
 
 var alasan = document.getElementById("alasan");
+var no_pib = document.getElementById("no_pib");
 var primer = document.getElementById("primer");
 var no_primer = document.getElementById("no_primer");
 var primer2 = document.getElementById("primer2");
@@ -45,8 +46,8 @@ var table;
 var idTransaksi;
 const inputs = Array.from(
     document.querySelectorAll(
-        '.card-body input[type="text"]:not([readonly]), .card-body input[type="date"]:not([readonly])'
-    )
+        '.card-body input[type="text"]:not([readonly]), .card-body input[type="date"]:not([readonly])',
+    ),
 );
 
 tanggal.value = todayString;
@@ -128,7 +129,7 @@ function handleTableKeydown(e, tableId) {
                     currentIndex = 0;
                     const newRows = $(`#${tableId} tbody tr`);
                     const selectedRow = $(newRows[currentIndex]).addClass(
-                        "selected"
+                        "selected",
                     );
                     scrollRowIntoView(selectedRow[0]);
                 });
@@ -144,7 +145,7 @@ function handleTableKeydown(e, tableId) {
                     currentIndex = 0;
                     const newRows = $(`#${tableId} tbody tr`);
                     const selectedRow = $(newRows[currentIndex]).addClass(
-                        "selected"
+                        "selected",
                     );
                     scrollRowIntoView(selectedRow[0]);
                 });
@@ -257,7 +258,7 @@ btn_divisi.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -266,7 +267,7 @@ btn_divisi.addEventListener("click", function (e) {
                 console.log(result);
                 divisiId.value = result.value.IdDivisi.trim();
                 divisiNama.value = decodeHtmlEntities(
-                    result.value.NamaDivisi.trim()
+                    result.value.NamaDivisi.trim(),
                 );
 
                 if (
@@ -364,7 +365,7 @@ btn_objek.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -372,7 +373,7 @@ btn_objek.addEventListener("click", function (e) {
             if (result.isConfirmed) {
                 objekId.value = result.value.IdObjek.trim();
                 objekNama.value = decodeHtmlEntities(
-                    result.value.NamaObjek.trim()
+                    result.value.NamaObjek.trim(),
                 );
                 allData();
             }
@@ -421,6 +422,7 @@ $(document).ready(function () {
             { title: "Primer" },
             { title: "Sekunder" },
             { title: "Tritier" },
+            { title: "NoPIB" },
         ],
         colResize: {
             isEnabled: true,
@@ -483,6 +485,7 @@ $(document).ready(function () {
             { targets: [13], width: "10%", className: "fixed-width" },
             { targets: [14], width: "10%", className: "fixed-width" },
             { targets: [15], width: "10%", className: "fixed-width" },
+            { targets: [16], width: "10%", className: "fixed-width" },
         ],
         order: [[1, "asc"]],
     });
@@ -554,7 +557,8 @@ $("#tableData tbody").on("click", "tr", function (event) {
     keluarPrimer = formatNumber(data[13]);
     keluarSekunder = formatNumber(data[14]);
     keluarTritier = formatNumber(data[15]);
-    subkelId.value = data[16];
+    no_pib.value = formatNumber(data[16]);
+    subkelId.value = data[17];
 
     $.ajax({
         type: "GET",
@@ -570,21 +574,21 @@ $("#tableData tbody").on("click", "tr", function (event) {
                 tritier.value = formatNumber(result[0].SaldoTritier);
 
                 no_primer.value = decodeHtmlEntities(
-                    result[0].Satuan_Primer.trim()
+                    result[0].Satuan_Primer.trim(),
                 );
                 no_sekunder.value = decodeHtmlEntities(
-                    result[0].Satuan_Sekunder.trim()
+                    result[0].Satuan_Sekunder.trim(),
                 );
                 no_tritier.value = decodeHtmlEntities(
-                    result[0].Satuan_Tritier.trim()
+                    result[0].Satuan_Tritier.trim(),
                 );
 
                 primer2.value = formatNumber(result[0].JumlahPengeluaranPrimer);
                 sekunder2.value = formatNumber(
-                    result[0].JumlahPengeluaranSekunder
+                    result[0].JumlahPengeluaranSekunder,
                 );
                 tritier2.value = formatNumber(
-                    result[0].JumlahPengeluaranTritier
+                    result[0].JumlahPengeluaranTritier,
                 );
             }
         },
@@ -617,7 +621,7 @@ function allData() {
                 if (response.length > 0) {
                     firstSubkelId = response[0].IdSubkelompok?.trim() ?? null;
                     allSameSubkelId = response.every(
-                        (item) => item.IdSubkelompok?.trim() === firstSubkelId
+                        (item) => item.IdSubkelompok?.trim() === firstSubkelId,
                     );
                 }
 
@@ -640,6 +644,7 @@ function allData() {
                         formatNumber(item.JumlahPengeluaranPrimer),
                         formatNumber(item.JumlahPengeluaranSekunder),
                         formatNumber(item.JumlahPengeluaranTritier),
+                        escapeHtml(item.NoPIB),
                         item.IdSubkelompok,
                     ]);
                 });
@@ -702,6 +707,7 @@ btn_proses.addEventListener("click", function () {
             keluarPrimer: selectedData.keluarPrimer,
             keluarSekunder: selectedData.keluarSekunder,
             keluarTritier: selectedData.keluarTritier,
+            noPIB: no_pib.value
         },
         success: function (response) {
             if (response.success) {

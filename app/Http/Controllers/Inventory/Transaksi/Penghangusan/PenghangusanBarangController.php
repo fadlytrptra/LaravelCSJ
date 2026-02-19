@@ -284,7 +284,7 @@ class PenghangusanBarangController extends Controller
                         'exec SP_1273_PRG_Insert_05_TmpTransaksi
                         @XIdTypeTransaksi = ?, @XIdType = ?,  @XIdPenerima = ?, @XIdPemberi = ?, @XSaatawalTransaksi = ?,
                         @XJumlahPengeluaranPrimer = ?, @XJumlahPengeluaranSekunder = ?, @XJumlahPengeluaranTritier = ?,
-                        @XAsalIdSubKelompok = ?, @XTujuanIdSubKelompok = ?, @XUraianDetailTransaksi = ?, @NoPIB =?, @kd = 1',
+                        @XAsalIdSubKelompok = ?, @XTujuanIdSubKelompok = ?, @XUraianDetailTransaksi = ?, @NoPIB =?',
                         [
                             '05',
                             $kodeType,
