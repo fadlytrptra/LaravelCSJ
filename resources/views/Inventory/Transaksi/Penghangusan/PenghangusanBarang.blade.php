@@ -226,6 +226,55 @@
                         </div>
                         <div class="row pb-2">
                             <div class="col-sm-2">
+                                <label for="nomor_pib">Nomor PIB</label>
+                            </div>
+                            <div class="col-sm-3 p-0">
+                                <input type="text" class="form-control" id="nomor_pib" name="nomor_pib" readonly>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Stok Akhir PIB</label>
+                            </div>
+                            <div class="col-sm-5" style="display: flex" id="satuan3">
+                                <div class="col-4">
+                                    <div class="row px-2">
+                                        <div class="col-8 p-0">
+                                            <input type="text" class="form-control" id="primerPIB" name="primerPIB"
+                                                readonly>
+                                        </div>
+                                        <div class="col-4 p-0">
+                                            <input type="text" class="form-control" id="no_primerPIB"
+                                                name="no_primerPIB" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="row px-2">
+                                        <div class="col-8 p-0">
+                                            <input type="text" class="form-control" id="sekunderPIB"
+                                                name="sekunderPIB" readonly>
+                                        </div>
+                                        <div class="col-4 p-0">
+                                            <input type="text" class="form-control" id="no_sekunderPIB"
+                                                name="no_sekunderPIB" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="row px-2">
+                                        <div class="col-8 p-0">
+                                            <input type="text" class="form-control" id="tritierPIB" name="tritierPIB"
+                                                readonly>
+                                        </div>
+                                        <div class="col-4 p-0">
+                                            <input type="text" class="form-control" id="no_tritierPIB"
+                                                name="no_tritierPIB" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pb-2">
+                            <div class="col-sm-2">
                                 <label for="alasan">Alasan</label>
                             </div>
                             <div class="col-sm-3 p-0">
@@ -234,7 +283,7 @@
                             <div class="col-sm-2">
                                 <label>Jumlah Dihanguskan</label>
                             </div>
-                            <div class="col-sm-5" style="display: flex" id="satuan2">
+                            <div class="col-sm-5" style="display: flex" id="satuan1">
                                 <div class="col-4 px-2">
                                     <input type="text" class="form-control" id="primer2" name="primer2">
                                 </div>

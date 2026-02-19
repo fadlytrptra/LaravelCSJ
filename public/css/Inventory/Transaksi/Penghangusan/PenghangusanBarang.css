@@ -66,14 +66,20 @@ input[type="date"] {
 
 #primer,
 #sekunder,
-#tritier {
+#tritier,
+#primerPIB,
+#sekunderPIB,
+#tritierPIB {
     /* width: 30px; */
     padding: 5px;
 }
 
 #no_primer,
 #no_sekunder,
-#no_tritier {
+#no_tritier,
+#no_primerPIB,
+#no_sekunderPIB,
+#no_tritierPIB {
     width: 50px;
     padding: 5px;
 }

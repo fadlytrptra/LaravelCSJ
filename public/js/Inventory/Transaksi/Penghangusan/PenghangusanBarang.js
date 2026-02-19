@@ -25,9 +25,16 @@ var no_sekunder = document.getElementById("no_sekunder");
 var tritier = document.getElementById("tritier");
 var no_tritier = document.getElementById("no_tritier");
 var alasan = document.getElementById("alasan");
+var nomor_pib = document.getElementById("nomor_pib");
 var primer2 = document.getElementById("primer2");
 var sekunder2 = document.getElementById("sekunder2");
 var tritier2 = document.getElementById("tritier2");
+var primerPIB = document.getElementById("primerPIB");
+var no_primerPIB = document.getElementById("no_primerPIB");
+var sekunderPIB = document.getElementById("sekunderPIB");
+var no_sekunderPIB = document.getElementById("no_sekunderPIB");
+var tritierPIB = document.getElementById("tritierPIB");
+var no_tritierPIB = document.getElementById("no_tritierPIB");
 var divisiId = document.getElementById("divisiId");
 var objekId = document.getElementById("objekId");
 var kelompokId = document.getElementById("kelompokId");
@@ -53,8 +60,8 @@ var table;
 let a; // isi = 1, koreksi = 2, hapus = 3
 const inputs = Array.from(
     document.querySelectorAll(
-        '.card-body input[type="text"]:not([readonly]), .card-body input[type="date"]:not([readonly])'
-    )
+        '.card-body input[type="text"]:not([readonly]), .card-body input[type="date"]:not([readonly])',
+    ),
 );
 
 tanggal.value = todayString;
@@ -336,7 +343,7 @@ function handleTableKeydown(e, tableId) {
                     currentIndex = 0;
                     const newRows = $(`#${tableId} tbody tr`);
                     const selectedRow = $(newRows[currentIndex]).addClass(
-                        "selected"
+                        "selected",
                     );
                     scrollRowIntoView(selectedRow[0]);
                 });
@@ -352,7 +359,7 @@ function handleTableKeydown(e, tableId) {
                     currentIndex = 0;
                     const newRows = $(`#${tableId} tbody tr`);
                     const selectedRow = $(newRows[currentIndex]).addClass(
-                        "selected"
+                        "selected",
                     );
                     scrollRowIntoView(selectedRow[0]);
                 });
@@ -444,7 +451,7 @@ btn_divisi.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -454,7 +461,7 @@ btn_divisi.addEventListener("click", function (e) {
 
                 divisiId.value = result.value.IdDivisi.trim();
                 divisiNama.value = decodeHtmlEntities(
-                    result.value.NamaDivisi.trim()
+                    result.value.NamaDivisi.trim(),
                 );
 
                 allData();
@@ -555,7 +562,7 @@ btn_objek.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -563,7 +570,7 @@ btn_objek.addEventListener("click", function (e) {
             if (result.isConfirmed) {
                 objekId.value = result.value.IdObjek.trim();
                 objekNama.value = decodeHtmlEntities(
-                    result.value.NamaObjek.trim()
+                    result.value.NamaObjek.trim(),
                 );
                 btn_kelut.focus();
             }
@@ -649,7 +656,7 @@ btn_kelut.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -657,7 +664,7 @@ btn_kelut.addEventListener("click", function (e) {
             if (result.isConfirmed) {
                 kelutId.value = result.value.IdKelompokUtama.trim();
                 kelutNama.value = decodeHtmlEntities(
-                    result.value.NamaKelompokUtama.trim()
+                    result.value.NamaKelompokUtama.trim(),
                 );
                 btn_kelompok.focus();
             }
@@ -743,7 +750,7 @@ btn_kelompok.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -751,7 +758,7 @@ btn_kelompok.addEventListener("click", function (e) {
             if (result.isConfirmed) {
                 kelompokId.value = result.value.idkelompok.trim();
                 kelompokNama.value = decodeHtmlEntities(
-                    result.value.namakelompok.trim()
+                    result.value.namakelompok.trim(),
                 );
                 btn_subkel.focus();
             }
@@ -836,7 +843,7 @@ btn_subkel.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -868,12 +875,136 @@ function getSaldo(kodeType) {
         },
         timeout: 30000,
         success: function (response) {
-            if (response && response.length > 0) {
-                primer.value = formatNumber(response[0].SaldoPrimer.trim());
-                sekunder.value = formatNumber(response[0].SaldoSekunder.trim());
-                tritier.value = formatNumber(response[0].SaldoTritier.trim());
+            console.log(response);
+
+            if (response.saldo.length > 1) {
+                try {
+                    Swal.fire({
+                        title: "Pilih PIB",
+                        html: `
+                                <table id="table_list" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">PIB</th>
+                                            <th scope="col">Qty</th>
+                                            <th scope="col">QtySekunder</th>
+                                            <th scope="col">QtyPrimer</th>
+                                            <th scope="col">SatuanTritier</th>
+                                            <th scope="col">SatuanSekunder</th>
+                                            <th scope="col">SatuanPrimer</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                `,
+                        preConfirm: () => {
+                            const selectedData = $("#table_list")
+                                .DataTable()
+                                .row(".selected")
+                                .data();
+                            if (!selectedData) {
+                                Swal.showValidationMessage(
+                                    "Please select a row",
+                                );
+                                return false;
+                            }
+                            return selectedData;
+                        },
+                        width: "55%",
+                        returnFocus: false,
+                        showCloseButton: true,
+                        showConfirmButton: true,
+                        confirmButtonText: "Select",
+                        didOpen: () => {
+                            $(document).ready(function () {
+                                const table = $("#table_list").DataTable({
+                                    data: response.saldo,
+                                    paging: false,
+                                    scrollY: "400px",
+                                    scrollCollapse: true,
+                                    order: [1, "asc"],
+                                    columns: [
+                                        { data: "NoPIB" },
+                                        { data: "Qty" },
+                                        { data: "Qty_sekunder" },
+                                        { data: "Qty_Primer" },
+                                        { data: "satuan_tritier" },
+                                        { data: "satuan_sekunder" },
+                                        { data: "satuan_primer" },
+                                        { data: "SaldoPrimer" },
+                                        { data: "SaldoSekunder" },
+                                        { data: "SaldoTritier" },
+                                    ],
+                                    columnDefs: [
+                                        {
+                                            targets: 0,
+                                            width: "300px",
+                                        },
+                                        {
+                                            visible: false,
+                                            targets: [2, 3, 4, 5, 6, 7, 8, 9],
+                                        },
+                                    ],
+                                });
+                                $("#table_list tbody").on(
+                                    "click",
+                                    "tr",
+                                    function () {
+                                        table
+                                            .$("tr.selected")
+                                            .removeClass("selected");
+                                        $(this).addClass("selected");
+                                        scrollRowIntoView(this);
+                                    },
+                                );
+
+                                const searchInput = $(
+                                    "#table_list_filter input",
+                                );
+                                if (searchInput.length > 0) {
+                                    searchInput.focus();
+                                }
+
+                                currentIndex = null;
+                                Swal.getPopup().addEventListener(
+                                    "keydown",
+                                    (e) => handleTableKeydown(e, "table_list"),
+                                );
+                            });
+                        },
+                    }).then((result) => {
+                        console.log(result);
+
+                        if (result.isConfirmed) {
+                            const selectedType = result.value;
+                            nomor_pib.value = selectedType.NoPIB.trim();
+                            primer.value = formatNumber(selectedType.SaldoPrimer.trim()); //prettier-ignore
+                            sekunder.value = formatNumber(selectedType.SaldoSekunder.trim()); //prettier-ignore
+                            tritier.value = formatNumber(selectedType.SaldoTritier.trim()); //prettier-ignore
+                            primerPIB.value = formatNumber(selectedType.Qty_Primer.trim()); //prettier-ignore
+                            sekunderPIB.value = formatNumber(selectedType.Qty_sekunder.trim()); //prettier-ignore
+                            tritierPIB.value = formatNumber(selectedType.Qty.trim()); //prettier-ignore
+                            alasan.focus();
+                        }
+                    });
+                } catch (error) {
+                    console.error("Error in process:", error);
+                }
+            } else {
+                primer.value = formatNumber(response.saldo[0].SaldoPrimer.trim()); //prettier-ignore
+                sekunder.value = formatNumber(response.saldo[0].SaldoSekunder.trim()); //prettier-ignore
+                tritier.value = formatNumber(response.saldo[0].SaldoTritier.trim()); //prettier-ignore
+                primerPIB.value = formatNumber(response.saldo[0].SaldoPrimer.trim()); //prettier-ignore
+                sekunderPIB.value = formatNumber(response.saldo[0].SaldoSekunder.trim()); //prettier-ignore
+                tritierPIB.value = formatNumber(response.saldo[0].SaldoTritier.trim()); //prettier-ignore
+                alasan.focus();
             }
-            alasan.focus();
+
+            // if (response && response.length > 0) {
+            //     primer.value = formatNumber(response[0].SaldoPrimer.trim());
+            //     sekunder.value = formatNumber(response[0].SaldoSekunder.trim());
+            //     tritier.value = formatNumber(response[0].SaldoTritier.trim());
+            // }
         },
         error: function (xhr, status, error) {
             console.error("AJAX Error:", error);
@@ -899,6 +1030,9 @@ function getType(kodeType) {
                 no_primer.value = response[0].Satuan_Primer.trim();
                 no_sekunder.value = response[0].Satuan_Sekunder.trim();
                 no_tritier.value = response[0].Satuan_Tritier.trim();
+                no_primerPIB.value = response[0].Satuan_Primer.trim();
+                no_sekunderPIB.value = response[0].Satuan_Sekunder.trim();
+                no_tritierPIB.value = response[0].Satuan_Tritier.trim();
                 handleChange();
                 no_primer.addEventListener("change", handleChange);
                 no_sekunder.addEventListener("change", handleChange);
@@ -924,13 +1058,13 @@ function getType2(kodeTransaksi) {
         success: function (response) {
             console.log(response);
             primer2.value = formatNumber(
-                response[0].JumlahPengeluaranPrimer.trim()
+                response[0].JumlahPengeluaranPrimer.trim(),
             );
             sekunder2.value = formatNumber(
-                response[0].JumlahPengeluaranSekunder.trim()
+                response[0].JumlahPengeluaranSekunder.trim(),
             );
             tritier2.value = formatNumber(
-                response[0].JumlahPengeluaranTritier.trim()
+                response[0].JumlahPengeluaranTritier.trim(),
             );
         },
         error: function (xhr, status, error) {
@@ -959,258 +1093,22 @@ btn_namaBarang.addEventListener("click", handleTypeSelection);
 function handleTypeSelection() {
     console.log(divisiNama.value, objekId.value, subkelId.value);
 
-    if (
-        (divisiId.value === "ABM" && objekId.value === "022") ||
-        (divisiId.value === "CIR" && objekId.value === "043") ||
-        (divisiId.value === "JBB" && objekId.value === "042") ||
-        (divisiId.value === "EXT" &&
-            (objekId.value === "1259" || objekId.value === "1283"))
-    ) {
-        if (divisiId.value === "ABM" && objekId.value === "022") {
-            if (subkelId.value !== "") {
-                try {
-                    Swal.fire({
-                        title: "Kode Type",
-                        html: `
-                            <table id="table_list" class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">ID Type</th>
-                                        <th scope="col">Nama</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        `,
-                        preConfirm: () => {
-                            const selectedData = $("#table_list")
-                                .DataTable()
-                                .row(".selected")
-                                .data();
-                            if (!selectedData) {
-                                Swal.showValidationMessage(
-                                    "Please select a row"
-                                );
-                                return false;
-                            }
-                            return selectedData;
-                        },
-                        width: "55%",
-                        returnFocus: false,
-                        showCloseButton: true,
-                        showConfirmButton: true,
-                        confirmButtonText: "Select",
-                        didOpen: () => {
-                            jQuery(function ($) {
-                                const table = $("#table_list").DataTable({
-                                    responsive: true,
-                                    processing: true,
-                                    serverSide: true,
-                                    paging: false,
-                                    scrollY: "400px",
-                                    scrollCollapse: true,
-                                    order: [1, "asc"],
-                                    ajax: {
-                                        url: "PenghangusanBarang/getABM",
-                                        dataType: "json",
-                                        type: "GET",
-                                        data: {
-                                            _token: csrfToken,
-                                            subkelId: subkelId.value,
-                                        },
-                                    },
-                                    columns: [
-                                        { data: "idtype" },
-                                        { data: "BARU" },
-                                    ],
-                                    columnDefs: [
-                                        {
-                                            targets: 0,
-                                            width: "200px",
-                                        },
-                                    ],
-                                });
-                                $("#table_list tbody").on(
-                                    "click",
-                                    "tr",
-                                    function () {
-                                        table
-                                            .$("tr.selected")
-                                            .removeClass("selected");
-                                        $(this).addClass("selected");
-                                        scrollRowIntoView(this);
-                                    }
-                                );
+    if (subkelId.value === "") {
+        Swal.fire({
+            icon: "warning",
+            title: "Sub Kelompok Kosong!",
+            text: `Pilih dulu Sub Kelompoknya!!`,
+            returnFocus: false,
+        }).then(() => {
+            btn_subkel.focus();
+        });
+        return;
+    }
 
-                                const searchInput = $(
-                                    "#table_list_filter input"
-                                );
-                                if (searchInput.length > 0) {
-                                    searchInput.focus();
-                                }
-
-                                currentIndex = null;
-                                Swal.getPopup().addEventListener(
-                                    "keydown",
-                                    (e) => handleTableKeydown(e, "table_list")
-                                );
-                            });
-                        },
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            kodeType.value = result.value.idtype.trim();
-                            namaBarang.value = result.value.BARU.trim();
-
-                            if (kodeType.value !== "") {
-                                getType(kodeType.value);
-                                getSaldo(kodeType.value);
-                            } else {
-                                Swal.fire({
-                                    icon: "warning",
-                                    title: "Data Belum Lengkap Terisi",
-                                    text: "Pilih dulu Type Barangnya !",
-                                    returnFocus: false,
-                                }).then(() => {
-                                    kodeBarang.focus();
-                                });
-                            }
-                        }
-                    });
-                } catch (error) {
-                    console.error(error);
-                }
-            } else {
-                Swal.fire({
-                    icon: "warning",
-                    title: "Data Belum Lengkap Terisi",
-                    text: "Pilih dulu Sub Kelompoknya !",
-                    returnFocus: false,
-                }).then(() => {
-                    btn_subkel.focus();
-                });
-            }
-        } else {
-            if (subkelId.value !== "") {
-                try {
-                    Swal.fire({
-                        title: "Kode Type",
-                        html: `
-                            <table id="table_list" class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">ID Type</th>
-                                        <th scope="col">Nama</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        `,
-                        preConfirm: () => {
-                            const selectedData = $("#table_list")
-                                .DataTable()
-                                .row(".selected")
-                                .data();
-                            if (!selectedData) {
-                                Swal.showValidationMessage(
-                                    "Please select a row"
-                                );
-                                return false;
-                            }
-                            return selectedData;
-                        },
-                        width: "55%",
-                        returnFocus: false,
-                        showCloseButton: true,
-                        showConfirmButton: true,
-                        confirmButtonText: "Select",
-                        didOpen: () => {
-                            jQuery(function ($) {
-                                const table = $("#table_list").DataTable({
-                                    responsive: true,
-                                    processing: true,
-                                    serverSide: true,
-                                    paging: false,
-                                    scrollY: "400px",
-                                    scrollCollapse: true,
-                                    order: [1, "asc"],
-                                    ajax: {
-                                        url: "PenghangusanBarang/getTypeCIR",
-                                        dataType: "json",
-                                        type: "GET",
-                                        data: {
-                                            _token: csrfToken,
-                                        },
-                                    },
-                                    columns: [
-                                        { data: "Id_Type" },
-                                        { data: "Nm_Type" },
-                                    ],
-                                    columnDefs: [
-                                        {
-                                            targets: 0,
-                                            width: "200px",
-                                        },
-                                    ],
-                                });
-
-                                $("#table_list tbody").on(
-                                    "click",
-                                    "tr",
-                                    function () {
-                                        table
-                                            .$("tr.selected")
-                                            .removeClass("selected");
-                                        $(this).addClass("selected");
-                                        scrollRowIntoView(this);
-                                    }
-                                );
-
-                                const searchInput = $(
-                                    "#table_list_filter input"
-                                );
-                                if (searchInput.length > 0) {
-                                    searchInput.focus();
-                                }
-
-                                currentIndex = null;
-                                Swal.getPopup().addEventListener(
-                                    "keydown",
-                                    (e) => handleTableKeydown(e, "table_list")
-                                );
-                            });
-                        },
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            kodeType.value = result.value.Id_Type.trim();
-                            namaBarang.value = result.value.Nm_Type.trim();
-
-                            if (kodeType.value !== "") {
-                                getType(kodeType.value);
-                                getSaldo(kodeType.value);
-                                // alasan.focus();
-                            } else {
-                                Swal.fire({
-                                    icon: "warning",
-                                    title: "Data Belum Lengkap Terisi",
-                                    text: "Pilih dulu Type Barangnya !",
-                                    returnFocus: false,
-                                }).then(() => {
-                                    kodeBarang.focus();
-                                });
-                            }
-                        }
-                    });
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-        }
-    } else {
-        if (subkelId !== "") {
-            try {
-                Swal.fire({
-                    title: "Kode Type",
-                    html: `
+    try {
+        Swal.fire({
+            title: "Kode Type",
+            html: `
                         <table id="table_list" class="table">
                             <thead>
                                 <tr>
@@ -1221,95 +1119,84 @@ function handleTypeSelection() {
                             <tbody></tbody>
                         </table>
                     `,
-                    preConfirm: () => {
-                        const selectedData = $("#table_list")
-                            .DataTable()
-                            .row(".selected")
-                            .data();
-                        if (!selectedData) {
-                            Swal.showValidationMessage("Please select a row");
-                            return false;
-                        }
-                        return selectedData;
-                    },
-                    width: "55%",
-                    returnFocus: false,
-                    showCloseButton: true,
-                    showConfirmButton: true,
-                    confirmButtonText: "Select",
-                    didOpen: () => {
-                        jQuery(function ($) {
-                            const table = $("#table_list").DataTable({
-                                responsive: true,
-                                processing: true,
-                                serverSide: true,
-                                paging: false,
-                                scrollY: "400px",
-                                scrollCollapse: true,
-                                order: [1, "asc"],
-                                ajax: {
-                                    url: "PenghangusanBarang/getType",
-                                    dataType: "json",
-                                    type: "GET",
-                                    data: {
-                                        _token: csrfToken,
-                                        subkelId: subkelId.value,
-                                    },
-                                },
-                                columns: [
-                                    { data: "IdType" },
-                                    { data: "NamaType" },
-                                ],
-                                columnDefs: [
-                                    {
-                                        targets: 0,
-                                        width: "200px",
-                                    },
-                                ],
-                            });
+            preConfirm: () => {
+                const selectedData = $("#table_list")
+                    .DataTable()
+                    .row(".selected")
+                    .data();
+                if (!selectedData) {
+                    Swal.showValidationMessage("Please select a row");
+                    return false;
+                }
+                return selectedData;
+            },
+            width: "55%",
+            returnFocus: false,
+            showCloseButton: true,
+            showConfirmButton: true,
+            confirmButtonText: "Select",
+            didOpen: () => {
+                jQuery(function ($) {
+                    const table = $("#table_list").DataTable({
+                        responsive: true,
+                        processing: true,
+                        serverSide: true,
+                        paging: false,
+                        scrollY: "400px",
+                        scrollCollapse: true,
+                        order: [1, "asc"],
+                        ajax: {
+                            url: "PenghangusanBarang/getType",
+                            dataType: "json",
+                            type: "GET",
+                            data: {
+                                _token: csrfToken,
+                                subkelId: subkelId.value,
+                            },
+                        },
+                        columns: [{ data: "IdType" }, { data: "NamaType" }],
+                        columnDefs: [
+                            {
+                                targets: 0,
+                                width: "200px",
+                            },
+                        ],
+                    });
 
-                            $("#table_list tbody").on(
-                                "click",
-                                "tr",
-                                function () {
-                                    table
-                                        .$("tr.selected")
-                                        .removeClass("selected");
-                                    $(this).addClass("selected");
-                                    scrollRowIntoView(this);
-                                }
-                            );
+                    $("#table_list tbody").on("click", "tr", function () {
+                        table.$("tr.selected").removeClass("selected");
+                        $(this).addClass("selected");
+                        scrollRowIntoView(this);
+                    });
 
-                            const searchInput = $("#table_list_filter input");
-                            if (searchInput.length > 0) {
-                                searchInput.focus();
-                            }
-
-                            currentIndex = null;
-                            Swal.getPopup().addEventListener("keydown", (e) =>
-                                handleTableKeydown(e, "table_list")
-                            );
-                        });
-                    },
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        kodeType.value = result.value.IdType.trim();
-                        namaBarang.value = decodeHtmlEntities(
-                            result.value.NamaType.trim()
-                        );
-
-                        getType(kodeType.value);
-
-                        if (namaBarang.value !== "") {
-                            getSaldo(kodeType.value);
-                            alasan.focus();
-                        }
+                    const searchInput = $("#table_list_filter input");
+                    if (searchInput.length > 0) {
+                        searchInput.focus();
                     }
+
+                    currentIndex = null;
+                    Swal.getPopup().addEventListener("keydown", (e) =>
+                        handleTableKeydown(e, "table_list"),
+                    );
                 });
-            } catch (error) {
-                console.error(error);
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                kodeType.value = result.value.IdType.trim();
+                namaBarang.value = decodeHtmlEntities(
+                    result.value.NamaType.trim(),
+                );
+
+                getType(kodeType.value);
+
+                if (namaBarang.value !== "") {
+                    getSaldo(kodeType.value);
+                    alasan.focus();
+                }
             }
-        }
+        });
+    } catch (error) {
+        console.error(error);
     }
 }
 
@@ -1416,7 +1303,7 @@ function allData() {
                 if (response.length > 0) {
                     firstSubkelId = response[0].IdSubkelompok?.trim() ?? null;
                     allSameSubkelId = response.every(
-                        (item) => item.IdSubkelompok?.trim() === firstSubkelId
+                        (item) => item.IdSubkelompok?.trim() === firstSubkelId,
                     );
                 }
 
@@ -1493,17 +1380,19 @@ $("#tableData tbody").on("click", "tr", function () {
 function clearInputs() {
     allInputs.forEach(function (input) {
         let divBaris1 = input.closest("#baris-1") !== null;
-        let divSatuan2 = input.closest("#satuan2") !== null;
+        // let divSatuan1 = input.closest("#satuan1") !== null;
+        // let divSatuan2 = input.closest("#satuan2") !== null;
+        // let divSatuan3 = input.closest("#satuan3") !== null;
         let inputTanggal = input.closest("#tanggal") !== null;
         let divids = input.closest("#ids") !== null;
-        if (!divBaris1 && !divSatuan2 && !divids && !inputTanggal) {
+        if (!divBaris1 && !divids && !inputTanggal) {
             input.value = "";
             input.disabled = false;
         }
     });
-    tritier2.value = "0.00";
-    primer2.value = "0.00";
-    sekunder2.value = "0.00";
+    // tritier2.value = "0.00";
+    // primer2.value = "0.00";
+    // sekunder2.value = "0.00";
 }
 
 function handleAJAXError(xhr, status, error) {
@@ -1525,7 +1414,7 @@ btn_proses.addEventListener("click", function (e) {
             showAlert(
                 "warning",
                 "Tanggal Lebih Besar Dari Tanggal Sekarang",
-                () => tanggal.focus()
+                () => tanggal.focus(),
             );
             return;
         }
@@ -1576,6 +1465,7 @@ btn_proses.addEventListener("click", function (e) {
             subkelId: subkelId.value,
             alasan: alasan.value,
             kodeTransaksi: kodeTransaksi.value,
+            noPIB: nomor_pib.value,
         },
         timeout: 30000,
         success: function (response) {
@@ -1677,7 +1567,7 @@ btn_koreksi.addEventListener("click", function () {
 
     if (kodeTransaksi.value === "") {
         showAlert("warning", "Pilih dulu data yg akan diKOREKSI !", () =>
-            btn_kodeType.focus()
+            btn_kodeType.focus(),
         );
         return;
     } else {
@@ -1708,7 +1598,7 @@ btn_hapus.addEventListener("click", function () {
     a = 3;
     if (kodeTransaksi.value === "") {
         showAlert("warning", "Pilih dulu data yg akan diHAPUS", () =>
-            btn_kodeType.focus()
+            btn_kodeType.focus(),
         );
         return;
     } else {
