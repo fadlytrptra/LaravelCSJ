@@ -697,8 +697,8 @@
 <table width="100%" style="text-align:center; margin-top:8px; font-size:11px;">
     <tr>
         <td width="33%">MENYETUJUI,</td>
-        <td width="33%">PEMESAN,</td>
-        <td width="33%">PELAKSANA,</td>
+        {{-- <td width="33%">PEMESAN,</td>
+        <td width="33%">PELAKSANA,</td> --}}
     </tr>
     <tr>
         <td>
@@ -709,14 +709,14 @@
                 @endif
             </div>
         </td>
-        <td><div class="signature_box"></div></td>
-        <td><div class="signature_box"></div></td>
+        {{-- <td><div class="signature_box"></div></td>
+        <td><div class="signature_box"></div></td> --}}
     </tr>
 
     <tr>
         <td>(................................)</td>
-        <td>(................................)</td>
-        <td>(................................)</td>
+        {{-- <td>(................................)</td>
+        <td>(................................)</td> --}}
     </tr>
 </table>
 
