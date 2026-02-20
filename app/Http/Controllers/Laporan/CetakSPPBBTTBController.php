@@ -69,7 +69,7 @@ class CetakSPPBBTTBController extends Controller
             return datatables($dataDivisi)->make(true);
         } else if ($id == 'getDataSPPB') {
             $kd_div_1 = $request->kd_div_1;
-            $dataSPPB = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_DIVISI_CETAK_PO @kd_div_1 = ?', [$kd_div_1]);
+            $dataSPPB = DB::connection('ConnPurchase')->select('exec SP_1273_PRG_LIST_DIVISI_CETAK_PO @kd_div_1 = ?, @XKode = ?', [$kd_div_1, 1]);
 
             return datatables($dataSPPB)->make(true);
         } else if ($id == 'getDataTerima') {

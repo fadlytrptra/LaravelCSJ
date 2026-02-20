@@ -88,7 +88,7 @@ jQuery(function ($) {
                         currentIndex = 0;
                         const newRows = $(`#${tableId} tbody tr`);
                         const selectedRow = $(newRows[currentIndex]).addClass(
-                            "selected"
+                            "selected",
                         );
                         scrollRowIntoView(selectedRow[0]);
                     });
@@ -104,7 +104,7 @@ jQuery(function ($) {
                         currentIndex = 0;
                         const newRows = $(`#${tableId} tbody tr`);
                         const selectedRow = $(newRows[currentIndex]).addClass(
-                            "selected"
+                            "selected",
                         );
                         scrollRowIntoView(selectedRow[0]);
                     });
@@ -273,7 +273,7 @@ jQuery(function ($) {
 
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydown(e, "table_list")
+                            handleTableKeydown(e, "table_list"),
                         );
                     });
                 },
@@ -297,8 +297,8 @@ jQuery(function ($) {
                 <table id="table_list" class="table">
                     <thead>
                         <tr>
-                            <th scope="col">ID Divisi</th>
-                            <th scope="col">Nama Divisi</th>
+                            <th scope="col">Nomor PO</th>
+                            <th scope="col">Tanggal PO</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -329,7 +329,7 @@ jQuery(function ($) {
                             paging: false,
                             scrollY: "400px",
                             scrollCollapse: true,
-                            order: [1, "asc"],
+                            order: [1, "desc"],
                             ajax: {
                                 url: "CetakSPPBBTTB/getDataSPPB",
                                 dataType: "json",
@@ -341,7 +341,14 @@ jQuery(function ($) {
                             },
                             columns: [
                                 { data: "No_sppb" },
-                                { data: "No_trans" },
+                                {
+                                    data: "Tgl_sppb",
+                                    render: function (data, type, full, meta) {
+                                        return moment(data).format(
+                                            "MM/DD/YYYY",
+                                        );
+                                    },
+                                },
                             ],
                             columnDefs: [
                                 {
@@ -364,7 +371,7 @@ jQuery(function ($) {
 
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydown(e, "table_list")
+                            handleTableKeydown(e, "table_list"),
                         );
                     });
                 },
@@ -391,11 +398,11 @@ jQuery(function ($) {
     });
 
     button_browseDataNomorTerima.addEventListener("click", function (e) {
-         if (!sppb.value) {
+        if (!sppb.value) {
             Swal.fire({
-                icon: 'warning',
-                title: 'SPPB belum dipilih',
-                text: 'Silakan pilih SPPB terlebih dahulu.',
+                icon: "warning",
+                title: "SPPB belum dipilih",
+                text: "Silakan pilih SPPB terlebih dahulu.",
             });
             button_browseDataSPPB.focus();
             return;
@@ -403,9 +410,9 @@ jQuery(function ($) {
 
         if (!id_divisi.value) {
             Swal.fire({
-                icon: 'warning',
-                title: 'Divisi belum dipilih',
-                text: 'Silakan pilih Divisi terlebih dahulu.',
+                icon: "warning",
+                title: "Divisi belum dipilih",
+                text: "Silakan pilih Divisi terlebih dahulu.",
             });
             button_browseDataDivisi.focus();
             return;
@@ -467,7 +474,7 @@ jQuery(function ($) {
                                     data: "tanggal_datang",
                                     render: function (data, type, row) {
                                         return moment(data).format(
-                                            "MM/DD/YYYY"
+                                            "MM/DD/YYYY",
                                         );
                                     },
                                 },
@@ -493,7 +500,7 @@ jQuery(function ($) {
 
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydown(e, "table_list")
+                            handleTableKeydown(e, "table_list"),
                         );
                     });
                 },
@@ -501,9 +508,9 @@ jQuery(function ($) {
                 if (result.isConfirmed) {
                     console.log(result.value);
                     no_terima.value = result.value.nomor_terima;
-                    tgl_datang.value = moment(result.value.tanggal_datang).format(
-                        "YYYY-MM-DD"
-                    );
+                    tgl_datang.value = moment(
+                        result.value.tanggal_datang,
+                    ).format("YYYY-MM-DD");
                     button_cetak.focus();
                 }
             });
@@ -516,7 +523,7 @@ jQuery(function ($) {
         e.preventDefault();
 
         const jenisCetak = document.querySelector(
-            'input[name="radio_jenisCetak"]:checked'
+            'input[name="radio_jenisCetak"]:checked',
         ).value;
 
         // COMMON VALIDATION
@@ -537,7 +544,7 @@ jQuery(function ($) {
             !validateEmpty(
                 no_terima,
                 "Pilih Nomor Terima!",
-                button_browseDataNomorTerima
+                button_browseDataNomorTerima,
             )
         ) {
             return;
