@@ -200,7 +200,7 @@
                     <div class="form-group" id="sppb_divDppFull"
                         style="flex: 0.075;align-content: end;display: none;">
                         <input type="checkbox" name="sppb_dppFull" id="sppb_dppFull" style="display: inline">
-                        <label for="sppb_dppFull" style="display: inline">DPP Full</label>
+                        <label for="sppb_dppFull" style="display: inline">DPP 11/12</label>
                     </div>
                 </div>
                 <div class="d-flex" style="gap: 0.5%;width: 100%">
