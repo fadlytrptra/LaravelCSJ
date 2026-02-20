@@ -681,7 +681,7 @@
                                                 </div>
                                                 <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
                                                     <p
-                                                        style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                        style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;white-space: nowrap;">
                                                         {{ $dataCetak[0]->Symbol }}
                                                         {{ number_format($sumAmount, 2, '.', ',') }}
                                                     </p>
@@ -696,7 +696,7 @@
                                             </div>
                                             <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
                                                 <p
-                                                    style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                    style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;white-space: nowrap;">
                                                     {{ $dataCetak[0]->Symbol }}
                                                     {{ number_format($amountDPP, 2, '.', ',') }}
                                                 </p>
@@ -710,7 +710,7 @@
                                             </div>
                                             <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
                                                 <p
-                                                    style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                    style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;white-space: nowrap;">
                                                     {{ $dataCetak[0]->Symbol }} {{ number_format($ppn, 2, '.', ',') }}
                                                 </p>
                                             </div>
@@ -725,7 +725,7 @@
                                         </div>
                                         <div style="width: 60%; border-bottom: 1px solid; text-align: right;">
                                             <p
-                                                style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;">
+                                                style="line-height: 13.8px; font-size: 13px;font-family: Helvetica; margin: 2px 0;white-space: nowrap;">
                                                 @if ((float) $dataCetak[0]->PPN > 0)
                                                     {{ $dataCetak[0]->Symbol }}
                                                     {{ number_format($ppn + $sumAmount, 2, '.', ',') }}
@@ -738,7 +738,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                             <!--Footer-->
                             @if ($deliveryTerm)
