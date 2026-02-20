@@ -876,6 +876,15 @@ function getSaldo(kodeType) {
         timeout: 30000,
         success: function (response) {
             console.log(response);
+            if (response.error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: `Data Saldo Tidak Ditemukan`,
+                    returnFocus: false,
+                });
+                return;
+            }
 
             if (response.saldo.length > 1) {
                 try {

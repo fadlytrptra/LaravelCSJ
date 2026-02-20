@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HakAksesController;
+use Exception;
 
 
 class PenghangusanBarangController extends Controller
@@ -136,16 +137,12 @@ class PenghangusanBarangController extends Controller
             }
             return response()->json([]);
         } else if ($id === 'getSaldo') {
-            // get list pib
-            $pib = DB::connection('ConnInventory')->select('exec SP_1273_PRG_TypePIB @Kode = ?, @IdType = ?', [5, $kodeType]);
-            if ($pib[0]->Ada > 0) {
-                // mendapatkan saldo
+            try {
                 $saldo = DB::connection('ConnInventory')->select('exec SP_1273_PRG_TypePIB @Kode = ?, @IdType = ?', [8, $kodeType]);
                 return response()->json(['saldo' => $saldo]);
-            } else {
-                return response()->json(['error' => 'id type tidak ditemukan']);
+            } catch (Exception $ex) {
+                return response()->json(['error' => $ex->getMessage()]);
             }
-
         } else if ($id === 'getTypeCIR') {
             // mendapatkan nama type & id type
             $typeCIR = DB::connection('ConnInventory')->select('exec SP_1273_PRG_List_Type_PerUkuran');
@@ -273,7 +270,7 @@ class PenghangusanBarangController extends Controller
         $primer2 = $request->input('primer2');
         $sekunder2 = $request->input('sekunder2');
         $tritier2 = $request->input('tritier2');
-        $noPIB = $request->input('noPIB');
+        $noPIB = $request->input('noPIB') ?? '';
 
         if ($id === 'proses') {
             // proses terjadi

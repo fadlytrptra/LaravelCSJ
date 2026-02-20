@@ -71,13 +71,15 @@ class AccPenghangusanBarangController extends Controller
         } else if ($id === 'getAllData') {
             // mendapatkan nama type & id type
 
-            if ($objekId !== null) {
-                $allData = DB::connection('ConnInventory')->select('
-                exec SP_1273_PRG_List_Mohon_TmpTransaksi @kode = 15, @XIdObjek = ?, @XIdDivisi = ?, @XIdTypeTransaksi = ?', [$objekId, $divisiId, '05']);
-            } else {
-                $allData = DB::connection('ConnInventory')->select('
+            $allData = DB::connection('ConnInventory')->select('
                 exec SP_1273_PRG_List_Mohon_TmpTransaksi @kode = 2, @XIdDivisi = ?, @XIdTypeTransaksi = ?', [$divisiId, '05']);
-            }
+            // if ($objekId !== null) {
+            //     $allData = DB::connection('ConnInventory')->select('
+            //     exec SP_1273_PRG_List_Mohon_TmpTransaksi @kode = 15, @XIdObjek = ?, @XIdDivisi = ?, @XIdTypeTransaksi = ?', [$objekId, $divisiId, '05']);
+            // } else {
+            //     $allData = DB::connection('ConnInventory')->select('
+            //     exec SP_1273_PRG_List_Mohon_TmpTransaksi @kode = 2, @XIdDivisi = ?, @XIdTypeTransaksi = ?', [$divisiId, '05']);
+            // }
 
             $data_allData = [];
             foreach ($allData as $detail_allData) {
