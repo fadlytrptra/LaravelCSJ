@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('CariType', App\Http\Controllers\Beli\Informasi\CariTypeController::class);
     Route::resource('Supplier', App\Http\Controllers\Beli\Master\SupplierController::class);
     Route::resource('HistoryPembelianMaster', App\Http\Controllers\Beli\Master\HistoryPembelianMasterController::class);
+    Route::resource('MaintenanceGolonganDanMesin', App\Http\Controllers\Beli\Master\MaintenanceGolonganDanMesinController::class);
     Route::resource('MaintenanceKodeBarang', App\Http\Controllers\Beli\Master\MaintenanceKodeBarangController::class);
     Route::resource('BatalTransfer', App\Http\Controllers\Beli\Master\BatalTransferController::class);
     Route::resource('PurchaseOrder', App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class);
