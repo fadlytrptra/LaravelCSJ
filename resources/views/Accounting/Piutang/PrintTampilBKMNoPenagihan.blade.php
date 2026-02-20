@@ -103,7 +103,7 @@
         <table style="width: 100%;">
             <thead>
                 <tr>
-                    <th><strong>P.T. KERTA RAJASA RAYA</strong></th>
+                    <th><strong>PT. CAHAYA SANTOSO JAYA</strong></th>
                     <th colspan="2"><strong>BUKTI PENERIMAAN BANK</strong></th>
                 </tr>
             </thead>
