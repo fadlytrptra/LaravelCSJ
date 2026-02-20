@@ -603,7 +603,8 @@
                                     <tbody style="border-top: 1px solid black; border-bottom: 1px solid black;">
                                         @foreach ($dataCetak as $index => $item)
                                             @php
-                                                $amountPerRow = (float) $item->quantity * (float) $item->Hrg_trm - (float) $item->hrg_disc;
+                                                // $amountPerRow = (float) $item->quantity * (float) $item->Hrg_trm - (float) $item->hrg_disc;
+                                                $amountPerRow = (float) $item->quantity * (float) $item->Hrg_trm;
                                                 $sumAmount += $amountPerRow;
                                             @endphp
                                             <tr>
