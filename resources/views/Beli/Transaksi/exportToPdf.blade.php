@@ -414,7 +414,7 @@
                             <td>
                                 <p
                                     style="line-height: 13.8px; margin:0;padding:0; font-size: 12px;font-family: Helvetica;padding-right:8px;">
-                                    {{ str_replace('<', '&lt;', $item->NAMA_BRG) }}
+                                    {{ $item->NAMA_BRG }}
                                     <br>
                                     {{ $item->keterangan }}
                                     <br>
