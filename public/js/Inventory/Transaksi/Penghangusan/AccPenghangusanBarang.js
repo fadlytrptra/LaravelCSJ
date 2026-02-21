@@ -269,18 +269,9 @@ btn_divisi.addEventListener("click", function (e) {
                 divisiNama.value = decodeHtmlEntities(
                     result.value.NamaDivisi.trim(),
                 );
-
-                if (
-                    divisiId.value === "INV" ||
-                    divisiId.value === "MNV" ||
-                    divisiId.value === "MWH"
-                ) {
-                    btn_objek.disabled = false;
-                    btn_objek.focus();
-                } else {
-                    allData();
-                    btn_proses.focus();
-                }
+                allData();
+                btn_objek.disabled = false;
+                btn_objek.focus();
             }
         });
     } catch (error) {

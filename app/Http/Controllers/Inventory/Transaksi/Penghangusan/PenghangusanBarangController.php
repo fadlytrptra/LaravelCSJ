@@ -267,9 +267,9 @@ class PenghangusanBarangController extends Controller
         $kodeType = $request->input('kodeType');
         $alasan = $request->input('alasan');
         $uraian = trim($alasan) === null ? '' : trim($alasan);
-        $primer2 = $request->input('primer2');
-        $sekunder2 = $request->input('sekunder2');
-        $tritier2 = $request->input('tritier2');
+        $primer2 = $request->input('primer2') ?? 0;
+        $sekunder2 = $request->input('sekunder2') ?? 0;
+        $tritier2 = $request->input('tritier2') ?? 0;
         $noPIB = $request->input('noPIB') ?? '';
 
         if ($id === 'proses') {

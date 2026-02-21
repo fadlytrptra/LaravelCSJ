@@ -1428,7 +1428,10 @@ btn_proses.addEventListener("click", function (e) {
             return;
         }
 
-        if (numeral(tritier2.value).value() > numeral(tritier.value).value()) {
+        if (
+            numeral(tritier2.value).value() > numeral(tritier.value).value() ||
+            numeral(tritier2.value).value() == 0
+        ) {
             showAlert("warning", "Perhatikan Tritier", () => tritier2.focus());
             return;
         }
