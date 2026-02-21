@@ -31,6 +31,7 @@ class MaintenancePenagihanController extends Controller
         $jenisProses = $request->jenisProses;
         if ($jenisProses == 'insertDataSPPB') {
             $idSupplier = $request->idSupplier;
+            $idInvSupp = $request->idInvSupp;
             $idJenisDokumen = $request->idJenisDokumen;
             $jumlahDokumen = $request->jumlahDokumen;
             $statusPPN = $request->statusPPN;
@@ -92,7 +93,8 @@ class MaintenancePenagihanController extends Controller
                         'Id_MataUang' => $idMataUang,
                         'UserId' => $idUser,
                         'Lunas' => 'N',
-                        'Nilai_Penagihan' => 1
+                        'Nilai_Penagihan' => 1,
+                        'Id_Inv_Supp' => $idInvSupp,
                     ]);
             } catch (Exception $ex) {
                 return response()->json(['error' => $ex->getMessage() . ' error input T_Penagihan'], 500);

@@ -27,6 +27,7 @@ jQuery(function ($) {
     let id_jenisDokumen = document.getElementById("id_jenisDokumen");
     let button_browseJenisDokumen = document.getElementById("button_browseJenisDokumen"); //prettier-ignore
     let jumlah_dokumen = document.getElementById("jumlah_dokumen");
+    let id_penagihanSupplier = document.getElementById("id_penagihanSupplier");
     let nama_mataUang = document.getElementById("nama_mataUang");
     let id_mataUang = document.getElementById("id_mataUang");
     let nilai_tagihan = document.getElementById("nilai_tagihan");
@@ -145,6 +146,7 @@ jQuery(function ($) {
             status_pajakAda.disabled = true;
             status_pajakTidakAda.disabled = true;
             jumlah_dokumen.value = 1;
+            id_penagihanSupplier.readOnly = true;
             button_browseIdPenagihan.disabled = true;
             button_browseSupplier.disabled = true;
             button_browseJenisDokumen.disabled = true;
@@ -172,6 +174,7 @@ jQuery(function ($) {
             button_browseIdPenagihan.style.display = "none";
             button_koreksiPenagihan.style.display = "none";
             button_isiPenagihan.disabled = true;
+            id_penagihanSupplier.readOnly = false;
             button_cancelPenagihan.style.display = "block";
             button_cetakPenagihan.style.display = "block";
             button_browseSupplier.disabled = false;
@@ -188,6 +191,7 @@ jQuery(function ($) {
             button_isiDetailFakturPajak.disabled = false;
         } else if (jenisInit == "koreksiPenagihan") {
             div_idPenagihan.style.display = "flex";
+            id_penagihanSupplier.readOnly = false;
             button_browseIdPenagihan.style.display = "block";
             button_isiPenagihan.style.display = "none";
             button_koreksiPenagihan.disabled = true;
@@ -213,6 +217,7 @@ jQuery(function ($) {
         nama_supplier.value = "";
         id_supplier.value = "";
         id_penagihan.value = "";
+        id_penagihanSupplier.value = "";
         status_pajakAda.checked = true;
         jenis_dokumen.value = "";
         id_jenisDokumen.value = "";
@@ -419,6 +424,7 @@ jQuery(function ($) {
                     tanggal_penagihan.value = moment(
                         data[0].Waktu_Penagihan,
                     ).format("YYYY-MM-DD");
+                    id_penagihanSupplier.value = data[0].id_inv_supp ?? "";
                     if (data[0].Status_PPN == "Y") {
                         status_pajakAda.checked = true;
                         status_pajakAda.dispatchEvent(changeEvent);
@@ -1006,6 +1012,13 @@ jQuery(function ($) {
     });
 
     jumlah_dokumen.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            id_penagihanSupplier.focus();
+        }
+    });
+
+    id_penagihanSupplier.addEventListener("keypress", function (e) {
         if (e.key == "Enter") {
             e.preventDefault();
             console.log(table_detailSPPB.data().toArray());
@@ -2068,6 +2081,7 @@ jQuery(function ($) {
                 _token: csrfToken,
                 jenisProses: "insertDataSPPB",
                 idSupplier: id_supplier.value,
+                idInvSupp: id_penagihanSupplier.value,
                 idJenisDokumen: id_jenisDokumen.value,
                 jumlahDokumen: jumlah_dokumen.value,
                 statusPPN: statusPajak,

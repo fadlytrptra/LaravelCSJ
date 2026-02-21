@@ -50,16 +50,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="display: flex; flex-direction: column;">
+                        <div style="display: flex; flex-direction: column;width: 15%;">
                             <label for="jenis_dokumen">Jenis / Jumlah Dokumen</label>
                             <div style="display: flex; flex-direction: row;">
                                 <input type="text" name="jenis_dokumen" id="jenis_dokumen" class="form-control"
-                                    style="flex: 0.4;" readonly>
+                                    style="flex: 0.8;" readonly>
                                 <input type="hidden" name="id_jenisDokumen" id="id_jenisDokumen">
                                 <button class="btn btn-primary" id="button_browseJenisDokumen">...</button>
                                 <input type="number" name="jumlah_dokumen" id="jumlah_dokumen" class="form-control"
-                                    style="flex: 0.1;" min="0">
+                                    style="flex: 0.2;" min="0">
                             </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column;" id="div_idPenagihanSupplier">
+                            <label for="id_penagihanSupplier">Invoice Supplier</label>
+                            <input type="text" name="id_penagihanSupplier" id="id_penagihanSupplier"
+                                class="form-control" readonly>
                         </div>
                     </div>
                     <div style="display: flex; flex-direction: row;margin-top: 1rem; gap: 5px">
@@ -73,7 +78,8 @@
                             <input type="text" name="nilai_tagihan" id="nilai_tagihan" class="form-control" readonly>
                         </div>
                         <div style="align-content: end">
-                            <button class="btn btn-primary" id="button_pembulatanBawahTagihan"><<</button>
+                            <button class="btn btn-primary" id="button_pembulatanBawahTagihan">
+                                <<< /button>
                         </div>
                         <div style="align-content: end">
                             <button class="btn btn-primary" id="button_pembulatanAtasTagihan">>></button>
