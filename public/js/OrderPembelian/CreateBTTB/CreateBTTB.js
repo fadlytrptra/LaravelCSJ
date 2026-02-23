@@ -424,62 +424,62 @@ jQuery(function ($) {
         });
     }
 
-    function updateFlag(noTrans, flag, ask) {
-        $.ajax({
-            url: "/CreateBTTB/UpdateFlag",
-            type: "PUT",
-            data: {
-                no_trans_1: noTrans,
-                sFlag: flag,
-                _token: csrfToken,
-            },
-            success: function (data) {
-                if (data.error || data.length == 0) {
-                    errorHandling("ajaxGetDataResponse", data.error);
-                } else {
-                    if (ask === 1) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Data sudah diterima.",
-                            timer: 2000,
-                            showConfirmButton: false,
-                        }).then(loadTerima);
-                    } else {
-                        Swal.fire({
-                            icon: "info",
-                            title: "Pesanan selesai",
-                            text:
-                                "No. Trans: " +
-                                noTrans +
-                                " sudah memenuhi kuota pesanan",
-                            timer: 1500,
-                            showConfirmButton: false,
-                        }).then(loadTerima);
-                    }
-                }
-            },
-        });
-    }
+    // function updateFlag(noTrans, flag, ask) {
+    //     $.ajax({
+    //         url: "/CreateBTTB/UpdateFlag",
+    //         type: "PUT",
+    //         data: {
+    //             no_trans_1: noTrans,
+    //             sFlag: flag,
+    //             _token: csrfToken,
+    //         },
+    //         success: function (data) {
+    //             if (data.error || data.length == 0) {
+    //                 errorHandling("ajaxGetDataResponse", data.error);
+    //             } else {
+    //                 if (ask === 1) {
+    //                     Swal.fire({
+    //                         icon: "success",
+    //                         title: "Data sudah diterima.",
+    //                         timer: 2000,
+    //                         showConfirmButton: false,
+    //                     }).then(loadTerima);
+    //                 } else {
+    //                     Swal.fire({
+    //                         icon: "info",
+    //                         title: "Pesanan selesai",
+    //                         text:
+    //                             "No. Trans: " +
+    //                             noTrans +
+    //                             " sudah memenuhi kuota pesanan",
+    //                         timer: 1500,
+    //                         showConfirmButton: false,
+    //                     }).then(loadTerima);
+    //                 }
+    //             }
+    //         },
+    //     });
+    // }
 
-    function getTotalQtyTerimaExisting(KodeBarang, excludeNoTerima = null) {
-        let total = 0;
+    // function getTotalQtyTerimaExisting(KodeBarang, excludeNoTerima = null) {
+    //     let total = 0;
 
-        table_terima.rows().every(function () {
-            let row = this.data();
-            let kodeBarangTerima = row[23];
-            let noTerima = row[15];
+    //     table_terima.rows().every(function () {
+    //         let row = this.data();
+    //         let kodeBarangTerima = row[23];
+    //         let noTerima = row[15];
 
-            if (
-                KodeBarang &&
-                kodeBarangTerima == KodeBarang &&
-                (!excludeNoTerima || noTerima !== excludeNoTerima)
-            ) {
-                total += numeral(row[4]).value();
-            }
-        });
+    //         if (
+    //             KodeBarang &&
+    //             kodeBarangTerima == KodeBarang &&
+    //             (!excludeNoTerima || noTerima !== excludeNoTerima)
+    //         ) {
+    //             total += numeral(row[4]).value();
+    //         }
+    //     });
 
-        return total;
-    }
+    //     return total;
+    // }
 
     // function getDataDetailSPPB(noSPPB) {
     //     let idDivisi = select_divisi.val();
@@ -917,16 +917,22 @@ jQuery(function ($) {
         }
     });
 
-    bttb_ppn.addEventListener("keyup", function (e) {
-        if (this.value == "12") {
-            bttb_divCbDPP.style.display = "block";
-        } else {
-            bttb_checkboxDPP.checked = false;
-            bttb_divCbDPP.style.display = "none";
+    bttb_ppn.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            if (this.value == "12") {
+                bttb_checkboxDPP.checked = true;
+                bttb_divCbDPP.style.display = "block";
+                bttb_checkboxDPP.focus();
+            } else {
+                bttb_checkboxDPP.checked = false;
+                bttb_divCbDPP.style.display = "none";
+                bttb_hargaPer.select();
+            }
         }
     });
 
-    bttb_ppn.addEventListener("keypress", function (e) {
+    bttb_checkboxDPP.addEventListener("keypress", function (e) {
         if (e.key == "Enter") {
             e.preventDefault();
             bttb_hargaPer.select();

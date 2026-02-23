@@ -100,7 +100,7 @@
                                     class="form-control font-weight-bold" min="0">
                                 <div id="bttb_divCbDPP" style="display: none">
                                     <input type="checkbox" name="bttb_checkboxDPP" id="bttb_checkboxDPP">
-                                    DPP FULL
+                                    DPP 11/12
                                 </div>
                             </div>
                         </div>
