@@ -583,7 +583,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <label><b>PT. Kerta Rajasa Raya</b></label>
+                                    <label><b>PT. Cahaya Santoso Jaya</b></label>
                                 </div>
                             </div>
                             <div class="row">

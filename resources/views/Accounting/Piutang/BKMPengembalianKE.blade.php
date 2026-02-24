@@ -348,7 +348,7 @@
                                         class="btn btn-primary d-flex">
                                 </div>
                                 <div class="col-md-2">
-                                
+
                                     <input type="submit" id="btnTampilBKK" name="btnTampilBKK" value="TampilBKK"
                                         class="btn btn-primary d-flex">
                                 </div>
@@ -496,7 +496,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <label><b>PT. Kerta Rajasa Raya</b></label>
+                                    <label><b>PT. Cahaya Santoso Jaya</b></label>
                                 </div>
                             </div>
                             <div class="row">

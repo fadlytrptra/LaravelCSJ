@@ -119,7 +119,7 @@
 <div class="container" style="display: none">
     <div class="header">
         <h5 style="text-align: left;">Payment Voucher</h5>
-        <h4 style="text-align: left;">PT. KERTA RAJASA RAYA</h4>
+        <h4 style="text-align: left;">PT. CAHAYA SANTOSO JAYA</h4>
     </div>
     <div class="content">
         <table style="border:none !important">
