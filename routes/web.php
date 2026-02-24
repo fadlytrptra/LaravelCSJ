@@ -149,6 +149,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('CariBarcode', App\Http\Controllers\Sales\ToolPenjualan\CariBarcodeController::class);
     Route::resource('SuratPesananEkspor', App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananEksportController::class);
     Route::resource('SuratPesanan', App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananController::class);
+    Route::resource('PenyesuaianHargaSatuan2', App\Http\Controllers\Sales\Transaksi\PenyesuaianHargaSatuan2Controller::class);
     Route::resource('SuratPesananManager', App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananManagerController::class);
     Route::resource('SuratPesananDirektur', App\Http\Controllers\Sales\Transaksi\SuratPesanan\SuratPesananDirekturController::class);
     Route::resource('PenyesuaianSuratPesanan', App\Http\Controllers\Sales\Transaksi\SuratPesanan\PenyesuaianSuratPesananController::class);
