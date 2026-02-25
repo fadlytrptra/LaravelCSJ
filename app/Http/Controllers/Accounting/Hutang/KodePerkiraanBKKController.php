@@ -31,7 +31,7 @@ class KodePerkiraanBKKController extends Controller
 
     public function getTabelRincianBKK($idBKK)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_LIST_BKK_KDKIRA] @IdBKK = ?', [$idBKK]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BKK_KDKIRA] @IdBKK = ?', [$idBKK]);
         // return datatables($tabel)->make(true);
         return response()->json($tabel);
     }
