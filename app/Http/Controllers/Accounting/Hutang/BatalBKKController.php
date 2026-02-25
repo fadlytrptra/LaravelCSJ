@@ -22,24 +22,24 @@ class BatalBKKController extends Controller
 
     public function getIdBKKBesar($bulanTahun)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_LIST_IDBKK_BTLBKK] @Kode = ?, @BlnThn = ?', [2, $bulanTahun]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_IDBKK_BTLBKK] @Kode = ?, @BlnThn = ?', [2, $bulanTahun]);
         return response()->json($tabel);
     }
     public function getIdBKKKecil($bulanTahun)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_LIST_IDBKK_BTLBKK] @Kode = ?, @BlnThn = ?', [1, $bulanTahun]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_IDBKK_BTLBKK] @Kode = ?, @BlnThn = ?', [1, $bulanTahun]);
         return response()->json($tabel);
     }
 
     public function getListBKKBtlBKK($idBKKSelect)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_LIST_BKK_BTLBKK] @BKK = ?', [$idBKKSelect]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BKK_BTLBKK] @BKK = ?', [$idBKKSelect]);
         return response()->json($tabel);
     }
 
     public function getCheckBtlBKK($idBKKSelect)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_CHECK_BTLBKK] @BKK = ?', [$idBKKSelect]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_CHECK_BTLBKK] @BKK = ?', [$idBKKSelect]);
         return response()->json($tabel);
     }
 
@@ -69,7 +69,7 @@ class BatalBKKController extends Controller
             try {
                 // dd($bkk, $alasan, $user_id);
                 // Menjalankan prosedur tersimpan pertama
-                DB::connection('ConnAccounting')->statement('EXEC SP_1273_ACC_BATAL_BKK @BKK = :bkk, @Alasan = :alasan, @User = :user', [
+                DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_BATAL_BKK @BKK = :bkk, @Alasan = :alasan, @User = :user', [
                     'bkk' => $bkk,
                     'alasan' => $alasan,
                     'user' => $user_id
@@ -86,7 +86,7 @@ class BatalBKKController extends Controller
                     // dd($kode);
                     // Menjalankan prosedur tersimpan kedua jika kode ditentukan
                     if ($kode !== null) {
-                        DB::connection('ConnAccounting')->statement('EXEC SP_1273_ACC_BATAL_BKK_TTLNS @Kode = :kode, @BKK = :bkk', [
+                        DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_BATAL_BKK_TTLNS @Kode = :kode, @BKK = :bkk', [
                             'kode' => $kode,
                             'bkk' => $bkk
                         ]);
@@ -136,7 +136,7 @@ class BatalBKKController extends Controller
         $idBKKSelect = $request->idBKKSelect;
         $alasan = $request->alasan;
 
-        DB::connection('ConnAccounting')->statement('exec [SP_1273_ACC_BATAL_BKK]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_BATAL_BKK]
             @BKK = ?,
             @Alasan = ?,
             @User = ?', [
@@ -151,7 +151,7 @@ class BatalBKKController extends Controller
     {
         $idBKKSelect = $request->idBKKSelect;
 
-        DB::connection('ConnAccounting')->statement('exec [SP_1273_ACC_BATAL_BKK_TTLNS]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_BATAL_BKK_TTLNS]
         @Kode = ?,
         @BKK = ?', [
             2,
