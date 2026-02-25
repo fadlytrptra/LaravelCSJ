@@ -34,13 +34,13 @@ class MaintenanceKursBKKController extends Controller
         switch ($proses) {
             case 1:
                 DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_1273_ACC_UDT_BKK_KURS ?, ?', [
+                    ->statement('EXEC SP_1273_PRG_UDT_BKK_KURS ?, ?', [
                         $request->input('id_bayar'),
                         $kurs_pembelian,
                     ]);
 
                 $checkBKK = DB::connection('ConnAccounting')
-                    ->select('EXEC SP_1273_ACC_CHECK_BKK_TRANSSUPP ?', [
+                    ->select('EXEC SP_1273_PRG_CHECK_BKK_TRANSSUPP ?', [
                         $request->input('bkk')
                     ]);
 
@@ -50,7 +50,7 @@ class MaintenanceKursBKKController extends Controller
                     $responseMessage = 'Data sudah masuk pada Hutang Supplier!..Hubungi EDP!!..';
                 } else {
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC SP_1273_ACC_UDT_BKK_KURS ?, ?', [
+                        ->statement('EXEC SP_1273_PRG_UDT_BKK_KURS ?, ?', [
                             $request->input('id_bayar'),
                             $kurs_pembelian,
                         ]);
@@ -59,7 +59,7 @@ class MaintenanceKursBKKController extends Controller
                 }
 
                 $checkKursBKK = DB::connection('ConnAccounting')
-                    ->select('EXEC SP_1273_ACC_CHECK_KURSBKK ?', [
+                    ->select('EXEC SP_1273_PRG_CHECK_KURSBKK ?', [
                         $request->input('id_bayar')
                     ]);
 
@@ -82,7 +82,7 @@ class MaintenanceKursBKKController extends Controller
 
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC Sp_1273_ACC_UDT_DTL_KURSBKK ?, ?, ?', [
+                        ->statement('EXEC Sp_1273_PRG_UDT_DTL_KURSBKK ?, ?, ?', [
                             $request->input('id_rincian'),
                             $request->input('id_bayar'),
                             floatval(str_replace(",", "", $request->input('kurs_pembayaran'))),
@@ -111,15 +111,15 @@ class MaintenanceKursBKKController extends Controller
             // dd($BlnThn);
             if ($request->input('krr1') == "true") {
                 $resultCheck = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_CHECK_BKK_KURS_BKK @BlnThn = ?', [$BlnThn]);
+                    ->select('exec SP_1273_PRG_CHECK_BKK_KURS_BKK @BlnThn = ?', [$BlnThn]);
                 if (!empty($resultCheck) && $resultCheck[0]->Ada == 0) {
                     return response()->json(['message' => 'Tidak ada Data!!..'], 404);
                 }
             }
 
             $storedProc = $request->input('krr1') == "true"
-                ? 'SP_1273_ACC_LIST_BKK_KURS_KRR1'
-                : 'SP_1273_ACC_LIST_BKK_KURS_BKK';
+                ? 'SP_1273_PRG_LIST_BKK_KURS_KRR1'
+                : 'SP_1273_PRG_LIST_BKK_KURS_BKK';
 
             $results = DB::connection('ConnAccounting')
                 ->select((string) 'exec ' . $storedProc . ' @BlnThn = ?', [$BlnThn]);
@@ -142,7 +142,7 @@ class MaintenanceKursBKKController extends Controller
             $TBKK = $request->input('bkk');
 
             $responseBayar = [];
-            $ComTrans = DB::connection('ConnAccounting')->select('exec SP_1273_ACC_LIST_BKK_BAYARTAGIHAN @IdBKK = ?', [$TBKK]);
+            $ComTrans = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK_BAYARTAGIHAN @IdBKK = ?', [$TBKK]);
             // dd($ComTrans);
             if (!empty($ComTrans)) {
                 foreach ($ComTrans as $trans) {
@@ -162,7 +162,7 @@ class MaintenanceKursBKKController extends Controller
             $IdPembayaran = $request->input('id_pembayaran');
 
             $responseRincian = [];
-            $ComTrans = DB::connection('ConnAccounting')->select('exec SP_1273_ACC_LIST_BKK_DETAILPEMBAYARAN @IdPembayaran = ?', [$IdPembayaran]);
+            $ComTrans = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK_DETAILPEMBAYARAN @IdPembayaran = ?', [$IdPembayaran]);
             // dd($ComTrans);
             if (!empty($ComTrans)) {
                 foreach ($ComTrans as $trans) {
@@ -182,7 +182,7 @@ class MaintenanceKursBKKController extends Controller
             $idTT = $request->input('idtt');
             // dd($idTT);
             $resultsTT = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_LIST_BKK_KURS_TT @IDPenagihan = ?', [$idTT]);
+                ->select('exec SP_1273_PRG_LIST_BKK_KURS_TT @IDPenagihan = ?', [$idTT]);
             // dd($resultsTT);
             $formattedResultsTT = [];
             foreach ($resultsTT as $row) {
@@ -193,7 +193,7 @@ class MaintenanceKursBKKController extends Controller
             }
 
             $resultKursRata = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_LIST_BKK_KURSRATA @IDTT = ?', [$idTT]);
+                ->select('exec SP_1273_PRG_LIST_BKK_KURSRATA @IDTT = ?', [$idTT]);
             // dd($resultKursRata);
             $kursRata = !empty($resultKursRata) ? number_format($resultKursRata[0]->Kurs_TT, 2, '.', ',') : null;
 

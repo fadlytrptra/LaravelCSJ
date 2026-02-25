@@ -20,12 +20,12 @@ class KodePerkiraanBKKController extends Controller
 
     public function getIdBKKKdPrk($BlnThn)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_UDT_BKK_KDKIRA] @Kode = ?, @BlnThn = ?', [2, $BlnThn]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_UDT_BKK_KDKIRA] @Kode = ?, @BlnThn = ?', [2, $BlnThn]);
         return response()->json($tabel);
     }
     public function getIdBKKKdPrk2($BlnThn)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_UDT_BKK_KDKIRA] @Kode = ?, @BlnThn = ?', [3, $BlnThn]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_UDT_BKK_KDKIRA] @Kode = ?, @BlnThn = ?', [3, $BlnThn]);
         return response()->json($tabel);
     }
 
@@ -48,7 +48,7 @@ class KodePerkiraanBKKController extends Controller
         $idDetail = $request->idDetail;
         $idKodePerkiraan = $request->idKodePerkiraan;
         try {
-            DB::connection('ConnAccounting')->statement("EXEC SP_1273_ACC_UDT_BKK_KDKIRA_DETAIL @IdDetailBayar = ?, @Perkiraan = ?", [
+            DB::connection('ConnAccounting')->statement("EXEC SP_1273_PRG_UDT_BKK_KDKIRA_DETAIL @IdDetailBayar = ?, @Perkiraan = ?", [
                 $idDetail,
                 $idKodePerkiraan,
             ]);
@@ -83,7 +83,7 @@ class KodePerkiraanBKKController extends Controller
         $idDetail = $request->idDetail;
         $idKodePerkiraan = $request->idKodePerkiraan;
 
-        DB::connection('ConnAccounting')->statement('exec [SP_1273_ACC_UDT_BKK_KDKIRA_DETAIL]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UDT_BKK_KDKIRA_DETAIL]
             @IdDetailBayar = ?,
             @Perkiraan = ?', [
             $idDetail,

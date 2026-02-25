@@ -38,7 +38,7 @@ class BKMTransitorisBankController extends Controller
     function getKodePerkiraan()
     {
         //dd("mau");
-        $kode =  DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_KODE_PERKIRAAN] @Kode = ?', [1]);
+        $kode =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_KODE_PERKIRAAN] @Kode = ?', [1]);
         return response()->json($kode);
     }
 
