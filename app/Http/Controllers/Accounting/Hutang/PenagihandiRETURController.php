@@ -52,7 +52,7 @@ class PenagihandiRETURController extends Controller
             $msg = 'Proses Barang Retur SEBAGIAN!!..';
         }
         // dd($msg);
-        DB::connection('ConnAccounting')->statement('EXEC Sp_1273_ACC_UDT_RETUR ?', [$listBarangItems]);
+        DB::connection('ConnAccounting')->statement('EXEC Sp_1273_PRG_UDT_RETUR ?', [$listBarangItems]);
         // Return appropriate response
         return response()->json([
             'message' => $msg,
@@ -66,7 +66,7 @@ class PenagihandiRETURController extends Controller
             $idPenagihan = $request->input('brg_retur');
             // dd($idPenagihan);
             $result = DB::connection('ConnAccounting')
-                ->select('exec Sp_TT_TAMPIL_RETUR_IDTT ?', [$idPenagihan]);
+                ->select('exec SP_1273_PRG_TT_TAMPIL_RETUR_IDTT ?', [$idPenagihan]);
             // dd($result);
             $data = collect($result)->map(function ($row) {
                 return [
@@ -84,7 +84,7 @@ class PenagihandiRETURController extends Controller
             return datatables($data)->make(true);
         } else if ($id == 'getDataSebagian') {
             $result = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_LIST_RETUR_SEBAGIAN');
+                ->select('exec SP_1273_PRG_LIST_RETUR_SEBAGIAN');
             // dd($result);
             $data = collect($result)->map(function ($row) {
                 return [
@@ -101,7 +101,7 @@ class PenagihandiRETURController extends Controller
             return datatables($data)->rawColumns(['nilai_penagihan'])->make(true);
         } else if ($id == 'getData') {
             $result = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_LIST_TT_RETUR');
+                ->select('exec SP_1273_PRG_LIST_TT_RETUR');
             // dd($result);
             $data = collect($result)->map(function ($row) {
                 return [
