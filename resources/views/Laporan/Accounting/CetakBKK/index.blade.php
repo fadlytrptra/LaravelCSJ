@@ -1,6 +1,6 @@
 @extends('layouts.appAccounting')
 @section('content')
-@section('title', 'Cetak BKM')
+@section('title', 'Cetak BKK')
 <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 @if (session('error'))
     <script>
