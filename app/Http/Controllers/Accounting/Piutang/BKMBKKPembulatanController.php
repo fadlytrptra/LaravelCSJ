@@ -26,9 +26,9 @@ class BKMBKKPembulatanController extends Controller
         }
 
         if ($id == 'getBank') {
-            // Retrieve list of banks (SP_5298_ACC_LIST_BANK)
+            // Retrieve list of banks (SP_1273_PRG_LIST_BANK)
             $bankResults = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_BANK');
+                ->select('exec SP_1273_PRG_LIST_BANK');
             // dd($bankResults);
             $response = [];
             foreach ($bankResults as $bank) {
@@ -43,7 +43,7 @@ class BKMBKKPembulatanController extends Controller
             if ($request->input('idBank') !== null) {
                 // Execute the stored procedure to get bank details
                 $bankResults = DB::connection('ConnAccounting')
-                    ->select('exec SP_5298_ACC_LIST_BANK_2 @idBank = ?', [
+                    ->select('exec SP_1273_PRG_LIST_BANK_2 @idBank = ?', [
                         trim($request->input('idBank'))
                     ]);
                 // dd($bankResults);
@@ -68,7 +68,7 @@ class BKMBKKPembulatanController extends Controller
             $tahun = $request->input('tahun');
 
             $bkmResults = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_BKM_PEMBULATAN @kode = ?, @bln = ?, @thn = ?', [$kode, $bulan, $tahun]);
+                ->select('exec SP_1273_PRG_LIST_BKM_PEMBULATAN @kode = ?, @bln = ?, @thn = ?', [$kode, $bulan, $tahun]);
             // dd($bkmResults);
             $response = [];
             $index = 0;
@@ -93,7 +93,7 @@ class BKMBKKPembulatanController extends Controller
             // dd($idBKM);
             // Execute the stored procedure
             $bkmDetails = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_BKM_PEMBULATAN @kode = ?, @idBKM = ?', [$kode, $idBKM]);
+                ->select('exec SP_1273_PRG_LIST_BKM_PEMBULATAN @kode = ?, @idBKM = ?', [$kode, $idBKM]);
             // dd($bkmDetails);
             // Prepare the response array for DataTables
             $response = [];
@@ -113,7 +113,7 @@ class BKMBKKPembulatanController extends Controller
             // dd($response);
             return datatables($response)->make(true);
         } else if ($id == 'getPembulatan') {
-            $results = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKK_DP');
+            $results = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK_DP');
             // dd($results);
             $response = [];
             $j = 0;
@@ -135,7 +135,7 @@ class BKMBKKPembulatanController extends Controller
             $tgl2 = $request->input('tgl_akhirbkk');
             // dd($tgl1, $tgl2);
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_BKK_DP_PERTGL ?, ?', [$tgl1, $tgl2]);
+                ->select('exec SP_1273_PRG_LIST_BKK_DP_PERTGL ?, ?', [$tgl1, $tgl2]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -231,7 +231,7 @@ class BKMBKKPembulatanController extends Controller
 
             // proses insert pada T_Pembayaran
             $pembayaran = DB::connection('ConnAccounting')->statement(
-                'exec SP_5298_ACC_INSERT_BKK_TPEMBAYARAN
+                'exec SP_1273_PRG_INSERT_BKK_TPEMBAYARAN
                 @idBKK = ?, @tgl = ?, @userinput = ?, @terjemahan = ?, @nilai = ?, @IdBank=?',
                 [$idBKK, $tanggal, $user_id, $Konversi, $nilai, $id_bank]
             );
@@ -240,7 +240,7 @@ class BKMBKKPembulatanController extends Controller
 
             // proses insert pada T_Pembayaran_Tagihan
             $tagihan = DB::connection('ConnAccounting')->statement(
-                'exec SP_5298_ACC_INSERT_BKK_TPEMBAYARAN_TAG
+                'exec SP_1273_PRG_INSERT_BKK_TPEMBAYARAN_TAG
                 @idBKK = ?, @idUang = ?, @idJenis = ?, @IdBank = ?, @nilai = ?, @user = ?, @idBKM_acuan = ?',
                 [$idBKK, $idMtUang, 1, $id_bank, $nilai, $user_id, $id_bkm]
             );
@@ -255,7 +255,7 @@ class BKMBKKPembulatanController extends Controller
 
             // proses insert pada T_Detail_Pembayaran
             $trans2 = DB::connection('ConnAccounting')->statement(
-                'exec SP_5298_ACC_INSERT_BKK_TDETAILPEMB
+                'exec SP_1273_PRG_INSERT_BKK_TDETAILPEMB
                 @idpembayaran = ?, @keterangan = ?, @biaya = ?, @kodeperkiraan = ?',
                 [$idPembayaran, $uraian, $nilai, $idKodePerkiraan]
             );
@@ -263,7 +263,7 @@ class BKMBKKPembulatanController extends Controller
 
             // proses update id_BKK pada T_Counter
             $counter = DB::connection('ConnAccounting')->statement(
-                'exec SP_5298_ACC_UPDATE_COUNTER_IDBKK
+                'exec SP_1273_PRG_UPDATE_COUNTER_IDBKK
                 @idbkk = ?, @idBank = ?, @jenis = ?, @tgl = ?',
                 [$id_bkk, $id_bank1, $jenis_bank, $tanggal]
             );

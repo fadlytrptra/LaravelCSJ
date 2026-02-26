@@ -23,14 +23,14 @@ class BKMBKKNotaKreditController extends Controller
 
     public function getDataNotaKredit()
     {
-        $tabel =  DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_NOTA_KREDIT]');
+        $tabel =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_NOTA_KREDIT]');
         // dd($tabel);
         return response()->json($tabel);
     }
 
     public function getMataUang()
     {
-        $data = DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_MATA_UANG] @Kode = ?', [1]);
+        $data = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_MATA_UANG] @Kode = ?', [1]);
         $data_Uang = [];
         foreach ($data as $detail_Uang) {
             $data_Uang[] = [
@@ -90,14 +90,14 @@ class BKMBKKNotaKreditController extends Controller
     public function getTabelTampilBKM($tanggalTampilBKM, $tanggalTampilBKM2)
     {
         // dd("masuk");
-        $tabel =  DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_BKM_NOTA_KREDIT_PERTGL] @tgl1 = ?, @tgl2 = ?', [$tanggalTampilBKM, $tanggalTampilBKM2]);
+        $tabel =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BKM_NOTA_KREDIT_PERTGL] @tgl1 = ?, @tgl2 = ?', [$tanggalTampilBKM, $tanggalTampilBKM2]);
         return response()->json($tabel);
     }
 
     public function getTabelTampilBKK($tanggalTampilBKK, $tanggalTampilBKK2)
     {
         // dd("masuk");
-        $tabel =  DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_BKK_NOTA_KREDIT_PERTGL] @tgl1 = ?, @tgl2 = ?', [$tanggalTampilBKK, $tanggalTampilBKK2]);
+        $tabel =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BKK_NOTA_KREDIT_PERTGL] @tgl1 = ?, @tgl2 = ?', [$tanggalTampilBKK, $tanggalTampilBKK2]);
         return response()->json($tabel);
     }
 
@@ -144,7 +144,7 @@ class BKMBKKNotaKreditController extends Controller
         $idBankBKKtemp = trim($request->input('idBankBKKtemp'));
 
         if ($id === 'getbank') {
-            $data = DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_BANK]');
+            $data = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BANK]');
             // dd($data);
             $data_isi = [];
             foreach ($data as $detail_isi) {
@@ -157,11 +157,11 @@ class BKMBKKNotaKreditController extends Controller
         } else if ($id === 'detailjenisbank') {
             $idBank = trim($request->input('idBank'));
 
-            $data =  DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_BANK_1] @idBank = ?', [$idBank]);
+            $data =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BANK_1] @idBank = ?', [$idBank]);
             // dd($data, $request->all());
             return response()->json($data);
         } else if ($id === 'getkodeperkiraan') {
-            $data = DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_KODE_PERKIRAAN] @Kode = 1');
+            $data = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_KODE_PERKIRAAN] @Kode = 1');
             // dd($data);
             $data_isi = [];
             foreach ($data as $detail_isi) {
@@ -234,14 +234,14 @@ class BKMBKKNotaKreditController extends Controller
                 ->select("SELECT * FROM VW_PRG_5298_ACC_CETAK_BKK_NOTA_KREDIT WHERE Id_BKK = ?", [$bkk]);
             // dd($sno);
 
-            DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_UPDATE_TGLCETAK_BKK] @idBKK = ?', [$bkk]);
+            DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UPDATE_TGLCETAK_BKK] @idBKK = ?', [$bkk]);
 
             return response()->json([
                 'data' => $sno,
                 'message' => 'Laporan telah dicetak dengan sukses'
             ]);
         } else if ($id == 'getPembulatanBKK') {
-            $results = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKK_NOTA_KREDIT');
+            $results = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK_NOTA_KREDIT');
             // dd($results);
             $response = [];
             $j = 0;
@@ -263,7 +263,7 @@ class BKMBKKNotaKreditController extends Controller
             // dd($tgl1, $tgl2);
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_BKK_NOTA_KREDIT_PERTGL ?, ?', [$tgl1, $tgl2]);
+                ->select('exec SP_1273_PRG_LIST_BKK_NOTA_KREDIT_PERTGL ?, ?', [$tgl1, $tgl2]);
             // dd($results);
 
             $response = [];
@@ -284,14 +284,14 @@ class BKMBKKNotaKreditController extends Controller
                 ->select("SELECT * FROM VW_PRG_5298_ACC_CETAK_BKM_NOTA_KREDIT WHERE Id_BKM = ?", [$bkm]);
             // dd($sno);
 
-            DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_UPDATE_TGLCETAK_BKM] @idBKm = ?', [$bkm]);
+            DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UPDATE_TGLCETAK_BKM] @idBKm = ?', [$bkm]);
 
             return response()->json([
                 'data' => $sno,
                 'message' => 'Laporan telah dicetak dengan sukses'
             ]);
         } else if ($id == 'getPembulatanBKM') {
-            $results = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKM_NOTA_KREDIT');
+            $results = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKM_NOTA_KREDIT');
             // dd($results);
             $response = [];
             $j = 0;
@@ -314,7 +314,7 @@ class BKMBKKNotaKreditController extends Controller
             // dd($tgl1, $tgl2);
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_BKM_NOTA_KREDIT_PERTGL ?, ?', [$tgl1, $tgl2]);
+                ->select('exec SP_1273_PRG_LIST_BKM_NOTA_KREDIT_PERTGL ?, ?', [$tgl1, $tgl2]);
             // dd($results);
 
             $response = [];
@@ -366,7 +366,7 @@ class BKMBKKNotaKreditController extends Controller
             try {
                 // Insert into T_Pelunasan
                 // Log::info('Inserting into T_Pelunasan started.');
-                DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN]
+                DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN]
                     @idBKM = ?,
                     @tglinput = ?,
                     @userinput = ?,
@@ -409,7 +409,7 @@ class BKMBKKNotaKreditController extends Controller
 
                 // Insert into T_Detail_Pelunasan_Tagihan
                 // Log::info('Inserting into T_Detail_Pelunasan_Tagihan started.');
-                DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_INSERT_BKM_TDETAILPEL]
+                DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_INSERT_BKM_TDETAILPEL]
                     @idpelunasan = ?,
                     @idpenagihan = ?,
                     @sisa = ?,
@@ -424,7 +424,7 @@ class BKMBKKNotaKreditController extends Controller
 
                 // Update id_BKM pada T_Counter_BKM
                 // Log::info('Updating T_Counter_IdBKM started.');
-                DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_UPDATE_COUNTER_IDBKM]
+                DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UPDATE_COUNTER_IDBKM]
                         @idBKM = ?,
                         @idBank = ?,
                         @jenis = ?,
@@ -472,7 +472,7 @@ class BKMBKKNotaKreditController extends Controller
                 // Log::info('Inserting into T_Pembayaran started.');
 
                 // Insert pada T_Pembayaran
-                DB::connection('ConnAccounting')->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN]
+                DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN]
                     @idBKK = ?,
                     @tgl = ?,
                     @userinput = ?,
@@ -517,7 +517,7 @@ class BKMBKKNotaKreditController extends Controller
 
                 // Insert pada T_Detail_Pelunasan_Tagihan
                 DB::connection('ConnAccounting')->statement(
-                    'exec [SP_5298_ACC_INSERT_BKK_TDETAILPEMB]
+                    'exec [SP_1273_PRG_INSERT_BKK_TDETAILPEMB]
                         @idpembayaran = ?,
                         @keterangan = ?,
                         @biaya = ?,
@@ -533,7 +533,7 @@ class BKMBKKNotaKreditController extends Controller
 
                 // Update id_BKK pada T_Counter_BKK
                 DB::connection('ConnAccounting')->statement(
-                    'exec [SP_5298_ACC_UPDATE_COUNTER_IDBKK]
+                    'exec [SP_1273_PRG_UPDATE_COUNTER_IDBKK]
                     @idbkk = ?,
                     @idBank = ?,
                     @jenis = ?,
@@ -549,7 +549,7 @@ class BKMBKKNotaKreditController extends Controller
 
                 // Update no BKK di T_Nota_Kredit dan T_Kartu_Piutang
                 DB::connection('ConnAccounting')->statement(
-                    'exec [SP_5298_ACC_UPDATE_FIELD_IDBKK]
+                    'exec [SP_1273_PRG_UPDATE_FIELD_IDBKK]
                         @idNotaKredit = ?,
                         @idPenagihan = ?,
                         @idBKK = ?,
