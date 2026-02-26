@@ -67,7 +67,7 @@ class BatalBKMTransistorisController extends Controller
             return datatables($query)->make(true);
 
         } else if ($id === 'getDetailBKM') {
-            $detilBKM = DB::connection('ConnAccounting')->select('exec SP_1273_ACC_LIST_BKK_BTLBKK ?,?', [$BKK, $kode]);
+            $detilBKM = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK_BTLBKK ?,?', [$BKK, $kode]);
             // dd($request->all(), $detilBKM);
 
             $data_detilBKM = [];
@@ -84,7 +84,7 @@ class BatalBKMTransistorisController extends Controller
 
             // Check the Status_Penagihan
             if ($data_detilBKM[0]['Status_Penagihan'] === 'Y') {
-                $notice = DB::connection('ConnAccounting')->select('exec SP_1273_ACC_CHECK_BTLBKK ?', [$BKK]);
+                $notice = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_CHECK_BTLBKK ?', [$BKK]);
 
                 $ada = $notice[0]->Ada;
                 // dd($ada);
@@ -112,7 +112,7 @@ class BatalBKMTransistorisController extends Controller
         $BKK = $request->input('BKK');
         $alasan = $request->input('alasan');
         $user = Auth::user()->NomorUser;
-        $uraian = $request->input('uraian'); // Optional, default to empty string   
+        $uraian = $request->input('uraian'); // Optional, default to empty string
         $kodeProses = $request->input('kodeProses'); // Default to 1 if not provided
         if ($id === 'batal') {
             try {
@@ -126,7 +126,7 @@ class BatalBKMTransistorisController extends Controller
 
                     return response()->json(['success' => 'Data BKM sudah dikoreksi!!'], 200);
                 } else if ($kodeProses == 2) {
-                    DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_BATAL_BKM ?,?,?', [$BKK, $alasan, $user]);
+                    DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_BATAL_BKM ?,?,?', [$BKK, $alasan, $user]);
 
                     return response()->json(['success' => 'Data BKM sudah dibatalkan!!'], 200);
                 }
