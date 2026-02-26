@@ -20,19 +20,19 @@ class UraianBKKController extends Controller
 
     public function getCheckBKKIdBKK($idBKK)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_CHECK_BKK_IDBKK] @IdBKK = ?', [$idBKK]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_CHECK_BKK_IDBKK] @IdBKK = ?', [$idBKK]);
         return response()->json($tabel);
     }
 
     public function getListBKK($idBKK)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_LIST_BKK_IDBKK] @IdBKK = ?', [$idBKK]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BKK_IDBKK] @IdBKK = ?', [$idBKK]);
         return response()->json($tabel);
     }
 
     public function getListBKKTotalIdBKK($idBKK)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_ACC_LIST_BKK_TOTAL_IDBKK] @IdBKK = ?', [$idBKK]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BKK_TOTAL_IDBKK] @IdBKK = ?', [$idBKK]);
         return response()->json($tabel);
     }
 
@@ -54,7 +54,7 @@ class UraianBKKController extends Controller
         try {
             switch ($proses) {
                 case 1:
-                    DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_INS_BKK2_DETAILBAYAR @IdDetailBayar = ?, @Rincian = ?, @Nilai = ?, @Perkiraan = ?', [
+                    DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_INS_BKK2_DETAILBAYAR @IdDetailBayar = ?, @Rincian = ?, @Nilai = ?, @Perkiraan = ?', [
                         $request->input('idBayar'),
                         $request->input('rincian'),
                         $request->input('nilaiRincian'),
@@ -63,7 +63,7 @@ class UraianBKKController extends Controller
                     break;
 
                 case 2:
-                    DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_UDT_BKK2_DETAILBAYAR @IdDetailBayar = ?, @IdPembayaran = ?, @Rincian = ?, @Nilai = ?, @Perkiraan = ?', [
+                    DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UDT_BKK2_DETAILBAYAR @IdDetailBayar = ?, @IdPembayaran = ?, @Rincian = ?, @Nilai = ?, @Perkiraan = ?', [
                         $request->input('idDetail'),
                         $request->input('idBayar'),
                         $request->input('rincian'),
@@ -73,7 +73,7 @@ class UraianBKKController extends Controller
                     break;
             }
 
-            DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_UDT_BKK_USER_UPDATE @USERID = ?, @IDBKK = ?', [
+            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UDT_BKK_USER_UPDATE @USERID = ?, @IDBKK = ?', [
                 $userId,
                 $idBKK
             ]);
@@ -93,7 +93,7 @@ class UraianBKKController extends Controller
     {
         if ($id == 'getListKP') {
             try {
-                $results = DB::connection('ConnAccounting')->select('exec SP_1273_ACC_LIST_BKK1_KODEPERKIRAAN');
+                $results = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK1_KODEPERKIRAAN');
                 // dd($results);
                 $data = [];
                 foreach ($results as $row) {
@@ -125,7 +125,7 @@ class UraianBKKController extends Controller
         $idBayar = $request->idBayar;
         $idKodePerkiraan = $request->idKodePerkiraan;
 
-        DB::connection('ConnAccounting')->statement('exec [SP_1273_ACC_UDT_BKK2_DETAILBAYAR]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_UDT_BKK2_DETAILBAYAR]
         @IdDetailBayar = ?,
         @IdPembayaran = ?,
         @rincian = ?,
