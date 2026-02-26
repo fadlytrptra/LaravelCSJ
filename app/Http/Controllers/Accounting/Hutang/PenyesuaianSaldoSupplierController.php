@@ -51,7 +51,7 @@ class PenyesuaianSaldoSupplierController extends Controller
 
                     // Execute the stored procedure
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC SP_1273_ACC_UDT_TT_SESUAI_SALDO @IdTrans = ?, @IdSupp = ?', [$idTrans, $idSupp]);
+                        ->statement('EXEC SP_1273_PRG_UDT_TT_SESUAI_SALDO @IdTrans = ?, @IdSupp = ?', [$idTrans, $idSupp]);
                 }
 
                 // Return success response
@@ -77,7 +77,7 @@ class PenyesuaianSaldoSupplierController extends Controller
                     $idSupp = $supplierId['id'] ?? null;
                     // dd($idSupp);
                     DB::connection('ConnAccounting')
-                        ->statement('exec SP_1273_ACC_UDT_TT_SALDO_KOSONG ?', [$idSupp]);
+                        ->statement('exec SP_1273_PRG_UDT_TT_SALDO_KOSONG ?', [$idSupp]);
                 }
 
                 return response()->json(['message' => 'Proses berhasil'], 200);
@@ -98,10 +98,10 @@ class PenyesuaianSaldoSupplierController extends Controller
             // dd($results);
             if ($hutang && !$tunai) {
                 $results = DB::connection('ConnAccounting')
-                    ->select('EXEC SP_1273_ACC_LIST_TT_SALDOSUPP_HUTANG');
+                    ->select('EXEC SP_1273_PRG_LIST_TT_SALDOSUPP_HUTANG');
             } elseif (!$hutang && $tunai) {
                 $results = DB::connection('ConnAccounting')
-                    ->select('EXEC SP_1273_ACC_LIST_TT_SALDOSUPP_TUNAI');
+                    ->select('EXEC SP_1273_PRG_LIST_TT_SALDOSUPP_TUNAI');
             }
             // dd($results);
             $response = [];

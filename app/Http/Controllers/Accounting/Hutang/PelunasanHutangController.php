@@ -38,7 +38,7 @@ class PelunasanHutangController extends Controller
             DB::connection('ConnAccounting')->beginTransaction();
 
             // Insert Jurnal
-            DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_INS_TT_JURNAL ?, ?, ?, ?, ?, ?', [
+            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_INS_TT_JURNAL ?, ?, ?, ?, ?, ?', [
                 $request->input('bkk'),
                 $request->input('supplierS'),
                 $request->input('keteranganM'),
@@ -49,13 +49,13 @@ class PelunasanHutangController extends Controller
 
             // Cek Saldo Hutang Supplier
             $saldoSupplier = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_CHECK_TT_SALDOSUPP ?', [$request->input('supplierS')]);
+                ->select('exec SP_1273_PRG_CHECK_TT_SALDOSUPP ?', [$request->input('supplierS')]);
 
             if (count($saldoSupplier) > 0 && $saldoSupplier[0]->aDA > 0) {
                 if (trim($request->input('id_uangS')) == 1) { // Supplier = Rp
                     if (trim($request->input('bayarS')) == 1) { // Bayar = Rp
                         // Insert ke tabel T_Transaksi_Supplier
-                        DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_INS_TT_TRANS_SUPP ?, ?, ?, ?, ?, ?, ?, ?, ?, ?', [
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_INS_TT_TRANS_SUPP ?, ?, ?, ?, ?, ?, ?, ?, ?, ?', [
                             6,
                             $request->input('tanggalS'),
                             $request->input('supplierS'),
@@ -69,18 +69,18 @@ class PelunasanHutangController extends Controller
                         ]);
 
                         // Update Saldo Rp Supplier
-                        DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_TT_HITUNGSALDO_RP_SUPPLIER ?', [
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_TT_HITUNGSALDO_RP_SUPPLIER ?', [
                             trim($request->input('bkk'))
                         ]);
                     }
                 } else { // Supplier = $
                     // Cek Kurs sudah diisi
                     $cekKurs = DB::connection('ConnAccounting')
-                        ->select('exec SP_1273_ACC_CHECK_TT_TRANS_SUPP_RP ?', [trim($request->input('bkk'))]);
+                        ->select('exec SP_1273_PRG_CHECK_TT_TRANS_SUPP_RP ?', [trim($request->input('bkk'))]);
 
                     if (count($cekKurs) > 0 && $cekKurs[0]->Ada > 0) {
                         // Kurs check and other necessary transactions for USD
-                        DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER ?', [
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER ?', [
                             trim($request->input('bkk'))
                         ]);
                     } else {
@@ -106,7 +106,7 @@ class PelunasanHutangController extends Controller
             $response = [];
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_LIST_PELUNASANHUTANG');
+                ->select('exec SP_1273_PRG_TT_LIST_PELUNASANHUTANG');
             // dd($results);
             foreach ($results as $row) {
                 $response[] = [
@@ -149,7 +149,7 @@ class PelunasanHutangController extends Controller
                 }
 
                 $kursCheck = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_CHECK_TT_JURNAL_KURS @IdSupplier = ?', [$supplier]);
+                    ->select('exec SP_1273_PRG_CHECK_TT_JURNAL_KURS @IdSupplier = ?', [$supplier]);
 
                 if ($kursCheck[0]->adakurs > 0) {
                     if ($idUangSupp == 1) {
@@ -160,14 +160,14 @@ class PelunasanHutangController extends Controller
                 }
 
                 $saldoCheck = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_CHECK_TT_SALDOSUPP @IdSupplier = ?', [$supplier]);
+                    ->select('exec SP_1273_PRG_CHECK_TT_SALDOSUPP @IdSupplier = ?', [$supplier]);
 
                 if ($saldoCheck[0]->aDA > 0) {
                     // Insert transaction and update balances based on the conditions
 
                     if ($idUangSupp == 1) { // Supplier = Rp
                         if ($idUangByr == 1) { // Bayar = Rp
-                            DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_INS_TT_TRANSAKSI_SUPPLIER @Id_TypeTransaksi = ?, @Tanggal = ?, @Id_Supplier = ?, @Detail = ?, @Id_Mata_Uang = ?, @Nilai_Debet = ?, @Nilai_Kredit = ?, @Kurs = ?, @Referensi = ?, @User_Input = ?', [
+                            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_INS_TT_TRANSAKSI_SUPPLIER @Id_TypeTransaksi = ?, @Tanggal = ?, @Id_Supplier = ?, @Detail = ?, @Id_Mata_Uang = ?, @Nilai_Debet = ?, @Nilai_Kredit = ?, @Kurs = ?, @Referensi = ?, @User_Input = ?', [
                                 2,
                                 $item['Tgl_Input'],  // Corresponds to SubItems[1]
                                 $supplier,
@@ -180,17 +180,17 @@ class PelunasanHutangController extends Controller
                                 trim(Auth::user()->NomorUser),
                             ]);
 
-                            DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_TT_HITUNGSALDO_RP_SUPPLIER @IdBKK = ?', [$bkk]);
+                            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_TT_HITUNGSALDO_RP_SUPPLIER @IdBKK = ?', [$bkk]);
                         } else {
                             // Add logic if Bayar = $
                         }
                     } else { // Supplier = $
                         $kursIsiCheck = DB::connection('ConnAccounting')
-                            ->select('exec SP_1273_ACC_CHECK_TT_TRANS_SUPP_RP @IdBKK = ?', [$bkk]);
+                            ->select('exec SP_1273_PRG_CHECK_TT_TRANS_SUPP_RP @IdBKK = ?', [$bkk]);
 
                         if ($kursIsiCheck[0]->Ada > 0) {
                             // Proceed with further checks and inserts for suppliers with currency $
-                            DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_INS_TT_TRANS_SUPP_BKK2 @Id_TypeTransaksi = ?, @Tanggal = ?, @Id_Supplier = ?, @Detail = ?, @Id_Mata_Uang = ?, @Nilai_Debet = ?, @Nilai_Kredit = ?, @Kurs = ?, @Referensi = ?, @User_Input = ?, @Uang_Bayar = ?', [
+                            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_INS_TT_TRANS_SUPP_BKK2 @Id_TypeTransaksi = ?, @Tanggal = ?, @Id_Supplier = ?, @Detail = ?, @Id_Mata_Uang = ?, @Nilai_Debet = ?, @Nilai_Kredit = ?, @Kurs = ?, @Referensi = ?, @User_Input = ?, @Uang_Bayar = ?', [
                                 2,
                                 $item['Tgl_Input'],  // Corresponds to SubItems[1]
                                 $supplier,
@@ -204,7 +204,7 @@ class PelunasanHutangController extends Controller
                                 $idUangByr
                             ]);
 
-                            DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [$bkk]);
+                            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [$bkk]);
                         } else {
                             // Further logic based on $ currency checks
                         }
@@ -237,14 +237,14 @@ class PelunasanHutangController extends Controller
                 }
             }
             $saldoCheck = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_CHECK_TT_SALDOSUPP @IdSupplier = ?', [$supplier]);
+                ->select('exec SP_1273_PRG_CHECK_TT_SALDOSUPP @IdSupplier = ?', [$supplier]);
 
             if ($saldoCheck[0]->aDA > 0) {
                 // Insert transaction and update balances based on the conditions
 
                 if ($idUangSupp == 1) { // Supplier = Rp
                     if ($idUangByr == 1) { // Bayar = Rp
-                        DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_INS_TT_TRANSAKSI_SUPPLIER @Id_TypeTransaksi = ?, @Tanggal = ?, @Id_Supplier = ?, @Detail = ?, @Id_Mata_Uang = ?, @Nilai_Debet = ?, @Nilai_Kredit = ?, @Kurs = ?, @Referensi = ?, @User_Input = ?', [
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_INS_TT_TRANSAKSI_SUPPLIER @Id_TypeTransaksi = ?, @Tanggal = ?, @Id_Supplier = ?, @Detail = ?, @Id_Mata_Uang = ?, @Nilai_Debet = ?, @Nilai_Kredit = ?, @Kurs = ?, @Referensi = ?, @User_Input = ?', [
                             2,
                             $item['Tgl_Input'],  // Corresponds to SubItems[1]
                             $supplier,
@@ -257,17 +257,17 @@ class PelunasanHutangController extends Controller
                             trim(Auth::user()->NomorUser),
                         ]);
 
-                        DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_TT_HITUNGSALDO_RP_SUPPLIER @IdBKK = ?', [$bkk]);
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_TT_HITUNGSALDO_RP_SUPPLIER @IdBKK = ?', [$bkk]);
                     } else {
                         // Add logic if Bayar = $
                     }
                 } else { // Supplier = $
                     $kursIsiCheck = DB::connection('ConnAccounting')
-                        ->select('exec SP_1273_ACC_CHECK_TT_TRANS_SUPP_RP @IdBKK = ?', [$bkk]);
+                        ->select('exec SP_1273_PRG_CHECK_TT_TRANS_SUPP_RP @IdBKK = ?', [$bkk]);
 
                     if ($kursIsiCheck[0]->Ada > 0) {
                         // Proceed with further checks and inserts for suppliers with currency $
-                        DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_INS_TT_TRANS_SUPP_BKK2 @Id_TypeTransaksi = ?, @Tanggal = ?, @Id_Supplier = ?, @Detail = ?, @Id_Mata_Uang = ?, @Nilai_Debet = ?, @Nilai_Kredit = ?, @Kurs = ?, @Referensi = ?, @User_Input = ?, @Uang_Bayar = ?', [
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_INS_TT_TRANS_SUPP_BKK2 @Id_TypeTransaksi = ?, @Tanggal = ?, @Id_Supplier = ?, @Detail = ?, @Id_Mata_Uang = ?, @Nilai_Debet = ?, @Nilai_Kredit = ?, @Kurs = ?, @Referensi = ?, @User_Input = ?, @Uang_Bayar = ?', [
                             2,
                             $item['Tgl_Input'],  // Corresponds to SubItems[1]
                             $supplier,
@@ -281,7 +281,7 @@ class PelunasanHutangController extends Controller
                             $idUangByr
                         ]);
 
-                        DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [$bkk]);
+                        DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [$bkk]);
                     } else {
                         // Further logic based on $ currency checks
                     }
@@ -296,7 +296,7 @@ class PelunasanHutangController extends Controller
             $idBKK = trim($request->input('bkk'));
             // dd($idBKK);
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_LUNAS_BKK @IDBKK = ?', [$idBKK]);
+                ->select('exec SP_1273_PRG_TT_LUNAS_BKK @IDBKK = ?', [$idBKK]);
             // dd($results);
             $response = [];
             $i = 0;
@@ -331,7 +331,7 @@ class PelunasanHutangController extends Controller
             // dd($idBKK);
             $response = [];
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_JURNAL_TTL_BKK @IDBKK = ?', [$idBKK]);
+                ->select('exec SP_1273_PRG_TT_JURNAL_TTL_BKK @IDBKK = ?', [$idBKK]);
             // dd($results);
             foreach ($results as $row) {
                 if ($mataUang == '$') {
@@ -348,7 +348,7 @@ class PelunasanHutangController extends Controller
             // First Stored Procedure
             $idBKK = trim($request->input('bkk'));
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_LUNAS_TT @BKK = ?', [$idBKK]);
+                ->select('exec SP_1273_PRG_TT_LUNAS_TT @BKK = ?', [$idBKK]);
             // dd($results);
             $response = [];
             $i = 0;
@@ -390,7 +390,7 @@ class PelunasanHutangController extends Controller
             $response = [];
             // Second Stored Procedure
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_JURNAL_TTL @BKK = ?', [$idBKK]);
+                ->select('exec SP_1273_PRG_TT_JURNAL_TTL @BKK = ?', [$idBKK]);
 
             if (!empty($results)) {
                 foreach ($results as $row) {
@@ -409,9 +409,9 @@ class PelunasanHutangController extends Controller
             $response = [];
             $bkk = trim($request->input('bkk'));
 
-            // Query pertama untuk SP_1273_ACC_TT_LUNAS_TT
+            // Query pertama untuk SP_1273_PRG_TT_LUNAS_TT
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_LUNAS_TT @BKK = ?', [$bkk]);
+                ->select('exec SP_1273_PRG_TT_LUNAS_TT @BKK = ?', [$bkk]);
             // dd($results);
             $i = 0;
             foreach ($results as $row) {
@@ -452,9 +452,9 @@ class PelunasanHutangController extends Controller
             $idBKK = trim($request->input('bkk'));
             $mataUang = trim($request->input('mata_uangKanan'));
             $response = [];
-            // Query kedua untuk SP_1273_ACC_TT_JURNAL_TTL
+            // Query kedua untuk SP_1273_PRG_TT_JURNAL_TTL
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_JURNAL_TTL @BKK = ?', [$idBKK]);
+                ->select('exec SP_1273_PRG_TT_JURNAL_TTL @BKK = ?', [$idBKK]);
             // dd($results);
             if (!empty($results)) {
                 $row = $results[0];
@@ -475,9 +475,9 @@ class PelunasanHutangController extends Controller
             $response = [];
             $bkk = trim($request->input('bkk'));
 
-            // Query pertama untuk SP_1273_ACC_TT_LUNAS_TT
+            // Query pertama untuk SP_1273_PRG_TT_LUNAS_TT
             $results1 = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_LUNAS_TT @BKK = ?', [$bkk]);
+                ->select('exec SP_1273_PRG_TT_LUNAS_TT @BKK = ?', [$bkk]);
             // dd($results1);
             $i = 0;
             foreach ($results1 as $row) {
@@ -517,9 +517,9 @@ class PelunasanHutangController extends Controller
             $idBKK = trim($request->input('bkk'));
             $mataUang = trim($request->input('mata_uangKanan'));
             $response = [];
-            // Query kedua untuk SP_1273_ACC_TT_JURNAL_TTL
+            // Query kedua untuk SP_1273_PRG_TT_JURNAL_TTL
             $results2 = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_JURNAL_TTL @BKK = ?', [$idBKK]);
+                ->select('exec SP_1273_PRG_TT_JURNAL_TTL @BKK = ?', [$idBKK]);
             // dd($results2);
             if (!empty($results2)) {
                 $row = $results2[0];
@@ -540,9 +540,9 @@ class PelunasanHutangController extends Controller
             $response = [];
             $bkk = trim($request->input('bkk'));
 
-            // Query pertama untuk SP_1273_ACC_TT_LUNAS_TT
+            // Query pertama untuk SP_1273_PRG_TT_LUNAS_TT
             $results1 = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_LUNAS_TT @BKK = ?', [$bkk]);
+                ->select('exec SP_1273_PRG_TT_LUNAS_TT @BKK = ?', [$bkk]);
             // dd($results1);
             $i = 0;
             foreach ($results1 as $row) {
@@ -581,9 +581,9 @@ class PelunasanHutangController extends Controller
         } else if ($id == 'lanjutDataTT_MDisc') {
             $idBKK = trim($request->input('bkk'));
             $mataUang = trim($request->input('mata_uangKanan'));
-            // Query kedua untuk SP_1273_ACC_TT_JURNAL_TTL
+            // Query kedua untuk SP_1273_PRG_TT_JURNAL_TTL
             $results2 = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_TT_JURNAL_TTL @BKK = ?', [$idBKK]);
+                ->select('exec SP_1273_PRG_TT_JURNAL_TTL @BKK = ?', [$idBKK]);
             // dd($results2);
             if (!empty($results2)) {
                 $row = $results2[0];
@@ -603,7 +603,7 @@ class PelunasanHutangController extends Controller
         } else if ($id == 'getKodePerkiraan') {
             try {
                 $results = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_LIST_TT_KODEPERKIRAAN');
+                    ->select('exec SP_1273_PRG_LIST_TT_KODEPERKIRAAN');
                 // dd($results);
                 $response = [];
                 foreach ($results as $row) {
