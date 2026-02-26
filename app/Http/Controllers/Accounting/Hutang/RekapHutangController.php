@@ -36,13 +36,13 @@ class RekapHutangController extends Controller
             $tgl_akhir = $request->input('tanggal_akhir');
             // dd($request->all());
             if ($proses == 1) {
-                $command = 'SP_1273_ACC_REKAP_HUTANG_RUPIAH';
+                $command = 'SP_1273_PRG_REKAP_HUTANG_RUPIAH';
             } elseif ($proses == 2) {
-                $command = 'SP_1273_ACC_REKAP_HUTANG_NONRUPIAH';
+                $command = 'SP_1273_PRG_REKAP_HUTANG_NONRUPIAH';
             } elseif ($proses == 3) {
-                $command = 'SP_1273_ACC_REKAP_TUNAI_RUPIAH';
+                $command = 'SP_1273_PRG_REKAP_TUNAI_RUPIAH';
             } elseif ($proses == 4) {
-                $command = 'SP_1273_ACC_REKAP_TUNAI_NONRUPIAH';
+                $command = 'SP_1273_PRG_REKAP_TUNAI_NONRUPIAH';
             }
 
             // Execute the stored procedure if a command was set

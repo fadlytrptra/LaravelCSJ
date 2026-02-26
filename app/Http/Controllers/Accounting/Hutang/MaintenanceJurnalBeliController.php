@@ -34,9 +34,9 @@ class MaintenanceJurnalBeliController extends Controller
             switch ($proses) {
                 case 1:
                     try {
-                        // First stored procedure execution (SP_1273_ACC_INS_TT_JURNAL)
+                        // First stored procedure execution (SP_1273_PRG_INS_TT_JURNAL)
                         DB::connection('ConnAccounting')
-                            ->statement('EXEC SP_1273_ACC_INS_TT_JURNAL
+                            ->statement('EXEC SP_1273_PRG_INS_TT_JURNAL
                             @BKK = ?, @IdSupplier = ?, @Keterangan = ?,
                             @Debet = ?, @Kredit = ?, @Perkiraan = ?', [
                                 $request->input('bkk'),
@@ -47,9 +47,9 @@ class MaintenanceJurnalBeliController extends Controller
                                 $request->input('kode_perkiraan')
                             ]);
 
-                        // Check supplier balance (SP_1273_ACC_CHECK_TT_SALDOSUPP)
+                        // Check supplier balance (SP_1273_PRG_CHECK_TT_SALDOSUPP)
                         $saldoCheck = DB::connection('ConnAccounting')
-                            ->select('EXEC SP_1273_ACC_CHECK_TT_SALDOSUPP @IdSupplier = ?', [
+                            ->select('EXEC SP_1273_PRG_CHECK_TT_SALDOSUPP @IdSupplier = ?', [
                                 $request->input('kode_supp')
                             ]);
 
@@ -60,7 +60,7 @@ class MaintenanceJurnalBeliController extends Controller
                                 if ($request->input('kode_matauang') == 1) {
                                     // Insert into T_Transaksi_Supplier
                                     DB::connection('ConnAccounting')
-                                        ->statement('EXEC SP_1273_ACC_INS_TT_TRANS_SUPP
+                                        ->statement('EXEC SP_1273_PRG_INS_TT_TRANS_SUPP
                                         @Id_TypeTransaksi = 6, @Tanggal = ?, @Id_Supplier = ?,
                                         @Detail = "Jurnal", @Id_Mata_Uang = ?, @Nilai_Debet = ?,
                                         @Nilai_Kredit = ?, @Kurs = 1, @Referensi = ?, @User_Input = ?', [
@@ -73,9 +73,9 @@ class MaintenanceJurnalBeliController extends Controller
                                             trim(Auth::user()->NomorUser),
                                         ]);
 
-                                    // Calculate balance in Rp (SP_1273_ACC_TT_HITUNGSALDO_RP_SUPPLIER)
+                                    // Calculate balance in Rp (SP_1273_PRG_TT_HITUNGSALDO_RP_SUPPLIER)
                                     DB::connection('ConnAccounting')
-                                        ->statement('EXEC SP_1273_ACC_TT_HITUNGSALDO_RP_SUPPLIER @IdBKK = ?', [
+                                        ->statement('EXEC SP_1273_PRG_TT_HITUNGSALDO_RP_SUPPLIER @IdBKK = ?', [
                                             $request->input('bkk')
                                         ]);
                                 } else {
@@ -86,13 +86,13 @@ class MaintenanceJurnalBeliController extends Controller
                                 // Supplier = $
                                 // Check if exchange rate is provided
                                 $checkTransSuppRp = DB::connection('ConnAccounting')
-                                    ->select('EXEC SP_1273_ACC_CHECK_TT_TRANS_SUPP_RP @IdBKK = ?', [
+                                    ->select('EXEC SP_1273_PRG_CHECK_TT_TRANS_SUPP_RP @IdBKK = ?', [
                                         $request->input('bkk')
                                     ]);
 
                                 if ($checkTransSuppRp && $checkTransSuppRp[0]->Ada > 0) {
                                     $checkBKKTransSupp = DB::connection('ConnAccounting')
-                                        ->select('EXEC SP_1273_ACC_CHECK_TT_BKK_RP @IdBKK = ?', [
+                                        ->select('EXEC SP_1273_PRG_CHECK_TT_BKK_RP @IdBKK = ?', [
                                             $request->input('bkk')
                                         ]);
 
@@ -103,7 +103,7 @@ class MaintenanceJurnalBeliController extends Controller
                                     } else {
                                         // Insert into T_Transaksi_Supplier
                                         DB::connection('ConnAccounting')
-                                            ->statement('EXEC SP_1273_ACC_INS_TT_TRANS_SUPP_JURNAL_2
+                                            ->statement('EXEC SP_1273_PRG_INS_TT_TRANS_SUPP_JURNAL_2
                                             @Id_TypeTransaksi = 6, @Tanggal = ?, @Id_Supplier = ?,
                                             @Detail = "Jurnal", @Id_Mata_Uang = ?, @Nilai_Debet = ?,
                                             @Nilai_Kredit = ?, @Kurs = 5, @Referensi = ?,
@@ -117,16 +117,16 @@ class MaintenanceJurnalBeliController extends Controller
                                                 trim(Auth::user()->NomorUser),
                                             ]);
 
-                                        // Calculate balance in Dollar (SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER)
+                                        // Calculate balance in Dollar (SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER)
                                         DB::connection('ConnAccounting')
-                                            ->statement('EXEC SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [
+                                            ->statement('EXEC SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [
                                                 $request->input('bkk')
                                             ]);
                                     }
                                 } else {
                                     // Insert into T_Transaksi_Supplier
                                     DB::connection('ConnAccounting')
-                                        ->statement('EXEC SP_1273_ACC_INS_TT_TRANS_SUPP_JURNAL_1
+                                        ->statement('EXEC SP_1273_PRG_INS_TT_TRANS_SUPP_JURNAL_1
                                         @Id_TypeTransaksi = 6, @Tanggal = ?, @Id_Supplier = ?,
                                         @Detail = "Jurnal", @Id_Mata_Uang = ?, @Nilai_Debet = ?,
                                         @Nilai_Kredit = ?, @Kurs = 5, @Referensi = ?,
@@ -140,9 +140,9 @@ class MaintenanceJurnalBeliController extends Controller
                                             trim(Auth::user()->NomorUser),
                                         ]);
 
-                                    // Calculate balance in Dollar (SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER)
+                                    // Calculate balance in Dollar (SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER)
                                     DB::connection('ConnAccounting')
-                                        ->statement('EXEC SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [
+                                        ->statement('EXEC SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [
                                             $request->input('bkk')
                                         ]);
                                 }
@@ -167,9 +167,9 @@ class MaintenanceJurnalBeliController extends Controller
                     // Begin transaction
                     DB::connection('ConnAccounting')
                         ->beginTransaction();
-                    // Execute SP_1273_ACC_UDT_TT_JURNAL
+                    // Execute SP_1273_PRG_UDT_TT_JURNAL
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC SP_1273_ACC_UDT_TT_JURNAL @idjurnal = ?, @Keterangan = ?, @Debet = ?, @Kredit = ?, @Perkiraan = ?', [
+                        ->statement('EXEC SP_1273_PRG_UDT_TT_JURNAL @idjurnal = ?, @Keterangan = ?, @Debet = ?, @Kredit = ?, @Perkiraan = ?', [
                             $request->input('id_jurnal'),
                             $request->input('keterangan'),
                             (float) floatval(str_replace(",", "", $request->input('hutang'))),
@@ -186,9 +186,9 @@ class MaintenanceJurnalBeliController extends Controller
                         return response()->json(['message' => 'Data Jurnal Beli sudah diKOREKSI !!!..']);
                     }
 
-                    // Execute SP_1273_ACC_CHECK_TT_SALDOSUPP to check supplier balance
+                    // Execute SP_1273_PRG_CHECK_TT_SALDOSUPP to check supplier balance
                     $supplierBalance = DB::connection('ConnAccounting')
-                        ->select('EXEC SP_1273_ACC_CHECK_TT_SALDOSUPP @IdSupplier = ?', [
+                        ->select('EXEC SP_1273_PRG_CHECK_TT_SALDOSUPP @IdSupplier = ?', [
                             $request->input('kode_supp')
                         ]);
 
@@ -196,9 +196,9 @@ class MaintenanceJurnalBeliController extends Controller
                         // Check currency type
                         if ($request->input('uang_supp') == 1) {
                             if ($request->input('matauangbayar') == 1) {
-                                // Execute SP_1273_ACC_INS_TT_TRANS_SUPP
+                                // Execute SP_1273_PRG_INS_TT_TRANS_SUPP
                                 DB::connection('ConnAccounting')
-                                    ->statement('EXEC SP_1273_ACC_INS_TT_TRANS_SUPP
+                                    ->statement('EXEC SP_1273_PRG_INS_TT_TRANS_SUPP
                                     @Id_TypeTransaksi = 6,
                                     @Tanggal = ?,
                                     @Id_Supplier = ?,
@@ -218,9 +218,9 @@ class MaintenanceJurnalBeliController extends Controller
                                         trim(Auth::user()->NomorUser),
                                     ]);
 
-                                // Execute SP_1273_ACC_TT_HITUNGSALDO_RP_SUPPLIER
+                                // Execute SP_1273_PRG_TT_HITUNGSALDO_RP_SUPPLIER
                                 DB::connection('ConnAccounting')
-                                    ->statement('EXEC SP_1273_ACC_TT_HITUNGSALDO_RP_SUPPLIER @IdBKK = ?', [
+                                    ->statement('EXEC SP_1273_PRG_TT_HITUNGSALDO_RP_SUPPLIER @IdBKK = ?', [
                                         $request->input('bkk')
                                     ]);
                             } else {
@@ -229,13 +229,13 @@ class MaintenanceJurnalBeliController extends Controller
                         } else {
                             // Handle "Supplier = $"
                             $checkKurs = DB::connection('ConnAccounting')
-                                ->select('EXEC SP_1273_ACC_CHECK_TT_TRANS_SUPP_RP @IdBKK = ?', [
+                                ->select('EXEC SP_1273_PRG_CHECK_TT_TRANS_SUPP_RP @IdBKK = ?', [
                                     $request->input('bkk')
                                 ]);
 
                             if ($checkKurs[0]->Ada > 0) {
                                 $checkKursFilled = DB::connection('ConnAccounting')
-                                    ->select('EXEC SP_1273_ACC_CHECK_TT_BKK_RP @IdBKK = ?', [
+                                    ->select('EXEC SP_1273_PRG_CHECK_TT_BKK_RP @IdBKK = ?', [
                                         $request->input('bkk')
                                     ]);
 
@@ -244,9 +244,9 @@ class MaintenanceJurnalBeliController extends Controller
                                         ->rollBack();
                                     return response()->json(['error' => 'BKK : ' . $request->input('bkk') . ' TIDAK DAPAT diPROSES, Karena Kurs Belum diisi!!..']);
                                 } else {
-                                    // Execute SP_1273_ACC_INS_TT_TRANS_SUPP_BKK2
+                                    // Execute SP_1273_PRG_INS_TT_TRANS_SUPP_BKK2
                                     DB::connection('ConnAccounting')
-                                        ->statement('EXEC SP_1273_ACC_INS_TT_TRANS_SUPP_BKK2
+                                        ->statement('EXEC SP_1273_PRG_INS_TT_TRANS_SUPP_BKK2
                                         @Id_TypeTransaksi = 6,
                                         @Tanggal = ?,
                                         @Id_Supplier = ?,
@@ -267,16 +267,16 @@ class MaintenanceJurnalBeliController extends Controller
                                             trim(Auth::user()->NomorUser),
                                         ]);
 
-                                    // Execute SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER
+                                    // Execute SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER
                                     DB::connection('ConnAccounting')
-                                        ->statement('EXEC SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [
+                                        ->statement('EXEC SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [
                                             $request->input('bkk')
                                         ]);
                                 }
                             } else {
-                                // Insert into supplier transactions table SP_1273_ACC_INS_TT_TRANS_SUPP_BKK
+                                // Insert into supplier transactions table SP_1273_PRG_INS_TT_TRANS_SUPP_BKK
                                 DB::connection('ConnAccounting')
-                                    ->statement('EXEC SP_1273_ACC_INS_TT_TRANS_SUPP_BKK
+                                    ->statement('EXEC SP_1273_PRG_INS_TT_TRANS_SUPP_BKK
                                     @Id_TypeTransaksi = 6,
                                     @Tanggal = ?,
                                     @Id_Supplier = ?,
@@ -297,9 +297,9 @@ class MaintenanceJurnalBeliController extends Controller
                                         trim(Auth::user()->NomorUser),
                                     ]);
 
-                                // Execute SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER
+                                // Execute SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER
                                 DB::connection('ConnAccounting')
-                                    ->statement('EXEC SP_1273_ACC_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [
+                                    ->statement('EXEC SP_1273_PRG_TT_HITUNGSALDO_DOLLAR_SUPPLIER @InIdBKK = ?', [
                                         $request->input('bkk')
                                     ]);
                             }
@@ -347,7 +347,7 @@ class MaintenanceJurnalBeliController extends Controller
             try {
                 // Execute the stored procedure
                 $suppStatusDetails = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_LIST_SUPP_STATUSH');
+                    ->select('exec SP_1273_PRG_LIST_SUPP_STATUSH');
                 // dd($suppStatusDetails);
                 $response = [];
                 foreach ($suppStatusDetails as $row) {
@@ -364,7 +364,7 @@ class MaintenanceJurnalBeliController extends Controller
         } else if ($id == 'getPeriodeJurnal') {
             try {
                 $periodeDetails = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_LIST_PERIODE_JURNAL @IDSupplier = ?', [
+                    ->select('exec SP_1273_PRG_LIST_PERIODE_JURNAL @IDSupplier = ?', [
                         trim($request->input('kode_supp'))
                     ]);
                 // dd($periodeDetails);
@@ -392,7 +392,7 @@ class MaintenanceJurnalBeliController extends Controller
         } else if ($id == 'getBKK') {
             try {
                 $comTrans = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_LIST_BKK_JURNAL ?, ?', [
+                    ->select('exec SP_1273_PRG_LIST_BKK_JURNAL ?, ?', [
                         $request->input('kode_supp'),
                         $request->input('bulantahun')
                     ]);
@@ -414,7 +414,7 @@ class MaintenanceJurnalBeliController extends Controller
                 $bkk = $request->input('bkk');
 
                 $checkJurnal = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_CHECK_ADA_JURNAL ?', [$bkk]);
+                    ->select('exec SP_1273_PRG_CHECK_ADA_JURNAL ?', [$bkk]);
                 // dd($checkJurnal);
                 if ($checkJurnal[0]->Ada == 0) {
                     return response()->json(['message' => 'TIDAK ADA Data JURNAL !!'], 200);
@@ -429,7 +429,7 @@ class MaintenanceJurnalBeliController extends Controller
             try {
                 $bkk = $request->input('bkk');
                 $recTrans = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_LIST_TT_JURNAL ?', [$bkk]);
+                    ->select('exec SP_1273_PRG_LIST_TT_JURNAL ?', [$bkk]);
 
                 $response = [];
                 foreach ($recTrans as $row) {
@@ -451,7 +451,7 @@ class MaintenanceJurnalBeliController extends Controller
         } else if ($id == 'getKira') {
             try {
                 $comTrans = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_LIST_TT_KODEPERKIRAAN');
+                    ->select('exec SP_1273_PRG_LIST_TT_KODEPERKIRAAN');
                 // dd($comTrans);
                 $response = [];
                 foreach ($comTrans as $row) {
@@ -469,7 +469,7 @@ class MaintenanceJurnalBeliController extends Controller
             try {
                 // Execute the stored procedure
                 $comTrans = DB::connection('ConnAccounting')
-                    ->select('exec SP_1273_ACC_LIST_TT_MATAUANG');
+                    ->select('exec SP_1273_PRG_LIST_TT_MATAUANG');
                 // dd($comTrans);
                 $response = [];
                 foreach ($comTrans as $row) {
