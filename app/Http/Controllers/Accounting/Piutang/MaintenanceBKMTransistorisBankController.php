@@ -14,7 +14,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
     public function index()
     {
         $access = (new HakAksesController)->HakAksesFiturMaster('Accounting');
-        $kodePerkiraan = DB::connection('ConnAccounting')->select('exec SP_1273_ACC_LIST_BKK1_KODEPERKIRAAN');
+        $kodePerkiraan = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK1_KODEPERKIRAAN');
         return view('Accounting.Piutang.MaintenanceBKMTransistorisBank', compact('access', 'kodePerkiraan'));
     }
 
@@ -42,7 +42,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
         // get divisi
         else if ($id === 'getMataUang') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_MATA_UANG @kode = ?', [1]);
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_MATA_UANG @kode = ?', [1]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -55,7 +55,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
         // get divisi
         else if ($id === 'getBank') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BANK');
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BANK');
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -70,7 +70,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
         else if ($id === 'getAccBank') {
             $idBank = $request->input('idBank');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BANK_1 @idBank = ?', [$idBank]);
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BANK_1 @idBank = ?', [$idBank]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -84,7 +84,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
         else if ($id === 'getSymbol') {
             $nama = $request->input('nama');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_MATA_UANG
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_MATA_UANG
             @kode = ?, @nama = ?', [3, $nama]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
@@ -99,7 +99,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
         else if ($id === 'getJenisBayar') {
             // $idBank = $request->input('idBank');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_JENIS_DOK');
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_JENIS_DOK');
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -114,7 +114,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
         else if ($id === 'getPerkiraan') {
             // $idBank = $request->input('idBank');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_KODE_PERKIRAAN @Kode = ?', [1]);
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_KODE_PERKIRAAN @Kode = ?', [1]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -127,7 +127,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
         // perkiraan
         else if ($id === 'getPerkiraanChange') {
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_KODE_PERKIRAAN @Kode = ?', [2]);
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_KODE_PERKIRAAN @Kode = ?', [2]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
                 $data_divisi[] = [
@@ -181,7 +181,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
         else if ($id === 'cekBg') {
             $idpembayaran = $request->input('idpembayaran');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_GET_DETAIL_BGCEK
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_GET_DETAIL_BGCEK
                 @idpembayaran = ?', [$idpembayaran]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
@@ -197,7 +197,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
             $tgl1 = $request->input('tgl1');
             $tgl2 = $request->input('tgl2');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKM_TRANSITORIS_PERTGL
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKM_TRANSITORIS_PERTGL
             @tgl1 = ?, @tgl2 = ?', [$tgl1, $tgl2]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
@@ -216,7 +216,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
             $tgl1 = $request->input('tgl1');
             $tgl2 = $request->input('tgl2');
 
-            $divisi = DB::connection('ConnAccounting')->select('exec SP_5298_ACC_LIST_BKK_TRANSITORIS_PERTGL
+            $divisi = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_BKK_TRANSITORIS_PERTGL
             @tgl1 = ?, @tgl2 = ?', [$tgl1, $tgl2]);
             $data_divisi = [];
             foreach ($divisi as $detail_divisi) {
@@ -415,7 +415,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN]
+                    ->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN]
                 @idBKK = ?,
                 @tgl = ?,
                 @terjemahan = ?,
@@ -448,7 +448,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
             if (intval($kurs) === 0) {
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN_TAG_1 ]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN_TAG_1]
                     @idBKK = ?,
                     @idUang = ?,
                     @idJenis = ?,
@@ -470,7 +470,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
             } else if (intval($kurs) !== 0) {
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKK_TPEMBAYARAN_TAG_1 ]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKK_TPEMBAYARAN_TAG_1]
                     @idBKK = ?,
                     @idUang = ?,
                     @idJenis = ?,
@@ -503,7 +503,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_INSERT_BKK_TDETAILPEMB]
+                    ->statement('exec [SP_1273_PRG_INSERT_BKK_TDETAILPEMB]
                     @idpembayaran = ?,
                     @keterangan = ?,
                     @biaya = ?,
@@ -532,7 +532,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
                     $kodeperkiraan = $detail[2];
 
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKK_TDETAILPEMB]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKK_TDETAILPEMB]
                 @idpembayaran = ?,
                 @keterangan = ?,
                 @biaya = ?,
@@ -562,7 +562,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
                     $kodeperkiraan = $detail[2];
 
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_DETAIL_BIAYA]
+                        ->statement('exec [SP_1273_PRG_INSERT_DETAIL_BIAYA]
                 @idpelunasan = ?,
                 @keterangan = ?,
                 @biaya = ?,
@@ -587,7 +587,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_UPDATE_TDETAILPEMB]
+                    ->statement('exec [SP_1273_PRG_UPDATE_TDETAILPEMB]
                     @id = ?,
                     @idBG = ?', [
                         $id,
@@ -609,7 +609,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_INSERT_BGCEK]
+                    ->statement('exec [SP_1273_PRG_INSERT_BGCEK]
                     @id = ?,
                     @no = ?,
                     @jthtempo = ?,
@@ -636,7 +636,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN]
+                    ->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN]
                 @idBKM = ?,
                 @tglinput = ?,
                 @terjemahan = ?,
@@ -666,7 +666,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
 
             try {
                 DB::connection('ConnAccounting')
-                    ->statement('exec [SP_5298_ACC_UPDATE_COUNTER_IDBKM]
+                    ->statement('exec [SP_1273_PRG_UPDATE_COUNTER_IDBKM]
                 @idbkm = ?,
                 @idBank = ?,
                 @jenis = ?,
@@ -699,7 +699,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
             if (intval($kurs) === 0) {
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN_TAG_TRANSITORIS]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN_TAG_TRANSITORIS]
                     @idBKM = ?,
                     @tgl = ?,
                     @idUang = ?,
@@ -729,7 +729,7 @@ class MaintenanceBKMTransistorisBankController extends Controller
             } else if (intval($kurs) !== 0) {
                 try {
                     DB::connection('ConnAccounting')
-                        ->statement('exec [SP_5298_ACC_INSERT_BKM_TPELUNASAN_TAG_TRANSITORIS]
+                        ->statement('exec [SP_1273_PRG_INSERT_BKM_TPELUNASAN_TAG_TRANSITORIS]
                     @idBKM = ?,
                     @tgl = ?,
                     @idUang = ?,
