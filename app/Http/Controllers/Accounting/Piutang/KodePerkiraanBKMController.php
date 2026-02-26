@@ -21,18 +21,18 @@ class KodePerkiraanBKMController extends Controller
 
     // public function getIdBKM5($BlnThn)
     // {
-    //     $tabel = DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_TPELUNASAN] @Kode = ?, @BlnThn = ?', [5, $BlnThn]);
+    //     $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_TPELUNASAN] @Kode = ?, @BlnThn = ?', [5, $BlnThn]);
     //     return response()->json($tabel);
     // }
     // public function getIdBKM6($BlnThn)
     // {
-    //     $tabel = DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_TPELUNASAN] @Kode = ?, @BlnThn = ?', [6, $BlnThn]);
+    //     $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_TPELUNASAN] @Kode = ?, @BlnThn = ?', [6, $BlnThn]);
     //     return response()->json($tabel);
     // }
 
     // public function getTabelRincian($idBKM)
     // {
-    //     $tabel = DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_TPELUNASAN] @Kode = ?, @IdBKM = ?', [7, $idBKM]);
+    //     $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_TPELUNASAN] @Kode = ?, @IdBKM = ?', [7, $idBKM]);
     //     return response()->json($tabel);
     // }
 
@@ -48,14 +48,14 @@ class KodePerkiraanBKMController extends Controller
 
         if ($request->input('ID_Detail_Pelunasan') == 0) {
             // Call stored procedure for T_PELUNASAN_TAGIHAN
-            DB::connection('ConnAccounting')->statement('exec SP_5298_ACC_UPDATE_KDPERKIRAAN_BKM @Kode = ?, @IdPelunasan = ?, @KodePerkiraan = ?', [
+            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UPDATE_KDPERKIRAAN_BKM @Kode = ?, @IdPelunasan = ?, @KodePerkiraan = ?', [
                 1,
                 $request->input('Id_Pelunasan'),
                 $request->input('KodePerkiraan')
             ]);
         } else {
             // Call stored procedure for T_DETAIL_PELUNASAN_TAGIHAN
-            DB::connection('ConnAccounting')->statement('exec SP_5298_ACC_UPDATE_KDPERKIRAAN_BKM @Kode = ?, @IdDetail = ?, @KodePerkiraan = ?', [
+            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_UPDATE_KDPERKIRAAN_BKM @Kode = ?, @IdDetail = ?, @KodePerkiraan = ?', [
                 2,
                 $request->input('ID_Detail_Pelunasan'),
                 $request->input('KodePerkiraan')
@@ -75,7 +75,7 @@ class KodePerkiraanBKMController extends Controller
         if ($id == 'getKira') {
             // Execute the stored procedure
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_ACC_LIST_BKK1_KODEPERKIRAAN');
+                ->select('exec SP_1273_PRG_LIST_BKK1_KODEPERKIRAAN');
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -92,7 +92,7 @@ class KodePerkiraanBKMController extends Controller
             $blnThn = trim($request->input('bulan')) . substr(trim($request->input('tahun')), -2);
             // dd($blnThn, $kode);
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_TPELUNASAN @Kode = ?, @BlnThn = ?', [$kode, $blnThn]);
+                ->select('exec SP_1273_PRG_LIST_TPELUNASAN @Kode = ?, @BlnThn = ?', [$kode, $blnThn]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -110,7 +110,7 @@ class KodePerkiraanBKMController extends Controller
             $T = 0;
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_TPELUNASAN @Kode = 7, @IdBKM = ?', [$request->input('Id_BKM')]);
+                ->select('exec SP_1273_PRG_LIST_TPELUNASAN @Kode = 7, @IdBKM = ?', [$request->input('Id_BKM')]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
