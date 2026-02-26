@@ -257,7 +257,7 @@ class BKMNoPenagihanController extends Controller
                 $response = [];
                 if (empty($input['id_bkm'])) {
                     $results = DB::connection('ConnAccounting')
-                        ->statement('exec SP_4384_ACC_COUNTER_BKM_BKK @bank = ?, @jenis = ?, @tgl = ?, @id = ?', [
+                        ->statement('exec SP_5409_ACC_COUNTER_BKM_BKK @bank = ?, @jenis = ?, @tgl = ?, @id = ?', [
                             trim($input['id_bank']),
                             'R',
                             $input['tanggal_input'],

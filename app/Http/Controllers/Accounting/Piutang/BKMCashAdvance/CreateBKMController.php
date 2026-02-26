@@ -331,7 +331,7 @@ class CreateBKMController extends Controller
                         $idBank = 'KI';
                     }
 
-                    $getIdBKM = DB::connection('ConnAccounting')->statement('exec SP_4384_ACC_COUNTER_BKM_BKK @bank = ?, @jenis = ?, @tgl = ?, @id = ?', [
+                    $getIdBKM = DB::connection('ConnAccounting')->statement('exec SP_5409_ACC_COUNTER_BKM_BKK @bank = ?, @jenis = ?, @tgl = ?, @id = ?', [
                         $idBank,
                         'R',
                         \Carbon\Carbon::parse($selectedRows[0]['TglInput'])->format('Y-m-d'),
