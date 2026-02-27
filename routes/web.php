@@ -41,6 +41,7 @@ use App\Http\Controllers\Inventory\Transaksi\TerimaBenang\TerimaBenangTropodoCon
 use App\Http\Controllers\Inventory\Transaksi\Mutasi\KeluarBarangUntukPenjualanController;
 use App\Http\Controllers\Inventory\Transaksi\Mutasi\PengembalianPascaPenjualanController;
 use App\Http\Controllers\Inventory\Transaksi\Penghangusan\AccPenghangusanBarangController;
+use App\Http\Controllers\Accounting\Piutang\UpdateKursBKMController;
 use App\Http\Controllers\Accounting\Piutang\BatalBKMTransistorisController;
 use App\Http\Controllers\Accounting\Piutang\MaintenanceBKMTransistorisBankController;
 use App\Http\Controllers\Accounting\Piutang\BKMBKKNotaKreditController;

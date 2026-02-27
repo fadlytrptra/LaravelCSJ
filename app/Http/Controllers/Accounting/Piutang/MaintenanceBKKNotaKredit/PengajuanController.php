@@ -21,13 +21,13 @@ class PengajuanController extends Controller
 
     // public function loadDataNotaK()
     // {
-    //     $tabel =  DB::connection('ConnAccounting')->select('exec [sp_list_nota_kredit1]');
+    //     $tabel =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_NOTA_KREDIT_1]');
     //     return response()->json($tabel);
     // }
 
     // public function getJenisBayarPenagajuan()
     // {
-    //     $tabel =  DB::connection('ConnAccounting')->select('exec [sp_jenis_dok]');
+    //     $tabel =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_JENIS_DOK]');
     //     return response()->json($tabel);
     // }
 
@@ -54,8 +54,8 @@ class PengajuanController extends Controller
     public function show(Request $request, $id)
     {
         if ($id == 'getNotaKredit') {
-            // Execute the stored procedure 'sp_list_nota_kredit1'
-            $results = DB::connection('ConnAccounting')->select('exec sp_list_nota_kredit1');
+            // Execute the stored procedure 'SP_1273_PRG_LIST_NOTA_KREDIT_1'
+            $results = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_NOTA_KREDIT_1');
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -76,7 +76,7 @@ class PengajuanController extends Controller
         } else if ($id == 'getJenisBayar') {
             // Execute the stored procedure
             $results = DB::connection('ConnAccounting')
-                ->select('exec sp_jenis_dok');
+                ->select('exec SP_1273_PRG_JENIS_DOK');
             // dd($results);
 
             $response = [];

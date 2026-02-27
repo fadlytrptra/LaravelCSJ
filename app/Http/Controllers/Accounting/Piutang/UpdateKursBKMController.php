@@ -19,7 +19,7 @@ class UpdateKursBKMController extends Controller
     public function getTabelPelunasan($bulan, $tahun)
     {
         //dd($bulan, $tahun);
-        $tabel =  DB::connection('ConnAccounting')->select('exec [SP_5298_ACC_LIST_BKM_TUNAI] @bln = ?, @thn = ?', [$bulan, $tahun]);
+        $tabel =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_BKM_TUNAI] @bln = ?, @thn = ?', [$bulan, $tahun]);
         return response()->json($tabel);
     }
 
@@ -43,7 +43,7 @@ class UpdateKursBKMController extends Controller
             $tahun = $request->input('tahun');
 
             $lunasResults = DB::connection('ConnAccounting')
-                ->select('exec SP_5298_ACC_LIST_BKM_TUNAI @bln = ?, @thn = ?', [$bulan, $tahun]);
+                ->select('exec SP_1273_PRG_LIST_BKM_TUNAI @bln = ?, @thn = ?', [$bulan, $tahun]);
             // dd($lunasResults);
             $response = [];
             $index = 0;
@@ -86,7 +86,7 @@ class UpdateKursBKMController extends Controller
             // dd($request->all());
 
             DB::connection('ConnAccounting')->statement(
-                'exec [SP_5298_ACC_UPDATE_KURS_BKM]
+                'exec [SP_1273_PRG_UPDATE_KURS_BKM]
                 @idPel = ?,
                 @idBKM = ?,
                 @kurs = ?',

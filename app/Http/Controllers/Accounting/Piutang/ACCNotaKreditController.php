@@ -19,7 +19,7 @@ class ACCNotaKreditController extends Controller
 
     public function getTabelHeaderACCNotaKredit()
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_LIST_NOTA_KREDIT] @Kode = ?', [3]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_NOTA_KREDIT] @Kode = ?', [3]);
         return response()->json($tabel);
     }
 
@@ -27,13 +27,13 @@ class ACCNotaKreditController extends Controller
     {
 
         $idNotaKredit = str_replace('.', '/', $idnotakredit);
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_LIST_NOTA_KREDIT] @Kode = ?, @ID_NotaKredit = ?', [4, $idNotaKredit]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_NOTA_KREDIT] @Kode = ?, @ID_NotaKredit = ?', [4, $idNotaKredit]);
         return response()->json($tabel);
     }
 
     public function getDetailHeaderACCNotaKredit2($idNotaKredit)
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [SP_LIST_NOTA_KREDIT] @Kode = ?, @ID_NotaKredit = ?', [10, $idNotaKredit]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_NOTA_KREDIT] @Kode = ?, @ID_NotaKredit = ?', [10, $idNotaKredit]);
         return response()->json($tabel);
     }
 
@@ -84,7 +84,7 @@ class ACCNotaKreditController extends Controller
     {
         if ($id == 'getNotaKredit') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_LIST_NOTA_KREDIT ?', [3]);
+                ->select('exec SP_1273_PRG_LIST_NOTA_KREDIT ?', [3]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -108,7 +108,7 @@ class ACCNotaKreditController extends Controller
             $sIdNota = $request->input('Id_NotaKredit');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_LIST_NOTA_KREDIT @kode = ?, @ID_NotaKredit = ?', [4, $sIdNota]);
+                ->select('exec SP_1273_PRG_LIST_NOTA_KREDIT @kode = ?, @ID_NotaKredit = ?', [4, $sIdNota]);
 
             $response = [];
             foreach ($results as $row) {
@@ -129,7 +129,7 @@ class ACCNotaKreditController extends Controller
 
             if (empty($response)) {
                 $results = DB::connection('ConnAccounting')
-                    ->select('exec SP_LIST_NOTA_KREDIT @kode = ?, @ID_NotaKredit = ?', [10, $sIdNota]);
+                    ->select('exec SP_1273_PRG_LIST_NOTA_KREDIT @kode = ?, @ID_NotaKredit = ?', [10, $sIdNota]);
                 foreach ($results as $row) {
                     $response[] = [
                         'SuratJalan' => $row->SuratJalan,
