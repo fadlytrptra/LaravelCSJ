@@ -546,7 +546,7 @@ $(document).ready(function () {
             .toArray()
             .reduce((sum, row) => {
                 let jumlahUang = numeral(row[4]).value();
-                return sum + parseInt(jumlahUang);
+                return sum + parseFloat(jumlahUang);
             }, 0);
 
         let dppNilaiLain = (totalPelunasan * 11) / 12;

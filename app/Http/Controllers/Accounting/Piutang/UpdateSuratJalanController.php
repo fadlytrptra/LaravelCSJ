@@ -22,7 +22,7 @@ class UpdateSuratJalanController extends Controller
     public function getTabelSuratJalan()
     {
         //dd("masuk");
-        $data = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_PENAGIHAN_SJ]
+        $data = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PENAGIHAN_SJ]
         @Kode = ?', [21]);
         return response()->json($data);
     }
@@ -42,7 +42,7 @@ class UpdateSuratJalanController extends Controller
         $jatuhTempo = $request->jatuhTempo;
         $idCustomer = $request->idCustomer;
         $tes = DB::connection('ConnAccounting')->select(
-            'exec SP_1486_ACC_LIST_PENAGIHAN_SJ @Kode = ?, @Surat_jalan = ?',
+            'exec SP_1273_PRG_LIST_PENAGIHAN_SJ @Kode = ?, @Surat_jalan = ?',
             [
                 17,
                 $suratJalan
@@ -52,7 +52,7 @@ class UpdateSuratJalanController extends Controller
         $idSuratPesanan = $tes[0]->IDSuratPesanan;
 
         DB::connection('ConnAccounting')->statement(
-            'exec SP_1486_ACC_MAINT_PENAGIHAN_SJ @Kode = ?, @Id_Penagihan = ?, @SuratJalan = ?, @JatuhTempo = ?, @Id_customer = ?, @SuratPesanan = ?',
+            'exec SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = ?, @Id_Penagihan = ?, @SuratJalan = ?, @JatuhTempo = ?, @Id_customer = ?, @SuratPesanan = ?',
             [
                 2,
                 $idPenagihan,
@@ -74,7 +74,7 @@ class UpdateSuratJalanController extends Controller
     {
         if ($id == 'DisplayData') {
             $penagihanResults = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ ?', [21]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ ?', [21]);
             // dd($penagihanResults);
             $response = [];
             foreach ($penagihanResults as $row) {

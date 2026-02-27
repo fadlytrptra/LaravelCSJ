@@ -21,65 +21,65 @@ class NotaPenjualanTunaiController extends Controller
 
     // public function getLihatPesanan($noSP)
     // {
-    //     $data = DB::connection('ConnSales')->select('exec [SP_1486_ACC_LIST_HEADER_PESANAN]
+    //     $data = DB::connection('ConnSales')->select('exec [SP_1273_PRG_LIST_HEADER_PESANAN]
     //     @Kode = ?, @IDSURATPESANAN = ?', [3, $noSP]);
     //     return response()->json($data);
     // }
 
     // public function getNotaJualTunai($noSP)
     // {
-    //     $data = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_PENAGIHAN_SJ]
+    //     $data = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PENAGIHAN_SJ]
     //     @KODE = ?, @SURATPESANAN = ?', [22, $noSP]);
     //     return response()->json($data);
     // }
 
     // public function getNotaJualTunai2($noSP)
     // {
-    //     $data = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_PENAGIHAN_SJ]
+    //     $data = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PENAGIHAN_SJ]
     //     @KODE = ?, @SURATPESANAN = ?', [13, $noSP]);
     //     return response()->json($data);
     // }
 
     // public function getUserPenagihNota()
     // {
-    //     $data = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_USER_PENAGIH]
+    //     $data = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_USER_PENAGIH]
     //     @KODE = ?', [1]);
     //     return response()->json($data);
     // }
 
     // public function getDokumenNota($kode)
     // {
-    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_JENIS_DOKUMEN] @KODE = ?', [$kode]);
+    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_JENIS_DOKUMEN] @KODE = ?', [$kode]);
     //     return response()->json($jenis);
     // }
 
     // public function getJenisPajakNota()
     // {
-    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_JENIS_PAJAK]');
+    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_JENIS_PAJAK]');
     //     return response()->json($jenis);
     // }
 
     // public function getNoPenagihanUMNota($noSP)
     // {
-    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_TAGIHAN_DP_1] @SuratPesanan = ?', [$noSP]);
+    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_TAGIHAN_DP_1] @SuratPesanan = ?', [$noSP]);
     //     return response()->json($jenis);
     // }
 
     // public function getNoPenagihan()
     // {
-    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_PENAGIHAN_SJ] @KODE = ?', [14]);
+    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PENAGIHAN_SJ] @KODE = ?', [14]);
     //     return response()->json($jenis);
     // }
 
     // public function getJenisCust($idCustomer)
     // {
-    //     $jenis = DB::connection('ConnSales')->select('exec [SP_1486_ACC_LIST_CUSTOMER] @IDCUST = ?', [$idCustomer]);
+    //     $jenis = DB::connection('ConnSales')->select('exec [SP_1273_PRG_LIST_CUSTOMER] @IDCUST = ?', [$idCustomer]);
     //     return response()->json($jenis);
     // }
 
     // public function getJnsCust($idJenisCustomer)
     // {
-    //     $jenis = DB::connection('ConnSales')->select('exec [SP_1486_ACC_LIST_JNSCUST] @IDJNSCUST = ?', [$idJenisCustomer]);
+    //     $jenis = DB::connection('ConnSales')->select('exec [SP_1273_PRG_LIST_JNSCUST] @IDJNSCUST = ?', [$idJenisCustomer]);
     //     return response()->json($jenis);
     // }
 
@@ -87,20 +87,20 @@ class NotaPenjualanTunaiController extends Controller
     // {
     //     $idNoPenagihan = str_replace('.', '/', $id_Penagihan);
 
-    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_PENAGIHAN_SJ] @KODE = 15, @ID_PENAGIHAN = ?', [$idNoPenagihan]);
+    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PENAGIHAN_SJ] @KODE = 15, @ID_PENAGIHAN = ?', [$idNoPenagihan]);
     //     return response()->json($jenis);
     // }
 
     // public function getDataSP($noSP)
     // {
-    //     $jenis = DB::connection('ConnSales')->select('exec [SP_1486_ACC_LIST_HEADER_PESANAN] @KODE = 3, @IDSURATPESANAN = ?', [$noSP]);
+    //     $jenis = DB::connection('ConnSales')->select('exec [SP_1273_PRG_LIST_HEADER_PESANAN] @KODE = 3, @IDSURATPESANAN = ?', [$noSP]);
     //     return response()->json($jenis);
     // }
 
     // public function getLihatPenagihan($id_Penagihan)
     // {
     //     $idNoPenagihan = str_replace('.', '/', $id_Penagihan);
-    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_PENAGIHAN_SJ] @KODE = 7, @ID_PENAGIHAN = ?', [$idNoPenagihan]);
+    //     $jenis = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PENAGIHAN_SJ] @KODE = 7, @ID_PENAGIHAN = ?', [$idNoPenagihan]);
     //     return response()->json($jenis);
     // }
 
@@ -277,7 +277,7 @@ class NotaPenjualanTunaiController extends Controller
                 // Insert new record
                 DB::connection('ConnAccounting')
                     ->statement(
-                        'EXEC SP_1486_ACC_MAINT_PENAGIHAN_SJ @Kode = ?, @Tgl_penagihan = ?, @Id_Customer = ?, @PO = ?, @id_Jenis_Dokumen = ?, @Nilai_Penagihan = ?, @Discount = ?, @Id_MataUang = ?, @Terbilang = ?, @UserInput = ?, @IdPenagih = ?, @TglFakturPajak = ?, @NilaiKurs = ?, @Jns_PPN = ?, @persenPPN = ?, @Id_Penagihan_Acuan = ?',
+                        'EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = ?, @Tgl_penagihan = ?, @Id_Customer = ?, @PO = ?, @id_Jenis_Dokumen = ?, @Nilai_Penagihan = ?, @Discount = ?, @Id_MataUang = ?, @Terbilang = ?, @UserInput = ?, @IdPenagih = ?, @TglFakturPajak = ?, @NilaiKurs = ?, @Jns_PPN = ?, @persenPPN = ?, @Id_Penagihan_Acuan = ?',
                         [
                             1,
                             $request->tanggalInput,
@@ -329,7 +329,7 @@ class NotaPenjualanTunaiController extends Controller
 
                 foreach (array_column($request->allRowsDataAtas, 1) as $suratPesanan) {
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC SP_1486_ACC_MAINT_PENAGIHAN_SJ @Kode = 3, @Id_Penagihan = ?, @SuratPesanan = ?', [$idPenagihan, $suratPesanan]);
+                        ->statement('EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = 3, @Id_Penagihan = ?, @SuratPesanan = ?', [$idPenagihan, $suratPesanan]);
                 }
                 // dd($tes);
             } else if ($proses == "2") {
@@ -337,7 +337,7 @@ class NotaPenjualanTunaiController extends Controller
                 $idPenagihan = $request->no_penagihan;
                 // dd($idPenagihan);
                 DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_1486_ACC_MAINT_PENAGIHAN_SJ @Kode = 4, @Id_Penagihan = ?, @Nilai_Penagihan = ?, @Discount = ?, @Id_MataUang = ?, @Terbilang = ?, @IdPenagih = ?, @NilaiKurs = ?, @Jns_PPN = ?, @persenPPN = ?', [
+                    ->statement('EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = 4, @Id_Penagihan = ?, @Nilai_Penagihan = ?, @Discount = ?, @Id_MataUang = ?, @Terbilang = ?, @IdPenagih = ?, @NilaiKurs = ?, @Jns_PPN = ?, @persenPPN = ?', [
                         $idPenagihan,
                         $TotalPenagihan,
                         $discount,
@@ -351,7 +351,7 @@ class NotaPenjualanTunaiController extends Controller
 
                 foreach (array_column($request->allRowsDataAtas, 1) as $suratPesanan) {
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC SP_1486_ACC_MAINT_PENAGIHAN_SJ @Kode = 5, @Id_Penagihan = ?, @SuratPesanan = ?', [$idPenagihan, $suratPesanan]);
+                        ->statement('EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = 5, @Id_Penagihan = ?, @SuratPesanan = ?', [$idPenagihan, $suratPesanan]);
                 }
             }
 
@@ -371,7 +371,7 @@ class NotaPenjualanTunaiController extends Controller
         if ($id == 'getCustomer') {
             // Call stored procedure to get customer list
             $results = DB::connection('ConnSales')
-                ->select('exec SP_1486_ACC_LIST_ALL_CUSTOMER ?', ['1']);
+                ->select('exec SP_1273_PRG_LIST_ALL_CUSTOMER ?', ['1']);
             // dd($results);
             // Instance to handle lookup (similar to mLook class in VB)
             $response = [];
@@ -387,7 +387,7 @@ class NotaPenjualanTunaiController extends Controller
             $TIdCustomer = $request->input('idCustomer');
 
             $customerResults = DB::connection('ConnSales')
-                ->select('exec SP_1486_ACC_LIST_CUSTOMER @IDCUST = ?', [trim($TIdCustomer)]);
+                ->select('exec SP_1273_PRG_LIST_CUSTOMER @IDCUST = ?', [trim($TIdCustomer)]);
             // dd($customerResults);
             if (!empty($customerResults)) {
                 $customer = $customerResults[0];
@@ -402,7 +402,7 @@ class NotaPenjualanTunaiController extends Controller
                 }
 
                 $jenisCustResults = DB::connection('ConnSales')
-                    ->select('exec SP_1486_ACC_LIST_JNSCUST @IDJNSCUST = ?', [trim($TIdJnsCust)]);
+                    ->select('exec SP_1273_PRG_LIST_JNSCUST @IDJNSCUST = ?', [trim($TIdJnsCust)]);
                 // dd($jenisCustResults);
                 if (!empty($jenisCustResults)) {
                     $TJenisCust = $jenisCustResults[0]->NamaJnsCust;
@@ -422,7 +422,7 @@ class NotaPenjualanTunaiController extends Controller
 
                 $customerId = $request->input('idCustomer');
                 $results = DB::connection('ConnSales')
-                    ->select('exec SP_1486_ACC_LIST_HEADER_PESANAN @KODE = ?, @IdCust = ?', [4, $customerId]);
+                    ->select('exec SP_1273_PRG_LIST_HEADER_PESANAN @KODE = ?, @IdCust = ?', [4, $customerId]);
                 // dd($results);
                 $mLook = [];
                 foreach ($results as $row) {
@@ -442,9 +442,9 @@ class NotaPenjualanTunaiController extends Controller
             $sNoSP = $request->input('no_sp');
             // dd($sNoSP);
             try {
-                // Fetch order details using SP_1486_ACC_LIST_HEADER_PESANAN
+                // Fetch order details using SP_1273_PRG_LIST_HEADER_PESANAN
                 $orderResults = DB::connection('ConnSales')
-                    ->select('exec SP_1486_ACC_LIST_HEADER_PESANAN @Kode = ?, @IDSURATPESANAN = ?', [3, $sNoSP]);
+                    ->select('exec SP_1273_PRG_LIST_HEADER_PESANAN @Kode = ?, @IDSURATPESANAN = ?', [3, $sNoSP]);
                 // dd($orderResults);
                 if (count($orderResults) > 0) {
                     $order = $orderResults[0];
@@ -461,9 +461,9 @@ class NotaPenjualanTunaiController extends Controller
                     }
                 }
 
-                // Fetch currency details using SP_1486_ACC_LIST_MATAUANG
+                // Fetch currency details using SP_1273_PRG_LIST_MATAUANG
                 $currencyResults = DB::connection('ConnAccounting')
-                    ->select('exec SP_1486_ACC_LIST_MATAUANG @Kode = ?, @IdMataUang = ?', [2, $TIdMataUang]);
+                    ->select('exec SP_1273_PRG_LIST_MATAUANG @Kode = ?, @IdMataUang = ?', [2, $TIdMataUang]);
                 // dd($currencyResults);
                 if (count($currencyResults) > 0) {
                     $TMataUang = $currencyResults[0]->Nama_MataUang;
@@ -484,7 +484,7 @@ class NotaPenjualanTunaiController extends Controller
             }
         } else if ($id == 'getPenagih') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_USER_PENAGIH @KODE = ?', [1]);
+                ->select('exec SP_1273_PRG_LIST_USER_PENAGIH @KODE = ?', [1]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -501,7 +501,7 @@ class NotaPenjualanTunaiController extends Controller
             $kode = trim($request->input('id_cust')) == 'NPX' ? 3 : 2;
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_JENIS_DOKUMEN @KODE = ?', [$kode]);
+                ->select('exec SP_1273_PRG_LIST_JENIS_DOKUMEN @KODE = ?', [$kode]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -516,7 +516,7 @@ class NotaPenjualanTunaiController extends Controller
         } else if ($id == 'getPajak') {
             // Execute the stored procedure to list jenis pajak
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_JENIS_PAJAK');
+                ->select('exec SP_1273_PRG_LIST_JENIS_PAJAK');
             // dd($results);
             // Prepare the response array
             $response = [];
@@ -532,7 +532,7 @@ class NotaPenjualanTunaiController extends Controller
             $suratPesanan = $request->input('no_sp');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_TAGIHAN_DP_1 @SuratPesanan = ?', [$suratPesanan]);
+                ->select('exec SP_1273_PRG_LIST_TAGIHAN_DP_1 @SuratPesanan = ?', [$suratPesanan]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -580,14 +580,14 @@ class NotaPenjualanTunaiController extends Controller
             $j = 0;
 
             if ($cbUM == "1") {
-                // Call stored procedure SP_1486_ACC_LIST_PENAGIHAN_SJ with @KODE = 22
+                // Call stored procedure SP_1273_PRG_LIST_PENAGIHAN_SJ with @KODE = 22
                 $results = DB::connection('ConnAccounting')
-                    ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ @Kode = ?, @SuratPesanan = ?', [22, trim($sNoSP)]);
+                    ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ @Kode = ?, @SuratPesanan = ?', [22, trim($sNoSP)]);
                 // dd($results);
             } else {
-                // Call stored procedure SP_1486_ACC_LIST_PENAGIHAN_SJ with @KODE = 13
+                // Call stored procedure SP_1273_PRG_LIST_PENAGIHAN_SJ with @KODE = 13
                 $results = DB::connection('ConnAccounting')
-                    ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ @Kode = ?, @SuratPesanan = ?', [13, trim($sNoSP)]);
+                    ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ @Kode = ?, @SuratPesanan = ?', [13, trim($sNoSP)]);
                 // dd($results);
             }
 
@@ -637,7 +637,7 @@ class NotaPenjualanTunaiController extends Controller
             // dd($sp);
 
             $result = DB::connection('ConnAccounting')
-                ->select('EXEC SP_1486_ACC_CEK_SURATPESAN @kode = ?, @SP = ?', [1, trim($sp)]);
+                ->select('EXEC SP_1273_PRG_CEK_SURATPESAN @kode = ?, @SP = ?', [1, trim($sp)]);
             // dd($result);
             if ($result[0]->Jumlah > 1) {
                 return response()->json([
@@ -646,7 +646,7 @@ class NotaPenjualanTunaiController extends Controller
             }
 
             $result = DB::connection('ConnAccounting')
-                ->select('EXEC SP_1486_ACC_CEK_SURATPESAN @kode = ?, @SP = ?', [2, trim($sp)]);
+                ->select('EXEC SP_1273_PRG_CEK_SURATPESAN @kode = ?, @SP = ?', [2, trim($sp)]);
             // dd($result);
             if (empty($result)) {
                 return response()->json([
@@ -667,9 +667,9 @@ class NotaPenjualanTunaiController extends Controller
                 'discount' => $discount,
             ]);
         } else if ($id == 'getPenagihan') {
-            // Call stored procedure to get penagihan list (SP_1486_ACC_LIST_PENAGIHAN_SJ)
+            // Call stored procedure to get penagihan list (SP_1273_PRG_LIST_PENAGIHAN_SJ)
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ @KODE = ?', [14]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ @KODE = ?', [14]);
             // dd($results);
             // Simulate the lookup like in VB.NET's mLook class
             $response = [];
@@ -708,7 +708,7 @@ class NotaPenjualanTunaiController extends Controller
             $customerId = $request->get('idCustomer');
             // Call stored procedure to get customer details
             $customerResult = DB::connection('ConnSales')
-                ->select('exec SP_1486_ACC_LIST_CUSTOMER @IDCUST = ?', [trim($customerId)]);
+                ->select('exec SP_1273_PRG_LIST_CUSTOMER @IDCUST = ?', [trim($customerId)]);
             // dd($customerResult);
             if (count($customerResult) > 0) {
                 $customer = $customerResult[0];
@@ -717,7 +717,7 @@ class NotaPenjualanTunaiController extends Controller
                 $TAlamat = ($TIdJnsCust == 'NPX') ? trim((string) $customer->Alamat . ' ' . $customer->Kota) : ($customer->AlamatNPWP ?? '');
 
                 $jenisCustResult = DB::connection('ConnSales')
-                    ->select('exec SP_1486_ACC_LIST_JNSCUST @IDJNSCUST = ?', [trim($TIdJnsCust)]);
+                    ->select('exec SP_1273_PRG_LIST_JNSCUST @IDJNSCUST = ?', [trim($TIdJnsCust)]);
                 // dd($jenisCustResult);
                 $TJenisCust = count($jenisCustResult) > 0 ? $jenisCustResult[0]->NamaJnsCust : null;
 
@@ -737,7 +737,7 @@ class NotaPenjualanTunaiController extends Controller
 
             // Execute stored procedure for "Lihat SP"
             $results = DB::connection('ConnAccounting')
-                ->select('EXEC SP_1486_ACC_LIST_PENAGIHAN_SJ @KODE = ?, @ID_PENAGIHAN = ?', [15, trim($sidPenagihan)]);
+                ->select('EXEC SP_1273_PRG_LIST_PENAGIHAN_SJ @KODE = ?, @ID_PENAGIHAN = ?', [15, trim($sidPenagihan)]);
             // dd($results);
             $listSP = [];
             $totalPenagihan = 0;
@@ -764,7 +764,7 @@ class NotaPenjualanTunaiController extends Controller
             $sNoSP = $request->input('no_sp');
             // dd($sNoSP);
             $headerPesanan = DB::connection('ConnSales')
-                ->select('exec SP_1486_ACC_LIST_HEADER_PESANAN @KODE = ?, @IDSURATPESANAN = ?', [3, $sNoSP]);
+                ->select('exec SP_1273_PRG_LIST_HEADER_PESANAN @KODE = ?, @IDSURATPESANAN = ?', [3, $sNoSP]);
             // dd($headerPesanan);
             if (!empty($headerPesanan)) {
                 $header = $headerPesanan[0]; // Assuming single result row
@@ -783,7 +783,7 @@ class NotaPenjualanTunaiController extends Controller
 
                 // Fetch currency name from another stored procedure
                 $mataUangResults = DB::connection('ConnAccounting')
-                    ->select('exec SP_1486_ACC_LIST_MATAUANG ?, ?', [2, $TIdMataUang]);
+                    ->select('exec SP_1273_PRG_LIST_MATAUANG ?, ?', [2, $TIdMataUang]);
                 // dd($mataUangResults);
                 $TMataUang = !empty($mataUangResults) ? $mataUangResults[0]->Nama_MataUang : '';
 
@@ -805,7 +805,7 @@ class NotaPenjualanTunaiController extends Controller
 
             // Call stored procedure to get Penagihan details
             $penagihanResults = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ ?, ?', [7, $sid_Penagihan]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ ?, ?', [7, $sid_Penagihan]);
             // dd($penagihanResults);
             // Initialize variables for storing results
             $TIdJnsDok = '';
@@ -841,7 +841,7 @@ class NotaPenjualanTunaiController extends Controller
             // Fetch Pajak details if 'TJnsPajak' is not empty
             if (!empty($TJnsPajak)) {
                 $pajakResults = DB::connection('ConnAccounting')
-                    ->select('exec SP_1486_ACC_LIST_JENIS_PAJAK ?, ?', [1, $TJnsPajak]);
+                    ->select('exec SP_1273_PRG_LIST_JENIS_PAJAK ?, ?', [1, $TJnsPajak]);
                 // dd($pajakResults);
                 $TPajak = !empty($pajakResults) ? $pajakResults[0]->Nama_Jns_PPN : '';
             } else {
