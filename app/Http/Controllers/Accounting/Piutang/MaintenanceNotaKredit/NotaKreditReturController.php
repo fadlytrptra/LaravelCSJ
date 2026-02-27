@@ -27,7 +27,7 @@ class NotaKreditReturController extends Controller
 
     // public function getListSJNotaKredit($idCustomer)
     // {
-    //     $tabel =  DB::connection('ConnSales')->select('exec [SP_LIST_SJ_NOTAKREDIT] @IdCust = ?', [$idCustomer]);
+    //     $tabel =  DB::connection('ConnSales')->select('exec [SP_1273_ACC_LIST_SJ_NOTAKREDIT] @IdCust = ?', [$idCustomer]);
     //     return response()->json($tabel);
     // }
 
@@ -63,7 +63,7 @@ class NotaKreditReturController extends Controller
             if ($proses == 1) {
                 // Panggil Stored Procedure untuk Insert Nota Kredit
                 DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_Insert_NotaKredit @Tanggal = ?, @Id_MataUang = ?, @JnsNotaKredit = ?, @Status_PPN = ?, @Nilai = ?, @Terbilang = ?, @Id_Penagihan = ?, @Status_Pelunasan = ?, @UserInput = ?', [
+                    ->statement('EXEC SP_1273_PRG_Insert_NotaKredit @Tanggal = ?, @Id_MataUang = ?, @JnsNotaKredit = ?, @Status_PPN = ?, @Nilai = ?, @Terbilang = ?, @Id_Penagihan = ?, @Status_Pelunasan = ?, @UserInput = ?', [
                         $request->tanggalInput,
                         $request->idMataUang,
                         '1',
@@ -87,7 +87,7 @@ class NotaKreditReturController extends Controller
                 // Simpan detail nota kredit
                 foreach ($list_items as $item) {
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC SP_Insert_Detail_NotaKredit @Id_NotaKredit = ?, @IdRetur = ?, @SuratJalan = ?', [
+                        ->statement('EXEC SP_1273_PRG_Insert_Detail_NotaKredit @Id_NotaKredit = ?, @IdRetur = ?, @SuratJalan = ?', [
                             $notaKreditId,
                             $item[5],
                             $item[1]
@@ -106,7 +106,7 @@ class NotaKreditReturController extends Controller
                 // Hapus detail lama dengan stored procedure
                 foreach ($list_items as $item) {
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC SP_Del_Detail_NotaKredit @Id_NotaKredit = ?, @IdRetur = ?', [
+                        ->statement('EXEC SP_1273_PRG_Del_Detail_NotaKredit @Id_NotaKredit = ?, @IdRetur = ?', [
                             $notaKreditId,
                             $item[5],
                         ]);
@@ -115,7 +115,7 @@ class NotaKreditReturController extends Controller
                 // Simpan detail baru
                 foreach ($list_items as $item) {
                     DB::connection('ConnAccounting')
-                        ->statement('EXEC SP_Insert_Detail_NotaKredit @Id_NotaKredit = ?, @IdRetur = ?, @SuratJalan = ?', [
+                        ->statement('EXEC SP_1273_PRG_Insert_Detail_NotaKredit @Id_NotaKredit = ?, @IdRetur = ?, @SuratJalan = ?', [
                             $notaKreditId,
                             $item[5],
                             $item[1]
@@ -124,7 +124,7 @@ class NotaKreditReturController extends Controller
 
                 // Update nilai Nota Kredit dengan stored procedure
                 DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_Update_NotaKredit @ID_NOtaKRedit = ?, @Nilai = ?, @Terbilang = ?', [
+                    ->statement('EXEC SP_1273_PRG_Update_NotaKredit @ID_NOtaKRedit = ?, @Nilai = ?, @Terbilang = ?', [
                         $notaKreditId,
                         $grandTotal,
                         $terbilang
@@ -139,7 +139,7 @@ class NotaKreditReturController extends Controller
 
                 // Hapus nota kredit dengan stored procedure
                 DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_Del_NotaKredit @Id_NotaKredit = ?', [
+                    ->statement('EXEC SP_1273_PRG_Del_NotaKredit @Id_NotaKredit = ?', [
                         $notaKreditId
                     ]);
 
@@ -158,7 +158,7 @@ class NotaKreditReturController extends Controller
             try {
                 // Jalankan stored procedure untuk mendapatkan daftar customer
                 $results = DB::connection('ConnSales')
-                    ->select('exec sp_list_all_customer ?', [2]);
+                    ->select('exec SP_1273_PRG_LIST_ALL_CUSTOMER ?', [2]);
                 // dd($results);
                 $response = [];
                 foreach ($results as $row) {
@@ -180,9 +180,9 @@ class NotaKreditReturController extends Controller
             // dd($request->all());
             $IdCust = $request->input('idCustomer'); // Get 'IdCust' from request
 
-            // Fetch data using stored procedure SP_LIST_SJ_NOTAKREDIT
+            // Fetch data using stored procedure SP_1273_ACC_LIST_SJ_NOTAKREDIT
             $results = DB::connection('ConnSales')
-                ->select('exec SP_LIST_SJ_NOTAKREDIT ?', [$IdCust]);
+                ->select('exec SP_1273_ACC_LIST_SJ_NOTAKREDIT ?', [$IdCust]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -217,7 +217,7 @@ class NotaKreditReturController extends Controller
             $IdRetur = $request->input('MIdRetur');
 
             $results = DB::connection('ConnSales')
-                ->select('exec SP_LIST_RETUR_NOTAKREDIT ?, ?', [$IdCust, $IdRetur]);
+                ->select('exec SP_1273_ACC_LIST_RETUR_NOTAKREDIT ?, ?', [$IdCust, $IdRetur]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -277,7 +277,7 @@ class NotaKreditReturController extends Controller
 
         } else if ($id == 'getNotaKredit') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec sp_list_NotaKredit ?', [1]);
+                ->select('exec SP_1273_PRG_List_NotaKredit ?', [1]);
             // dd($results);
             $response = [];
             if (!empty($results)) {
@@ -296,7 +296,7 @@ class NotaKreditReturController extends Controller
             try {
                 $kode = 2;
                 $results = DB::connection('ConnAccounting')
-                    ->select('exec SP_LIST_NOTAKREDIT @Id_NotaKredit = ?, @Kode = ?', [$sNotaKredit, $kode]);
+                    ->select('exec SP_1273_PRG_List_NotaKredit @Id_NotaKredit = ?, @Kode = ?', [$sNotaKredit, $kode]);
                 // dd($results);
                 $response = [];
                 $TGrand = 0;

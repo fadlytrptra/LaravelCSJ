@@ -21,7 +21,7 @@ class KelebihanBayarJualTunaiController extends Controller
 
     public function getCustKelebihanBayar()
     {
-        $tabel = DB::connection('ConnAccounting')->select('exec [sp_list_customer] @Kode = ?', [4]);
+        $tabel = DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_CUSTOMER] @Kode = ?', [4]);
         return response()->json($tabel);
     }
 
@@ -54,7 +54,7 @@ class KelebihanBayarJualTunaiController extends Controller
             // dd($kode);
             // Panggil stored procedure sesuai parameter kode
             $results = DB::connection('ConnAccounting')
-                ->select('exec sp_list_customer ?', [$kode]);
+                ->select('exec SP_1273_PRG_LIST_CUSTOMER ?', [$kode]);
             // dd($results);
             // Simpan hasil lookup
             $response = [];
@@ -78,7 +78,7 @@ class KelebihanBayarJualTunaiController extends Controller
             $idCustomer = $request->input('idCustomer');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_LIST_PENAGIHAN_SJ @Kode = ?, @IdCustomer = ?', [$kode, $idCustomer]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ @Kode = ?, @IdCustomer = ?', [$kode, $idCustomer]);
             // dd($results);
             // Hasil lookup untuk Id_Penagihan dan Tgl_Penagihan
             $response = [];
@@ -99,7 +99,7 @@ class KelebihanBayarJualTunaiController extends Controller
         } else if ($id == 'cekPelunasan') {
             $sIdPenagihan = $request->input('no_penagihan');
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_List_KelebihanBayar @Id_Penagihan = ?, @Kode = ?', [$sIdPenagihan, 1]);
+                ->select('exec SP_1273_PRG_List_KelebihanBayar @Id_Penagihan = ?, @Kode = ?', [$sIdPenagihan, 1]);
             // dd($results);
             if (!empty($results)) {
                 $result = $results[0];
@@ -115,7 +115,7 @@ class KelebihanBayarJualTunaiController extends Controller
             $sIdPenagihan = $request->input('IdPenagihan');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_LIST_PENAGIHAN_SJ @Id_Penagihan = ?, @Kode = ?', [$sIdPenagihan, 9]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ @Id_Penagihan = ?, @Kode = ?', [$sIdPenagihan, 9]);
 
             if (!empty($results)) {
                 $result = $results[0];

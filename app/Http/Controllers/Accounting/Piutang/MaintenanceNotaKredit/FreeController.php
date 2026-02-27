@@ -35,8 +35,8 @@ class FreeController extends Controller
 
             // Mode tambah data
             if ($proses == 1) {
-                // Panggil stored procedure SP_INSERT_NotaKredit
-                DB::connection('ConnAccounting')->statement('EXEC SP_INSERT_NotaKredit @Tanggal = ?, @JnsNotaKredit = ?, @Id_MataUang = ?, @Status_PPN = ?, @Nilai = ?, @Terbilang = ?, @Id_Penagihan = ?, @Status_Pelunasan = ?, @UserInput = ?', [
+                // Panggil stored procedure SP_1273_PRG_Insert_NotaKredit
+                DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_Insert_NotaKredit @Tanggal = ?, @JnsNotaKredit = ?, @Id_MataUang = ?, @Status_PPN = ?, @Nilai = ?, @Terbilang = ?, @Id_Penagihan = ?, @Status_Pelunasan = ?, @UserInput = ?', [
                     $request->tanggalInput,
                     '3',
                     $request->idMataUang,
@@ -57,9 +57,9 @@ class FreeController extends Controller
                 $idNotaKredit = $nota_KreditId->Id_NotaKredit;
                 // dd($idNotaKredit);
 
-                // Panggil stored procedure SP_INSERT_DETAIL_NotaKredit untuk setiap item di ListView1
+                // Panggil stored procedure SP_1273_PRG_Insert_Detail_NotaKredit untuk setiap item di ListView1
                 foreach ($request->allRowsDataAtas as $item) {
-                    DB::connection('ConnAccounting')->statement('EXEC SP_INSERT_DETAIL_NotaKredit @Id_NotaKredit = ?, @SuratJalan = ?, @HargaSP = ?, @HargaPot = ?, @KdBrg = ?, @QtyBrg = ?', [
+                    DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_Insert_Detail_NotaKredit @Id_NotaKredit = ?, @SuratJalan = ?, @HargaSP = ?, @HargaPot = ?, @KdBrg = ?, @QtyBrg = ?', [
                         $idNotaKredit,
                         $item[0],
                         $item[3],
@@ -73,16 +73,16 @@ class FreeController extends Controller
 
                 // Mode edit data
             } else if ($proses == 2) {
-                // Hapus detail dengan stored procedure SP_DEl_DEtail_NotaKredit
+                // Hapus detail dengan stored procedure SP_1273_PRG_Del_Detail_NotaKredit
                 foreach ($request->allRowsDataHapus as $item) {
-                    DB::connection('ConnAccounting')->statement('EXEC SP_DEL_DETAIL_NOTAKREDIT @IdDetail = ?', [
+                    DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_Del_Detail_NotaKredit @IdDetail = ?', [
                         $item[5]
                     ]);
                 }
 
-                // Tambahkan atau update detail dengan stored procedure SP_INSERT_DETAIL_NotaKredit
+                // Tambahkan atau update detail dengan stored procedure SP_1273_PRG_Insert_Detail_NotaKredit
                 foreach ($request->allRowsDataAtas as $item) {
-                    DB::connection('ConnAccounting')->statement('EXEC SP_INSERT_DETAIL_NotaKredit @Id_NotaKredit = ?, @SuratJalan = ?, @HargaSP = ?, @HargaPot = ?, @KdBrg = ?, @QtyBrg = ?, @IdDEtail = ?', [
+                    DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_Insert_Detail_NotaKredit @Id_NotaKredit = ?, @SuratJalan = ?, @HargaSP = ?, @HargaPot = ?, @KdBrg = ?, @QtyBrg = ?, @IdDEtail = ?', [
                         $request->no_notaKredit,
                         $item[0],
                         $item[3],
@@ -93,8 +93,8 @@ class FreeController extends Controller
                     ]);
                 }
 
-                // Update Nota Kredit dengan stored procedure SP_UPDATE_NOTAKREDIT
-                DB::connection('ConnAccounting')->statement('EXEC SP_UPDATE_NOTAKREDIT @ID_NOtaKRedit = ?, @Nilai = ?, @Terbilang = ?', [
+                // Update Nota Kredit dengan stored procedure SP_1273_PRG_Update_NotaKredit
+                DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_Update_NotaKredit @ID_NOtaKRedit = ?, @Nilai = ?, @Terbilang = ?', [
                     $request->no_notaKredit,
                     $TTotal,
                     $TTerbilang
@@ -104,8 +104,8 @@ class FreeController extends Controller
 
                 // Mode delete data
             } else if ($proses == 3) {
-                // Hapus Nota Kredit dengan stored procedure SP_DEL_NOTAKREDIT
-                $result = DB::connection('ConnAccounting')->statement('EXEC SP_DEL_NOTAKREDIT @Id_NotaKredit = ?', [
+                // Hapus Nota Kredit dengan stored procedure SP_1273_PRG_Del_NotaKredit
+                $result = DB::connection('ConnAccounting')->statement('EXEC SP_1273_PRG_Del_NotaKredit @Id_NotaKredit = ?', [
                     $request->no_notaKredit
                 ]);
 
@@ -130,7 +130,7 @@ class FreeController extends Controller
             // dd($kode);
             // Panggil stored procedure sesuai parameter kode
             $results = DB::connection('ConnAccounting')
-                ->select('exec sp_list_customer ?', [$kode]);
+                ->select('exec SP_1273_PRG_LIST_CUSTOMER ?', [$kode]);
             // dd($results);
             // Simpan hasil lookup
             $response = [];
@@ -154,7 +154,7 @@ class FreeController extends Controller
             $idCustomer = $request->input('idCustomer');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_LIST_PENAGIHAN_SJ @Kode = ?, @IdCustomer = ?', [$kode, $idCustomer]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ @Kode = ?, @IdCustomer = ?', [$kode, $idCustomer]);
             // dd($results);
             // Hasil lookup untuk Id_Penagihan dan Tgl_Penagihan
             $response = [];
