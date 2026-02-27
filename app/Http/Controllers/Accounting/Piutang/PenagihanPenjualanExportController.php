@@ -21,14 +21,14 @@ class PenagihanPenjualanExportController extends Controller
 
     // public function getCustomerEx()
     // {
-    //     $data =  DB::connection('ConnSales')->select('exec [SP_1486_ACC_LIST_CUSTOMER_EXPORT]
+    //     $data =  DB::connection('ConnSales')->select('exec [SP_1273_PRG_LIST_CUSTOMER_EXPORT]
     //     @Kode = ?', [1]);
     //     return response()->json($data);
     // }
 
     // public function getSuratJalanEx($idCustomer)
     // {
-    //     $data =  DB::connection('ConnSales')->select('exec [SP_1486_SLS_LIST_PENGIRIMAN_EXPORT]
+    //     $data =  DB::connection('ConnSales')->select('exec [SP_1273_ACC_LIST_PENGIRIMAN_EXPORT]
     //     @Kode = ?, @IdCust = ?', [1, $idCustomer]);
     //     return response()->json($data);
     // }
@@ -56,7 +56,7 @@ class PenagihanPenjualanExportController extends Controller
             // Assume addMode and stored procedure
             if ($proses == 1) {
                 DB::connection('ConnAccounting')
-                    ->statement('exec SP_1486_ACC_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Tgl_Penagihan = ?, @Id_Customer = ?, @id_Jenis_Dokumen = ?, @Nilai_Penagihan = ?, @Id_MataUang = ?, @Terbilang = ?, @UserInput = ?, @IdPenagih = ?, @NilaiKurs = ?, @NoPEB = ?, @TglPEB = ?, @NoBL = ?, @TglBL = ?, @NilaiTotalFOB = ?', [
+                    ->statement('exec SP_1273_PRG_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Tgl_Penagihan = ?, @Id_Customer = ?, @id_Jenis_Dokumen = ?, @Nilai_Penagihan = ?, @Id_MataUang = ?, @Terbilang = ?, @UserInput = ?, @IdPenagih = ?, @NilaiKurs = ?, @NoPEB = ?, @TglPEB = ?, @NoBL = ?, @TglBL = ?, @NilaiTotalFOB = ?', [
                         1,
                         $request->input('tanggal'),
                         $request->input('idCustomer'),
@@ -94,7 +94,7 @@ class PenagihanPenjualanExportController extends Controller
 
                 foreach ($allRowsDataAtas as $list_sj) {
                     DB::connection('ConnAccounting')
-                        ->statement('exec SP_1486_ACC_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Id_Penagihan = ?, @SuratJalan = ?, @JatuhTempo = ?, @Id_Customer = ?', [
+                        ->statement('exec SP_1273_PRG_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Id_Penagihan = ?, @SuratJalan = ?, @JatuhTempo = ?, @Id_Customer = ?', [
                             2,
                             $id_Penagihan,
                             $list_sj[0],
@@ -113,7 +113,7 @@ class PenagihanPenjualanExportController extends Controller
                 if ($allRowsDataHapus) {
                     foreach ($allRowsDataHapus as $list_hapus) {
                         DB::connection('ConnAccounting')
-                            ->statement('exec SP_1486_ACC_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @id_detail_penagihan = ?, @Id_Penagihan = ?, @SuratJalan = ?, @Id_Customer = ?', [
+                            ->statement('exec SP_1273_PRG_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @id_detail_penagihan = ?, @Id_Penagihan = ?, @SuratJalan = ?, @Id_Customer = ?', [
                                 3,
                                 $list_hapus[4],  // id_detail_penagihan
                                 $id_penagihan,                       // Id_Penagihan
@@ -127,7 +127,7 @@ class PenagihanPenjualanExportController extends Controller
                 foreach ($allRowsDataAtas as $list_sj) {
                     if (empty($list_sj[3])) {
                         DB::connection('ConnAccounting')
-                            ->statement('exec SP_1486_ACC_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Id_Penagihan = ?, @SuratJalan = ?, @JatuhTempo = ?, @Id_Customer = ?', [
+                            ->statement('exec SP_1273_PRG_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Id_Penagihan = ?, @SuratJalan = ?, @JatuhTempo = ?, @Id_Customer = ?', [
                                 2,
                                 $id_penagihan,                  // Id_Penagihan
                                 $list_sj[0],        // Surat Jalan
@@ -139,7 +139,7 @@ class PenagihanPenjualanExportController extends Controller
 
                 // Update Penagihan Data (Kode = 4)
                 DB::connection('ConnAccounting')
-                    ->statement('exec SP_1486_ACC_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Id_Penagihan = ?, @Nilai_Penagihan = ?, @Terbilang = ?, @IdPenagih = ?, @NilaiKurs = ?, @NilaiTotalFOB = ?', [
+                    ->statement('exec SP_1273_PRG_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Id_Penagihan = ?, @Nilai_Penagihan = ?, @Terbilang = ?, @IdPenagih = ?, @NilaiKurs = ?, @NilaiTotalFOB = ?', [
                         4,
                         $id_penagihan,                         // Id_Penagihan
                         (float) str_replace(',', '', $request->input('nilaiDitagihkan')),    // Nilai_Penagihan
@@ -156,7 +156,7 @@ class PenagihanPenjualanExportController extends Controller
             // DelMode logic
             if ($proses == 3) {
                 DB::connection('ConnAccounting')
-                    ->statement('exec SP_1486_ACC_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Id_Penagihan = ?, @Tgl_Penagihan = ?', [
+                    ->statement('exec SP_1273_PRG_MAINT_PENAGIHANSJ_EXPORT @Kode = ?, @Id_Penagihan = ?, @Tgl_Penagihan = ?', [
                         5,
                         $request->input('no_penagihan'),
                         $request->input('tanggal'),
@@ -174,7 +174,7 @@ class PenagihanPenjualanExportController extends Controller
     {
         if ($id == 'getPenagihan') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ ?', [1]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ ?', [1]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -199,7 +199,7 @@ class PenagihanPenjualanExportController extends Controller
         } else if ($id == 'getCustomer') {
             try {
                 $results = DB::connection('ConnSales')
-                    ->select('exec SP_1486_ACC_LIST_CUSTOMER_EXPORT ?', ['1']);
+                    ->select('exec SP_1273_ACC_LIST_CUSTOMER_EXPORT ?', ['1']);
                 // dd($results);
                 $response = [];
                 foreach ($results as $row) {
@@ -222,7 +222,7 @@ class PenagihanPenjualanExportController extends Controller
             }
         } else if ($id == 'getSuratJalan') {
             $results = DB::connection('ConnSales')
-                ->select('exec SP_1486_SLS_LIST_PENGIRIMAN_EXPORT ?, ?', [1, $request->input('idCustomer')]);
+                ->select('exec SP_1273_ACC_LIST_PENGIRIMAN_EXPORT ?, ?', [1, $request->input('idCustomer')]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -237,7 +237,7 @@ class PenagihanPenjualanExportController extends Controller
         } else if ($id == 'getPengirimanDetails') {
             // dd($request->all());
             $results = DB::connection('ConnSales')
-                ->select('exec SP_1486_SLS_LIST_PENGIRIMAN_EXPORT @Kode = ?, @IDPengiriman = ?, @IDCust = ?', [2, $request->input('surat_jalan'), $request->input('idCustomer')]);
+                ->select('exec SP_1273_ACC_LIST_PENGIRIMAN_EXPORT @Kode = ?, @IDPengiriman = ?, @IDCust = ?', [2, $request->input('surat_jalan'), $request->input('idCustomer')]);
             // dd($results);
             // Assume the first record provides the currency information
             if (!empty($results)) {
@@ -253,7 +253,7 @@ class PenagihanPenjualanExportController extends Controller
 
             // Get detailed items list
             $items = DB::connection('ConnSales')
-                ->select('exec SP_1486_SLS_LIST_PENGIRIMAN_EXPORT @Kode = ?, @IDPengiriman = ?, @IDCust = ?', [3, $request->input('surat_jalan'), $request->input('idCustomer')]);
+                ->select('exec SP_1273_ACC_LIST_PENGIRIMAN_EXPORT @Kode = ?, @IDPengiriman = ?, @IDCust = ?', [3, $request->input('surat_jalan'), $request->input('idCustomer')]);
             // dd($items);
             $response = [];
             // $total = 0;
@@ -281,7 +281,7 @@ class PenagihanPenjualanExportController extends Controller
             // ])->make(true);
         } else if (($id == 'getMataUang')) {
             $results = DB::connection('ConnSales')
-                ->select('exec SP_1486_SLS_LIST_PENGIRIMAN_EXPORT @Kode = ?, @IDPengiriman = ?, @IDCust = ?', [2, $request->input('surat_jalan'), $request->input('idCustomer')]);
+                ->select('exec SP_1273_ACC_LIST_PENGIRIMAN_EXPORT @Kode = ?, @IDPengiriman = ?, @IDCust = ?', [2, $request->input('surat_jalan'), $request->input('idCustomer')]);
             // dd($results);
             // Assume the first record provides the currency information
             if (!empty($results)) {
@@ -306,7 +306,7 @@ class PenagihanPenjualanExportController extends Controller
 
             // Jalankan stored procedure dengan parameter
             DB::connection('ConnSales')
-                ->statement('exec SP_1486_SLS_MAINT_DETAILPESANAN1 @Kode = ?, @IdPesanan = ?, @TotalFOB = ?', [7, $idPesanan, $totalFOB]);
+                ->statement('exec SP_1273_PRG_MAINT_DETAILPESANAN1 @Kode = ?, @IdPesanan = ?, @TotalFOB = ?', [7, $idPesanan, $totalFOB]);
 
             // Berikan respons jika diperlukan
             return response()->json(['message' => 'Data successfully updated!']);
@@ -338,7 +338,7 @@ class PenagihanPenjualanExportController extends Controller
             // Run the stored procedure to update data
             $totalFOB = null;
             $results = DB::connection('ConnSales')
-                ->select('exec SP_1486_SLS_LIST_PENGIRIMAN_EXPORT ?, ?, ?', [4, $idPengiriman, $idCust]);
+                ->select('exec SP_1273_ACC_LIST_PENGIRIMAN_EXPORT ?, ?, ?', [4, $idPengiriman, $idCust]);
 
             if (count($results) > 0) {
                 $totalFOB = $results[0]->TotalFOB;
@@ -358,7 +358,7 @@ class PenagihanPenjualanExportController extends Controller
             return datatables($updatedListItems)->make(true);
         } else if ($id == 'getPenagih') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_USER_PENAGIH @KODE = ?', [1]);
+                ->select('exec SP_1273_PRG_LIST_USER_PENAGIH @KODE = ?', [1]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -372,7 +372,7 @@ class PenagihanPenjualanExportController extends Controller
 
         } else if ($id == 'getPenagihanExport') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT ?', [1]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT ?', [1]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -385,10 +385,10 @@ class PenagihanPenjualanExportController extends Controller
 
         } else if ($id == 'getPenagihanDetails') {
             try {
-                // Jalankan stored procedure pertama (SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT)
+                // Jalankan stored procedure pertama (SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT)
                 $idPenagihan = $request->input('no_penagihan');
                 $resultPenagihan = DB::connection('ConnAccounting')
-                    ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT ?, ?', [2, trim($idPenagihan)]);
+                    ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT ?, ?', [2, trim($idPenagihan)]);
                 // dd($resultPenagihan);
                 if (count($resultPenagihan) > 0) {
                     // Ambil data dari hasil stored procedure pertama
@@ -408,9 +408,9 @@ class PenagihanPenjualanExportController extends Controller
                     ];
                 }
 
-                // Jalankan stored procedure kedua (SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT2)
+                // Jalankan stored procedure kedua (SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT2)
                 $listItems = DB::connection('ConnAccounting')
-                    ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT2 ?', [$idPenagihan]);
+                    ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT2 ?', [$idPenagihan]);
                 // dd($listItems);
                 // Siapkan list item dari stored procedure kedua
                 $listSJ = [];
@@ -455,7 +455,7 @@ class PenagihanPenjualanExportController extends Controller
         //     // Run the stored procedure to update data
         //     $totalFOB = null;
         //     $results = DB::connection('ConnSales')
-        //         ->select('exec SP_1486_SLS_LIST_PENGIRIMAN_EXPORT @Kode = ?, @IDPengiriman = ?, @IDCust = ?', [4, $idPengiriman, $idCust]);
+        //         ->select('exec SP_1273_ACC_LIST_PENGIRIMAN_EXPORT @Kode = ?, @IDPengiriman = ?, @IDCust = ?', [4, $idPengiriman, $idCust]);
 
         //     if (count($results) > 0) {
         //         $totalFOB = $results[0]->TotalFOB;

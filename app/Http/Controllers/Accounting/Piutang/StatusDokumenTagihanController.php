@@ -28,14 +28,14 @@ class StatusDokumenTagihanController extends Controller
 
     // public function getTabelStatusDokumen($idCustomer)
     // {
-    //     $data =  DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_MAINT_STATUS_DOKUMEN]
+    //     $data =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_MAINT_STATUS_DOKUMEN]
     //     @Kode = ?, @ID_Customer = ?', [1, $idCustomer]);
     //     return response()->json($data);
     // }
 
     // public function getDataStatusDokumen()
     // {
-    //     $data =  DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_MAINT_STATUS_DOKUMEN]
+    //     $data =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_MAINT_STATUS_DOKUMEN]
     //     @Kode = ?', [3]);
     //     return response()->json($data);
     // }
@@ -58,7 +58,7 @@ class StatusDokumenTagihanController extends Controller
         }
 
         try {
-            DB::connection('ConnAccounting')->statement('exec SP_1486_ACC_MAINT_STATUS_DOKUMEN @Kode = ?, @IdStatus = ?, @ID_Penagihan = ?', [
+            DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_MAINT_STATUS_DOKUMEN @Kode = ?, @IdStatus = ?, @ID_Penagihan = ?', [
                 4,
                 $idStatus,
                 $idPenagihan
@@ -76,7 +76,7 @@ class StatusDokumenTagihanController extends Controller
         if ($id == 'getCustomer') {
             // Call stored procedure to get customer list
             $results = DB::connection('ConnSales')
-                ->select('exec SP_1486_SLS_LIST_ALL_CUSTOMER ?', ['1']);
+                ->select('exec SP_1273_PRG_LIST_ALL_CUSTOMER ?', ['1']);
             // dd($results);
             // Instance to handle lookup (similar to mLook class in VB)
             $response = [];
@@ -92,7 +92,7 @@ class StatusDokumenTagihanController extends Controller
             $customerId = $request->input('idCustomer');
 
             $documentResults = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_MAINT_STATUS_DOKUMEN ?, ?', [1, $customerId]);
+                ->select('exec SP_1273_PRG_MAINT_STATUS_DOKUMEN ?, ?', [1, $customerId]);
             // dd($documentResults);
             $response = [];
             foreach ($documentResults as $row) {
@@ -107,7 +107,7 @@ class StatusDokumenTagihanController extends Controller
             return datatables($response)->make(true);
         } else if ($id == 'getStatus') {
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_MAINT_STATUS_DOKUMEN ?', ['3']);
+                ->select('exec SP_1273_PRG_MAINT_STATUS_DOKUMEN ?', ['3']);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -136,7 +136,7 @@ class StatusDokumenTagihanController extends Controller
         $idPenagihan = str_replace('.', '/', $id_Penagihan);
 
 
-        DB::connection('ConnAccounting')->statement('exec [SP_1486_ACC_MAINT_STATUS_DOKUMEN]
+        DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_MAINT_STATUS_DOKUMEN]
         @Kode = ?,
         @IdStatus = ?,
         @Id_Penagihan = ?',

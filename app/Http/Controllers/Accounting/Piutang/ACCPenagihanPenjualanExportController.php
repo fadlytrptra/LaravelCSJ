@@ -21,7 +21,7 @@ class ACCPenagihanPenjualanExportController extends Controller
 
     // public function getTabelPenagihanEx()
     // {
-    //     $data =  DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT]
+    //     $data =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT]
     //     @Kode = ?', [4]);
     //     return response()->json($data);
     // }
@@ -29,7 +29,7 @@ class ACCPenagihanPenjualanExportController extends Controller
     // public function getDetailPenagihanEx($id_Penagihan)
     // {
     //     $idPenagihan = str_replace('.', '/', $id_Penagihan);
-    //     $data =  DB::connection('ConnAccounting')->select('exec [SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT]
+    //     $data =  DB::connection('ConnAccounting')->select('exec [SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT]
     //     @Kode = ?, @ID_Penagihan = ?', [5, $idPenagihan]);
     //     return response()->json($data);
     // }
@@ -51,7 +51,7 @@ class ACCPenagihanPenjualanExportController extends Controller
 
             foreach ($listHeader as $item) {
                 DB::connection('ConnAccounting')
-                    ->statement('exec SP_1486_ACC_PENAGIHAN_SJ @UserAcc = ?, @Id_Penagihan = ?, @IdCust = ?, @IdMtUang = ?, @debet = ?, @kurs = ?', [
+                    ->statement('exec SP_1273_PRG_PENAGIHAN_SJ @UserAcc = ?, @Id_Penagihan = ?, @IdCust = ?, @IdMtUang = ?, @debet = ?, @kurs = ?', [
                         $user_id,                      // @UserAcc
                         trim($item['Id_Penagihan']),   // @Id_Penagihan
                         trim($item['Id_Customer']),    // @IdCust
@@ -85,7 +85,7 @@ class ACCPenagihanPenjualanExportController extends Controller
         if ($id == 'getDisplayHeader') {
             // Execute the stored procedure and fetch the result
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT ?', [4]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT ?', [4]);
             // dd($results);
             $response = [];
             foreach ($results as $row) {
@@ -108,7 +108,7 @@ class ACCPenagihanPenjualanExportController extends Controller
             $sIdPenagihan = $request->input('id_penagihan');
 
             $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1486_ACC_LIST_PENAGIHAN_SJ_EXPORT ?, ?', [5, $sIdPenagihan]);
+                ->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ_EXPORT ?, ?', [5, $sIdPenagihan]);
             // dd($results);
             // Siapkan respons dalam format array
             $response = [];
@@ -140,7 +140,7 @@ class ACCPenagihanPenjualanExportController extends Controller
 
         // $idPenagihan = str_replace('.', '/', $id_Penagihan);
 
-        // DB::connection('ConnAccounting')->statement('exec [SP_1486_ACC_PENAGIHAN_SJ]
+        // DB::connection('ConnAccounting')->statement('exec [SP_1273_PRG_PENAGIHAN_SJ]
         // @UserAcc = ?,
         // @Id_Penagihan = ?,
         // @IdCust = ?,
