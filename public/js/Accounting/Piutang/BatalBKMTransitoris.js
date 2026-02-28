@@ -1,23 +1,24 @@
-var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+var csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
 
-var kasKecil = document.getElementById('kasKecil');
-var kasBesar = document.getElementById('kasBesar');
-var bulanTahun = document.getElementById('bulanTahun');
-var BKK = document.getElementById('BKK');
-var statusPenagihan = document.getElementById('statusPenagihan');
-var mataUang = document.getElementById('mataUang');
-var nilaiBKM = document.getElementById('nilaiBKM');
-var tanggalBatal = document.getElementById('tanggalBatal');
-var alasan = document.getElementById('alasan');
-var uraian = document.getElementById('uraian');
+var kasKecil = document.getElementById("kasKecil");
+var kasBesar = document.getElementById("kasBesar");
+var bulanTahun = document.getElementById("bulanTahun");
+var BKK = document.getElementById("BKK");
+var statusPenagihan = document.getElementById("statusPenagihan");
+var mataUang = document.getElementById("mataUang");
+var nilaiBKM = document.getElementById("nilaiBKM");
+var tanggalBatal = document.getElementById("tanggalBatal");
+var alasan = document.getElementById("alasan");
+var uraian = document.getElementById("uraian");
 
-var btn_bkk = document.getElementById('btn_bkk');
-var btn_proses = document.getElementById('btn_proses');
-var btn_koreksi = document.getElementById('btn_koreksi');
-var btn_batalBKM = document.getElementById('btn_batalBKM');
+var btn_bkk = document.getElementById("btn_bkk");
+var btn_proses = document.getElementById("btn_proses");
+var btn_koreksi = document.getElementById("btn_koreksi");
+var btn_batalBKM = document.getElementById("btn_batalBKM");
 
 let kode = 0;
-
 
 // var methodkoreksi = document.getElementById("methodkoreksi");
 // var formkoreksi = document.getElementById("formkoreksi");
@@ -29,16 +30,18 @@ mataUang.readOnly = true;
 nilaiBKM.readOnly = true;
 BKK.readOnly = true;
 uraian.disabled = true;
+kasBesar.checked = true;
 
 var tgl = new Date();
-var formattedDate = (tgl.getMonth() + 1) + String(tgl.getFullYear()).slice(-2);
+var month = String(tgl.getMonth() + 1).padStart(2, "0");
+var year = String(tgl.getFullYear()).slice(-2);
+var formattedDate = month + year;
 bulanTahun.value = formattedDate;
 bulanTahun.focus();
 
 if (kasBesar.checked || kasKecil.checked) {
     bulanTahun.focus();
 }
-
 
 function handleKeyPress(event) {
     if (event.key === "Enter") {
@@ -82,11 +85,10 @@ bulanTahun.addEventListener("keypress", function (event) {
 function updateKode() {
     kode = kasBesar.checked ? 4 : kasKecil.checked ? 3 : null;
     console.log(kode);
-
 }
 
-kasBesar.addEventListener('change', updateKode);
-kasKecil.addEventListener('change', updateKode);
+kasBesar.addEventListener("change", updateKode);
+kasKecil.addEventListener("change", updateKode);
 
 // button pilih bkm
 btn_bkk.addEventListener("click", function (e) {
@@ -94,9 +96,9 @@ btn_bkk.addEventListener("click", function (e) {
 
     if (!(kasBesar.checked || kasKecil.checked)) {
         Swal.fire({
-            icon: 'error',
-            title: 'Pilih dulu, Kas Besar atau Kas Kecil ?',
-            returnFocus: false
+            icon: "error",
+            title: "Pilih dulu, Kas Besar atau Kas Kecil ?",
+            returnFocus: false,
         }).then(() => {
             kasBesar.focus();
             if (!kasBesar.checked) {
@@ -106,7 +108,7 @@ btn_bkk.addEventListener("click", function (e) {
     } else {
         try {
             Swal.fire({
-                title: 'BKM',
+                title: "BKM",
                 html: `
                     <table id="table_list" class="table">
                         <thead>
@@ -118,18 +120,21 @@ btn_bkk.addEventListener("click", function (e) {
                     </table>
                 `,
                 preConfirm: () => {
-                    const selectedData = $("#table_list").DataTable().row(".selected").data();
+                    const selectedData = $("#table_list")
+                        .DataTable()
+                        .row(".selected")
+                        .data();
                     if (!selectedData) {
                         Swal.showValidationMessage("Please select a row");
                         return false;
                     }
                     return selectedData;
                 },
-                width: '40%',
+                width: "40%",
                 returnFocus: false,
                 showCloseButton: true,
                 showConfirmButton: true,
-                confirmButtonText: 'Select',
+                confirmButtonText: "Select",
                 didOpen: () => {
                     $(document).ready(function () {
                         const table = $("#table_list").DataTable({
@@ -137,7 +142,7 @@ btn_bkk.addEventListener("click", function (e) {
                             processing: true,
                             serverSide: true,
                             paging: false,
-                            scrollY: '400px',
+                            scrollY: "400px",
                             scrollCollapse: true,
                             order: [0, "asc"],
                             ajax: {
@@ -147,18 +152,16 @@ btn_bkk.addEventListener("click", function (e) {
                                 data: {
                                     _token: csrfToken,
                                     kode: kode,
-                                    bulanTahun: bulanTahun.value
-                                }
+                                    bulanTahun: bulanTahun.value,
+                                },
                             },
-                            columns: [
-                                { data: "Id_BKM" }
-                            ],
+                            columns: [{ data: "Id_BKM" }],
                             columnDefs: [
                                 {
                                     targets: 0,
-                                    width: '100px',
-                                }
-                            ]
+                                    width: "100px",
+                                },
+                            ],
                         });
 
                         $("#table_list tbody").on("click", "tr", function () {
@@ -167,53 +170,70 @@ btn_bkk.addEventListener("click", function (e) {
                             scrollRowIntoView(this);
                         });
 
-                        const searchInput = $('#table_list_filter input');
+                        const searchInput = $("#table_list_filter input");
                         if (searchInput.length > 0) {
                             searchInput.focus();
                         }
 
                         currentIndex = null;
-                        Swal.getPopup().addEventListener('keydown', (e) => handleTableKeydown(e, 'table_list'));
+                        Swal.getPopup().addEventListener("keydown", (e) =>
+                            handleTableKeydown(e, "table_list"),
+                        );
                     });
-                }
+                },
             }).then((result) => {
                 if (result.isConfirmed) {
                     BKK.value = result.value.Id_BKM.trim();
 
                     $.ajax({
-                        type: 'GET',
-                        url: 'BatalBKMTransistoris/getDetailBKM',
+                        type: "GET",
+                        url: "BatalBKMTransistoris/getDetailBKM",
                         data: {
                             _token: csrfToken,
-                            kode: '1',
-                            BKK: BKK.value
+                            kode: "1",
+                            BKK: BKK.value,
                         },
                         success: function (response) {
                             console.log(response);
 
                             if (response.warning) {
                                 Swal.fire({
-                                    icon: 'warning',
-                                    title: 'Warning',
+                                    icon: "warning",
+                                    title: "Warning",
                                     text: response.warning,
-                                    returnFocus: false
+                                    returnFocus: false,
                                 });
                             } else {
                                 stat = response[0].Status_Penagihan.trim();
-                                statusPenagihan.value = stat === 'N' ? stat + 'o Penagihan' : stat + 'es Penagihan';
+                                statusPenagihan.value =
+                                    stat === "N"
+                                        ? stat + "o Penagihan"
+                                        : stat + "es Penagihan";
 
-                                mataUang.value = response[0].Nama_MataUang.trim();
-                                nilaiBKM.value = parseFloat(response[0].Nilai_Pelunasan).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                tanggalBatal.value = response[0].Batal ? response[0].Batal.trim() : '';
-                                alasan.value = response[0].Uraian ? response[0].Uraian.trim() : '';
-                                uraian.value = response[0].Uraian ? response[0].Uraian.trim() : '';
+                                mataUang.value =
+                                    response[0].Nama_MataUang.trim();
+                                nilaiBKM.value = parseFloat(
+                                    response[0].Nilai_Pelunasan,
+                                ).toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                });
+                                tanggalBatal.value = response[0].Batal
+                                    ? response[0].Batal.trim()
+                                    : "";
+                                alasan.value = response[0].Uraian
+                                    ? response[0].Uraian.trim()
+                                    : "";
+                                uraian.value = response[0].Uraian
+                                    ? response[0].Uraian.trim()
+                                    : "";
                                 // btn_proses.disabled = false;
                                 // btn_proses.focus();
                             }
                         },
                         error: function (xhr, status, error) {
-                            console.error('Error:', error);
-                        }
+                            console.error("Error:", error);
+                        },
                     });
                 }
             });
@@ -222,7 +242,6 @@ btn_bkk.addEventListener("click", function (e) {
         }
     }
 });
-
 
 // Function to handle keydown events for table navigation
 function handleTableKeydown(e, tableId) {
@@ -242,8 +261,7 @@ function handleTableKeydown(e, tableId) {
                 Swal.getConfirmButton().click();
             }
         }
-    }
-    else if (e.key === "ArrowDown") {
+    } else if (e.key === "ArrowDown") {
         e.preventDefault();
         if (currentIndex === null || currentIndex >= rowCount - 1) {
             currentIndex = 0;
@@ -253,8 +271,7 @@ function handleTableKeydown(e, tableId) {
         rows.removeClass("selected");
         const selectedRow = $(rows[currentIndex]).addClass("selected");
         scrollRowIntoView(selectedRow[0]);
-    }
-    else if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowUp") {
         e.preventDefault();
         if (currentIndex === null || currentIndex <= 0) {
             currentIndex = rowCount - 1;
@@ -264,85 +281,91 @@ function handleTableKeydown(e, tableId) {
         rows.removeClass("selected");
         const selectedRow = $(rows[currentIndex]).addClass("selected");
         scrollRowIntoView(selectedRow[0]);
-    }
-    else if (e.key === "ArrowRight") {
+    } else if (e.key === "ArrowRight") {
         e.preventDefault();
         const pageInfo = table.page.info();
         if (pageInfo.page < pageInfo.pages - 1) {
-            table.page('next').draw('page').on('draw', function () {
-                currentIndex = 0;
-                const newRows = $(`#${tableId} tbody tr`);
-                const selectedRow = $(newRows[currentIndex]).addClass("selected");
-                scrollRowIntoView(selectedRow[0]);
-            });
+            table
+                .page("next")
+                .draw("page")
+                .on("draw", function () {
+                    currentIndex = 0;
+                    const newRows = $(`#${tableId} tbody tr`);
+                    const selectedRow = $(newRows[currentIndex]).addClass(
+                        "selected",
+                    );
+                    scrollRowIntoView(selectedRow[0]);
+                });
         }
-    }
-    else if (e.key === "ArrowLeft") {
+    } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         const pageInfo = table.page.info();
         if (pageInfo.page > 0) {
-            table.page('previous').draw('page').on('draw', function () {
-                currentIndex = 0;
-                const newRows = $(`#${tableId} tbody tr`);
-                const selectedRow = $(newRows[currentIndex]).addClass("selected");
-                scrollRowIntoView(selectedRow[0]);
-            });
+            table
+                .page("previous")
+                .draw("page")
+                .on("draw", function () {
+                    currentIndex = 0;
+                    const newRows = $(`#${tableId} tbody tr`);
+                    const selectedRow = $(newRows[currentIndex]).addClass(
+                        "selected",
+                    );
+                    scrollRowIntoView(selectedRow[0]);
+                });
         }
     }
 }
 // Helper function to scroll selected row into view
 function scrollRowIntoView(rowElement) {
-    rowElement.scrollIntoView({ block: 'nearest' });
+    rowElement.scrollIntoView({ block: "nearest" });
 }
 
 btn_proses.addEventListener("click", function (e) {
     $.ajax({
-        type: 'PUT',
-        url: 'BatalBKMTransistoris/batal',
+        type: "PUT",
+        url: "BatalBKMTransistoris/batal",
         data: {
             _token: csrfToken,
             BKK: BKK.value,
             alasan: alasan.value,
             kodeProses: kodeProses,
-            uraian: uraian.value
+            uraian: uraian.value,
         },
         success: function (response) {
             console.log(response);
 
             if (response.success) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
+                    icon: "success",
+                    title: "Success",
                     text: response.success,
-                    returnFocus: false
+                    returnFocus: false,
                 });
 
                 btn_proses.disabled = true;
                 btn_batalBKM.disabled = false;
                 btn_koreksi.disabled = false;
                 uraian.disabled = true;
-                alasan.value = '';
-                BKK.value = '';
-                statusPenagihan.value = '';
-                stat = '';
-                mataUang.value = '';
-                nilaiBKM.value = '0';
-                uraian.value = '';
+                alasan.value = "";
+                BKK.value = "";
+                statusPenagihan.value = "";
+                stat = "";
+                mataUang.value = "";
+                nilaiBKM.value = "0";
+                uraian.value = "";
                 kodeProses = 0;
-
             } else if (response.error) {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
+                    icon: "error",
+                    title: "Error",
                     text: response.error,
-                    returnFocus: false
+                    returnFocus: false,
                 });
             }
         },
         error: function (xhr, status, error) {
-            console.error('Error:', error);
-
-        }
+            console.error("Error:", error);
+        },
     });
 });
 
@@ -412,8 +435,3 @@ btn_proses.addEventListener("click", function (e) {
 //     formkoreksi.action = "/deletedata/" + idBKMSelect.value + "/" +alasan.value;
 //     formkoreksi.submit();
 // })
-
-
-
-
-
