@@ -126,7 +126,7 @@ class BatalBKMTransistorisController extends Controller
 
                     return response()->json(['success' => 'Data BKM sudah dikoreksi!!'], 200);
                 } else if ($kodeProses == 2) {
-                    DB::connection('ConnAccounting')->statement('exec SP_1273_PRG_BATAL_BKM ?,?,?', [$BKK, $alasan, $user]);
+                    DB::connection('ConnAccounting')->statement('exec SP_1273_ACC_BATAL_BKM ?,?,?', [$BKK, $alasan, $user]);
 
                     return response()->json(['success' => 'Data BKM sudah dibatalkan!!'], 200);
                 }
