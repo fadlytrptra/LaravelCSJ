@@ -18,8 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const idBKKSelect = $("#idBKKSelect");
 
     var tgl = new Date();
-    var formattedDate =
-        tgl.getMonth() + 1 + String(tgl.getFullYear()).slice(-2);
+    var month = String(tgl.getMonth() + 1).padStart(2, "0");
+    var year = String(tgl.getFullYear()).slice(-2);
+
+    var formattedDate = month + year;
     bulanTahun.value = formattedDate;
     bulanTahun.focus();
 
@@ -87,11 +89,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     options.map((entry) => {
                         return new Promise((resolve) => {
                             idBKKSelect.append(
-                                new Option(entry.Id_BKK, entry.Id_BKK)
+                                new Option(entry.Id_BKK, entry.Id_BKK),
                             );
                             resolve(); // Resolve after appending
                         });
-                    })
+                    }),
                 ).then(() => {
                     idBKKSelect.select2("open");
                 });
@@ -120,7 +122,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             options[0].Status_Penagihan + "es Penagihan";
                     }
                     mataUang.value = options[0].Nama_MataUang;
-                    nilaiBKK.value = numeral(options[0].Nilai_Pembulatan).format('0,0.0000');
+                    nilaiBKK.value = numeral(
+                        options[0].Nilai_Pembulatan,
+                    ).format("0,0.0000");
                     alasan.value = options[0].Alasan;
 
                     // const tglInput = options[0].Batal;
