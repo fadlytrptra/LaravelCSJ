@@ -28,7 +28,7 @@ class MaintenanceFakturPajakPenjualanController extends Controller
             DB::connection('ConnAccounting')
                 ->table('T_PENAGIHAN_SJ')
                 ->where('Id_Penagihan', $request->id_penagihan)
-                ->update(['IdFakturPajak' => $request->id_fakturPajak]);
+                ->update(['IdFakturPajak' => $request->id_fakturPajak, 'NoSeri_FakturPajak' => $request->id_fakturPajak]);
 
             // Kembalikan respons sukses
             return response()->json(['message' => 'IdFakturPajak berhasil diperbarui!']);
