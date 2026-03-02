@@ -84,6 +84,9 @@ $(document).ready(function () {
                 {
                     data: "IdFakturPajak",
                 },
+                {
+                    data: "NoSeri_FakturPajak",
+                },
             ],
             // columnDefs: [{ targets: [5], visible: false }],
             paging: false,
@@ -106,7 +109,7 @@ $(document).ready(function () {
         id_penagihan.value = data.Id_Penagihan;
         customer.value = data.NamaCust;
         nilai_penagihan.value = numeral(data.Nilai_Penagihan).format("0,0.00");
-        id_fakturPajak.value = data.IdFakturPajak;
+        id_fakturPajak.value = data.NoSeri_FakturPajak || "";
 
         id_fakturPajak.focus();
         id_fakturPajak.select();

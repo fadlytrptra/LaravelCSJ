@@ -53,6 +53,7 @@ class MaintenanceFakturPajakPenjualanController extends Controller
                     'Id_Customer',
                     'Nilai_Penagihan',
                     'IdFakturPajak',
+                    'NoSeri_FakturPajak',
                 ])
                 ->whereBetween('Tgl_Penagihan', [$request->tgl_awal, $request->tgl_akhir])
                 ->get();

@@ -55,6 +55,7 @@
                                     <th>Customer</th>
                                     <th>Nilai Penagihan</th>
                                     <th>ID. Faktur Pajak</th>
+                                    <th>No. Seri Faktur Pajak</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,14 +100,15 @@
                             </div>
                             <div class="col-md-4">
                                 <input type="text" name="id_fakturPajak" class="form-control" style="width: 100%"
-                                    id="id_fakturPajak" placeholder="040026000xxxxxxxx">
+                                    id="id_fakturPajak" placeholder="04002X000xxxxxxxx">
                             </div>
                         </div>
                         <br>
                     </div>
                     <br>
                     <div style="margin-left: 5px;">
-                        <button type="button" class="btn btn-success" id="btn_proses" style="width: 100px;">PROSES</button>
+                        <button type="button" class="btn btn-success" id="btn_proses"
+                            style="width: 100px;">PROSES</button>
                     </div>
                 </div>
             </div>
