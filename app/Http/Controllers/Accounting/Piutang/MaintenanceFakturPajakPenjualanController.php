@@ -28,7 +28,7 @@ class MaintenanceFakturPajakPenjualanController extends Controller
             $fullNoFaktur = $request->id_fakturPajak;
 
             // Ambil 9 digit terakhir
-            $idFakturOnly = substr($fullNoFaktur, -9);
+            $idFakturOnly = substr($fullNoFaktur, -11);
             DB::connection('ConnAccounting')
                 ->table('T_PENAGIHAN_SJ')
                 ->where('Id_Penagihan', $request->id_penagihan)
