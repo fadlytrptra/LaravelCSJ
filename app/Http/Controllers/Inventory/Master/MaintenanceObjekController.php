@@ -426,12 +426,13 @@ class MaintenanceObjekController extends Controller
                 return response()->json(['error' => 'Data gagal diSIMPAN: ' . $e->getMessage()], 500);
             }
         }
-        // insert Kel
+        // insert subKel
         else if ($id == 'insertSubKel') {
             $XIdSubKelompok = $request->input('XIdSubKelompok');
             $XNamaSubKelompok = $request->input('XNamaSubKelompok');
             $XIdKelompok_SubKelompok = $request->input('XIdKelompokUtama_Kelompok');
             $XKodePerkiraan = $request->input('XKodePerkiraan');
+
             try {
                 DB::connection('ConnInventory')
                     ->statement(
@@ -440,6 +441,7 @@ class MaintenanceObjekController extends Controller
                         ,
                         [$XIdSubKelompok, $XNamaSubKelompok, $XIdKelompok_SubKelompok, $XKodePerkiraan]
                     );
+
                 return response()->json(['success' => 'Data sudah diSIMPAN'], 200);
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Data gagal diSIMPAN: ' . $e->getMessage()], 500);
@@ -451,6 +453,7 @@ class MaintenanceObjekController extends Controller
             $XNamaSubKelompok = $request->input('XNamaSubKelompok');
             $XIdKelompok_SubKelompok = $request->input('XIdKelompok_SubKelompok');
             $XKodePerkiraan = $request->input('XKodePerkiraan');
+
             try {
                 DB::connection('ConnInventory')
                     ->statement(
@@ -459,6 +462,7 @@ class MaintenanceObjekController extends Controller
                         ,
                         [$XIdSubKelompok, $XNamaSubKelompok, $XIdKelompok_SubKelompok, $XKodePerkiraan]
                     );
+
                 return response()->json(['success' => 'Data sudah diSIMPAN'], 200);
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Data gagal diSIMPAN: ' . $e->getMessage()], 500);

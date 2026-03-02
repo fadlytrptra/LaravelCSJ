@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Beli\Transaksi\CreateSPPBController;
 use App\Http\Controllers\Accounting\Piutang\BKMDPPelunasanController;
 use App\Http\Controllers\Inventory\Master\StokBarangController;
 use App\Http\Controllers\Inventory\Informasi\KartuStokController;
@@ -131,6 +132,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/FinalApprove/{id}/show', 'App\Http\Controllers\Beli\Transaksi\FinalApproveController@show')->name('finalapprove.show');
     Route::post('/FinalApprove/{id}/up', 'App\Http\Controllers\Beli\Transaksi\FinalApproveController@update')->name('finalapprove.update');
     Route::get('/exp-pdf', function () {return view('Beli.Transaksi.exportToPdf');});
+    Route::post('/CreateSPPB/uploadDokumentasi', [CreateSPPBController::class, 'uploadDokumentasi'])->name('sppb.uploadDokumentasi');
+    Route::get('/CreateSPPB/getDokumentasi/{noSppb}', [CreateSPPBController::class, 'getDokumentasi']);
+    Route::delete('/CreateSPPB/deleteDokumentasi/{noSppb}', [CreateSPPBController::class, 'deleteDokumentasi']);
+
 
     #region Sales
     Route::get('Sales', 'App\Http\Controllers\HomeController@Sales');
@@ -671,6 +676,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('CetakBKK', CetakBKKController::class);
     Route::resource('CetakSPPBBTTB', CetakSPPBBTTBController::class);
     Route::get('/sppb/export-pdf', [CetakSPPBBTTBController::class, 'exportToPdf'])->name('sppb.export.pdf');
+    Route::get('/getEmailSupplier', [CetakSPPBBTTBController::class, 'getEmailSupplier']);
+    Route::post('/sendEmailSupplier', [CetakSPPBBTTBController::class, 'sendEmailSupplier']);
 
 
 

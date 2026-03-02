@@ -6,6 +6,47 @@
     #sppb_tableOrderPembelian tr {
         cursor: pointer;
     }
+
+    .swal-button-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .swal-btn {
+        padding: 10px 22px;
+        border-radius: 6px;
+        border: none;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        color: white;
+        min-width: 140px;
+    }
+
+    /* Download Button */
+    .swal-btn-download {
+        background-color: #0fe07f;
+    }
+
+    .swal-btn-download:hover {
+        background-color: #1bad69;
+        transform: translateY(-2px);
+
+    }
+
+    /* Delete Button */
+    .swal-btn-delete {
+        background-color: #dc3545;
+    }
+
+    .swal-btn-delete:hover {
+        background-color: #bb2d3b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+    }
 </style>
 <input type="hidden" name="idUser" id="idUser" value={{ $user_id }}>
 <input type="hidden" name="no_trans_revisi" id="no_trans_revisi" value="{{ $noTransRevisi ?? '' }}">
@@ -38,5 +79,10 @@
         </div>
     </div>
 </div>
+<input type="file"
+       id="hiddenAttachFile"
+       accept=".jpg,.jpeg,.png,.pdf"
+       style="display:none;">
+
 <script src="{{ asset('js/OrderPembelian/CreateSPPB/CreateSPPB.js') }}"></script>
 @endsection

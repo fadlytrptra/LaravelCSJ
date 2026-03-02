@@ -443,6 +443,7 @@ class CreateSPPBController extends Controller
                     'Tgl_acc' => $SPPB->Tgl_acc,
                     'Tgl_Direktur' => $SPPB->Tgl_Direktur,
                     'Kd_div' => $SPPB->Kd_div,
+                    'HasFile' => $SPPB->HasFile,
                 ];
             }
             return datatables($dataSPPB)->make(true);
@@ -532,9 +533,9 @@ class CreateSPPBController extends Controller
         } else if ($id == 'getAllSPPB') {
             //menggabungkan @XKode 0 dan 4
             $dataLama = DB::connection('ConnPurchase')
-                ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [0]);
+                ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [5]);
             $dataDraft = DB::connection('ConnPurchase')
-                ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [4]);
+                ->select('exec SP_4384_Maintenance_SPPB @XKode = ?', [6]);
 
             $merged = array_merge($dataDraft, $dataLama);
             $unique = [];
@@ -550,6 +551,7 @@ class CreateSPPBController extends Controller
                         'Tgl_acc' => $row->Tgl_acc,
                         'Tgl_Direktur' => $row->Tgl_Direktur,
                         'Kd_div' => $row->Kd_div,
+                        'HasFile' => $row->HasFile,
                     ];
                 }
             }
@@ -605,10 +607,153 @@ class CreateSPPBController extends Controller
     }
 
 
+    public function uploadDokumentasi(Request $request)
+    {
+        $request->validate([
+            'noSppb'      => 'required|string',
+            'attach_file' => 'required|file|max:2560|mimes:jpg,jpeg,png,pdf'
+        ]);
 
+        $noSppb = trim($request->noSppb);
+        $conn   = DB::connection('ConnPurchase');
 
+        $conn->beginTransaction();
 
+        try {
+            $rows = $conn->table('YTRANSBL')
+                ->whereRaw('RTRIM(No_sppb) = ?', [$noSppb])
+                ->lockForUpdate()
+                ->get();
 
+            if ($rows->isEmpty()) {
+                throw new \Exception('No SPPB tidak ditemukan');
+            }
+
+            //cek no sppb
+            $alreadyExists = $rows->contains(function ($row) {
+                return !is_null($row->Dokumentasi) || !is_null($row->DokumentasiFile);
+            });
+
+            if ($alreadyExists) {
+                throw new \Exception('Dokumentasi untuk No SPPB ini sudah ada.');
+            }
+
+            //upload file
+            $file = $request->file('attach_file');
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            // pdf
+            if ($extension === 'pdf') {
+                $binary = $file->get();
+                $hex = '0x' . bin2hex($binary);
+
+                $conn->statement("
+                    UPDATE YTRANSBL
+                    SET Dokumentasi = NULL,
+                        DokumentasiFile = $hex
+                    WHERE RTRIM(No_sppb) = ?
+                ", [$noSppb]);
+
+            }
+
+            // Image
+            else {
+                $base64 = base64_encode($file->get());
+                $conn->statement("
+                    UPDATE YTRANSBL
+                    SET Dokumentasi = ?,
+                        DokumentasiFile = NULL
+                    WHERE RTRIM(No_sppb) = ?
+                ", [$base64, $noSppb]);
+            }
+
+            $conn->commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumentasi berhasil diupload'
+            ]);
+
+        } catch (\Throwable $e) {
+
+            $conn->rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getDokumentasi($noSppb)
+    {
+        $row = DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->select('Dokumentasi', 'DokumentasiFile')
+            ->whereRaw('RTRIM(No_sppb) = ?', [trim($noSppb)])
+            ->where(function ($q) {
+                $q->whereNotNull('Dokumentasi')
+                ->orWhereNotNull('DokumentasiFile');
+            })
+            ->first();
+
+        if (!$row) {
+            return response()->json([
+                'success' => false,
+                'message' => 'File tidak ditemukan'
+            ], 404);
+        }
+
+        // Jika PDF (VARBINARY)
+        if (!empty($row->DokumentasiFile)) {
+
+            return response($row->DokumentasiFile)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="Dokumentasi_'.$noSppb.'.pdf"')
+                ->header('Content-Length', strlen($row->DokumentasiFile));
+        }
+
+        // Jika Image (Base64)
+        if (!empty($row->Dokumentasi)) {
+
+            $binary = base64_decode($row->Dokumentasi);
+
+            return response($binary)
+                ->header('Content-Type', 'image/jpeg')
+                ->header('Content-Disposition', 'attachment; filename="Dokumentasi_'.$noSppb.'.jpg"')
+                ->header('Content-Length', strlen($binary));
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'File kosong'
+        ], 404);
+    }
+
+    public function deleteDokumentasi($noSppb)
+    {
+        $noSppb = trim($noSppb);
+
+        $affected = DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->whereRaw('RTRIM(No_sppb) = ?', [$noSppb])
+            ->update([
+                'Dokumentasi' => DB::raw('NULL'),
+                'DokumentasiFile' => DB::raw('NULL')
+            ]);
+
+        if ($affected > 0) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumentasi berhasil dihapus'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data tidak ditemukan atau sudah kosong'
+        ]);
+    }
 
     public function edit($id)
     {

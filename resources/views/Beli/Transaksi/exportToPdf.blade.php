@@ -772,13 +772,32 @@
         </tr>
     </table>
 
-
-
-
     <p style="font-size:11px;margin-top:5px;">
         <b>PERHATIAN:</b> UNTUK PENAGIHAN YANG TIDAK DILENGKAPI LEMBAR INI TIDAK DAPAT KAMI LAYANI
     </p>
 
+
+    <!--Dokumentasi-->
+    @php
+        $dok = DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->select('Dokumentasi', 'DokumentasiFile')
+            ->whereRaw('RTRIM(No_sppb) = ?', [trim($nomorSppb)])
+            ->first();
+    @endphp
+
+    @if(!empty($dok?->Dokumentasi))
+        <div style="page-break-before: always;"></div>
+        {{-- <h2 style="text-align:center;">DOKUMENTASI</h2> --}}
+
+        <div style="text-align:center; margin-top:20px;">
+            <img src="data:image/jpeg;base64,{{ $dok->Dokumentasi }}"
+                style="width:75%; height:auto;">
+        </div>
+    @endif
+
 </body>
+
+
 
 </html>

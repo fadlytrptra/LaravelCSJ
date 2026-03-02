@@ -1,3 +1,5 @@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
 <div class="modal fade" id="modalSPPB" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog" style="max-width: 90%">
         <div class="modal-content">
@@ -77,6 +79,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div style="overflow-x: auto">
                     <table id="sppb_tableOrderPembelian" class="table table-bordered" style="min-width:100%">
                         <thead class="thead-light" style="white-space: nowrap;">
@@ -239,6 +242,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div style="display:block;align-content: center;flex: 0.2;width: 100%;">
                     <button class="btn btn-primary" id="sppb_buttonAdd">Add</button>
                     <button class="btn btn-warning" id="sppb_buttonUpdate">Update</button>
