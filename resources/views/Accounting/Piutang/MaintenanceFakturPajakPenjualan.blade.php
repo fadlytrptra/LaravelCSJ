@@ -99,7 +99,7 @@
                             </div>
                             <div class="col-md-4">
                                 <input type="text" name="id_fakturPajak" class="form-control" style="width: 100%"
-                                    id="id_fakturPajak">
+                                    id="id_fakturPajak" placeholder="040026000xxxxxxxx">
                             </div>
                         </div>
                         <br>
