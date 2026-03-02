@@ -25,10 +25,14 @@ class MaintenanceFakturPajakPenjualanController extends Controller
     {
         try {
             // Update data
+            $fullNoFaktur = $request->id_fakturPajak;
+
+            // Ambil 9 digit terakhir
+            $idFakturOnly = substr($fullNoFaktur, -9);
             DB::connection('ConnAccounting')
                 ->table('T_PENAGIHAN_SJ')
                 ->where('Id_Penagihan', $request->id_penagihan)
-                ->update(['IdFakturPajak' => $request->id_fakturPajak, 'NoSeri_FakturPajak' => $request->id_fakturPajak]);
+                ->update(['IdFakturPajak' => $idFakturOnly, 'NoSeri_FakturPajak' => $fullNoFaktur]);
 
             // Kembalikan respons sukses
             return response()->json(['message' => 'IdFakturPajak berhasil diperbarui!']);
