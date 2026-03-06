@@ -79,7 +79,7 @@
 
         .signature_box {
             height: 55px;
-            text-align: center;
+            text-align: center
         }
 
         .signature_img {
@@ -748,11 +748,17 @@
     {{-- FOOTER --}}
     <table width="100%" style="text-align:center; margin-top:8px; font-size:11px;">
         <tr>
+            <td width="33%"></td>
+            <td width="33%"></td>
             <td width="33%">MENYETUJUI,</td>
-            {{-- <td width="33%">PEMESAN,</td>
-        <td width="33%">PELAKSANA,</td> --}}
         </tr>
         <tr>
+            <td>
+                <div class="signature_box"></div>
+            </td>
+            <td>
+                <div class="signature_box"></div>
+            </td>
             <td>
                 <div class="signature_box">
                     @if (!empty($ttdDirektur?->FotoTtd))
@@ -761,14 +767,12 @@
                     @endif
                 </div>
             </td>
-            {{-- <td><div class="signature_box"></div></td>
-        <td><div class="signature_box"></div></td> --}}
         </tr>
 
         <tr>
+            <td></td>
+            <td></td>
             <td>(................................)</td>
-            {{-- <td>(................................)</td>
-        <td>(................................)</td> --}}
         </tr>
     </table>
 
@@ -786,13 +790,12 @@
             ->first();
     @endphp
 
-    @if(!empty($dok?->Dokumentasi))
+    @if (!empty($dok?->Dokumentasi))
         <div style="page-break-before: always;"></div>
         {{-- <h2 style="text-align:center;">DOKUMENTASI</h2> --}}
 
         <div style="text-align:center; margin-top:20px;">
-            <img src="data:image/jpeg;base64,{{ $dok->Dokumentasi }}"
-                style="width:75%; height:auto;">
+            <img src="data:image/jpeg;base64,{{ $dok->Dokumentasi }}" style="width:75%; height:auto;">
         </div>
     @endif
 
