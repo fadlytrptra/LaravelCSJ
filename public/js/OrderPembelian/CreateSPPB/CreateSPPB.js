@@ -1101,14 +1101,19 @@ jQuery(function ($) {
                         sppb_tanggal.value = moment(data[0].Tgl_sppb).format("YYYY-MM-DD"); //prettier-ignore
                         sppb_tanggalDibutuhkan.value = moment(data[0].Tgl_Dibutuhkan).format("YYYY-MM-DD"); //prettier-ignore
                         sppb_divisi.val(data[0].Kd_div).trigger("change");
+                        sppb_jenisPembelian.val(data[0].Jenis.trim()).trigger("change");
+                        sppb_mataUang.val(data[0].IdMataUang).trigger("change");
                         getDataGolongan().then;
                         init("resetOrder");
                         init("disableHeader");
 
-                        sppb_jenisPembelian.val(data[0].Jenis.trim()).trigger("change");
+                        sppb_divisi.prop("disabled", false).trigger("change");
+                        sppb_jenisPembelian.prop("disabled", false).trigger("change");
+                        sppb_mataUang.prop("disabled", false).trigger("change");
+
+
                         sppb_supplier.val(data[0].No_sup).trigger("change");
                         sppb_pemesan.value = data[0].Pemesan;
-                        sppb_mataUang.val(data[0].IdMataUang).trigger("change");
                         sppb_kursRupiah.value = numeral(data[0].Kurs_Rp).value();
                         sppb_jangkaWaktu.value = numeral(data[0].Waktu).value();
                         sppb_jangkaWaktu.dispatchEvent(enterEvent);
@@ -1973,6 +1978,8 @@ jQuery(function ($) {
                 jenisStore: "savePO",
                 table_orderPembelian: tableData,
                 idDivisi: sppb_divisi.val(),
+                jenis: sppb_jenisPembelian.val(),
+                mataUang: sppb_mataUang.val(),
                 Tgl_sppb: sppb_tanggal.value,
                 No_sppb: nomorSPPB,
                 keteranganCetak: keteranganCetak,
@@ -2061,6 +2068,8 @@ jQuery(function ($) {
                     .data()
                     .toArray(),
                 idDivisi: sppb_divisi.val(),
+                jenis: sppb_jenisPembelian.val(),
+                mataUang: sppb_mataUang.val(),
                 No_sppb: nomorSPPB,
                 keteranganCetak: keteranganCetak,
             },

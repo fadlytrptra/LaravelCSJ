@@ -225,6 +225,8 @@ class CreateSPPBController extends Controller
 
             $rows = $request->table_orderPembelian;
             $idDivisi = $request->idDivisi;
+            $jenis = $request->jenis;
+            $mataUang = $request->mataUang;
             $Tgl_sppb = $request->Tgl_sppb;
             $No_sppb = $request->No_sppb; // dari frontend
             $keteranganCetak = $request->keteranganCetak;
@@ -303,6 +305,13 @@ class CreateSPPBController extends Controller
                         ]
                     );
                 }
+                DB::connection('ConnPurchase')->table('YTRANSBL')
+                    ->where('No_sppb', $No_sppb)
+                    ->update([
+                        'Kd_div' => $idDivisi,
+                        'Jenis' => $jenis,
+                        'IdMataUang' => $mataUang
+                ]);
 
                 DB::commit();
 
