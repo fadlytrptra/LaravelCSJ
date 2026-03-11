@@ -159,7 +159,7 @@
             <div style="left: 15cm;top: 26.3cm; position: absolute;font-size:14px;">
                 {{ $ttd }}
             </div>
-            <table style="position:absolute; left:1cm; top:25.5cm; width:8cm;font-size:14px;">
+            <table style="position:absolute; left:1cm; top:25.5cm; width:10cm;font-size:14px;">
                 <colgroup>
                     <col style="width:3.5cm;">
                     <col style="width:0.4cm;">
