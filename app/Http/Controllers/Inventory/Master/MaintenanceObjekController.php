@@ -56,7 +56,7 @@ class MaintenanceObjekController extends Controller
                 $PerkiraanArr[] = [
                     'IdObjek' => str_pad($listPerkiraan->IdObjek + 1, 3, '0', STR_PAD_LEFT),
                     'IdKelUtama' => str_pad($listPerkiraan->IdKelompokUtama + 1, 4, '0', STR_PAD_LEFT),
-                    'IdKelompok' => str_pad($listPerkiraan->IdKelompok + 1, 6, '0', STR_PAD_LEFT),
+                    'IdKelompok' => str_pad($listPerkiraan->IdKelompok + 1, 4, '0', STR_PAD_LEFT),
                     'IdSubKelompok' => str_pad($listPerkiraan->IdSubKelompok + 1, 6, '0', STR_PAD_LEFT),
                 ];
             }
