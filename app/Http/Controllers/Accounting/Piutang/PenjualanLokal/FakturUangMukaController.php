@@ -100,7 +100,7 @@ class FakturUangMukaController extends Controller
 
             if ($proses == 1) {
                 $penagihanResult = DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = ?, @Tgl_Penagihan = ?, @Id_Customer = ?, @PO = ?, @id_Jenis_Dokumen = ?, @Nilai_Penagihan = ?, @Id_MataUang = ?, @Terbilang = ?, @UserInput = ?, @IdPenagih = ?, @TglFakturPajak = ?, @NilaiKurs = ?, @Jns_PPN = ?, @persenPPN = ?', [
+                    ->statement('EXEC SP_1273_PRG_MAINT_PENAGIHAN_SJ @Kode = ?, @Tgl_Penagihan = ?, @Id_Customer = ?, @PO = ?, @id_Jenis_Dokumen = ?, @Nilai_Penagihan = ?, @Id_MataUang = ?, @Terbilang = ?, @UserInput = ?, @IdPenagih = ?, @TglFakturPajak = ?, @NilaiKurs = ?, @Jns_PPN = ?, @PPN = ?', [
                         1,
                         $request->input('tanggal'),
                         $request->input('idCustomer'),
