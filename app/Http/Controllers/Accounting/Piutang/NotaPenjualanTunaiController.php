@@ -324,7 +324,7 @@ class NotaPenjualanTunaiController extends Controller
                 $tahun = date('Y');
 
                 // Gabungkan menjadi format yang diinginkan
-                $idPenagihan = "{$idFormatted}/KRR/{$bulan}/{$tahun}";
+                $idPenagihan = "{$idFormatted}/CSJ/{$bulan}/{$tahun}";
                 // dd($idPenagihan);
 
                 foreach (array_column($request->allRowsDataAtas, 1) as $suratPesanan) {
