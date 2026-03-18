@@ -194,6 +194,7 @@ class FinalApproveController extends Controller
                             $newData['Tgl_acc'] = null;
                             $newData['Batal_acc'] = null;
                             $newData['Tgl_batal_Acc'] = null;
+                            $newData['DokumentasiFile'] = DB::raw('NULL');
 
                             DB::table('YTRANSBL')->insert($newData);
                         }
