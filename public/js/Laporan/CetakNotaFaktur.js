@@ -1,8 +1,9 @@
 jQuery(function ($) {
     //#region Variables
     let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content"); // prettier-ignore
-    const radios = document.querySelectorAll('input[name="radio_jenisCetak"]');
+    const radios = $('input[name="radio_jenisCetak"]');
     let radio_jenisNotaFaktur = document.getElementById("radio_jenisNotaFaktur"); //prettier-ignore
+    let radio_jenisTunai = document.getElementById("radio_jenisTunai");
     let tanggal_penagihan = document.getElementById("tanggal_penagihan");
     let select_ttd = $("#select_ttd");
     let select_bank = $("#select_bank");
@@ -11,6 +12,7 @@ jQuery(function ($) {
     let nama_customer = document.getElementById("nama_customer");
     let id_customer = document.getElementById("id_customer");
     let button_cetak = document.getElementById("button_cetak");
+    let jenisCetak = "NotaFaktur";
     //#endregion
 
     //#region Load Form
@@ -78,7 +80,7 @@ jQuery(function ($) {
                     select_bank.empty();
                     data.forEach(function (item) {
                         select_bank.append(
-                            new Option(item.Nama_Bank.trim(), item.Id_Bank) // prettier-ignore
+                            new Option(item.Nama_Bank.trim(), item.Id_Bank), // prettier-ignore
                         );
                     });
                     select_bank.val(null).trigger("change");
@@ -140,7 +142,7 @@ jQuery(function ($) {
                         currentIndex = 0;
                         const newRows = $(`#${tableId} tbody tr`);
                         const selectedRow = $(newRows[currentIndex]).addClass(
-                            "selected"
+                            "selected",
                         );
                         scrollRowIntoView(selectedRow[0]);
                     });
@@ -156,7 +158,7 @@ jQuery(function ($) {
                         currentIndex = 0;
                         const newRows = $(`#${tableId} tbody tr`);
                         const selectedRow = $(newRows[currentIndex]).addClass(
-                            "selected"
+                            "selected",
                         );
                         scrollRowIntoView(selectedRow[0]);
                     });
@@ -216,16 +218,8 @@ jQuery(function ($) {
     //#endregion
 
     //#region Event Listeners
-    radios.forEach((radio) => {
-        radio.addEventListener("change", function () {
-            if (radio_jenisBTTB.checked) {
-                div_noTerima.style.display = "flex";
-                button_browseDataNomorTerima.style.display = "block";
-            } else {
-                div_noTerima.style.display = "none";
-                button_browseDataNomorTerima.style.display = "none";
-            }
-        });
+    radios.on("change", function () {
+        jenisCetak = $('input[name="radio_jenisCetak"]:checked').val();
     });
 
     tanggal_penagihan.addEventListener("keypress", function (e) {
@@ -268,6 +262,12 @@ jQuery(function ($) {
 
     button_browseData.addEventListener("click", function (e) {
         try {
+            let url;
+            if (jenisCetak == 'NotaFaktur') {
+                url = 'CetakNotaFaktur/getDataPenagihanSJ';
+            } else if (jenisCetak == 'Tunai') {
+                url = 'CetakNotaFaktur/getDataPenagihanSP';
+            }
             Swal.fire({
                 title: "Pilih Penagihan",
                 html: `
@@ -308,7 +308,7 @@ jQuery(function ($) {
                             scrollCollapse: true,
                             order: [1, "asc"],
                             ajax: {
-                                url: "CetakNotaFaktur/getDataPenagihan",
+                                url: url,
                                 dataType: "json",
                                 type: "GET",
                                 data: {
@@ -341,7 +341,7 @@ jQuery(function ($) {
 
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydown(e, "table_list")
+                            handleTableKeydown(e, "table_list"),
                         );
                     });
                 },

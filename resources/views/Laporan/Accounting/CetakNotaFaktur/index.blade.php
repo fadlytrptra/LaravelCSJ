@@ -16,9 +16,14 @@
                     <div style="display: flex; flex-direction: row">
                         <div class="p-2" style="display: flex; flex-direction: row;">
                             <input style="margin-right: 5px" type="radio" name="radio_jenisCetak"
-                                id="radio_jenisNotaFaktur" value="Nota Faktur">
+                                id="radio_jenisNotaFaktur" value="NotaFaktur">
                             <label style="margin: 0; align-content: center;" for="radio_jenisNotaFaktur">Nota /
                                 Faktur</label>
+                        </div>
+                        <div class="p-2" style="display: flex; flex-direction: row;">
+                            <input style="margin-right: 5px" type="radio" name="radio_jenisCetak"
+                                id="radio_jenisTunai" value="Tunai">
+                            <label style="margin: 0; align-content: center;" for="radio_jenisTunai">Tunai</label>
                         </div>
                     </div>
                     <div style="display: flex; flex-direction: row;margin-top: 1rem; gap: 5px">

@@ -38,9 +38,17 @@ class CetakNotaFakturController extends Controller
             $dataBank = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_TBANK @Kode = ?', [1]);
 
             return response()->json($dataBank, 200);
-        } else if ($id === 'getDataPenagihan') {
+        } else if ($id === 'getDataPenagihanSJ') {
             $Tgl_penagihan = $request->input('Tgl_penagihan');
             $dataPenagihan = DB::connection('ConnAccounting')->select('exec SP_1273_PRG_LIST_PENAGIHAN_SJ1 @Kode = ?, @Tgl_penagihan = ?', [10, $Tgl_penagihan]);
+
+            return datatables($dataPenagihan)->make(true);
+        } else if ($id === 'getDataPenagihanSP') {
+            $Tgl_penagihan = $request->input('Tgl_penagihan');
+            $dataPenagihan = DB::connection('ConnAccounting')
+                ->table('vw_prg_Cetak_Penagihan_SP')
+                ->whereDate('Tgl_Penagihan', $Tgl_penagihan)
+                ->get();
 
             return datatables($dataPenagihan)->make(true);
         } else if ($id == 'print') {
@@ -48,7 +56,20 @@ class CetakNotaFakturController extends Controller
             $jenisCetak = $request->input('jenisCetak');
             $bank = $request->input('bank');
             $idPenagihan = $request->input('idPenagihan');
-            $dataCetak = DB::connection('ConnAccounting')->select('SELECT * FROM vw_prg_cetak_Penagihan_SJ WHERE Id_Penagihan = ?', [$idPenagihan]);
+            if ($jenisCetak == 'NotaFaktur') {
+                $dataCetak = DB::connection('ConnAccounting')
+                    ->select(
+                        'SELECT * FROM vw_prg_cetak_Penagihan_SJ WHERE Id_Penagihan = ?',
+                        [$idPenagihan]
+                    );
+            } else if ($jenisCetak == 'Tunai') {
+                $dataCetak = DB::connection('ConnAccounting')
+                    ->select(
+                        'SELECT * FROM vw_prg_Cetak_Penagihan_SP WHERE Id_Penagihan = ?',
+                        [$idPenagihan]
+                    );
+            }
+            // dd($dataCetak);
             return view('Laporan.Accounting.CetakNotaFaktur.cetak', compact('dataCetak', 'ttd', 'jenisCetak', 'bank', 'idPenagihan'));
         }
     }
