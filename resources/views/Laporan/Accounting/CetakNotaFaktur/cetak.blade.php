@@ -88,6 +88,9 @@
             @php
                 $nilaiUM = (float) $dataCetak[0]->Nilai_UM ?? 0;
                 $ppn = (float) $dataCetak[0]->PersenPPN;
+                if ($ppn > 1) {
+                    $ppn = $ppn / 100;
+                }
                 if ($ppn == 0.12) {
                     $dpp = (($total - $nilaiUM) * 11) / 12;
                 } else {
