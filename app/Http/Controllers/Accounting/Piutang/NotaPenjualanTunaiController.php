@@ -310,21 +310,23 @@ class NotaPenjualanTunaiController extends Controller
 
                 // Ambil nilai dari database
                 $id_Penagihan = DB::connection('ConnAccounting')
-                    ->table('T_COUNTER_FAKTUR')
-                    ->select('Nomer')
-                    ->where('Periode', date('Y'))
+                    ->table('T_Penagihan_SJ')
+                    ->select('Id_Penagihan')
+                    ->where('Id_Customer', $request->idCustomer)
+                    ->where('PO', $request->nomorPO)
+                    ->where('Nilai_Penagihan', $TotalPenagihan)
                     ->first();
 
-                $idPenagihan = $id_Penagihan->Nomer;
+                $idPenagihan = $id_Penagihan->Id_Penagihan;
 
-                // Tambahkan leading zeros
-                $idFormatted = str_pad($idPenagihan, 4, '0', STR_PAD_LEFT);
+                // // Tambahkan leading zeros
+                // $idFormatted = str_pad($idPenagihan, 4, '0', STR_PAD_LEFT);
 
-                $bulan = date('m');
-                $tahun = date('Y');
+                // $bulan = date('m');
+                // $tahun = date('Y');
 
-                // Gabungkan menjadi format yang diinginkan
-                $idPenagihan = "{$idFormatted}/CSJ/{$bulan}/{$tahun}";
+                // // Gabungkan menjadi format yang diinginkan
+                // $idPenagihan = "{$idFormatted}/CSJ/{$bulan}/{$tahun}";
                 // dd($idPenagihan);
 
                 foreach (array_column($request->allRowsDataAtas, 1) as $suratPesanan) {
