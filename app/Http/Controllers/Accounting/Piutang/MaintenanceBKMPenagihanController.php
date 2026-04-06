@@ -544,10 +544,10 @@ class MaintenanceBKMPenagihanController extends Controller
                 }
 
                 $bankCode = trim($singleItem[2]);
-                if ($bankCode === "KRR1" || $bankCode === "KRR2") {
-                    if ($bankCode === "KRR2") {
+                if ($bankCode === "CSJ1" || $bankCode === "CSJ2") {
+                    if ($bankCode === "CSJ2") {
                         $bankCode = "KI";
-                    } elseif ($bankCode === "KRR1") {
+                    } elseif ($bankCode === "CSJ1") {
                         $bankCode = "KKM";
                     }
                 } else {
@@ -572,7 +572,7 @@ class MaintenanceBKMPenagihanController extends Controller
                     ]);
                 }
 
-                $periode = date('my'); // m = month (01–12), y = 2-digit year (25)
+                $periode = date('my', strtotime($singleItem[7])); // m = month (01–12), y = 2-digit year (25)
 
                 // $bank = trim($selectedRows[0]['Id_bank']);
                 $columnMap = [
