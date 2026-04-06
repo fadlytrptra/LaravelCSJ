@@ -368,9 +368,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="satuanSP">Satuan</label>
+                    <label for="hargaSP">Total Harga Jual</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" id="satuanSP" name="satuanSP" readonly>
+                        <input type="text" class="form-control" id="hargaSP" name="hargaSP" readonly>
                     </div>
                 </div>
                 <div class="form-group">

@@ -8,7 +8,7 @@ let btn_hapus = document.getElementById("btn_hapus");
 let namaBarang = document.getElementById("namaBarang");
 let jenisSP = document.getElementById("jenisSP");
 let quantitySP = document.getElementById("quantitySP");
-let satuanSP = document.getElementById("satuanSP");
+let hargaSP = document.getElementById("hargaSP");
 let discountSP = document.getElementById("discountSP");
 // let tgl_pesan = document.getElementById("tgl_pesan");
 let array_nomorSP = [];
@@ -61,12 +61,16 @@ $(document).ready(function () {
                     $("#detailSPModal").modal("show");
                     namaBarang.value = response[0].NamaBarang;
                     jenisSP.value = response[0].NamaJnsBrg;
-                    quantitySP.value = numeral(response[0].Qty).format(
-                        "0,0"
-                    );
-                    satuanSP.value = response[0].Satuan;
+                    quantitySP.value =
+                        numeral(response[0].Qty).format("0,0") +
+                        " " +
+                        response[0].Satuan;
+                    hargaSP.value = response[0].IDMataUang + ' ' + numeral(
+                        numeral(response[0].HargaSatuan).value() *
+                            numeral(response[0].Qty).value(),
+                    ).format("0,0.0000");
                     discountSP.value = numeral(response[0].Discount).format(
-                        "0,0.00"
+                        "0,0.00",
                     );
                 } else if (response.error) {
                     Swal.fire({
@@ -343,28 +347,28 @@ $(document).ready(function () {
         function (value) {
             return /^-?\d*[.]?\d*$/.test(value);
         },
-        "Must be a floating (real) number"
+        "Must be a floating (real) number",
     );
     setInputFilter(
         document.getElementById("harga_satuan"),
         function (value) {
             return /^-?\d*[.]?\d*$/.test(value);
         },
-        "Must be a floating (real) number"
+        "Must be a floating (real) number",
     );
     setInputFilter(
         document.getElementById("syarat_bayar"),
         function (value) {
             return /^-?\d*$/.test(value);
         },
-        "Harus diisi dengan angka!"
+        "Harus diisi dengan angka!",
     );
     setInputFilter(
         document.getElementById("kode_barang"),
         function (value) {
             return /^-?\d*$/.test(value);
         },
-        "Harus diisi dengan angka!"
+        "Harus diisi dengan angka!",
     );
     tgl_pesan.valueAsDate = new Date();
     tgl_po.valueAsDate = new Date();
@@ -1281,7 +1285,7 @@ $(document).ready(function () {
                             formatangka(parseFloat(data[1][i].BERAT_LAMI)),
                             formatangka(parseFloat(data[1][i].BERAT_OPP)),
                             formatangka(
-                                parseFloat(data[1][i].BERAT_CONDUCTIVE)
+                                parseFloat(data[1][i].BERAT_CONDUCTIVE),
                             ),
                             formatangka(parseFloat(data[1][i].BERAT_TOTAL)),
                             data[1][i].IDJnsBarang,
@@ -1461,7 +1465,7 @@ $(document).ready(function () {
                 if (selectedRow.find("td").eq(29).text() !== "") {
                     // console.log(input[7].value);
                     fetch(
-                        "/deletedetail/" + selectedRow.find("td").eq(29).text()
+                        "/deletedetail/" + selectedRow.find("td").eq(29).text(),
                     )
                         .then((response) => response.json())
                         .then((data) => {
@@ -1480,7 +1484,7 @@ $(document).ready(function () {
                 if (selectedRow.find("td").eq(29).text() !== "") {
                     // console.log(input[7].value);
                     fetch(
-                        "/deletedetail/" + selectedRow.find("td").eq(29).text()
+                        "/deletedetail/" + selectedRow.find("td").eq(29).text(),
                     )
                         .then((response) => response.json())
                         .then((data) => {
@@ -1620,10 +1624,10 @@ $(document).ready(function () {
                 let selectedRows = table.rows(".selected").data().toArray();
                 // console.log(selectedRows);
                 qty_pesan.value = parseFloat(
-                    selectedRows[0][3].replace(/,/g, "")
+                    selectedRows[0][3].replace(/,/g, ""),
                 );
                 harga_satuan.value = parseFloat(
-                    selectedRows[0][2].replace(/,/g, "")
+                    selectedRows[0][2].replace(/,/g, ""),
                 );
                 ppn.value = selectedRows[0][7];
                 satuan_jual.selectedIndex = 0;
@@ -1738,7 +1742,7 @@ $(document).ready(function () {
 
 checkbox_all.addEventListener("change", function () {
     const checkboxes = document.querySelectorAll(
-        '#table_SP input[type="checkbox"][name="selected[]"]'
+        '#table_SP input[type="checkbox"][name="selected[]"]',
     );
     checkedRows = []; // Reset checkedRows when selecting/deselecting all
 
@@ -1819,7 +1823,7 @@ $("#table_SP tbody").on("change", 'input[name="selected[]"]', function () {
         // Tambahkan data baris terpilih ke array hanya jika belum ada
         if (
             !rowDataArray.some(
-                (data) => data.nomorSP === rowDataPertama.nomorSP
+                (data) => data.nomorSP === rowDataPertama.nomorSP,
             )
         ) {
             rowDataArray.push(rowDataPertama);
