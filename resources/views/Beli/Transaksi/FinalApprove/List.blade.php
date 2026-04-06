@@ -51,11 +51,10 @@
                                         <th>Jenis Barang</th>
                                         <th>Type</th>
                                         <th>Jumlah</th>
-                                        <th>Satuan</th>
                                         <th>Total Harga</th>
                                         <th>No. PO</th>
                                         <th>Keterangan Beli</th>
-                                        <th>Kd.Barang</th>
+                                        <th>Nama Supplier</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
