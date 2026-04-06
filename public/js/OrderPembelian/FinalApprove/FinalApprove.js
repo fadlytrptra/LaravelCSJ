@@ -61,7 +61,17 @@ jQuery(function ($) {
                 },
             },
             { data: "No_sppb" },
-            { data: "keterangan" },
+            {
+                data: "keterangan",
+                render: function (data, type, full, meta) {
+                    return (
+                        data +
+                        '</br><span style="white-space: nowrap">Jenis Beli: ' +
+                        full.KET +
+                        "</span>"
+                    );
+                },
+            },
             { data: "NM_SUP" },
             {
                 data: "Direktur",
