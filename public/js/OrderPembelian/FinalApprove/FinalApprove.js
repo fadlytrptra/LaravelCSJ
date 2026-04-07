@@ -64,9 +64,15 @@ jQuery(function ($) {
             {
                 data: "keterangan",
                 render: function (data, type, full, meta) {
+                    let warna = "#FFC784"; // default warna untuk "LOKAL"
+                    if (full.KET.includes("IMPORT")) {
+                        warna = "#B19CD9"; // warna untuk "IMPORT"
+                    }
                     return (
                         data +
-                        '</br><span style="white-space: nowrap">Jenis Beli: ' +
+                        '</br><span style="white-space: nowrap; background-color: ' +
+                        warna +
+                        '">Jenis Beli: ' +
                         full.KET +
                         "</span>"
                     );
