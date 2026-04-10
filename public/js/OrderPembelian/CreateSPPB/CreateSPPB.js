@@ -1648,7 +1648,7 @@ jQuery(function ($) {
                 No_sup: sppb_supplier.val(),
                 IdMataUang: sppb_mataUang.val(),
                 Kurs_Rp: sppb_kursRupiah.value,
-                Hrg_trm: sppb_hargaSatuan.value,
+                Hrg_trm: numeral(sppb_hargaSatuan.value).value(),
                 Disc_trm: sppb_discount.value,
                 Ppn_trm: sppb_ppn.value,
                 Waktu: sppb_jangkaWaktu.value,
@@ -1804,7 +1804,7 @@ jQuery(function ($) {
                 No_sup: sppb_supplier.val(),
                 IdMataUang: sppb_mataUang.val(),
                 Kurs_Rp: sppb_kursRupiah.value,
-                Hrg_trm: sppb_hargaSatuan.value,
+                Hrg_trm: numeral(sppb_hargaSatuan.value).value(),
                 Disc_trm: sppb_discount.value,
                 Ppn_trm: sppb_ppn.value,
                 Waktu: sppb_jangkaWaktu.value,
@@ -1846,7 +1846,7 @@ jQuery(function ($) {
                                 ),
                                 sppb_KeteranganOrder.value,
                                 numeral(sppb_hargaSatuan.value).format(
-                                    "0,0.00"
+                                    "0,0.000"
                                 ),
                                 numeral(sppb_discount.value).format("0.00"),
                                 numeral(sppb_ppn.value).format("0.00"),
