@@ -36,7 +36,7 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-2">
-                                <label for="golongan">Golongan</label>
+                                <label for="golongan">Kelompok Utama</label>
                             </div>
                             <div class="form-group col-md-2">
                                 <input type="text" id="golongan" name="golongan" class="form-control" readonly>
@@ -53,7 +53,7 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-2">
-                                <label for="mesin">Mesin</label>
+                                <label for="mesin">Kelompok</label>
                             </div>
                             <div class="form-group col-md-2">
                                 <input type="text" id="mesin" name="mesin" class="form-control" readonly>
