@@ -285,7 +285,7 @@ jQuery(function ($) {
     btnGolongan.addEventListener("click", function (e) {
         try {
             Swal.fire({
-                title: "Pilih Golongan",
+                title: "Pilih Kelompok Utama",
                 html: `<table id="table_golongan" class="display" style="width:100%">
                         <thead>
                             <tr>
@@ -392,7 +392,7 @@ jQuery(function ($) {
     btnMesin.addEventListener("click", function (e) {
         try {
             Swal.fire({
-                title: "Pilih Mesin",
+                title: "Pilih Kelompok",
                 html: `<table id="table_mesin" class="display" style="width:100%">
                         <thead>
                             <tr>
