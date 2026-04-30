@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TransBL;
 use App\User;
-use DB;
-use Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -25,8 +26,47 @@ class HomeController extends Controller
             ->groupBy('NamaProgram', 'RouteProgram')
             ->where('Id_User', Auth::user()->IDUser)
             ->OrWhere('Id_User', 218)->get();
-        return view('home', compact('AccessProgram'));
+
+        $now = Carbon::now('Asia/Jakarta');
+
+        // ambil pengumuman yang belum expired
+        $pengumuman = DB::connection('ConnEDPKrr')
+            ->table('Pengumuman')
+            ->where('tgl_awal', '<=', $now)
+            ->where('tgl_akhir', '>=', $now)
+            ->orderByDesc('wkt_tulis')
+            ->get();
+
+        $users = DB::connection('ConnEDPKrr')
+            ->table('UserMaster')
+            ->select('NomorUser', 'NamaUser')
+            ->orderBy('NamaUser')
+            ->get();
+        return view('home', compact('AccessProgram', 'pengumuman', 'users'));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'tgl_akhir' => 'required|date',
+            'judul_pesan' => 'required|max:100',
+            'isi_pesan' => 'required'
+        ]);
+
+        DB::connection('ConnEDPKrr')->table('Pengumuman')->insert([
+            'tgl_awal' => Carbon::today(),
+            'tgl_akhir' => Carbon::parse($request->tgl_akhir)
+                ->setTime(23,59,59)
+                ->format('Y-m-d H:i:s'),
+            'penulis' => Auth::user()->NamaUser,
+            'wkt_tulis' => Carbon::now('Asia/Jakarta'),
+            'judul_pesan' => strtoupper($request->judul_pesan),
+            'isi_pesan' => $request->isi_pesan
+        ]);
+
+        return back()->with('status','Pengumuman berhasil dibuat');
+    }
+
     public function Sales()
     {
         $result = (new HakAksesController)->HakAksesProgram('Sales');

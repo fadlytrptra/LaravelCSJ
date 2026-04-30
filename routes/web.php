@@ -52,6 +52,10 @@ use App\Http\Controllers\Laporan\CetakBKKController;
 use App\Http\Controllers\Laporan\CetakNotaFakturController;
 use App\Http\Controllers\Laporan\CetakSPPBBTTBController;
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\IntercomController;
+
 
 $redirectIfAuthenticated = function () {
     if (Auth::guest())
@@ -75,6 +79,18 @@ Route::post('/logout', 'App\Http\Controllers\LoginController@logout')->name('log
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
+    Route::post('/pengumuman/store', [HomeController::class, 'store'])->name('pengumuman.store');
+    Route::get('/meeting', [MeetingController::class, 'index'])->name('meeting.index');
+    Route::get('/meeting/rekap', [MeetingController::class, 'rekapMeeting']);
+    Route::get('/meeting/{id}', [MeetingController::class, 'show'])->name('meeting.show');
+    Route::post('/meeting/room', [MeetingController::class, 'storeRoom']);
+    Route::post('/meeting/storeMeeting', [MeetingController::class, 'storeMeeting']);
+    Route::post('/meeting/update', [MeetingController::class, 'updateMeeting']);
+    Route::post('/meeting/cancel', [MeetingController::class, 'cancelMeeting']);
+    Route::post('/meeting/admin/store', [MeetingController::class, 'storeAdministrator']);
+    Route::get('/meeting/monthly/{room}', [MeetingController::class, 'monthlyMeetings']);
+    Route::resource('intercom', IntercomController::class);
+
     #region Beli
     Route::get('Beli', 'App\Http\Controllers\HomeController@Beli');
 
@@ -86,7 +102,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/PurchaseOrder/mata-uang', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listMataUang'])->name('purchaseorder.mata_uang');
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'listSupplier'])->name('purchaseorder.supplier');
     Route::get('/PurchaseOrder/supplier', [App\Http\Controllers\Beli\TransaksiBeli\PurchaseOrderController::class, 'supplier']);
-
 
     Route::resource('ListOrder', App\Http\Controllers\Beli\Transaksi\ListOrderController::class);
     Route::resource('DaftarHarga', App\Http\Controllers\Beli\Informasi\DaftarHargaController::class);

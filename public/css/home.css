@@ -1,0 +1,128 @@
+.modal-xxl {
+    max-width: 80%;
+}
+
+#modalPengumuman .modal-dialog {
+    max-width: 80%;
+}
+
+#modalPengumuman .modal-content {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#modalPengumuman .modal-title {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+#modalPengumuman .modal-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.menu-navbar {
+    background: transparent;
+    border: none;
+    color: #333;
+    font-size: 17px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.menu-navbar:hover {
+    background-color: #eff0f1;
+}
+
+.dropdown-menu {
+    font-size: 14px;
+}
+
+.announcement-list{
+    max-height:80vh;
+    overflow-y:auto;
+}
+
+.announcement-item{
+    border:1px solid #e0e0e0;
+    border-radius:8px;
+    padding:15px;
+    margin-bottom:15px;
+    background:#fafafa;
+}
+
+.announcement-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.announcement-title{
+    font-weight:bold;
+    text-transform:uppercase;
+    font-size:18px;
+}
+
+.announcement-meta{
+    font-size:14px;
+    color:#777;
+}
+
+.announcement-content{
+    margin-top:8px;
+    font-size:16px;
+}
+
+.announcement-expired{
+    opacity:0.6;
+}
+
+/* Floating button */
+.floating-add{
+    position:absolute;
+    right:30px;
+    bottom:30px;
+}
+
+
+/* modal container */
+.announcement-modal{
+    position:relative;
+}
+
+/* floating button */
+.fab-button{
+    position:absolute;
+    right:25px;
+    bottom:25px;
+
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:none;
+
+    background:#0d6efd;
+    color:white;
+    font-size:28px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,0.3);
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* hover effect */
+.fab-button:hover{
+    background:#0b5ed7;
+    width:43px;
+    height:43px;
+}
+
+/* show tooltip */
+.fab-button:hover .fab-text{
+    opacity:1;
+}
