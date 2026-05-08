@@ -79,7 +79,7 @@
                         </div>
                         <div style="align-content: end">
                             <button class="btn btn-primary" id="button_pembulatanBawahTagihan">
-                                <<< /button>
+                                <<</button>
                         </div>
                         <div style="align-content: end">
                             <button class="btn btn-primary" id="button_pembulatanAtasTagihan">>></button>
