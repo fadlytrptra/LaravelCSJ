@@ -406,6 +406,11 @@ table tr:last-child td:last-child {
     left: auto;
 }
 
+/* show submenu when active */
+.dropdown-menu .dropdown-submenu.show {
+    display: block;
+}
+
 .dropdown-menu > li:hover > .dropdown-submenu {
     display: block;
     text-decoration: none;
@@ -592,7 +597,9 @@ table tr:last-child td:last-child {
 
 .acs-add-btn::before,
 .acs-add-btn::after {
-    transition: width 0.2s ease-in-out, border-radius 0.2s ease-in-out;
+    transition:
+        width 0.2s ease-in-out,
+        border-radius 0.2s ease-in-out;
     content: "";
     position: absolute;
     height: 4px;

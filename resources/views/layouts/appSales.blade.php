@@ -141,7 +141,7 @@
                                                 @endphp
 
                                                 <li>
-                                                    <a class="dropdown-item" tabindex="-1"
+                                                    <a class="dropdown-item dropdown-toggle-submenu" tabindex="-1"
                                                         @if (isset($combinedArrayFiturMenus['Route'])) href="{{ url($combinedArrayFiturMenus['Route']) }}"
                                                             style="color: black;font-size: 15px;display: block"
                                                         @else
@@ -239,6 +239,31 @@
                 $(this).next('ul').toggle();
                 e.stopPropagation();
                 e.preventDefault();
+            });
+
+            document.querySelectorAll(".dropdown-toggle-submenu").forEach(function(item) {
+                item.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    let submenu = this.nextElementSibling;
+
+                    // close other submenus
+                    document.querySelectorAll(".dropdown-submenu").forEach(function(el) {
+                        if (el !== submenu) {
+                            el.classList.remove("show");
+                        }
+                    });
+
+                    submenu.classList.toggle("show");
+                });
+            });
+
+            // optional: click outside to close all submenu
+            document.addEventListener("click", function() {
+                document.querySelectorAll(".dropdown-submenu").forEach(function(el) {
+                    el.classList.remove("show");
+                });
             });
         });
     </script>
