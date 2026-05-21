@@ -81,6 +81,12 @@ $(document).ready(function () {
 
     // });
 
+    tanggalInput.addEventListener("change", function () {
+        const selectedDate = new Date(this.value);
+        penagihanPajak.valueAsDate = selectedDate;
+
+    });
+
     btn_isi.addEventListener("click", async function (event) {
         event.preventDefault();
         btn_isi.disabled = true;
@@ -161,7 +167,7 @@ $(document).ready(function () {
 
                     if (idMataUang.value == "1") {
                         TTerbilang = convertNumberToWordsRupiah(
-                            numeral(totalPenagihan.value).value()
+                            numeral(totalPenagihan.value).value(),
                         );
                     } else {
                         if (nilaiKurs.value <= 0 || nilaiKurs.value == null) {
@@ -173,7 +179,7 @@ $(document).ready(function () {
                             return;
                         }
                         TTerbilang = convertNumberToWordsDollar(
-                            numeral(totalPenagihan.value).value()
+                            numeral(totalPenagihan.value).value(),
                         );
                     }
 
@@ -271,7 +277,7 @@ $(document).ready(function () {
 
                     if (idMataUang.value == "1") {
                         TTerbilang = convertNumberToWordsRupiah(
-                            response.txtTotalPenagihan
+                            response.txtTotalPenagihan,
                         );
                     } else {
                         if (nilaiKurs.value <= 0 || nilaiKurs.value == null) {
@@ -283,7 +289,7 @@ $(document).ready(function () {
                             return;
                         }
                         TTerbilang = convertNumberToWordsDollar(
-                            response.txtTotalPenagihan
+                            response.txtTotalPenagihan,
                         );
                     }
 
@@ -425,11 +431,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PenagihanTable")
+                            handleTableKeydownInSwal(e, "PenagihanTable"),
                         );
                     });
                 },
@@ -437,10 +443,10 @@ $(document).ready(function () {
                 if (result.isConfirmed && result.value) {
                     const selectedRow = result.value;
                     no_penagihan.value = escapeHTML(
-                        selectedRow.Id_Penagihan.trim()
+                        selectedRow.Id_Penagihan.trim(),
                     );
                     idCustomer.value = escapeHTML(
-                        selectedRow.NamaCust.trim().slice(-5)
+                        selectedRow.NamaCust.trim().slice(-5),
                     );
 
                     // let terbilangS;
@@ -519,7 +525,7 @@ $(document).ready(function () {
                                 },
                                 error: function (xhr, status, error) {
                                     var err = eval(
-                                        "(" + xhr.responseText + ")"
+                                        "(" + xhr.responseText + ")",
                                     );
                                     alert(err.Message);
                                 },
@@ -660,11 +666,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "customerTable")
+                            handleTableKeydownInSwal(e, "customerTable"),
                         );
                     });
                 },
@@ -674,7 +680,7 @@ $(document).ready(function () {
                     user_penagih.value = "Tanpa Penagih";
                     idUserPenagih.value = "06";
                     nama_customer.value = escapeHTML(
-                        selectedRow.NAMACUST.trim()
+                        selectedRow.NAMACUST.trim(),
                     );
                     id_cust.value = selectedRow.IDCust.trim().substring(0, 3);
                     idCustomer.value = selectedRow.IDCust.trim().slice(-5);
@@ -792,7 +798,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PesananTable")
+                            handleTableKeydownInSwal(e, "PesananTable"),
                         );
                     });
                 },
@@ -859,14 +865,13 @@ $(document).ready(function () {
                             nilaiSP.value = data.TNilai_Penagihan;
                             if (Ppn.value == "12") {
                                 let hitungPPN =
-                                    ((numeral(nilaiSP.value).value() *
-                                        11) /
+                                    ((numeral(nilaiSP.value).value() * 11) /
                                         12) *
                                     0.12;
 
                                 totalPenagihan.value = numeral(
                                     numeral(hitungPPN).value() +
-                                        numeral(nilaiSP.value).value()
+                                        numeral(nilaiSP.value).value(),
                                 ).format("0,0.00");
                             }
 
@@ -956,7 +961,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PenagihTable")
+                            handleTableKeydownInSwal(e, "PenagihTable"),
                         );
                     });
                 },
@@ -1045,7 +1050,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "DokumenTable")
+                            handleTableKeydownInSwal(e, "DokumenTable"),
                         );
                     });
                 },
@@ -1054,7 +1059,7 @@ $(document).ready(function () {
                     const selectedRow = result.value;
                     dokumen.value = escapeHTML(selectedRow.Nama_Dokumen.trim());
                     idJenisDokumen.value = escapeHTML(
-                        selectedRow.Id_Jenis_Dokumen.trim()
+                        selectedRow.Id_Jenis_Dokumen.trim(),
                     );
                     // IdPenagihan.value = escapeHTML(selectedRow.Id_Penagihan.trim());
                     setTimeout(() => {
@@ -1135,7 +1140,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PajakTable")
+                            handleTableKeydownInSwal(e, "PajakTable"),
                         );
                     });
                 },
@@ -1143,7 +1148,7 @@ $(document).ready(function () {
                 if (result.isConfirmed && result.value) {
                     const selectedRow = result.value;
                     nama_pajak.value = escapeHTML(
-                        selectedRow.Nama_Jns_PPN.trim()
+                        selectedRow.Nama_Jns_PPN.trim(),
                     );
                     jenis_pajak.value = escapeHTML(selectedRow.Jns_PPN.trim());
                     // IdPenagihan.value = escapeHTML(selectedRow.Id_Penagihan.trim());
@@ -1226,11 +1231,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PenagihanUMTable")
+                            handleTableKeydownInSwal(e, "PenagihanUMTable"),
                         );
                     });
                 },
@@ -1242,7 +1247,7 @@ $(document).ready(function () {
                     // );
                     // jenis_pajak.value = escapeHTML(selectedRow.Jns_PPN.trim());
                     no_penagihanUM.value = escapeHTML(
-                        selectedRow.Id_Penagihan.trim()
+                        selectedRow.Id_Penagihan.trim(),
                     );
                     if (proses == 1) {
                         $.ajax({
@@ -1255,11 +1260,11 @@ $(document).ready(function () {
                             success: function (data) {
                                 console.log(data);
                                 nilaiUM.value = numeral(
-                                    selectedRow.nilai_BLM_PAJAK
+                                    selectedRow.nilai_BLM_PAJAK,
                                 ).format("0,0.00");
                                 nilaiSdhBayar.value = numeral(
                                     numeral(nilaiSP.value).value() -
-                                        numeral(nilaiUM.value).value()
+                                        numeral(nilaiUM.value).value(),
                                 ).format("0,0.00");
                                 console.log(Ppn.value);
 
@@ -1272,7 +1277,9 @@ $(document).ready(function () {
 
                                     totalPenagihan.value = numeral(
                                         numeral(hitungPPN).value() +
-                                            numeral(nilaiSdhBayar.value).value()
+                                            numeral(
+                                                nilaiSdhBayar.value,
+                                            ).value(),
                                     ).format("0,0.00");
                                 }
                             },
@@ -1292,11 +1299,11 @@ $(document).ready(function () {
                             success: function (data) {
                                 console.log(data);
                                 nilaiSdhBayar.value = numeral(
-                                    data.data[0].Nilai_Sdh_Bayar
+                                    data.data[0].Nilai_Sdh_Bayar,
                                 ).format("0,0.00");
                                 nilaiUM.value = numeral(
                                     numeral(nilaiSP.value).value() -
-                                        numeral(nilaiSdhBayar.value).value()
+                                        numeral(nilaiSdhBayar.value).value(),
                                 ).format("0,0.00");
                                 console.log(Ppn.value);
 
@@ -1311,7 +1318,9 @@ $(document).ready(function () {
 
                                     totalPenagihan.value = numeral(
                                         numeral(hitungPPN).value() +
-                                            numeral(nilaiSdhBayar.value).value()
+                                            numeral(
+                                                nilaiSdhBayar.value,
+                                            ).value(),
                                     ).format("0,0.00");
                                 }
                             },
