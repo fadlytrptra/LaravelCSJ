@@ -128,6 +128,10 @@ $(document).ready(function () {
     btn_isi.focus();
 
     let tableData = [];
+    tanggal.addEventListener("input", function () {
+        const selectedDate = new Date(this.value);
+        penagihanPajak.valueAsDate = selectedDate;
+    });
 
     btn_isi.addEventListener("click", async function (event) {
         event.preventDefault();
@@ -641,7 +645,7 @@ $(document).ready(function () {
                     document.getElementById("modalLihatItem"),
                     {
                         keyboard: false,
-                    }
+                    },
                 );
                 myModal.show();
             } else {
@@ -724,7 +728,7 @@ $(document).ready(function () {
 
             // Remove the row from tableData array
             tableData = tableData.filter(
-                (row) => row.no_penagihanUM !== rowData[0]
+                (row) => row.no_penagihanUM !== rowData[0],
             );
             console.log(tableData);
 
@@ -842,11 +846,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "customerTable")
+                            handleTableKeydownInSwal(e, "customerTable"),
                         );
                     });
                 },
@@ -854,7 +858,7 @@ $(document).ready(function () {
                 if (result.isConfirmed && result.value) {
                     const selectedRow = result.value;
                     nama_customer.value = escapeHTML(
-                        selectedRow.NAMACUST.trim()
+                        selectedRow.NAMACUST.trim(),
                     );
                     id_cust.value = selectedRow.IDCust.trim().substring(0, 3);
                     idCustomer.value = selectedRow.IDCust.trim().slice(-5);
@@ -967,11 +971,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PenagihanTable")
+                            handleTableKeydownInSwal(e, "PenagihanTable"),
                         );
                     });
                 },
@@ -979,10 +983,10 @@ $(document).ready(function () {
                 if (result.isConfirmed && result.value) {
                     const selectedRow = result.value;
                     no_penagihan.value = escapeHTML(
-                        selectedRow.Id_Penagihan.trim()
+                        selectedRow.Id_Penagihan.trim(),
                     );
                     IdPenagihan.value = escapeHTML(
-                        selectedRow.Tgl_Penagihan.trim()
+                        selectedRow.Tgl_Penagihan.trim(),
                     );
 
                     let terbilangS;
@@ -1013,22 +1017,22 @@ $(document).ready(function () {
                             idJenisDokumen.value = data.TIdJnsDok;
                             nilaiUangMuka.value = data.TNilai_UM;
                             nilaiPenagihan.value = numeral(
-                                data.TNilai_blm_Pajak
+                                data.TNilai_blm_Pajak,
                             ).format("0,0.00");
                             dpp_nilaiLain.value = numeral((data.TNilai_blm_Pajak * 11) / 12).format("0,0.00"); //prettier-ignore
                             nilai_ppn.value = numeral(
                                 (numeral(dpp_nilaiLain.value).value() * 12) /
-                                    100
+                                    100,
                             ).format("0,0.00");
                             nilai_total.value = numeral(
-                                data.TNilai_Penagihan
+                                data.TNilai_Penagihan,
                             ).format("0,0.00");
                             nama_bank.value = data.TIdBank;
                             idBank.value = data.TNamaBank;
 
                             if (idMataUang.value == "1") {
                                 terbilangS = convertNumberToWordsRupiah(
-                                    numeral(nilai_total.value).value()
+                                    numeral(nilai_total.value).value(),
                                 );
                             } else {
                                 if (nilaiKurs.value <= 0) {
@@ -1042,7 +1046,7 @@ $(document).ready(function () {
                                     });
                                 } else {
                                     terbilangS = convertNumberToWordsDollar(
-                                        nilaiPenagihan.value
+                                        nilaiPenagihan.value,
                                     );
                                 }
                             }
@@ -1223,7 +1227,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PesananTable")
+                            handleTableKeydownInSwal(e, "PesananTable"),
                         );
                     });
                 },
@@ -1330,7 +1334,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PenagihTable")
+                            handleTableKeydownInSwal(e, "PenagihTable"),
                         );
                     });
                 },
@@ -1418,7 +1422,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "BankTable")
+                            handleTableKeydownInSwal(e, "BankTable"),
                         );
                     });
                 },
@@ -1505,7 +1509,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PajakTable")
+                            handleTableKeydownInSwal(e, "PajakTable"),
                         );
                     });
                 },
@@ -1513,7 +1517,7 @@ $(document).ready(function () {
                 if (result.isConfirmed && result.value) {
                     const selectedRow = result.value;
                     nama_pajak.value = escapeHTML(
-                        selectedRow.Nama_Jns_PPN.trim()
+                        selectedRow.Nama_Jns_PPN.trim(),
                     );
                     jenis_pajak.value = escapeHTML(selectedRow.Jns_PPN.trim());
                     // IdPenagihan.value = escapeHTML(selectedRow.Id_Penagihan.trim());
@@ -1596,11 +1600,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "PenagihanUMTable")
+                            handleTableKeydownInSwal(e, "PenagihanUMTable"),
                         );
                     });
                 },
@@ -1612,7 +1616,7 @@ $(document).ready(function () {
                     // );
                     // jenis_pajak.value = escapeHTML(selectedRow.Jns_PPN.trim());
                     no_penagihanUM.value = escapeHTML(
-                        selectedRow.Id_Penagihan.trim()
+                        selectedRow.Id_Penagihan.trim(),
                     );
                     // nilaiUangMuka.value = numeral(
                     //     selectedRow.nilai_BLM_PAJAK.trim()
@@ -1624,7 +1628,7 @@ $(document).ready(function () {
                     const newRow = {
                         no_penagihanUM: no_penagihanUM.value,
                         nilai_BLM_PAJAK: numeral(
-                            selectedRow.nilai_BLM_PAJAK.trim()
+                            selectedRow.nilai_BLM_PAJAK.trim(),
                         ).format("0,0.00"),
                     };
 
@@ -1657,7 +1661,7 @@ $(document).ready(function () {
                         {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
-                        }
+                        },
                     );
                 }
             });
@@ -1735,11 +1739,11 @@ $(document).ready(function () {
                                 table.$("tr.selected").removeClass("selected");
                                 // Add 'selected' class to the clicked row
                                 $(this).addClass("selected");
-                            }
+                            },
                         );
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "SuratJalanTable")
+                            handleTableKeydownInSwal(e, "SuratJalanTable"),
                         );
                     });
                 },
@@ -1751,7 +1755,7 @@ $(document).ready(function () {
                     // );
                     // jenis_pajak.value = escapeHTML(selectedRow.Jns_PPN.trim());
                     surat_jalan.value = escapeHTML(
-                        selectedRow.IDPengiriman.trim()
+                        selectedRow.IDPengiriman.trim(),
                     );
                     tanggal_diterima.value = selectedRow.TanggalDiterima;
 
@@ -1819,7 +1823,7 @@ $(document).ready(function () {
                         document.getElementById("modalLihatItem"),
                         {
                             keyboard: false,
-                        }
+                        },
                     );
                     myModal.show();
                     // setTimeout(() => {
@@ -1901,7 +1905,7 @@ $(document).ready(function () {
                         });
                         currentIndex = null;
                         Swal.getPopup().addEventListener("keydown", (e) =>
-                            handleTableKeydownInSwal(e, "DokumenTable")
+                            handleTableKeydownInSwal(e, "DokumenTable"),
                         );
                     });
                 },
@@ -1910,7 +1914,7 @@ $(document).ready(function () {
                     const selectedRow = result.value;
                     dokumen.value = escapeHTML(selectedRow.Nama_Dokumen.trim());
                     idJenisDokumen.value = escapeHTML(
-                        selectedRow.Id_Jenis_Dokumen.trim()
+                        selectedRow.Id_Jenis_Dokumen.trim(),
                     );
                     // IdPenagihan.value = escapeHTML(selectedRow.Id_Penagihan.trim());
                     // setTimeout(() => {
