@@ -438,6 +438,9 @@ class SuratPesananController extends Controller
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
             }
+        } else if ($id == 'getLatestNomorSP') {
+            $data = DB::connection('ConnSales')->select('exec SP_4384_SLS_MAINTENANCE_SURAT_PESANAN @XKode = 5');
+            return response()->json($data);
         }
 
     }

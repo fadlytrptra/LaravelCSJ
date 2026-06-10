@@ -72,28 +72,28 @@ $(document).ready(function () {
         function (value) {
             return /^-?\d*[.]?\d*$/.test(value);
         },
-        "Must be a floating (real) number"
+        "Must be a floating (real) number",
     );
     setInputFilter(
         document.getElementById("harga_satuan"),
         function (value) {
             return /^-?\d*[.]?\d*$/.test(value);
         },
-        "Must be a floating (real) number"
+        "Must be a floating (real) number",
     );
     setInputFilter(
         document.getElementById("syarat_bayar"),
         function (value) {
             return /^-?\d*$/.test(value);
         },
-        "Harus diisi dengan angka!"
+        "Harus diisi dengan angka!",
     );
     setInputFilter(
         document.getElementById("kode_barang"),
         function (value) {
             return /^-?\d*$/.test(value);
         },
-        "Harus diisi dengan angka!"
+        "Harus diisi dengan angka!",
     );
     tgl_pesan.valueAsDate = new Date();
     tgl_po.valueAsDate = new Date();
@@ -304,6 +304,7 @@ $(document).ready(function () {
             createSPModalLabel.innerHTML = "Tambah Surat Pesanan";
             terkirim.style.display = "none";
             jml_terkirim.style.display = "none";
+            generateNoSP();
             $("#createSPModal").modal("show");
         });
     }
@@ -382,10 +383,10 @@ $(document).ready(function () {
                                     item.namabarang,
                                     item.IDBarang,
                                     numeral(
-                                        parseFloat(item.HargaSatuan)
+                                        parseFloat(item.HargaSatuan),
                                     ).format("0.00000"),
                                     numeral(parseFloat(item.Qty)).format(
-                                        "0,0.00"
+                                        "0,0.00",
                                     ),
                                     numeral(item.TerKirim).format("0,0.00"),
                                     item.Satuan,
@@ -553,7 +554,6 @@ $(document).ready(function () {
                     });
                 },
             });
-            
         } else if (createSPModalLabel.innerHTML == "Salin Surat Pesanan") {
             funcDatatablesIntoInput();
             // Ambil form data menggunakan FormData
@@ -1052,7 +1052,7 @@ $(document).ready(function () {
                 alert("Tidak ada data yang dihapus");
             }
         }
-    funcClearInputBarang();
+        funcClearInputBarang();
         jenis_brg.selectedIndex = 0;
         kategori_utama.selectedIndex = 0;
         kategori.innerHTML = "";
@@ -1123,6 +1123,34 @@ $(document).ready(function () {
         faktur_pjkSederhana.disabled = bool;
     }
 
+    function generateNoSP() {
+        $.ajax({
+            url: "SuratPesanan/getLatestNomorSP",
+            type: "GET",
+            success: function (response) {
+                if (response.length > 0) {
+                    let newNoSP = response[0].Nilai + 1;
+                    no_spText.value = newNoSP.padStart(6, "0");
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Kesalahan!",
+                        text: "Gagal mengambil data nomor SP!",
+                        showConfirmButton: true,
+                    });
+                }
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Kesalahan!",
+                    text: "Terjadi kesalahan mengambil data nomor SP.",
+                    showConfirmButton: true,
+                });
+            },
+        });
+    }
+
     function funcInsertRow(array) {
         // console.log(array);
 
@@ -1164,10 +1192,10 @@ $(document).ready(function () {
                     let selectedRows = table.rows(".selected").data().toArray();
                     // console.log(selectedRows);
                     qty_pesan.value = parseFloat(
-                        selectedRows[0][3].replace(/,/g, "")
+                        selectedRows[0][3].replace(/,/g, ""),
                     );
                     harga_satuan.value = parseFloat(
-                        selectedRows[0][2].replace(/,/g, "")
+                        selectedRows[0][2].replace(/,/g, ""),
                     );
                     ppn.value = selectedRows[0][8];
                     satuan_jual.selectedIndex = 0;
@@ -1203,10 +1231,10 @@ $(document).ready(function () {
                     let selectedRows = table.rows(".selected").data().toArray();
                     // console.log(selectedRows);
                     qty_pesan.value = parseFloat(
-                        selectedRows[0][3].replace(/,/g, "")
+                        selectedRows[0][3].replace(/,/g, ""),
                     );
                     harga_satuan.value = parseFloat(
-                        selectedRows[0][2].replace(/,/g, "")
+                        selectedRows[0][2].replace(/,/g, ""),
                     );
                     ppn.value = selectedRows[0][8];
                     satuan_jual.selectedIndex = 0;
