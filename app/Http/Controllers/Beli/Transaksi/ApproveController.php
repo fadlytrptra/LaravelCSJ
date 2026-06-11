@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Beli\Transaksi;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Beli\TransBL;
-use App\User;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HakAksesController;
 use DateTime;
@@ -17,66 +15,84 @@ class ApproveController extends Controller
 {
     public function index(Request $request)
     {
-        $kdUser = trim(Auth::user()->NomorUser);
-
         $access = (new HakAksesController)->HakAksesFiturMaster('Beli');
         $result = (new HakAksesController)->HakAksesFitur('Approve');
-        if ($result <= 0) abort(403);
-
-        // status dari UI: ACC / BATAL / ALL (default ACC)
-        $status = strtoupper($request->get('status', 'ALL'));
-
-        // mapping status UI -> mode SP
-        switch ($status) {
-            case 'BATAL':
-                $mode = 'BATAL';
-                break;
-            case 'ALL':
-                $mode = 'ALL';
-                break;
-            case 'ACC':
-            default:
-                $mode = 'BELUM';
-                break;
+        if ($result <= 0) {
+            abort(403);
         }
 
-        $sp   = 'EXEC dbo.SP_4384_PBL_Select_AccPermohonan @kd_user = ?, @mode = ?';
-        $data = DB::connection('ConnPurchase')->select($sp, [$kdUser, $mode]);
+        $kdUser = trim(Auth::user()->NomorUser);
 
-        return view('Beli.Transaksi.Approve.List', compact('data', 'access', 'status'));
+        $data = DB::connection('ConnPurchase')->select(
+            "EXEC dbo.SP_1273_PRG_Select_AccPermohonan @kd_user = ?",
+            [$kdUser]
+        );
+
+        return view(
+            'Beli.Transaksi.Approve.List',
+            compact('data', 'access',)
+        );
     }
-
-
-
 
     public function store(Request $request)
     {
-        $Checked = $request->input('checkedBOX');
-        $date = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
-        $date->format('Y-m-d H:i:s');
+        $checked = $request->input('checkedBOX');
+        $kdUser = trim(Auth::user()->NomorUser);
 
-        if (empty($Checked)) {
-            return back()->with('danger', 'Gagal Approve/Reject, Karena Tidak Ada Data yang Dipilih');
+        if (empty($checked)) {
+            return back()->with(
+                'danger',
+                'Gagal Proses, Karena Tidak Ada Data yang Dipilih'
+            );
         }
 
-        switch ($request->input('action')) {
-            case 'Approve':
-                foreach ($Checked as $item) {
-                    TransBL::where('No_trans', $item)->update([
-                        'Tgl_acc'  => $date,
-                        'Manager'  => trim(Auth::user()->NomorUser),
-                        // Status UI hanya diturunkan dari kolom-kolom ini, tidak perlu StatusOrder
-                    ]);
+        switch ($request->action) {
+
+            // ==================================
+            // ACC PERMOHONAN
+            // ==================================
+            case 'ACC_PERMOHONAN':
+
+                foreach ($checked as $item) {
+
+                    DB::connection('ConnPurchase')->statement(
+                        "EXEC dbo.SP_1273_PRG_Update_AccPermohonan
+                            @no_trans = ?,
+                            @manager = ?",
+                        [
+                            $item,
+                            $kdUser
+                        ]
+                    );
                 }
+
+                // data tetap ada
                 return back();
 
-            case 'Reject':
-                foreach ($Checked as $item) {
-                    TransBL::where('No_trans', $item)->update([
-                        'Tgl_Batal_acc' => $date,
-                        'Batal_acc'     => trim(Auth::user()->NomorUser),
-                    ]);
+            // ==================================
+            // BATAL ACC
+            // ==================================
+            case 'BATAL_ACC':
+
+                foreach ($checked as $item) {
+
+                \Log::info('BATAL_ACC EXEC', [
+                    'No_trans' => $item,
+                    'kdUser' => $kdUser
+                ]);
+
+                    DB::connection('ConnPurchase')->statement(
+                        "EXEC dbo.SP_1273_PRG_Update_BatalAccPermohonan
+                            @no_trans = ?,
+                            @batal_acc = ?",
+                        [
+                            $item,
+                            $kdUser
+                        ]
+                    );
                 }
+
+                // data hilang setelah reload
                 return back();
         }
     }
@@ -92,19 +108,41 @@ class ApproveController extends Controller
             'Nama_satuan',
             'Pemesan',
             'YUSER.Nama as User',
-            'StatusBeli',
             'Tgl_Dibutuhkan',
             'Ket_Internal',
             'keterangan',
             'Kd_div'
         )
-            ->leftJoin('Y_BARANG', 'Y_BARANG.KD_BRG', 'YTRANSBL.Kd_brg')
-            ->leftJoin('YUSER', 'YUSER.kd_user', 'YTRANSBL.Operator')
-            ->leftJoin('YSATUAN', 'YSATUAN.No_satuan', 'YTRANSBL.NoSatuan')
-            ->leftJoin('STATUS_ORDER', 'STATUS_ORDER.KdStatus', 'YTRANSBL.StatusOrder')
-            ->leftJoin('Y_KATEGORI_SUB', 'Y_KATEGORI_SUB.no_sub_kategori', 'Y_BARANG.NO_SUB_KATEGORI')
-            ->leftJoin('Y_KATEGORY', 'Y_KATEGORY.no_kategori', 'Y_KATEGORI_SUB.no_kategori')
-            ->leftJoin('Y_KATEGORI_UTAMA', 'Y_KATEGORI_UTAMA.no_kat_utama', 'Y_KATEGORY.no_kat_utama')
+            ->leftJoin(
+                'Y_BARANG',
+                'Y_BARANG.KD_BRG',
+                'YTRANSBL.Kd_brg'
+            )
+            ->leftJoin(
+                'YUSER',
+                'YUSER.kd_user',
+                'YTRANSBL.Operator'
+            )
+            ->leftJoin(
+                'YSATUAN',
+                'YSATUAN.No_satuan',
+                'YTRANSBL.NoSatuan'
+            )
+            ->leftJoin(
+                'Y_KATEGORI_SUB',
+                'Y_KATEGORI_SUB.no_sub_kategori',
+                'Y_BARANG.NO_SUB_KATEGORI'
+            )
+            ->leftJoin(
+                'Y_KATEGORY',
+                'Y_KATEGORY.no_kategori',
+                'Y_KATEGORI_SUB.no_kategori'
+            )
+            ->leftJoin(
+                'Y_KATEGORI_UTAMA',
+                'Y_KATEGORI_UTAMA.no_kat_utama',
+                'Y_KATEGORY.no_kat_utama'
+            )
             ->where('No_trans', $id)
             ->first();
 
@@ -113,35 +151,50 @@ class ApproveController extends Controller
             ->first();
 
         $dataBeliTerakhir = TransBL::select()
-            ->leftJoin('YSUPPLIER', 'YSUPPLIER.NO_SUP', 'YTRANSBL.supplier')
+            ->leftJoin(
+                'YSUPPLIER',
+                'YSUPPLIER.NO_SUP',
+                'YTRANSBL.supplier'
+            )
             ->where('Kd_brg', $getKD_Barang->Kd_brg)
-            ->whereIn('StatusOrder', [4, 5, 8, 10, 11])
             ->orderBy('No_trans', 'desc')
-            ->offset(0)
             ->limit(1)
             ->get();
 
-        return compact('data', 'dataBeliTerakhir', 'getKD_Barang');
+        return compact(
+            'data',
+            'dataBeliTerakhir',
+            'getKD_Barang'
+        );
     }
 
     public function update(Request $request, $id)
     {
-        $date = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
-        $date->format('Y-m-d H:i:s');
+        $date = new DateTime(
+            'now',
+            new DateTimeZone('Asia/Jakarta')
+        );
 
         switch ($request->input('action')) {
+
             case 'Approve':
-                TransBL::where('No_trans', $id)->update([
-                    'Tgl_acc' => $date,
-                    'Manager' => trim(Auth::user()->NomorUser),
-                ]);
+
+                TransBL::where('No_trans', $id)
+                    ->update([
+                        'Tgl_acc' => $date,
+                        'Manager' => trim(Auth::user()->NomorUser),
+                    ]);
+
                 return back();
 
             case 'Reject':
-                TransBL::where('No_trans', $id)->update([
-                    'Tgl_Batal_acc' => $date,
-                    'Batal_acc'     => trim(Auth::user()->NomorUser),
-                ]);
+
+                TransBL::where('No_trans', $id)
+                    ->update([
+                        'Tgl_Batal_acc' => $date,
+                        'Batal_acc'     => trim(Auth::user()->NomorUser),
+                    ]);
+
                 return back();
         }
     }

@@ -1,180 +1,293 @@
-$(function () {
-    $(".DetailApprove").on("click", function (e) {
-        e.preventDefault();
-        document.getElementById("judul").innerHTML =
-            "No Trans " + $(this).data("id");
-        $.ajax({
-            url:
-                window.location.origin +
-                "/Approve/" +
-                $(this).data("id") +
-                "/show",
-            type: "get",
-            data: "_token = <?php echo csrf_token() ?>", // Remember that you need to have your csrf token included
-            beforeSend: function () {
-                // Show loading screen
-                $("#loading-screen").css("display", "flex");
-            },
-            success: function (data) {
-                document.getElementById("KategoriUtama").innerHTML =
-                    "Kategori Utama: " + data.data.KatUtama;
-                document.getElementById("Kategori").innerHTML =
-                    "Kategori: " + data.data.kategori;
-                document.getElementById("SubKategori").innerHTML =
-                    "Sub Kategori: " + data.data.SubKat;
-                document.getElementById("NamaBarang").innerHTML =
-                    "Nama Barang: " +
-                    data.data.NamaBarang.replace(/</g, "&lt;").replace(
-                        />/g,
-                        "&gt;"
-                    ) +
-                    "<text class='material-symbols-outlined' style='font-size:20px' id='iconKategoriBarang'>expand_more</text>";
-                document.getElementById("Qty").innerHTML =
-                    "Qty Order: " + data.data.Qty + " " + data.data.Nama_satuan;
-                document.getElementById("Divisi").innerHTML =
-                    "Divisi: " + data.data.Kd_div;
-                // PEMESAN -------------------------------------------------------------------------
-                if (
-                    data.data.Pemesan == null ||
-                    data.data.Pemesan.length == 0
-                ) {
-                    $("#Pemesan").hide();
-                } else {
-                    $("#Pemesan").show();
-                    document.getElementById("Pemesan").innerHTML =
-                        "Pemesan: " + data.data.Pemesan;
-                }
+let tableApprove;
+let tableBatal;
 
-                // USER ------------------------------------------------------------------------------------
-                document.getElementById("User").innerHTML =
-                    "User: " + data.data.User;
+$(document).ready(function () {
 
-                // STATUS BELI ---------------------------------------------------------------------------------
-                if (data.data.StatusBeli.length == 1) {
-                    document.getElementById("Status").innerHTML =
-                        "Status: Pengadaan Pembelian";
-                } else {
-                    document.getElementById("Status").innerHTML =
-                        "Status: Beli Sendiri";
-                }
+    console.log('Approve.js loaded');
 
-                // TGL BUTUH -------------------------------------------------------------------------------------
-                let date, month, year;
-                date = (
-                    "0" + new Date(data.data.Tgl_Dibutuhkan).getDate()
-                ).slice(-2);
-                month = (
-                    "0" +
-                    (new Date(data.data.Tgl_Dibutuhkan).getMonth() + 1)
-                ).slice(-2);
-                year = new Date(data.data.Tgl_Dibutuhkan).getFullYear();
-                format = month + "/" + date + "/" + year;
-                document.getElementById("TglButuh").innerHTML =
-                    "Tgl. Dibutuhkan: " + format;
-
-                // KET ORDER -------------------------------------------------------------------------------
-                if (
-                    !data.data.keterangan ||
-                    data.data.keterangan.length === 0
-                ) {
-                    $("#KetOrder").hide();
-                    // document.getElementById("KetOrder").innerHTML="Ket. Order: -";
-                } else {
-                    $("#KetOrder").show();
-                    document.getElementById("KetOrder").innerHTML =
-                        "Ket. Order: " + data.data.keterangan;
-                }
-
-                // KET INTERNAL --------------------------------------------------------------------------
-                if (
-                    !data.data.Ket_Internal ||
-                    data.data.Ket_Internal.length === 0
-                ) {
-                    document.getElementById("KetInternal").innerHTML =
-                        "Ket. Internal: -";
-                } else {
-                    document.getElementById("KetInternal").innerHTML =
-                        "Ket. Internal: " + data.data.Ket_Internal;
-                }
-
-                // PEMBELIAN TERAKHIR -------------------------------------------------------------------------
-                $("#PembelianTerakhir").show();
-                if (data.dataBeliTerakhir[0] == null) {
-                    $("#PembelianTerakhir").hide();
-                } else {
-                    $("#PembelianTerakhir").show();
-                    let date4 = (
-                        "0" +
-                        new Date(data.dataBeliTerakhir[0].Tgl_order).getDate()
-                    ).slice(-2);
-                    let month4 = (
-                        "0" +
-                        (new Date(
-                            data.dataBeliTerakhir[0].Tgl_order
-                        ).getMonth() +
-                            1)
-                    ).slice(-2);
-                    let year4 = new Date(
-                        data.dataBeliTerakhir[0].Tgl_order
-                    ).getFullYear();
-                    let format4 = month4 + "/" + date4 + "/" + year4;
-                    document.getElementById("PembelianTerakhir").innerHTML =
-                        "PembelianTerakhir: " +
-                        format4 +
-                        "<br>Supplier: " +
-                        data.dataBeliTerakhir[0].NM_SUP +
-                        "<br>Harga Unit: " +
-                        rupiah(data.dataBeliTerakhir[0].PriceUnit);
-                }
-                //   console.log('yay');
-            },
-            error: function (xhr, status, error) {
-                let err = eval("(" + xhr.responseText + ")");
-                alert(err.Message);
-            },
-            complete: function () {
-                // Hide loading screen
-                $("#loading-screen").css("display", "none");
-            },
-        });
-
-        let $url = $(this).attr("href");
-        $(".formDetail").attr("action", "");
-        let action = $(".formDetail").attr("action");
-        $(".formDetail").attr("action", action.replace("", "" + $url + ""));
-
-        $("#loading").show();
-        $("#DivDetailData").hide();
-        $("#modalDetailApprove").modal({ backdrop: "static", keyboard: false });
-        $("#modalDetailApprove").modal("show");
-        $("body.modal-open").removeAttr("style");
-        setTimeout(function () {
-            $("#DivDetailData").show();
-            $("#loading").hide();
-        }, 1000);
+    // ==========================================
+    // DATATABLE
+    // ==========================================
+    tableApprove = $('#table_Approve').DataTable({
+        searching: true,
+        order: [[2, 'desc']],
+        columnDefs: [{
+            orderable: false,
+            targets: 0
+        }]
     });
-});
 
-// Event ESC
-document.addEventListener('keydown', function(event) {
-  if (event.key === "Escape") {
-    var modalEl = document.getElementById('modalDetailApprove');
-    var modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) {
-      modal.hide();
+    tableBatal = $('#table_Batal').DataTable({
+        searching: true,
+        order: [[2, 'desc']],
+        columnDefs: [{
+            orderable: false,
+            targets: 0
+        }]
+    });
+
+    // ==========================================
+    // PREVENT MIDDLE CLICK
+    // ==========================================
+    $(document).on('auxclick', '.DetailApprove', function (e) {
+        if (e.button === 1) {
+            e.preventDefault();
+        }
+    });
+
+    // ==========================================
+    // HANDLE CHECKBOX
+    // ==========================================
+    function handleCheckbox(No_trans, checked) {
+
+        const add =
+            document.getElementById(
+                "DataCheckbox"
+            );
+
+        console.log(
+            'handleCheckbox:',
+            {
+                No_trans,
+                checked
+            }
+        );
+
+        if (checked) {
+
+            if (!document.getElementById(
+                "ID" + No_trans
+            )) {
+
+                add.insertAdjacentHTML(
+                    'beforeend',
+                    `<input
+                        type="hidden"
+                        id="ID${No_trans}"
+                        name="checkedBOX[]"
+                        value="${No_trans}">`
+                );
+
+                console.log(
+                    'Hidden input dibuat:',
+                    No_trans
+                );
+            }
+
+        } else {
+
+            $('#ID' + No_trans)
+                .remove();
+
+            console.log(
+                'Hidden input dihapus:',
+                No_trans
+            );
+        }
+
+        console.log(
+            'checkedBOX sekarang:',
+            $('input[name="checkedBOX[]"]')
+                .map(function () {
+                    return $(this).val();
+                }).get()
+        );
     }
-  }
-});
 
-// Event klik di luar modal
-document.addEventListener('click', function(event) {
-  var modalEl = document.getElementById('modalDetailApprove');
-  var modalDialog = modalEl.querySelector('.modal-dialog');
+    // ==========================================
+    // CHECKBOX ACC
+    // ==========================================
+    $(document).on(
+        'change',
+        '.check-row-acc',
+        function () {
 
-  if (modalEl.classList.contains('show') && !modalDialog.contains(event.target)) {
-    var modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) {
-      modal.hide();
-    }
-  }
+            const No_trans =
+                $(this).data('no-trans');
+
+            console.log(
+                'ACC checkbox clicked:',
+                No_trans
+            );
+
+            handleCheckbox(
+                No_trans,
+                this.checked
+            );
+        }
+    );
+
+    // ==========================================
+    // CHECKBOX BATAL
+    // ==========================================
+    $(document).on(
+        'change',
+        '.check-row-batal',
+        function () {
+
+            const No_trans =
+                $(this).data('no-trans');
+
+            console.log(
+                'BATAL checkbox clicked:',
+                No_trans
+            );
+
+            handleCheckbox(
+                No_trans,
+                this.checked
+            );
+        }
+    );
+
+    // ==========================================
+    // CHECK ALL ACC
+    // ==========================================
+    $('#CheckedAllACC').on(
+        'change',
+        function () {
+
+            console.log(
+                'CheckedAllACC:',
+                this.checked
+            );
+
+            const rows =
+                tableApprove.rows({
+                    search: 'applied'
+                }).nodes();
+
+            $('input.check-row-acc', rows)
+                .prop(
+                    'checked',
+                    this.checked
+                )
+                .trigger('change');
+        }
+    );
+
+    // ==========================================
+    // CHECK ALL BATAL
+    // ==========================================
+    $('#CheckedAllBATAL').on(
+        'change',
+        function () {
+
+            console.log(
+                'CheckedAllBATAL:',
+                this.checked
+            );
+
+            const rows =
+                tableBatal.rows({
+                    search: 'applied'
+                }).nodes();
+
+            $('input.check-row-batal', rows)
+                .prop(
+                    'checked',
+                    this.checked
+                )
+                .trigger('change');
+        }
+    );
+
+    // ==========================================
+    // BUTTON ACC
+    // ==========================================
+    $('#btnProses').on(
+        'click',
+        function () {
+
+            console.log(
+                '=== ACC_PERMOHONAN ==='
+            );
+
+            console.log(
+                'checkedBOX:',
+                $('input[name="checkedBOX[]"]')
+                    .map(function () {
+                        return $(this).val();
+                    }).get()
+            );
+        }
+    );
+
+    // ==========================================
+    // BUTTON BATAL
+    // ==========================================
+    $('#btnProsesBatal').on(
+        'click',
+        function () {
+
+            console.log(
+                '=== BATAL_ACC ==='
+            );
+
+            console.log(
+                'checkedBOX:',
+                $('input[name="checkedBOX[]"]')
+                    .map(function () {
+                        return $(this).val();
+                    }).get()
+            );
+        }
+    );
+
+    // ==========================================
+    // FILTER STATUS
+    // ==========================================
+    $('#filterStatus').on(
+        'change',
+        function () {
+
+            const value =
+                $(this).val();
+
+            console.log(
+                'filterStatus:',
+                value
+            );
+
+            if (value === 'ACC') {
+
+                $('#tableACCWrapper')
+                    .show();
+
+                $('#tableBatalWrapper')
+                    .hide();
+
+                $('#footerACC')
+                    .show();
+
+                $('#footerBatal')
+                    .hide();
+
+                tableApprove
+                    .columns
+                    .adjust()
+                    .draw();
+
+            } else {
+
+                $('#tableACCWrapper')
+                    .hide();
+
+                $('#tableBatalWrapper')
+                    .show();
+
+                $('#footerACC')
+                    .hide();
+
+                $('#footerBatal')
+                    .show();
+
+                tableBatal
+                    .columns
+                    .adjust()
+                    .draw();
+            }
+        }
+    );
+
 });
