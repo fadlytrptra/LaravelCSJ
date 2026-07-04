@@ -1159,7 +1159,7 @@ $(document).ready(function () {
 
                 let tbodyHTML = ""; // Variabel untuk menyimpan isi tbody
                 tbodyHTML += `<tr style="border:none !important">
-                                <td style="width: 60%;text-align: center"><strong>RINCIAN PEMBAYARAN</strong></td>
+                                <td style="width: 60%;text-align: center"><strong>RINCIAN PENERIMAAN</strong></td>
                                 <td style="text-align: center"><strong>KODE PERKIRAAN</strong></td>
                                 <td style="width: 23%;text-align: center"><strong>JUMLAH</strong></td>
                             </tr>`;
