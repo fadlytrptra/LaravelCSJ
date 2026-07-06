@@ -217,13 +217,14 @@ class PengajuanBKKController extends Controller
 
             case 2:
                 DB::connection('ConnAccounting')
-                    ->statement('EXEC SP_1273_PRG_UDT_BKK2_ACUAN ?, ?, ?, ?, ?, ?', [
+                    ->statement('EXEC SP_1273_PRG_UDT_BKK2_ACUAN ?, ?, ?, ?, ?, ?, ?', [
                         $TIDPembayaran,
                         $TBank,
                         $TIdJnsByr,
                         $idMataUang,
                         $TJmlByr,
-                        $TKodePerkiraan
+                        $TKodePerkiraan,
+                        $request->input('rincian')
                     ]);
                 return response()->json(['message' => 'Data Pengajuan sudah diKOREKSI !!..'], 200);
 
