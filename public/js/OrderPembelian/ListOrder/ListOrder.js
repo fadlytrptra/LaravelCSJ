@@ -30,6 +30,11 @@ let select_satuanUmum = document.getElementById("select_satuanUmum");
 let select_subKategori = document.getElementById("select_subKategori");
 let koreksiOrder;
 let tgl_mohonKirim = document.getElementById("tgl_mohonKirim");
+let fileInput = document.getElementById("attach_file");
+let fileNameDisplay = document.getElementById("fileNameDisplay");
+let btnChooseFile = document.getElementById("btnChooseFile");
+let btnRemoveFile = document.getElementById("btnRemoveFile");
+let previewImage = document.getElementById("previewImage");
 
 //#endregion
 
@@ -484,6 +489,76 @@ function namaBarang(MyValue, callback) {
     });
 }
 
+function uploadDokumentasi(noTrans) {
+    let fileInput = document.getElementById("attach_file");
+
+    if (!fileInput || fileInput.files.length === 0) {
+        console.log("Tidak ada file untuk diupload");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("noTrans", noTrans);
+    formData.append("attach_file", fileInput.files[0]);
+
+    $.ajax({
+        url: "/MaintenanceOrderPembeliann/uploadDokumentasi",
+        type: "POST",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            if (!res.success) {
+                Swal.fire({
+                    icon: "warning",
+                    title: res.message,
+                });
+                return;
+            }
+            Swal.fire({
+                icon: "success",
+                title: res.message,
+            });
+        },
+        error: function (err) {
+            Swal.fire({
+                icon: "error",
+                title: err.responseJSON?.message || "Terjadi kesalahan",
+            });
+        },
+    });
+}
+
+function tampilkanDokumentasi(base64Image, base64Pdf) {
+    // Reset state
+    previewImage.classList.add("d-none");
+    fileNameDisplay.onclick = null;
+    fileNameDisplay.style.cursor = "default";
+
+    if (base64Image) {
+        fileNameDisplay.value = "Image tersimpan";
+        btnRemoveFile.classList.remove("d-none");
+
+        // Gunakan wildcard supaya bisa jpg/png
+        previewImage.src = "data:image/*;base64," + base64Image;
+        previewImage.classList.remove("d-none");
+    } else if (base64Pdf) {
+        fileNameDisplay.value = "PDF tersimpan";
+        btnRemoveFile.classList.remove("d-none");
+
+        fileNameDisplay.style.cursor = "pointer";
+
+        fileNameDisplay.onclick = function () {
+            // Tidak perlu decode manual
+            let pdfUrl = "data:application/pdf;base64," + base64Pdf;
+            window.open(pdfUrl, "_blank");
+        };
+    }
+}
+
 //#endregion
 
 //#region Event Listener
@@ -491,6 +566,93 @@ function namaBarang(MyValue, callback) {
 btn_tambahOrder.addEventListener("click", function (event) {
     koreksiOrder = null;
     $("#modal_tambahOrder").modal("show");
+});
+
+btnChooseFile.addEventListener("click", function () {
+    fileInput.click();
+});
+
+fileInput.addEventListener("change", function () {
+    if (!this.files.length) return;
+    let file = this.files[0];
+
+    fileNameDisplay.value = file.name;
+    btnRemoveFile.classList.remove("d-none");
+
+    // Preview hanya untuk gambar
+    if (file.type.includes("image")) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            previewImage.src = e.target.result;
+            previewImage.classList.remove("d-none");
+        };
+        reader.readAsDataURL(file);
+    } else {
+        previewImage.classList.add("d-none");
+    }
+});
+
+btnRemoveFile.addEventListener("click", function () {
+
+    // Belum pernah disimpan ke database
+    if (!no_order.value.trim()) {
+
+        fileInput.value = "";
+        fileNameDisplay.value = "";
+        previewImage.src = "";
+        previewImage.classList.add("d-none");
+        btnRemoveFile.classList.add("d-none");
+
+        return;
+    }
+
+    // Sudah tersimpan di database
+    Swal.fire({
+        title: "Hapus dokumentasi?",
+        text: "Dokumentasi yang sudah diupload akan dihapus permanen.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Hapus",
+        cancelButtonText: "Batal",
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: "/MaintenanceOrderPembeliann/deleteDokumentasi",
+            type: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                noTrans: no_order.value.trim(),
+            },
+
+            success: function (res) {
+
+                Swal.fire({
+                    icon: "success",
+                    title: res.message,
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+
+                fileInput.value = "";
+                fileNameDisplay.value = "";
+                previewImage.src = "";
+                previewImage.classList.add("d-none");
+                btnRemoveFile.classList.add("d-none");
+            },
+
+            error: function (err) {
+                Swal.fire({
+                    icon: "error",
+                    title: err.responseJSON?.message ?? "Gagal menghapus dokumentasi",
+                });
+            }
+        });
+
+    });
 });
 
 //#endregion
@@ -533,6 +695,8 @@ btn_submit.addEventListener("click", function (event) {
             success: function (response) {
                 console.log(response);
                 if (response.data) {
+                    no_order.value = response.data;
+                    uploadDokumentasi(response.data);
                     Swal.fire({
                         icon: "success",
                         title:
@@ -542,7 +706,6 @@ btn_submit.addEventListener("click", function (event) {
                         showConfirmButton: false,
                         timer: "2000",
                     });
-                    no_order.value = response.data;
                     btn_submit.disabled = true;
                     $(".Filter").change();
                 }
@@ -578,6 +741,7 @@ btn_submit.addEventListener("click", function (event) {
                 kodeMesin: select_mesinGolongan.value,
             },
             success: function (response) {
+                uploadDokumentasi(no_order.value.trim());
                 Swal.fire({
                     icon: "success",
                     title: response.message,

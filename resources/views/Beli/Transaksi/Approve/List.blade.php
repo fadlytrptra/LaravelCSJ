@@ -66,6 +66,7 @@
                                     <th class="RDZCenterTable">Tanggal Dibutuhkan<br><label style="font-size: 10px">(MM - DD - YYYY)</label></th>
                                     <th>Keterangan Beli</th>
                                     <th>Pemesan</th>
+                                    <th>Dokumentasi</th>
                                 </tr>
                             </thead>
 
@@ -112,6 +113,21 @@
                                     <td class="RDZPaddingTable">
                                         {{ $item->Pemesan ?? '-' }}
                                     </td>
+                                    <td class="text-center">
+                                        @if (!empty($item->Dokumentasi) || !empty($item->DokumentasiFile))
+                                            <a href="{{ route('approve.lihatDokumentasi',$item->No_trans) }}"
+                                            target="_blank"
+                                            class="btn btn-info btn-sm">
+                                                Lihat
+                                            </a>
+                                            <a href="{{ route('approve.downloadDokumentasi',$item->No_trans) }}"
+                                            class="btn btn-success btn-sm">
+                                                Download
+                                            </a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -137,6 +153,7 @@
                                     <th class="RDZCenterTable">Tanggal Dibutuhkan<br><label style="font-size: 10px">(MM - DD - YYYY)</label></th>
                                     <th>Keterangan Beli</th>
                                     <th>Pemesan</th>
+                                    <th>Dokumentasi</th>
                                 </tr>
                             </thead>
 
@@ -182,6 +199,24 @@
                                     </td>
                                     <td class="RDZPaddingTable">
                                         {{ $item->Pemesan ?? '-' }}
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!empty($item->Dokumentasi) || !empty($item->DokumentasiFile))
+
+                                            <a href="{{ route('approve.lihatDokumentasi',$item->No_trans) }}"
+                                            target="_blank"
+                                            class="btn btn-info btn-sm">
+                                                Lihat
+                                            </a>
+
+                                            <a href="{{ route('approve.downloadDokumentasi',$item->No_trans) }}"
+                                            class="btn btn-success btn-sm">
+                                                Download
+                                            </a>
+
+                                        @else
+                                            -
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach

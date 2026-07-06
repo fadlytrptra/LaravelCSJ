@@ -198,4 +198,74 @@ class ApproveController extends Controller
                 return back();
         }
     }
+
+    public function lihatDokumentasi($noTrans)
+    {
+        $data = DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->select('Dokumentasi', 'DokumentasiFile')
+            ->where('No_trans', $noTrans)
+            ->first();
+
+        if (!$data) {
+            abort(404, 'Data tidak ditemukan');
+        }
+
+        // PDF
+        if (!is_null($data->DokumentasiFile)) {
+            return response($data->DokumentasiFile)
+                ->header('Content-Type', 'application/pdf')
+                ->header(
+                    'Content-Disposition',
+                    'inline; filename="Dokumentasi.pdf"'
+                );
+        }
+
+        // Gambar
+        if (!is_null($data->Dokumentasi)) {
+            return response(base64_decode($data->Dokumentasi))
+                ->header('Content-Type', 'image/jpeg')
+                ->header(
+                    'Content-Disposition',
+                    'inline; filename="Dokumentasi.jpg"'
+                );
+        }
+
+        abort(404, 'Dokumentasi tidak ditemukan');
+    }
+
+    public function downloadDokumentasi($noTrans)
+    {
+        $data = DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->select('Dokumentasi', 'DokumentasiFile')
+            ->where('No_trans', $noTrans)
+            ->first();
+
+        if (!$data) {
+            abort(404, 'Data tidak ditemukan');
+        }
+
+        // PDF
+        if (!is_null($data->DokumentasiFile)) {
+            return response($data->DokumentasiFile)
+                ->header('Content-Type', 'application/pdf')
+                ->header(
+                    'Content-Disposition',
+                    'attachment; filename="'.$noTrans.'.pdf"'
+                );
+        }
+
+        // Gambar
+        if (!is_null($data->Dokumentasi)) {
+            return response(base64_decode($data->Dokumentasi))
+                ->header('Content-Type', 'image/jpeg')
+                ->header(
+                    'Content-Disposition',
+                    'attachment; filename="'.$noTrans.'.jpg"'
+                );
+        }
+
+        abort(404, 'Dokumentasi tidak ditemukan');
+    }
 }

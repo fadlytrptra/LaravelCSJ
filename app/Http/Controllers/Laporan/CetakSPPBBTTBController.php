@@ -53,7 +53,7 @@ class CetakSPPBBTTBController extends Controller
                 $portOfDischarge . ' | ' . $otherConditions . ' | ' . $payments;
             DB::connection('ConnPurchase')->statement('exec SP_1273_PRG_PROSES_CETAK_PO @Kode = ?, @NoSppb = ?, @InformasiCetak = ?', [5, $noSPPB, $informasiCetak]);
             $dataCetak = DB::connection('ConnPurchase')->select('SELECT * FROM VW_PRG_1273_SPPB_NEW WHERE kode_divisi = ? AND nomor_sppb = ?', [$idDivisi, $noSPPB]);
-            dd($dataCetak);
+            // dd($dataCetak);
 
         } else {
             return response()->json('Request Invalid', 400);
@@ -412,56 +412,76 @@ class CetakSPPBBTTBController extends Controller
             ['cahayasjaya@gmail.com'],
             $emails
         ));
-
         try {
-            Mail::send([], [], function ($message) use ($recipients, $noSPPB, $pdf, $dok, $data) {
-                $keteranganOrder  =$data->first()->keterangan ?? '-';
+           Mail::mailer('gmail')->send([], [], function ($message) use ($recipients, $noSPPB, $pdf, $dok, $data) {
+                $message->from(
+                    'cahayasjaya@gmail.com',
+                    'Cahaya Santoso Jaya'
+                );
+
                 $message->to($recipients)
                     ->subject("Purchase Order Cahaya Santoso Jaya - {$noSPPB}")
                     ->html("
                         <p>Dear Supplier,</p>
+
                         <p>
                             Attached signed of SC (" . ($data->first()->keterangan ?? '-') . ")
                             and {$noSPPB}
                         </p>
+
                         <br>
+
                         <p>
                             Thank you<br>
                             Best Regards,
                         </p>
+
                         <br>
+
                         <p>
                             <strong>PT. Cahaya Santoso Jaya</strong><br>
                             Raya Tropodo No. 1 Waru | Sidoarjo 61256, East Java - Indonesia<br>
                             PH: +62 31 8669935 | email: cahayasjaya@gmail.com
-                        </p>"
-                        )
-                    ->attachData(
-                        $pdf->output(),
-                        "{$noSPPB}.pdf",
-                        ['mime' => 'application/pdf']
-                    );
+                        </p>
+                    ");
 
-                // ATTACH DOKUMENTASI FILE (PDF)
+                // Lampiran Purchase Order
+                $message->attachData(
+                    $pdf->output(),
+                    "{$noSPPB}.pdf",
+                    [
+                        'mime' => 'application/pdf'
+                    ]
+                );
+
+                // Lampiran Dokumentasi
                 if (!empty($dok->DokumentasiFile)) {
                     $message->attachData(
                         $dok->DokumentasiFile,
                         "Dokumentasi_{$noSPPB}.pdf",
-                        ['mime' => 'application/pdf']
+                        [
+                            'mime' => 'application/pdf'
+                        ]
                     );
                 }
+
             });
 
             return response()->json([
                 'success' => true,
-                'message' => "Email berhasil dikirim ke " . implode(', ', $recipients)
+                'message' => 'Email berhasil dikirim ke ' . implode(', ', $recipients)
             ]);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+
+            \Log::error('Mail EDP Error', [
+                'message' => $e->getMessage(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal kirim email: ' . $e->getMessage()
+                'message' => $e->getMessage()
             ]);
         }
     }

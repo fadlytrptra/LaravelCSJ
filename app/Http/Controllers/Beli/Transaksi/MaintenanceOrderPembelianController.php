@@ -272,4 +272,169 @@ class MaintenanceOrderPembelianController extends Controller
             return response()->json('Parameter harus diisi');
         }
     }
+
+    public function uploadDokumentasi(Request $request)
+    {
+        $request->validate([
+            'noTrans' => 'required|string',
+            'attach_file' => 'required|file|max:1536'
+        ]);
+
+        $noTrans = trim($request->noTrans);
+        $conn = DB::connection('ConnPurchase');
+
+        $conn->beginTransaction();
+
+        try {
+            $existing = $conn->table('YTRANSBL')
+                ->where('No_trans', $noTrans)
+                ->first();
+
+            if (!$existing) {
+                $conn->rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Trans tidak ditemukan'
+                ], 404);
+            }
+
+            // hanya boleh 1 dokumentasi
+            if (!is_null($existing->Dokumentasi) || !is_null($existing->DokumentasiFile)) {
+                $conn->rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dokumentasi sudah ada. Hapus terlebih dahulu.'
+                ], 400);
+            }
+
+            $file = $request->file('attach_file');
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            if ($extension === 'pdf') {
+
+                // 🔴 VARBINARY
+                $binary = $file->get();
+                $hex = '0x' . bin2hex($binary);
+
+                $conn->statement("
+                    UPDATE YTRANSBL
+                    SET DokumentasiFile = $hex
+                    WHERE No_trans = ?
+                ", [$noTrans]);
+
+            } else {
+
+                // 🔵 VARCHAR (BASE64)
+                $base64 = base64_encode($file->get());
+
+                $conn->table('YTRANSBL')
+                    ->where('No_trans', $noTrans)
+                    ->update([
+                        'Dokumentasi' => $base64
+                    ]);
+            }
+
+            $conn->commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumentasi berhasil diupload'
+            ]);
+
+        } catch (\Throwable $e) {
+
+            $conn->rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getDokumentasi($noTrans)
+    {
+        $data = DB::connection('ConnPurchase')
+            ->table('YTRANSBL')
+            ->select('Dokumentasi', 'DokumentasiFile')
+            ->where('No_trans', $noTrans)
+            ->first();
+
+        if (!$data) {
+            return response('', 204);
+        }
+
+        // PDF (binary)
+        if (!is_null($data->DokumentasiFile)) {
+            return response($data->DokumentasiFile)
+                ->header('Content-Type', 'application/pdf');
+        }
+
+        // Image (base64)
+        if (!is_null($data->Dokumentasi)) {
+            return response(base64_decode($data->Dokumentasi))
+                ->header('Content-Type', 'image/jpeg');
+        }
+
+        return response('', 204);
+    }
+
+    public function deleteDokumentasi(Request $request)
+    {
+        $request->validate([
+            'noTrans' => 'required|string'
+        ]);
+
+        $noTrans = trim($request->noTrans);
+        $conn = DB::connection('ConnPurchase');
+
+        $conn->beginTransaction();
+        try {
+            $existing = $conn->table('YTRANSBL')
+                ->where('No_trans', $noTrans)
+                ->first();
+
+            if (!$existing) {
+                $conn->rollBack();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Trans tidak ditemukan'
+                ], 404);
+            }
+
+            // Tidak ada dokumentasi
+            if (is_null($existing->Dokumentasi) && is_null($existing->DokumentasiFile)) {
+                $conn->rollBack();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dokumentasi tidak ditemukan'
+                ], 400);
+            }
+
+            $conn->table('YTRANSBL')
+                ->where('No_trans', $noTrans)
+                ->update([
+                    'Dokumentasi' => null,
+                    'DokumentasiFile' => null
+                ]);
+
+            $conn->commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumentasi berhasil dihapus'
+            ]);
+
+        } catch (\Throwable $e) {
+
+            $conn->rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

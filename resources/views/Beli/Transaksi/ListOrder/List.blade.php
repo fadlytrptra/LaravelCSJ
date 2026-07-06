@@ -387,6 +387,62 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-12 mb-3">
+                                    <div class="row align-items-center">
+
+                                        <div class="col-4 col-md-2">
+                                            <label class="form-label mb-0">Attach File</label>
+                                        </div>
+
+                                        <div class="col-8 col-md-10">
+                                            <div class="custom-file-wrapper">
+
+                                                <input type="file" class="form-control d-none" id="attach_file"
+                                                    name="attach_file" accept=".png,.jpg,.jpeg,.pdf">
+
+
+                                                <div class="input-group">
+                                                    <button type="button" class="btn btn-outline-primary" id="btnChooseFile">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            width="18"
+                                                            height="18"
+                                                            fill="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                            class="me-1 align-text-bottom">
+                                                            <path d="M4 18h16v2H4zm7-15v7H7l5 6 5-6h-4V3z"></path>
+                                                        </svg>
+                                                        Choose File
+                                                    </button>
+
+                                                    <input type="text" class="form-control" id="fileNameDisplay"
+                                                        placeholder="No file chosen" readonly>
+
+                                                    <button type="button" class="btn btn-outline-danger d-none" id="btnRemoveFile">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            width="18"
+                                                            height="18"
+                                                            fill="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                            class="align-text-bottom">
+                                                            <path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+
+                                                <small class="text-muted">
+                                                    Format: PDF, JPG, JPEG, PNG (Max 1.5MB)
+                                                </small>
+
+                                                <div class="mt-2">
+                                                    <img id="previewImage" class="img-thumbnail d-none"
+                                                        style="max-height:150px;">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -55,7 +55,7 @@ class ListOrderController extends Controller
 
     public function filter($divisi, $tglAwal, $tglAkhir, $Me)
     {
-        dd($divisi, $tglAwal, $tglAkhir, $Me);
+        // dd($divisi, $tglAwal, $tglAkhir, $Me);
         if ($Me == "true") {
             $data = DB::connection('ConnPurchase')
                 ->select('exec SP_1273_PRG_Select_Permohonan
@@ -66,7 +66,7 @@ class ListOrderController extends Controller
                     [
                         $tglAwal,
                         $tglAkhir,
-                        trim($dataDiv[0]->Kd_div),
+                        trim($divisi),
                         trim(Auth::user()->NomorUser)
                     ]
                 );
@@ -79,7 +79,7 @@ class ListOrderController extends Controller
                     [
                         $tglAwal,
                         $tglAkhir,
-                        trim($dataDiv[0]->Kd_div)
+                        trim($divisi),
                     ]
                 );
         }

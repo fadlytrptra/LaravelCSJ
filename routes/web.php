@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Beli\Transaksi\CreateSPPBController;
+use App\Http\Controllers\Beli\Transaksi\MaintenanceOrderPembelianController;
 use App\Http\Controllers\Accounting\Piutang\BKMDPPelunasanController;
 use App\Http\Controllers\Inventory\Master\StokBarangController;
 use App\Http\Controllers\Inventory\Informasi\KartuStokController;
@@ -142,8 +143,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/MaintenanceOrderPembeliann/Save', 'App\Http\Controllers\Beli\Transaksi\MaintenanceOrderPembelianController@save')->name('maintenanceorderpembelian.save');
     Route::put('/MaintenanceOrderPembeliann/Submit', 'App\Http\Controllers\Beli\Transaksi\MaintenanceOrderPembelianController@submit')->name('maintenanceorderpembelian.submit');
     Route::delete('/MaintenanceOrderPembeliann/Delete', 'App\Http\Controllers\Beli\Transaksi\MaintenanceOrderPembelianController@delete')->name('maintenanceorderpembelian.delete');
+    Route::post('/MaintenanceOrderPembeliann/uploadDokumentasi', [MaintenanceOrderPembelianController::class, 'uploadDokumentasi'])->name('maintenanceorderpembelian.upload');
+    Route::delete('/MaintenanceOrderPembeliann/deleteDokumentasi', [MaintenanceOrderPembelianController::class, 'deleteDokumentasi']);
     Route::get('/Approve/{id}/show', 'App\Http\Controllers\Beli\Transaksi\ApproveController@show')->name('approve.show');
     Route::post('/Approve/{id}/up', 'App\Http\Controllers\Beli\Transaksi\ApproveController@update')->name('approve.update');
+    Route::get('/Approve/Dokumentasi/{noTrans}', 'App\Http\Controllers\Beli\Transaksi\ApproveController@lihatDokumentasi')->name('approve.lihatDokumentasi');
+    Route::get('/Approve/Dokumentasi/{noTrans}/download', 'App\Http\Controllers\Beli\Transaksi\ApproveController@downloadDokumentasi')->name('approve.downloadDokumentasi');
     Route::get('/FinalApprove/{id}/show', 'App\Http\Controllers\Beli\Transaksi\FinalApproveController@show')->name('finalapprove.show');
     Route::post('/FinalApprove/{id}/up', 'App\Http\Controllers\Beli\Transaksi\FinalApproveController@update')->name('finalapprove.update');
     Route::get('/exp-pdf', function () {return view('Beli.Transaksi.exportToPdf');});

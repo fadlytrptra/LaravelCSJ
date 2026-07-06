@@ -77,6 +77,30 @@ return [
                 'log',
             ],
         ],
+
+        'MailEdp' => [
+            'transport' => 'smtp',
+            'host' => env('MAILEDP_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAILEDP_PORT', 587),
+            'encryption' => env('MAILEDP_ENCRYPTION', 'tls'),
+            'username' => env('MAILEDP_USERNAME'),
+            'password' => env('MAILEDP_PASSWORD'),
+            'timeout' => null,
+            'auth_mode' => null,
+            'from' => [
+                'address' => env('MAILEDP_FROM_ADDRESS'),
+                'name' => env('MAILEDP_FROM_NAME'),
+            ],
+        ],
+
+        'gmail' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.gmail.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => env('GMAIL_USERNAME'),
+            'password' => env('GMAIL_APP_PASSWORD'),
+        ],
     ],
 
     /*
