@@ -313,15 +313,11 @@ class MaintenanceBKMTransistorisBankController extends Controller
                 $noUrut = DB::connection('ConnAccounting')
                     ->table('T_COUNTER_BKK')
                     ->where('Periode', $tahun)
-                    ->increment('Id_BKK_E_Rp');
-                $noUrut = DB::connection('ConnAccounting')
+                    ->value('Id_BKK_E_Rp') + 1;
+                DB::connection('ConnAccounting')
                     ->table('T_COUNTER_BKK')
                     ->where('Periode', $tahun)
-                    ->value('Id_BKK_E_Rp');
-                // DB::connection('ConnAccounting')
-                //     ->table('T_COUNTER_BKK')
-                //     ->where('Periode', $tahun)
-                //     ->update(['Id_BKK_E_Rp' => $noUrut + 1]);
+                    ->update(['Id_BKK_E_Rp' => $noUrut]);
             } else if ($ada === 0) {
                 $noUrut = 1;
                 DB::connection('ConnAccounting')
@@ -349,15 +345,11 @@ class MaintenanceBKMTransistorisBankController extends Controller
                 $noUrut = DB::connection('ConnAccounting')
                     ->table('T_Counter_BKM')
                     ->where('Periode', $tahun)
-                    ->increment('Id_BKM_E_Rp');
-                $noUrut = DB::connection('ConnAccounting')
+                    ->value('Id_BKM_E_Rp') + 1;
+                DB::connection('ConnAccounting')
                     ->table('T_Counter_BKM')
                     ->where('Periode', $tahun)
-                    ->value('Id_BKM_E_Rp');
-                // DB::connection('ConnAccounting')
-                //     ->table('T_Counter_BKM')
-                //     ->where('Periode', $tahun)
-                //     ->update(['Id_BKM_E_Rp' => $noUrut + 1]);
+                    ->update(['Id_BKM_E_Rp' => $noUrut]);
             } else if ($ada === 0) {
                 $noUrut = 1;
                 DB::connection('ConnAccounting')
