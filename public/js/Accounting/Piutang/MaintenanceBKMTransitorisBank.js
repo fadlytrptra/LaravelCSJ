@@ -264,7 +264,7 @@ btnCetakBKM.addEventListener("click", function () {
                     // console.log(result);
                     let totalBKM = 0;
                     var bkmDetailsContainer = document.getElementById(
-                        "bkmDetailsContainer"
+                        "bkmDetailsContainer",
                     );
 
                     bkmDetailsContainer.innerHTML = "";
@@ -309,7 +309,7 @@ btnCetakBKM.addEventListener("click", function () {
                         var coaCol = document.createElement("div");
                         coaCol.classList.add("col-sm-2", "text-left");
                         coaCol.textContent = decodeHtmlEntities(
-                            item.KodePerkiraan
+                            item.KodePerkiraan,
                         );
                         row.appendChild(coaCol);
 
@@ -317,7 +317,7 @@ btnCetakBKM.addEventListener("click", function () {
                         var accountCol = document.createElement("div");
                         accountCol.classList.add("col-sm-4", "text-left");
                         accountCol.textContent = decodeHtmlEntities(
-                            item.DetailKdPerkiraan
+                            item.DetailKdPerkiraan,
                         );
                         row.appendChild(accountCol);
 
@@ -325,7 +325,7 @@ btnCetakBKM.addEventListener("click", function () {
                         var descriptionCol = document.createElement("div");
                         descriptionCol.classList.add("col-sm-4", "text-left");
                         descriptionCol.textContent = decodeHtmlEntities(
-                            item.Uraian
+                            item.Uraian,
                         );
                         row.appendChild(descriptionCol);
 
@@ -333,7 +333,7 @@ btnCetakBKM.addEventListener("click", function () {
                         var amountCol = document.createElement("div");
                         amountCol.classList.add("col-sm-2", "text-right");
                         amountCol.textContent = numeral(
-                            parseFloat(item.Nilai_Rincian)
+                            parseFloat(item.Nilai_Rincian),
                         ).format("0,0.00");
                         row.appendChild(amountCol);
 
@@ -362,7 +362,7 @@ btnCetakBKM.addEventListener("click", function () {
                         "Amount " +
                         decodeHtmlEntities(result[0].Id_MataUang_BC);
                     totalAmountBKM.textContent = numeral(
-                        parseFloat(totalBKM)
+                        parseFloat(totalBKM),
                     ).format("0,0.00");
 
                     printPreview("preview");
@@ -457,7 +457,7 @@ btnCetakBKK.addEventListener("click", function () {
                 if (result.length !== 0) {
                     let totalBKM = 0;
                     var bkmDetailsContainer = document.getElementById(
-                        "bkkDetailsContainer"
+                        "bkkDetailsContainer",
                     );
 
                     bkmDetailsContainer.innerHTML = "";
@@ -518,7 +518,7 @@ btnCetakBKK.addEventListener("click", function () {
                         var coaCol = document.createElement("div");
                         coaCol.classList.add("col-sm-2", "text-left");
                         coaCol.textContent = decodeHtmlEntities(
-                            item.KodePerkiraan
+                            item.KodePerkiraan,
                         );
                         row.appendChild(coaCol);
 
@@ -526,7 +526,7 @@ btnCetakBKK.addEventListener("click", function () {
                         var accountCol = document.createElement("div");
                         accountCol.classList.add("col-sm-3", "text-left");
                         accountCol.textContent = decodeHtmlEntities(
-                            item.Keterangan
+                            item.Keterangan,
                         );
                         row.appendChild(accountCol);
 
@@ -534,7 +534,7 @@ btnCetakBKK.addEventListener("click", function () {
                         var descriptionCol = document.createElement("div");
                         descriptionCol.classList.add("col-sm-3", "text-left");
                         descriptionCol.textContent = decodeHtmlEntities(
-                            item.Rincian_Bayar
+                            item.Rincian_Bayar,
                         );
                         row.appendChild(descriptionCol);
 
@@ -542,7 +542,7 @@ btnCetakBKK.addEventListener("click", function () {
                         var cekBgCol = document.createElement("div");
                         cekBgCol.classList.add("col-sm-2", "text-left");
                         cekBgCol.textContent = decodeHtmlEntities(
-                            item.No_BGCek
+                            item.No_BGCek,
                         );
                         row.appendChild(cekBgCol);
 
@@ -550,7 +550,7 @@ btnCetakBKK.addEventListener("click", function () {
                         var amountCol = document.createElement("div");
                         amountCol.classList.add("col-sm-2", "text-right");
                         amountCol.textContent = numeral(
-                            parseFloat(item.Nilai_Rincian)
+                            parseFloat(item.Nilai_Rincian),
                         ).format("0,0.00");
                         row.appendChild(amountCol);
 
@@ -574,7 +574,7 @@ btnCetakBKK.addEventListener("click", function () {
                         "Amount " +
                         decodeHtmlEntities(result[0].Id_MataUang_BC);
                     totalAmountBKK.textContent = numeral(
-                        parseFloat(totalBKM)
+                        parseFloat(totalBKM),
                     ).format("0,0.00");
 
                     printPreview("preview2");
@@ -655,7 +655,7 @@ function handleTableKeydown(e, tableId) {
                     currentIndex = 0;
                     const newRows = $(`#${tableId} tbody tr`);
                     const selectedRow = $(newRows[currentIndex]).addClass(
-                        "selected"
+                        "selected",
                     );
                     scrollRowIntoView(selectedRow[0]);
                 });
@@ -671,7 +671,7 @@ function handleTableKeydown(e, tableId) {
                     currentIndex = 0;
                     const newRows = $(`#${tableId} tbody tr`);
                     const selectedRow = $(newRows[currentIndex]).addClass(
-                        "selected"
+                        "selected",
                     );
                     scrollRowIntoView(selectedRow[0]);
                 });
@@ -790,17 +790,17 @@ btnMataUang1.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idUang1.value = decodeHtmlEntities(
-                    result.value.Id_MataUang.trim()
+                    result.value.Id_MataUang.trim(),
                 );
                 mataUang1.value = decodeHtmlEntities(
-                    result.value.Nama_MataUang.trim()
+                    result.value.Nama_MataUang.trim(),
                 );
 
                 $.ajax({
@@ -903,17 +903,17 @@ btnMataUang.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idUang.value = decodeHtmlEntities(
-                    result.value.Id_MataUang.trim()
+                    result.value.Id_MataUang.trim(),
                 );
                 mataUang.value = decodeHtmlEntities(
-                    result.value.Nama_MataUang.trim()
+                    result.value.Nama_MataUang.trim(),
                 );
 
                 $.ajax({
@@ -1105,7 +1105,7 @@ btnBank1.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -1214,7 +1214,7 @@ btnBank.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
@@ -1369,17 +1369,17 @@ btnJenisBayar1.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idJenisBayar1.value = decodeHtmlEntities(
-                    result.value.Id_Jenis_Bayar.trim()
+                    result.value.Id_Jenis_Bayar.trim(),
                 );
                 jenisBayar1.value = decodeHtmlEntities(
-                    result.value.Jenis_Pembayaran.trim()
+                    result.value.Jenis_Pembayaran.trim(),
                 );
 
                 if (
@@ -1475,17 +1475,17 @@ btnJenisBayar.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idJenisBayar.value = decodeHtmlEntities(
-                    result.value.Id_Jenis_Bayar.trim()
+                    result.value.Id_Jenis_Bayar.trim(),
                 );
                 jenisBayar.value = decodeHtmlEntities(
-                    result.value.Jenis_Pembayaran.trim()
+                    result.value.Jenis_Pembayaran.trim(),
                 );
 
                 btnPerkiraan.focus();
@@ -1570,17 +1570,17 @@ btnPerkiraan1.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idPerkiraan1.value = decodeHtmlEntities(
-                    result.value.NoKodePerkiraan.trim()
+                    result.value.NoKodePerkiraan.trim(),
                 );
                 perkiraan1.value = decodeHtmlEntities(
-                    result.value.Keterangan.trim()
+                    result.value.Keterangan.trim(),
                 );
 
                 uraian1.focus();
@@ -1665,17 +1665,17 @@ btnPerkiraan.addEventListener("click", function (e) {
 
                     currentIndex = null;
                     Swal.getPopup().addEventListener("keydown", (e) =>
-                        handleTableKeydown(e, "table_list")
+                        handleTableKeydown(e, "table_list"),
                     );
                 });
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 idPerkiraan.value = decodeHtmlEntities(
-                    result.value.NoKodePerkiraan.trim()
+                    result.value.NoKodePerkiraan.trim(),
                 );
                 perkiraan.value = decodeHtmlEntities(
-                    result.value.Keterangan.trim()
+                    result.value.Keterangan.trim(),
                 );
 
                 uraian.focus();
@@ -1815,8 +1815,8 @@ $("#uraian1").on("keydown", function (e) {
                                     btnBiaya.disabled = true;
                                     enableBKM();
                                     tgl.focus();
-                                    disableBKK();
                                 }
+                                disableBKK();
                             });
                         } else {
                             enableBKM();
@@ -1863,10 +1863,10 @@ $("#uraian1").on("keydown", function (e) {
                                     if (parseFloat(kurs.value) !== 0) {
                                         let total;
                                         const uang1Value = parseFloat(
-                                            uang1.value
+                                            uang1.value,
                                         );
                                         const kursValue = parseFloat(
-                                            kurs.value
+                                            kurs.value,
                                         );
 
                                         if (
@@ -1879,7 +1879,7 @@ $("#uraian1").on("keydown", function (e) {
                                                 {
                                                     minimumFractionDigits: 2,
                                                     maximumFractionDigits: 2,
-                                                }
+                                                },
                                             );
                                         } else if (
                                             idUang1.value === "2" &&
@@ -1891,13 +1891,13 @@ $("#uraian1").on("keydown", function (e) {
                                                 {
                                                     minimumFractionDigits: 2,
                                                     maximumFractionDigits: 2,
-                                                }
+                                                },
                                             );
                                         } else if (
                                             idUang1.value === idUang.value
                                         ) {
                                             uang.value = parseFloat(
-                                                uang1.value
+                                                uang1.value,
                                             ).toLocaleString("en-US", {
                                                 minimumFractionDigits: 2,
                                                 maximumFractionDigits: 2,
@@ -2108,7 +2108,7 @@ $("#nilaiPelunasanBiaya1").on("keydown", function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
         nilaiPelunasanBiaya1.value = numeral(
-            parseFloat(nilaiPelunasanBiaya1.value)
+            parseFloat(nilaiPelunasanBiaya1.value),
         ).format("0,0.00");
         select_kodePerkiraan1.focus();
     }
@@ -2487,7 +2487,7 @@ $("#nilaiPelunasanBiaya").on("keydown", function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
         nilaiPelunasanBiaya.value = numeral(
-            parseFloat(nilaiPelunasanBiaya.value)
+            parseFloat(nilaiPelunasanBiaya.value),
         ).format("0,0.00");
         select_kodePerkiraan.focus();
     }
@@ -3112,7 +3112,7 @@ btnProses.addEventListener("click", async function (e) {
                             idpembayaran: IdPembayaran,
                             detailBKK: allBKK,
                         },
-                    })
+                    }),
                 );
             }
 
@@ -3137,12 +3137,12 @@ btnProses.addEventListener("click", async function (e) {
                                     _token: csrfToken,
                                     idpembayaran: IdPembayaran,
                                 },
-                            })
+                            }),
                         )
                         .then((result) => {
                             if (result.length !== 0) {
                                 let idBG = decodeHtmlEntities(
-                                    result[0].IdBGCEK
+                                    result[0].IdBGCEK,
                                 );
                                 return $.ajax({
                                     type: "PUT",
@@ -3154,7 +3154,7 @@ btnProses.addEventListener("click", async function (e) {
                                     },
                                 });
                             }
-                        })
+                        }),
                 );
             }
 
