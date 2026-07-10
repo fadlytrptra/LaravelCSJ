@@ -174,17 +174,17 @@
             $infoCetak = $dataCetak[0]->Informasi_Cetak ?? null;
 
             if ($infoCetak) {
-                $arr = explode(' | ', $infoCetak);
-                $deliveryTerm = $arr[0] ?? '';
-                $packing = $arr[1] ?? '';
-                $shippingMark = $arr[2] ?? '';
-                $deliveryTime = $arr[3] ?? '';
-                $documentsRequired = $arr[4] ?? '';
-                $partialShipmentTransit = $arr[5] ?? '';
-                $portOfLoading = $arr[6] ?? '';
-                $portOfDischarge = $arr[7] ?? '';
-                $otherConditions = $arr[8] ?? '';
-                $payment = $arr[9] ?? '';
+                $arr = array_map('trim', explode('|', $infoCetak));
+                $deliveryTerm = trim($arr[0] ?? '');
+                $packing = trim($arr[1] ?? '');
+                $shippingMark = trim($arr[2] ?? '');
+                $deliveryTime = trim($arr[3] ?? '');
+                $documentsRequired = trim($arr[4] ?? '');
+                $partialShipmentTransit = trim($arr[5] ?? '');
+                $portOfLoading = trim($arr[6] ?? '');
+                $portOfDischarge = trim($arr[7] ?? '');
+                $otherConditions = trim($arr[8] ?? '');
+                $payment = trim($arr[9] ?? '');
             } else {
                 $deliveryTerm = $packing = $shippingMark = $deliveryTime = '';
                 $documentsRequired = $partialShipmentTransit = $portOfLoading = '';
