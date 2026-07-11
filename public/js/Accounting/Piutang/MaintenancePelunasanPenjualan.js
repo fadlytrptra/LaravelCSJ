@@ -2092,6 +2092,11 @@ btnDeleteItem.addEventListener('click', function (event) {
 btnSimpan.addEventListener('click', async function (event) {
     event.preventDefault();
 
+    if (btnSimpan.disabled) {
+        return;
+    }
+    btnSimpan.disabled = true;
+
     let err_ok = true;
 
     var tabelPelunasanPenjualan = $('#tabelPelunasanPenjualan').DataTable();
@@ -2108,6 +2113,7 @@ btnSimpan.addEventListener('click', async function (event) {
             icon: 'error',
             text: 'Tanggal input melebihi tanggal sekarang',
         });
+        btnSimpan.disabled = false;
         return;
     }
 
@@ -2116,6 +2122,7 @@ btnSimpan.addEventListener('click', async function (event) {
             icon: 'error',
             text: 'Anda Tidak Berhak Mengoreksi Data milik User ' + sUser.trim(),
         });
+        btnSimpan.disabled = false;
         return;
     }
 
@@ -2130,6 +2137,7 @@ btnSimpan.addEventListener('click', async function (event) {
             text: 'Uang Yang Masuk Tidak Balance dg Pelunasan dan biaya',
             returnFocus: false,
         });
+        btnSimpan.disabled = false;
         return;
     }
 
@@ -2139,6 +2147,7 @@ btnSimpan.addEventListener('click', async function (event) {
             text: 'Data Yang Anda Masukan Belum Lengkap',
             returnFocus: false,
         });
+        btnSimpan.disabled = false;
         return;
     }
 
@@ -2150,6 +2159,7 @@ btnSimpan.addEventListener('click', async function (event) {
             text: 'Mata Uang Tidak Boleh DiGanti',
             returnFocus: false,
         });
+        btnSimpan.disabled = false;
         return;
     }
 
@@ -2176,6 +2186,7 @@ btnSimpan.addEventListener('click', async function (event) {
             returnFocus: false,
         });
         if (result.isDismissed) {
+            btnSimpan.disabled = false;
             return;
         }
     }
@@ -2216,6 +2227,7 @@ btnSimpan.addEventListener('click', async function (event) {
                 });
             },
             error: function (xhr, status, error) {
+                btnSimpan.disabled = false;
                 console.error('Error:', error);
             }
         });
@@ -2249,6 +2261,7 @@ btnSimpan.addEventListener('click', async function (event) {
                 });
             },
             error: function (xhr, status, error) {
+                btnSimpan.disabled = false;
                 console.error('Error:', error);
             }
         });
@@ -2284,6 +2297,7 @@ btnSimpan.addEventListener('click', async function (event) {
                         });
                     },
                     error: function (xhr, status, error) {
+                        btnSimpan.disabled = false;
                         console.error('Error:', error);
                     }
                 });
@@ -2321,14 +2335,16 @@ btnSimpan.addEventListener('click', async function (event) {
                                 });
                             },
                             error: function (xhr, status, error) {
+                                btnSimpan.disabled = false;
                                 console.error('Error:', error);
                             }
                         });
                     }
                 });
+            } else {
+                btnSimpan.disabled = false;
             }
         });
-
     }
 });
 
