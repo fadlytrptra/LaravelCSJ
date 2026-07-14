@@ -65,10 +65,13 @@ $(document).ready(function () {
                         numeral(response[0].Qty).format("0,0") +
                         " " +
                         response[0].Satuan;
-                    hargaSP.value = response[0].IDMataUang + ' ' + numeral(
-                        numeral(response[0].HargaSatuan).value() *
-                            numeral(response[0].Qty).value(),
-                    ).format("0,0.0000");
+                    hargaSP.value =
+                        response[0].IDMataUang +
+                        " " +
+                        numeral(
+                            numeral(response[0].HargaSatuan).value() *
+                                numeral(response[0].Qty).value(),
+                        ).format("0,0.0000");
                     discountSP.value = numeral(response[0].Discount).format(
                         "0,0.00",
                     );
@@ -1086,8 +1089,8 @@ $(document).ready(function () {
         // console.log(kategoriUtama.value);
 
         //Jika kategori utama berasal dari KRR-Hasil Produksi, isi Berat Standard
-        funcBeratStandard(namaBarang);
-        funcKolomBeratStandard();
+        // funcBeratStandard(namaBarang);
+        // funcKolomBeratStandard();
     });
 
     kode_barang.addEventListener("keypress", function (event) {
@@ -1147,9 +1150,8 @@ $(document).ready(function () {
                     satuan_primer.value = data[0].SatPrimer;
                     satuan_sekunder.value = data[0].SatSekunder;
                     satuan_tritier.value = data[0].Nama_satuan;
-                    funcBeratStandard(kode_barang.value);
-                    funcKolomBeratStandard();
-                    funcTampilInv(kode_barang.value);
+                    // funcBeratStandard(kode_barang.value);
+                    // funcKolomBeratStandard();
                 });
             qty_pesan.focus();
         }
@@ -1187,127 +1189,128 @@ $(document).ready(function () {
     no_spText.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
-            // console.log(no_spText.value);
-            // alert('Kode barang dienter');
-            fetch("/editSP/" + no_spText.value)
-                .then((response) => response.json())
-                .then((data) => {
-                    // console.log(data);
-                    for (let key in data[0][0]) {
-                        if (
-                            (data[0][0].hasOwnProperty(key) &&
-                                data[0][0][key] === null) ||
-                            (data[0][0].hasOwnProperty(key) &&
-                                data[0][0][key] === "null")
-                        ) {
-                            data[0][0][key] = "";
-                        }
-                    }
-                    funcHeaderDisabled(false);
-                    no_spText.readOnly = true;
+            //     // console.log(no_spText.value);
+            //     // alert('Kode barang dienter');
+            //     fetch("/editSP/" + no_spText.value)
+            //         .then((response) => response.json())
+            //         .then((data) => {
+            //             // console.log(data);
+            //             for (let key in data[0][0]) {
+            //                 if (
+            //                     (data[0][0].hasOwnProperty(key) &&
+            //                         data[0][0][key] === null) ||
+            //                     (data[0][0].hasOwnProperty(key) &&
+            //                         data[0][0][key] === "null")
+            //                 ) {
+            //                     data[0][0][key] = "";
+            //                 }
+            //             }
+            //             funcHeaderDisabled(false);
+            //             no_spText.readOnly = true;
 
-                    // console.log(data[0][0].Tgl_Pesan.substr(0, 10));
-                    tgl_pesan.value = data[0][0].Tgl_Pesan.substr(0, 10);
-                    const optionJenisSp = jenis_sp.options;
-                    for (let i = 0; i < optionJenisSp.length; i++) {
-                        const option = optionJenisSp[i];
-                        if (option.value === data[0][0].IDJnsSuratPesanan) {
-                            option.selected = true;
-                            break;
-                        }
-                    }
-                    const optionCustomer = list_customer.options;
-                    for (let i = 0; i < optionCustomer.length; i++) {
-                        const option = optionCustomer[i];
-                        if (option.value === data[0][0].IDCust) {
-                            option.selected = true;
-                            break;
-                        }
-                    }
-                    no_po.value = data[0][0].NO_PO;
-                    tgl_po.value = data[0][0].Tgl_PO.substr(0, 10);
-                    no_pi.value = data[0][0].NO_PI;
-                    const optionSales = list_sales.options;
-                    for (let i = 0; i < optionSales.length; i++) {
-                        const option = optionSales[i];
-                        if (option.value === data[0][0].IDSales) {
-                            option.selected = true;
-                            break;
-                        }
-                    }
-                    mata_uang.value = data[0][0].IDMataUang;
-                    const optionJenisBayar = jenis_bayar.options;
-                    for (let i = 0; i < optionJenisBayar.length; i++) {
-                        const option = optionJenisBayar[i];
-                        if (option.value === data[0][0].IDPembayaran) {
-                            option.selected = true;
-                            break;
-                        }
-                    }
-                    syarat_bayar.value = data[0][0].SyaratBayar;
-                    let JnsFakturPjk = data[0][0].JnsFakturPjk;
-                    if (JnsFakturPjk == 0) {
-                        faktur_pjkBiasa.checked = true;
-                    } else {
-                        faktur_pjkSederhana.checked = true;
-                    }
-                    keterangan.value = data[0][0].Ket;
+            //             // console.log(data[0][0].Tgl_Pesan.substr(0, 10));
+            //             tgl_pesan.value = data[0][0].Tgl_Pesan.substr(0, 10);
+            //             const optionJenisSp = jenis_sp.options;
+            //             for (let i = 0; i < optionJenisSp.length; i++) {
+            //                 const option = optionJenisSp[i];
+            //                 if (option.value === data[0][0].IDJnsSuratPesanan) {
+            //                     option.selected = true;
+            //                     break;
+            //                 }
+            //             }
+            //             const optionCustomer = list_customer.options;
+            //             for (let i = 0; i < optionCustomer.length; i++) {
+            //                 const option = optionCustomer[i];
+            //                 if (option.value === data[0][0].IDCust) {
+            //                     option.selected = true;
+            //                     break;
+            //                 }
+            //             }
+            //             no_po.value = data[0][0].NO_PO;
+            //             tgl_po.value = data[0][0].Tgl_PO.substr(0, 10);
+            //             no_pi.value = data[0][0].NO_PI;
+            //             const optionSales = list_sales.options;
+            //             for (let i = 0; i < optionSales.length; i++) {
+            //                 const option = optionSales[i];
+            //                 if (option.value === data[0][0].IDSales) {
+            //                     option.selected = true;
+            //                     break;
+            //                 }
+            //             }
+            //             mata_uang.value = data[0][0].IDMataUang;
+            //             const optionJenisBayar = jenis_bayar.options;
+            //             for (let i = 0; i < optionJenisBayar.length; i++) {
+            //                 const option = optionJenisBayar[i];
+            //                 if (option.value === data[0][0].IDPembayaran) {
+            //                     option.selected = true;
+            //                     break;
+            //                 }
+            //             }
+            //             syarat_bayar.value = data[0][0].SyaratBayar;
+            //             let JnsFakturPjk = data[0][0].JnsFakturPjk;
+            //             if (JnsFakturPjk == 0) {
+            //                 faktur_pjkBiasa.checked = true;
+            //             } else {
+            //                 faktur_pjkSederhana.checked = true;
+            //             }
+            //             keterangan.value = data[0][0].Ket;
 
-                    for (let i = 0; i < data[1].length; i++) {
-                        const arraydata = [
-                            data[1][i].NamaBarang,
-                            data[1][i].IDBarang,
-                            formatangka(parseFloat(data[1][i].HargaSatuan)),
-                            formatangka(parseFloat(data[1][i].Qty)),
-                            data[1][i].Satuan,
-                            data[1][i].TglRencanaKirim.substr(0, 10),
-                            data[1][i].PPN,
-                            formatangka(parseFloat(data[1][i].BERAT_KARUNG3)),
-                            formatangka(parseFloat(data[1][i].INDEX_KARUNG)),
-                            formatangka(parseFloat(data[1][i].HARGA_KARUNG)),
-                            formatangka(parseFloat(data[1][i].BERAT_INNER3)),
-                            formatangka(parseFloat(data[1][i].INDEX_INNER)),
-                            formatangka(parseFloat(data[1][i].HARGA_INNER)),
-                            formatangka(parseFloat(data[1][i].BERAT_LAMI3)),
-                            formatangka(parseFloat(data[1][i].INDEX_LAMI)),
-                            formatangka(parseFloat(data[1][i].HARGA_LAMI)),
-                            formatangka(parseFloat(data[1][i].BERAT_OPP3)),
-                            formatangka(parseFloat(data[1][i].INDEX_OPP)),
-                            formatangka(parseFloat(data[1][i].HARGA_OPP)),
-                            formatangka(parseFloat(data[1][i].BERAT_KERTAS3)),
-                            formatangka(parseFloat(data[1][i].INDEX_KERTAS)),
-                            formatangka(parseFloat(data[1][i].HARGA_KERTAS)),
-                            formatangka(parseFloat(data[1][i].HARGA_LAIN2)),
-                            formatangka(parseFloat(data[1][i].BERAT_TOTAL3)),
-                            formatangka(parseFloat(data[1][i].HARGA_TOTAL)),
-                            formatangka(parseFloat(data[1][i].BERAT_KARUNG)),
-                            formatangka(parseFloat(data[1][i].BERAT_INNER)),
-                            formatangka(parseFloat(data[1][i].BERAT_LAMI)),
-                            formatangka(parseFloat(data[1][i].BERAT_OPP)),
-                            formatangka(
-                                parseFloat(data[1][i].BERAT_CONDUCTIVE),
-                            ),
-                            formatangka(parseFloat(data[1][i].BERAT_TOTAL)),
-                            data[1][i].IDJnsBarang,
-                            data[1][i].IDPesanan,
-                        ];
-                        // Insert array into a new row
-                        funcInsertRow(arraydata);
-                    }
-                });
+            //             for (let i = 0; i < data[1].length; i++) {
+            //                 const arraydata = [
+            //                     data[1][i].NamaBarang,
+            //                     data[1][i].IDBarang,
+            //                     formatangka(parseFloat(data[1][i].HargaSatuan)),
+            //                     formatangka(parseFloat(data[1][i].Qty)),
+            //                     data[1][i].Satuan,
+            //                     data[1][i].TglRencanaKirim.substr(0, 10),
+            //                     data[1][i].PPN,
+            //                     formatangka(parseFloat(data[1][i].BERAT_KARUNG3)),
+            //                     formatangka(parseFloat(data[1][i].INDEX_KARUNG)),
+            //                     formatangka(parseFloat(data[1][i].HARGA_KARUNG)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_INNER3)),
+            //                     formatangka(parseFloat(data[1][i].INDEX_INNER)),
+            //                     formatangka(parseFloat(data[1][i].HARGA_INNER)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_LAMI3)),
+            //                     formatangka(parseFloat(data[1][i].INDEX_LAMI)),
+            //                     formatangka(parseFloat(data[1][i].HARGA_LAMI)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_OPP3)),
+            //                     formatangka(parseFloat(data[1][i].INDEX_OPP)),
+            //                     formatangka(parseFloat(data[1][i].HARGA_OPP)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_KERTAS3)),
+            //                     formatangka(parseFloat(data[1][i].INDEX_KERTAS)),
+            //                     formatangka(parseFloat(data[1][i].HARGA_KERTAS)),
+            //                     formatangka(parseFloat(data[1][i].HARGA_LAIN2)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_TOTAL3)),
+            //                     formatangka(parseFloat(data[1][i].HARGA_TOTAL)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_KARUNG)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_INNER)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_LAMI)),
+            //                     formatangka(parseFloat(data[1][i].BERAT_OPP)),
+            //                     formatangka(
+            //                         parseFloat(data[1][i].BERAT_CONDUCTIVE),
+            //                     ),
+            //                     formatangka(parseFloat(data[1][i].BERAT_TOTAL)),
+            //                     data[1][i].IDJnsBarang,
+            //                     data[1][i].IDPesanan,
+            //                 ];
+            //                 // Insert array into a new row
+            //                 funcInsertRow(arraydata);
+            //             }
+            //         });
 
-            tgl_pesan.focus();
-            div_tabelSuratPesanan.classList.toggle("disabled");
-            div_detailSuratPesanan.classList.toggle("disabled");
-            if (proses == 3) {
-                isi_button.focus();
-            }
+            //     tgl_pesan.focus();
+            //     div_tabelSuratPesanan.classList.toggle("disabled");
+            //     div_detailSuratPesanan.classList.toggle("disabled");
+            //     if (proses == 3) {
+            //         isi_button.focus();
+            //     }
+            no_po.focus();
         }
     });
 
-    satuan_jual.addEventListener("change", function () {
-        funcTampilBeratStandardKGM();
-    });
+    // satuan_jual.addEventListener("change", function () {
+    //     funcTampilBeratStandardKGM();
+    // });
 
     add_button.addEventListener("click", function (event) {
         event.preventDefault();
@@ -1320,10 +1323,6 @@ $(document).ready(function () {
         ) {
             alert("Pilih jenis barang!");
             jenis_brg.focus();
-            return;
-        } else if (total_cost.value <= 0) {
-            alert("Berat standard harap diisi!");
-            berat_karung.focus();
             return;
         } else if (qty_pesan.value <= 0) {
             alert("Quantity pesan harap diisi!");
@@ -1344,32 +1343,7 @@ $(document).ready(function () {
             rencana_kirim.value,
             "",
             ppn.value,
-            formatangka(parseFloat(berat_karung.value)),
-            formatangka(parseFloat(index_karung.value)),
-            formatangka(parseFloat(berat_indexKarung.value)),
-            formatangka(parseFloat(berat_inner.value)),
-            formatangka(parseFloat(index_inner.value)),
-            formatangka(parseFloat(berat_indexInner.value)),
-            formatangka(parseFloat(berat_lami.value)),
-            formatangka(parseFloat(index_lami.value)),
-            formatangka(parseFloat(berat_indexLami.value)),
-            formatangka(parseFloat(berat_opp.value)),
-            formatangka(parseFloat(index_opp.value)),
-            formatangka(parseFloat(berat_indexOpp.value)),
-            formatangka(parseFloat(berat_kertas.value)),
-            formatangka(parseFloat(index_kertas.value)),
-            formatangka(parseFloat(berat_indexKertas.value)),
-            formatangka(parseFloat(biaya_lain.value)),
-            formatangka(parseFloat(berat_standardTotal.value)),
-            formatangka(parseFloat(total_cost.value)),
-            formatangka(parseFloat(berat_karungMeter.value)),
-            formatangka(parseFloat(berat_innerMeter.value)),
-            formatangka(parseFloat(berat_lamiMeter.value)),
-            formatangka(parseFloat(berat_oppMeter.value)),
-            formatangka(parseFloat(berat_kertasMeter.value)),
-            formatangka(parseFloat(berat_standardTotalMeter.value)),
             jenis_brg.value,
-            "",
             "",
         ];
         // Insert array into a new row
@@ -1481,10 +1455,12 @@ $(document).ready(function () {
             }
         } else if (createSPModalLabel.innerHTML == "Edit Surat Pesanan") {
             if (selectedRow.length > 0) {
-                if (selectedRow.find("td").eq(29).text() !== "") {
+                console.log(selectedRow);
+
+                if (selectedRow.find("td").eq(10).text() !== "") {
                     // console.log(input[7].value);
                     fetch(
-                        "/deletedetail/" + selectedRow.find("td").eq(29).text(),
+                        "/deletedetail/" + selectedRow.find("td").eq(10).text(),
                     )
                         .then((response) => response.json())
                         .then((data) => {
@@ -1622,7 +1598,7 @@ $(document).ready(function () {
                 }
                 $(this).toggleClass("selected");
                 let selectedRows = table.rows(".selected").data().toArray();
-                // console.log(selectedRows);
+                console.log(selectedRows);
                 qty_pesan.value = parseFloat(
                     selectedRows[0][3].replace(/,/g, ""),
                 );
@@ -1641,7 +1617,7 @@ $(document).ready(function () {
                         break;
                     }
                 }
-                jenis_brg.value = selectedRows[0][33];
+                jenis_brg.value = selectedRows[0][9];
                 rencana_kirim.value = selectedRows[0][6];
                 let optionNamaBarang = document.createElement("option");
                 optionNamaBarang.value = selectedRows[0][1];
@@ -1652,8 +1628,7 @@ $(document).ready(function () {
                 lunas.value = selectedRows[0][7];
                 ppn.value = selectedRows[0][8];
                 funcDisplayDataBrg(selectedRows[0][1]);
-                funcTampilInv(selectedRows[0][1]);
-                funcKolomBeratStandard();
+                // funcKolomBeratStandard();
             });
         }
     }
@@ -1690,7 +1665,7 @@ $(document).ready(function () {
                 satuan_primer.value = data[0].SatuanPrimer;
                 satuan_sekunder.value = data[0].SatuanSekunder;
                 satuan_tritier.value = data[0].SatuanTritier;
-                funcTampilBeratStandardKGM();
+                // funcTampilBeratStandardKGM();
             });
     }
 

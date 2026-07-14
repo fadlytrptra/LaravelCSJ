@@ -212,7 +212,7 @@ class SuratPesananController extends Controller
             @XKodeBarang = ?',
             [1, $kode_barang]
         );
-        // dd($data);
+        // dd($data, $kode_barang);
         return response()->json($data);
     }
 
@@ -479,7 +479,7 @@ class SuratPesananController extends Controller
         }
 
         // Jika tidak ada DO atau sudah dihapus, jalankan stored procedure
-        DB::connection('ConnSales')->statement('exec SP_1486_SLS_MAINT_DETAILPESANAN @Kode = ?, @IDPesanan = ?', [3, $idPesanan]);
+        DB::connection('ConnSales')->statement('exec SP_1273_PRG_MAINT_DETAILPESANAN1 @Kode = ?, @IDPesanan = ?', [3, $idPesanan]);
 
         return response()->json("Data sudah terhapus dari database!");
     }
@@ -557,9 +557,9 @@ class SuratPesananController extends Controller
             ],
         );
 
-        // dd($no_sp);
+        // dd($no_spText);
         for ($i = 0; $i < count($id_pesanan); $i++) {
-            // dd($id_pesanan);
+            // dd(is_null($id_pesanan[$i]));
             if (is_null($id_pesanan[$i])) {
                 // dd('hehe1');
                 DB::connection('ConnSales')->statement(
@@ -593,7 +593,7 @@ class SuratPesananController extends Controller
             } else {
                 DB::connection('ConnSales')->statement(
                     'exec SP_1273_PRG_MAINT_DETAILPESANAN1 @Kode = ?,
-            @IDSuratPesanan = ?,
+            @IdPesanan = ?,
             @KodeBarang = ?,
             @IdJnsBarang = ?,
             @Qty = ?,
@@ -606,7 +606,7 @@ class SuratPesananController extends Controller
             @PPN = ?',
                     [
                         $kode,
-                        $no_spText,
+                        $id_pesanan[$i],
                         $KodeBarang[$i],
                         $IdJnsBarang[$i],
                         $Qty[$i],

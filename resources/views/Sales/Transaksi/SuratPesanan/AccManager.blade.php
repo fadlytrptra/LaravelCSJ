@@ -118,7 +118,6 @@
                                 Pesan</span>{{-- <span
                             class="permohonan-s-p-text01">Jenis SP</span> --}}
                             <span permohonan-s-p-text03 style="display: none" id="lbl_sp">Nomor SP</span>
-                            <span class="permohonan-s-p-text02">No. SP</span>
                             <span class="permohonan-s-p-text02">Customer</span>
                             <span class="permohonan-s-p-text03">No. PO</span>
                             <span class="permohonan-s-p-text04">Tgl. PO</span>
