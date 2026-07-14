@@ -1129,8 +1129,8 @@ $(document).ready(function () {
             type: "GET",
             success: function (response) {
                 if (response.length > 0) {
-                    let newNoSP = response[0].Nilai + 1;
-                    no_spText.value = newNoSP.padStart(6, "0");
+                    let newNoSP = parseInt(response[0].Nilai) + 1;
+                    no_spText.value = newNoSP.toString().padStart(6, "0");
                 } else {
                     Swal.fire({
                         icon: "error",
