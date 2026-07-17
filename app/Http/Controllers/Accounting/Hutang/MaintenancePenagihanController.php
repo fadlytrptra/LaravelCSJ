@@ -434,9 +434,7 @@ class MaintenancePenagihanController extends Controller
 
                 foreach ($dataSPPB as $row) {
                     if (
-                        !is_null($row->NoTransaksiTmp) &&
-                        is_null($row->TglRetur) &&
-                        $row->no_kat_utama != '005'
+                        !is_null($row->NoTransaksiTmp) || $row->no_kat_utama == '005'
                     ) {
                         $valid[] = $row;
                     } else {
