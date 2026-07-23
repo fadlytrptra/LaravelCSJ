@@ -30,18 +30,20 @@ class HomeController extends Controller
         $now = Carbon::now('Asia/Jakarta');
 
         // ambil pengumuman yang belum expired
-        $pengumuman = DB::connection('ConnEDPKrr')
-            ->table('Pengumuman')
-            ->where('tgl_awal', '<=', $now)
-            ->where('tgl_akhir', '>=', $now)
-            ->orderByDesc('wkt_tulis')
-            ->get();
+        // $pengumuman = DB::connection('ConnEDPKrr')
+        //     ->table('Pengumuman')
+        //     ->where('tgl_awal', '<=', $now)
+        //     ->where('tgl_akhir', '>=', $now)
+        //     ->orderByDesc('wkt_tulis')
+        //     ->get();
+        $pengumuman = [];
 
-        $users = DB::connection('ConnEDPKrr')
-            ->table('UserMaster')
-            ->select('NomorUser', 'NamaUser')
-            ->orderBy('NamaUser')
-            ->get();
+        // $users = DB::connection('ConnEDPKrr')
+        //     ->table('UserMaster')
+        //     ->select('NomorUser', 'NamaUser')
+        //     ->orderBy('NamaUser')
+        //     ->get();
+        $users = [];
         return view('home', compact('AccessProgram', 'pengumuman', 'users'));
     }
 
