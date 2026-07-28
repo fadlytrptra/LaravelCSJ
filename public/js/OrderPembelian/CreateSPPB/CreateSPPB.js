@@ -15,7 +15,7 @@ jQuery(function ($) {
         processing: true, // Optional, as processing is more relevant for server-side
         responsive: true,
         serverSide: true,
-        order: [2, "desc"],
+        order: [3, "desc"],
         ajax: {
             url: "/CreateSPPB/getAllSPPB",
             type: "GET",
