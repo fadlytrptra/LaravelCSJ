@@ -311,7 +311,7 @@ class CreateSPPBController extends Controller
                         'Kd_div' => $idDivisi,
                         'Jenis' => $jenis,
                         'IdMataUang' => $mataUang
-                ]);
+                    ]);
 
                 DB::commit();
 
@@ -556,6 +556,7 @@ class CreateSPPBController extends Controller
                     $final[] = [
                         'No_sppb' => $row->No_sppb,
                         'NM_SUP' => $row->NM_SUP,
+                        'Keterangan' => $row->Keterangan,
                         'Tgl_sppb' => $row->Tgl_sppb,
                         'Tgl_acc' => $row->Tgl_acc,
                         'Tgl_Direktur' => $row->Tgl_Direktur,
@@ -619,12 +620,12 @@ class CreateSPPBController extends Controller
     public function uploadDokumentasi(Request $request)
     {
         $request->validate([
-            'noSppb'      => 'required|string',
+            'noSppb' => 'required|string',
             'attach_file' => 'required|file|max:2560|mimes:jpg,jpeg,png,pdf'
         ]);
 
         $noSppb = trim($request->noSppb);
-        $conn   = DB::connection('ConnPurchase');
+        $conn = DB::connection('ConnPurchase');
 
         $conn->beginTransaction();
 
@@ -702,7 +703,7 @@ class CreateSPPBController extends Controller
             ->whereRaw('RTRIM(No_sppb) = ?', [trim($noSppb)])
             ->where(function ($q) {
                 $q->whereNotNull('Dokumentasi')
-                ->orWhereNotNull('DokumentasiFile');
+                    ->orWhereNotNull('DokumentasiFile');
             })
             ->first();
 
@@ -718,7 +719,7 @@ class CreateSPPBController extends Controller
 
             return response($row->DokumentasiFile)
                 ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'attachment; filename="Dokumentasi_'.$noSppb.'.pdf"')
+                ->header('Content-Disposition', 'attachment; filename="Dokumentasi_' . $noSppb . '.pdf"')
                 ->header('Content-Length', strlen($row->DokumentasiFile));
         }
 
@@ -729,7 +730,7 @@ class CreateSPPBController extends Controller
 
             return response($binary)
                 ->header('Content-Type', 'image/jpeg')
-                ->header('Content-Disposition', 'attachment; filename="Dokumentasi_'.$noSppb.'.jpg"')
+                ->header('Content-Disposition', 'attachment; filename="Dokumentasi_' . $noSppb . '.jpg"')
                 ->header('Content-Length', strlen($binary));
         }
 

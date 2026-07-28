@@ -23,6 +23,7 @@ jQuery(function ($) {
         columns: [
             { data: "No_sppb" },
             { data: "NM_SUP" },
+            { data: "Keterangan" },
             {
                 data: "Tgl_sppb",
                 render: function (data, type, full, meta) {
@@ -65,52 +66,96 @@ jQuery(function ($) {
                     let cekEmail =
                         '<button class="btn btn-cekEmail" ' +
                         'style="background-color:#ff8800; color:white; border:1px solid black;" ' +
-                        'onmouseover="this.style.backgroundColor=\'#e07b08\'" ' +
-                        'onmouseout="this.style.backgroundColor=\'#ff8800\'" ' +
-                        'data-id="' + data + '" ' +
-                        'data-div="' + full.Kd_div + '">' +
-                        'Cek Email</button>';
+                        "onmouseover=\"this.style.backgroundColor='#e07b08'\" " +
+                        "onmouseout=\"this.style.backgroundColor='#ff8800'\" " +
+                        'data-id="' +
+                        data +
+                        '" ' +
+                        'data-div="' +
+                        full.Kd_div +
+                        '">' +
+                        "Cek Email</button>";
                     let uploadFile =
                         '<button class="btn btn-fileAttach" ' +
                         'style="background-color:#ba5be6; color:white; border:1px solid black;" ' +
-                        'onmouseover="this.style.backgroundColor=\'#af2cc9\'" ' +
-                        'onmouseout="this.style.backgroundColor=\'#ba5be6\'" ' +
-                        'data-id="' + full.No_sppb + '" ' +
-                        'data-div="' + full.Kd_div + '">' +
-                        'Upload File</button>';
+                        "onmouseover=\"this.style.backgroundColor='#af2cc9'\" " +
+                        "onmouseout=\"this.style.backgroundColor='#ba5be6'\" " +
+                        'data-id="' +
+                        full.No_sppb +
+                        '" ' +
+                        'data-div="' +
+                        full.Kd_div +
+                        '">' +
+                        "Upload File</button>";
                     // file button berupa modal berisi download dan delete file
                     let fileButton =
                         '<button class="btn btn-fileOption" ' +
                         'style="background-color:#0bd4ba; color:white; border:1px solid black;" ' +
-                        'onmouseover="this.style.backgroundColor=\'#09b68b\'" ' +
-                        'onmouseout="this.style.backgroundColor=\'#0bd4ba\'" ' +
-                        'data-id="' + full.No_sppb + '" ' +
-                        'data-div="' + full.Kd_div + '">' +
-                        'File Attachment</button>';
-
+                        "onmouseover=\"this.style.backgroundColor='#09b68b'\" " +
+                        "onmouseout=\"this.style.backgroundColor='#0bd4ba'\" " +
+                        'data-id="' +
+                        full.No_sppb +
+                        '" ' +
+                        'data-div="' +
+                        full.Kd_div +
+                        '">' +
+                        "File Attachment</button>";
 
                     console.log("No:", full.No_sppb, "HasFile:", full.HasFile);
 
                     //acc direktur
                     if (full.Tgl_Direktur) {
-                        return buttonCetak + buttonExport + emailSupplier + cekEmail;
+                        return (
+                            buttonCetak +
+                            buttonExport +
+                            emailSupplier +
+                            cekEmail
+                        );
                     }
                     // acc manager (submit + belum ada file)
                     else if (full.Tgl_acc && full.HasFile == 0) {
-                        return buttonCetak + buttonExport + cekEmail + uploadFile + buttonEdit + buttonHapus;
+                        return (
+                            buttonCetak +
+                            buttonExport +
+                            cekEmail +
+                            uploadFile +
+                            buttonEdit +
+                            buttonHapus
+                        );
                     }
                     // acc manager (submit + sudah ada file)
                     else if (full.Tgl_acc && full.HasFile == 1) {
-                        return buttonCetak + buttonExport + cekEmail + fileButton + buttonEdit + buttonHapus;
+                        return (
+                            buttonCetak +
+                            buttonExport +
+                            cekEmail +
+                            fileButton +
+                            buttonEdit +
+                            buttonHapus
+                        );
                     }
                     // save + sudah ada file
                     else if (!full.Tgl_acc && full.HasFile == 1) {
-                        return buttonCetak + buttonExport + cekEmail + emailSupplier + fileButton + buttonACC + buttonEdit + buttonHapus;
-                    }
-                    else {
-                    //save + belum ada file
                         return (
-                            buttonCetak + buttonExport + cekEmail + uploadFile + buttonACC + buttonEdit + buttonHapus
+                            buttonCetak +
+                            buttonExport +
+                            cekEmail +
+                            emailSupplier +
+                            fileButton +
+                            buttonACC +
+                            buttonEdit +
+                            buttonHapus
+                        );
+                    } else {
+                        //save + belum ada file
+                        return (
+                            buttonCetak +
+                            buttonExport +
+                            cekEmail +
+                            uploadFile +
+                            buttonACC +
+                            buttonEdit +
+                            buttonHapus
                         );
                     }
                 },
@@ -406,7 +451,7 @@ jQuery(function ($) {
                 } else {
                     data.forEach(function (item) {
                         sppb_divisi.append(
-                            new Option( item.NM_DIV.trim(), item.Kd_div.trim()) // prettier-ignore
+                            new Option( item.NM_DIV.trim(), item.Kd_div.trim()), // prettier-ignore
                         );
                     });
 
@@ -461,7 +506,7 @@ jQuery(function ($) {
                 } else {
                     data.forEach(function (item) {
                         sppb_jenisPembelian.append(
-                            new Option(item.KET.trim(), item.NO_JNS.trim())
+                            new Option(item.KET.trim(), item.NO_JNS.trim()),
                         );
                     });
 
@@ -516,7 +561,7 @@ jQuery(function ($) {
                 } else {
                     data.forEach(function (item) {
                         sppb_supplier.append(
-                            new Option(item.NM_SUP.trim(), item.NO_SUP.trim())
+                            new Option(item.NM_SUP.trim(), item.NO_SUP.trim()),
                         );
                     });
 
@@ -573,8 +618,8 @@ jQuery(function ($) {
                         sppb_mataUang.append(
                             new Option(
                                 item.Nama_MataUang.trim(),
-                                item.Id_MataUang.trim()
-                            )
+                                item.Id_MataUang.trim(),
+                            ),
                         );
                     });
 
@@ -630,7 +675,7 @@ jQuery(function ($) {
                 } else {
                     data.forEach(function (item) {
                         sppb_golongan.append(
-                            new Option(item.NM_GOL.trim(), item.NO_GOL.trim())
+                            new Option(item.NM_GOL.trim(), item.NO_GOL.trim()),
                         );
                     });
 
@@ -686,7 +731,7 @@ jQuery(function ($) {
                 } else {
                     data.forEach(function (item) {
                         sppb_kelompok.append(
-                            new Option(item.NM_MSN.trim(), item.NO_MSN.trim())
+                            new Option(item.NM_MSN.trim(), item.NO_MSN.trim()),
                         );
                     });
 
@@ -743,8 +788,8 @@ jQuery(function ($) {
                         sppb_kategoriUtama.append(
                             new Option(
                                 item.nama.trim(),
-                                item.no_kat_utama.trim()
-                            )
+                                item.no_kat_utama.trim(),
+                            ),
                         );
                     });
 
@@ -802,8 +847,8 @@ jQuery(function ($) {
                         sppb_kategori.append(
                             new Option(
                                 item.nama_kategori.trim(),
-                                item.no_kategori.trim()
-                            )
+                                item.no_kategori.trim(),
+                            ),
                         );
                     });
 
@@ -861,8 +906,8 @@ jQuery(function ($) {
                         sppb_subKategori.append(
                             new Option(
                                 item.nama_sub_kategori.trim(),
-                                item.no_sub_kategori.trim()
-                            )
+                                item.no_sub_kategori.trim(),
+                            ),
                         );
                     });
 
@@ -918,7 +963,10 @@ jQuery(function ($) {
                 } else {
                     data.forEach(function (item) {
                         sppb_namaBarang.append(
-                            new Option(item.NAMA_BRG.trim(), item.KD_BRG.trim())
+                            new Option(
+                                item.NAMA_BRG.trim(),
+                                item.KD_BRG.trim(),
+                            ),
                         );
                     });
 
@@ -973,7 +1021,7 @@ jQuery(function ($) {
                     sppb_keteranganKhusus.value = data[0].KET_KHUSUS;
                     sppb_keteranganBarang.value = data[0].KET;
                     sppb_nomorSatuan.value = data[0].ST_TRI;
-                    sppb_satuanBarang.value = data[0].Nm_Sat_Tri ?? '';
+                    sppb_satuanBarang.value = data[0].Nm_Sat_Tri ?? "";
                     if (jenisInput == "manual") {
                         // mungkin akan ada tambahan
                     } else if (jenisInput == "auto") {
@@ -1033,7 +1081,7 @@ jQuery(function ($) {
         }
         sppb_subTotalHargaJual.value = numeral(
             numeral(sppb_hargaSatuan.value).value() *
-                numeral(sppb_quantityBarang.value).value()
+                numeral(sppb_quantityBarang.value).value(),
         ).format("0.0000");
         hargaDisc =
             numeral(sppb_subTotalHargaJual.value).value() -
@@ -1041,13 +1089,12 @@ jQuery(function ($) {
                 numeral(sppb_discount.value).value()) /
                 100;
 
-        if(ppnValue === 0) {
+        if (ppnValue === 0) {
             sppb_DPPNilaiLain.value = numeral(0).format("0.0000");
             sppb_hargaPPN.value = numeral(0).format("0.0000");
-
         } else if (sppb_ppn.value == "12" && sppb_dppFull.checked) {
             sppb_DPPNilaiLain.value = numeral((hargaDisc * 11) / 12).format(
-                "0.0000"
+                "0.0000",
             );
         } else {
             sppb_DPPNilaiLain.value = numeral(hargaDisc).format("0.0000");
@@ -1056,13 +1103,12 @@ jQuery(function ($) {
         sppb_hargaPPN.value = numeral(
             (numeral(sppb_DPPNilaiLain.value).value() *
                 numeral(sppb_ppn.value).value()) /
-                100
+                100,
         ).format("0.0000");
         sppb_totalHarga.value = numeral(
-            hargaDisc + numeral(sppb_hargaPPN.value).value()
+            hargaDisc + numeral(sppb_hargaPPN.value).value(),
         ).format("0.0000");
     }
-
 
     //#endregion
 
@@ -1070,6 +1116,7 @@ jQuery(function ($) {
     buttonTambahSPPB.addEventListener("click", function (e) {
         $("#sppb_buttonSave").data("id", null);
         $("#sppb_buttonSubmit").data("id", null);
+        modalLabelSPPB.innerHTML = "Tambah SPPB";
     });
 
     $("#modalSPPB").on("shown.bs.modal", function (event) {
@@ -1087,7 +1134,6 @@ jQuery(function ($) {
 
                 success: function (data) {
                     if (!data) {
-
                         Swal.fire({
                             icon: "error",
                             title: "Error",
@@ -1096,30 +1142,33 @@ jQuery(function ($) {
                             text: "fetching data Divisi failed ",
                             returnFocus: false,
                         });
-
                     } else {
                         sppb_tanggal.value = moment(data[0].Tgl_sppb).format("YYYY-MM-DD"); //prettier-ignore
                         sppb_tanggalDibutuhkan.value = moment(data[0].Tgl_Dibutuhkan).format("YYYY-MM-DD"); //prettier-ignore
                         sppb_divisi.val(data[0].Kd_div).trigger("change");
-                        sppb_jenisPembelian.val(data[0].Jenis.trim()).trigger("change");
+                        sppb_jenisPembelian
+                            .val(data[0].Jenis.trim())
+                            .trigger("change");
                         sppb_mataUang.val(data[0].IdMataUang).trigger("change");
                         getDataGolongan().then;
                         init("resetOrder");
                         init("disableHeader");
 
                         sppb_divisi.prop("disabled", false).trigger("change");
-                        sppb_jenisPembelian.prop("disabled", false).trigger("change");
+                        sppb_jenisPembelian
+                            .prop("disabled", false)
+                            .trigger("change");
                         sppb_mataUang.prop("disabled", false).trigger("change");
-
 
                         sppb_supplier.val(data[0].No_sup).trigger("change");
                         sppb_pemesan.value = data[0].Pemesan;
-                        sppb_kursRupiah.value = numeral(data[0].Kurs_Rp).value();
+                        sppb_kursRupiah.value = numeral(
+                            data[0].Kurs_Rp,
+                        ).value();
                         sppb_jangkaWaktu.value = numeral(data[0].Waktu).value();
                         sppb_jangkaWaktu.dispatchEvent(enterEvent);
 
                         data.forEach((orderPembelian) => {
-
                             let totalHarga =
                                 numeral(orderPembelian.hrg_murni).value() +
                                 numeral(orderPembelian.hrg_ppn).value();
@@ -1128,14 +1177,28 @@ jQuery(function ($) {
                                 .add([
                                     orderPembelian.NAMA_BRG,
                                     orderPembelian.Kd_brg,
-                                    numeral(orderPembelian.Qty).format("0,0.00"),
+                                    numeral(orderPembelian.Qty).format(
+                                        "0,0.00",
+                                    ),
                                     orderPembelian.keterangan,
-                                    numeral(orderPembelian.Hrg_trm).format("0,0.000"),
-                                    numeral(orderPembelian.Disc_trm).format("0.00"),
-                                    numeral(orderPembelian.Ppn_trm).format("0.00"),
-                                    numeral(orderPembelian.dpp_nilai_lain).format("0,0.00"),
-                                    numeral(orderPembelian.hrg_ppn).format("0,0.00"),
-                                    numeral(orderPembelian.hrg_murni).format("0,0.00"),
+                                    numeral(orderPembelian.Hrg_trm).format(
+                                        "0,0.000",
+                                    ),
+                                    numeral(orderPembelian.Disc_trm).format(
+                                        "0.00",
+                                    ),
+                                    numeral(orderPembelian.Ppn_trm).format(
+                                        "0.00",
+                                    ),
+                                    numeral(
+                                        orderPembelian.dpp_nilai_lain,
+                                    ).format("0,0.00"),
+                                    numeral(orderPembelian.hrg_ppn).format(
+                                        "0,0.00",
+                                    ),
+                                    numeral(orderPembelian.hrg_murni).format(
+                                        "0,0.00",
+                                    ),
                                     numeral(totalHarga).format("0,0.00"),
                                     orderPembelian.No_trans,
                                     orderPembelian.No_gol,
@@ -1177,7 +1240,6 @@ jQuery(function ($) {
                             sppb_portOfDischarge.value = portOfDischarge;
                             sppb_otherConditions.value = otherConditions;
                             sppb_payments.value = payment;
-
                         }
                     }
                 },
@@ -1190,7 +1252,6 @@ jQuery(function ($) {
                     });
                 },
             });
-
         } else {
             sppb_tanggal.focus();
             init("modal");
@@ -1624,7 +1685,7 @@ jQuery(function ($) {
             hargaPPN,
             hargaPPNRupiah,
             dppNilaiLain,
-            dppNilaiLainRupiah
+            dppNilaiLainRupiah,
         );
 
         $.ajax({
@@ -1698,7 +1759,7 @@ jQuery(function ($) {
                             numeral(sppb_DPPNilaiLain.value).format("0,0.00"),
                             numeral(sppb_hargaPPN.value).format("0,0.00"),
                             numeral(sppb_subTotalHargaJual.value).format(
-                                "0,0.00"
+                                "0,0.00",
                             ),
                             numeral(sppb_totalHarga.value).format("0,0.00"),
                             response.data,
@@ -1842,20 +1903,20 @@ jQuery(function ($) {
                                 selectedNamaBarang,
                                 selectedKodeBarang,
                                 numeral(sppb_quantityBarang.value).format(
-                                    "0,0.00"
+                                    "0,0.00",
                                 ),
                                 sppb_KeteranganOrder.value,
                                 numeral(sppb_hargaSatuan.value).format(
-                                    "0,0.000"
+                                    "0,0.000",
                                 ),
                                 numeral(sppb_discount.value).format("0.00"),
                                 numeral(sppb_ppn.value).format("0.00"),
                                 numeral(sppb_DPPNilaiLain.value).format(
-                                    "0,0.00"
+                                    "0,0.00",
                                 ),
                                 numeral(sppb_hargaPPN.value).format("0,0.00"),
                                 numeral(sppb_subTotalHargaJual.value).format(
-                                    "0,0.00"
+                                    "0,0.00",
                                 ),
                                 numeral(sppb_totalHarga.value).format("0,0.00"),
                                 response.data,
@@ -1880,7 +1941,6 @@ jQuery(function ($) {
         });
     });
 
-
     let noTransRevisi = null;
 
     sppb_buttonDelete.addEventListener("click", function (e) {
@@ -1900,7 +1960,10 @@ jQuery(function ($) {
             data: {
                 _token: csrfToken,
                 jenisStore: "deleteOrderPembelian",
-                No_trans: noTransRevisi && noTransRevisi != '' ? noTransRevisi : selectedRowData[11],
+                No_trans:
+                    noTransRevisi && noTransRevisi != ""
+                        ? noTransRevisi
+                        : selectedRowData[11],
             },
             dataType: "json",
             success: function (response) {
@@ -1945,10 +2008,7 @@ jQuery(function ($) {
 
     sppb_buttonSave.addEventListener("click", function (e) {
         let nomorSPPB = $(this).data("id") || null;
-        let tableData = sppb_tableOrderPembelian
-            .rows()
-            .data()
-            .toArray();
+        let tableData = sppb_tableOrderPembelian.rows().data().toArray();
         let keteranganCetak =
             sppb_deliveryTerm.value +
             " | " +
@@ -2016,7 +2076,7 @@ jQuery(function ($) {
                         returnFocus: false,
                     });
 
-                    $('#no_trans_revisi').val(nomorSPPB);
+                    $("#no_trans_revisi").val(nomorSPPB);
 
                     selectedRowData = null;
                     table_sppb.ajax.reload(function () {
@@ -2036,7 +2096,7 @@ jQuery(function ($) {
     });
 
     sppb_buttonSubmit.addEventListener("click", function (e) {
-        let nomorSPPB =$(this).data("id");
+        let nomorSPPB = $(this).data("id");
         let keteranganCetak =
             sppb_deliveryTerm.value +
             " | " +
@@ -2120,7 +2180,7 @@ jQuery(function ($) {
                 `&jenisCetak=SPPBBaru&sppb=` +
                 urlEncodedNomorSPPB +
                 `&noTerima=`,
-            "_blank"
+            "_blank",
         );
     });
 
@@ -2130,7 +2190,8 @@ jQuery(function ($) {
         let kdDiv = $(this).data("div");
 
         // URL endpoint PDF
-        let pdfUrl = `/CetakSPPBBTTB/exportPdf?divisi=` +
+        let pdfUrl =
+            `/CetakSPPBBTTB/exportPdf?divisi=` +
             kdDiv +
             `&jenisCetak=SPPBBaru&sppb=` +
             urlEncodedNomorSPPB +
@@ -2145,7 +2206,6 @@ jQuery(function ($) {
             printWindow.print();
         };
     });
-
 
     $(document).on("click", ".btn-acc", function (e) {
         let nomorSPPB = $(this).data("id");
@@ -2197,6 +2257,7 @@ jQuery(function ($) {
 
     $(document).on("click", ".btn-edit", function (e) {
         let nomorSPPB = $(this).data("id");
+        modalLabelSPPB.innerHTML = "Edit SPPB " + nomorSPPB;
         $("#sppb_buttonSave").data("id", nomorSPPB);
         $("#sppb_buttonSubmit").data("id", nomorSPPB);
         sppb_tableOrderPembelian.clear().draw();
@@ -2248,7 +2309,6 @@ jQuery(function ($) {
         });
     });
 
-
     //cek email
     $(document).on("click", ".btn-cekEmail", function (e) {
         e.preventDefault();
@@ -2258,15 +2318,14 @@ jQuery(function ($) {
             url: "/getEmailSupplier",
             type: "GET",
             data: {
-                no_sppb: nomorSPPB
+                no_sppb: nomorSPPB,
             },
             success: function (response) {
-
                 if (!response.success) {
                     Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: response.message
+                        text: response.message,
                     });
                     return;
                 }
@@ -2275,23 +2334,21 @@ jQuery(function ($) {
                     Swal.fire({
                         icon: "success",
                         title: "Email Supplier",
-                        text: response.email
+                        text: response.email,
                     });
-
                 } else {
                     // Jika email kosong
                     Swal.fire({
                         icon: response.type || "warning",
                         title: "Email Supplier Belum ada!",
-                        text: response.message
+                        text: response.message,
                     });
                 }
-            }
+            },
         });
     });
 
     $(document).on("click", "#btnEmailSupplier", function () {
-
         let table = $("#tabelchelsy").DataTable();
         let data = table.row(".selected").data();
 
@@ -2307,7 +2364,6 @@ jQuery(function ($) {
             type: "GET",
             data: { no_sppb: noSPPB },
             success: function (res) {
-
                 if (!res.success) {
                     Swal.fire("Error", res.message, "error");
                     return;
@@ -2316,10 +2372,9 @@ jQuery(function ($) {
                 $("#email_no_sppb").val(noSPPB);
                 $("#email_supplier").val(res.email);
                 $("#modalEmailSupplier").modal("show");
-            }
+            },
         });
     });
-
 
     $(document).on("click", ".btn_kirim_email", function () {
         let btn = $(this);
@@ -2333,7 +2388,7 @@ jQuery(function ($) {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Ya, Kirim!",
-            cancelButtonText: "Batal"
+            cancelButtonText: "Batal",
         }).then((result) => {
             if (!result.isConfirmed) {
                 return; // jika batal, hentikan
@@ -2343,7 +2398,7 @@ jQuery(function ($) {
                 type: "POST",
                 data: {
                     _token: $('meta[name="csrf-token"]').attr("content"),
-                    No_sppb: noSPPB
+                    No_sppb: noSPPB,
                 },
                 beforeSend: function () {
                     btn.prop("disabled", true);
@@ -2361,7 +2416,7 @@ jQuery(function ($) {
                 error: function (xhr) {
                     btn.prop("disabled", false);
                     Swal.fire("Error", "Gagal mengirim email", "error");
-                }
+                },
             });
         });
     });
@@ -2379,10 +2434,8 @@ jQuery(function ($) {
         $("#hiddenAttachFile").click();
     });
 
-
     $("#hiddenAttachFile").on("change", function () {
-        if (!this.files.length)
-            return;
+        if (!this.files.length) return;
 
         let file = this.files[0];
 
@@ -2394,7 +2447,7 @@ jQuery(function ($) {
             url: "/CreateSPPB/uploadDokumentasi",
             type: "POST",
             headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             data: formData,
             processData: false,
@@ -2404,21 +2457,18 @@ jQuery(function ($) {
                 Swal.fire({
                     title: "Uploading...",
                     allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
+                    didOpen: () => Swal.showLoading(),
                 });
             },
 
             success: function (res) {
-
                 Swal.close();
 
                 if (res.success) {
-
                     Swal.fire("Success", res.message, "success");
 
                     // reload DataTable tanpa reset pagination
                     table_sppb.ajax.reload(null, false);
-
                 } else {
                     Swal.fire("Error", res.message, "error");
                 }
@@ -2429,9 +2479,9 @@ jQuery(function ($) {
                 Swal.fire(
                     "Error",
                     xhr.responseJSON?.message || "Upload gagal",
-                    "error"
+                    "error",
                 );
-            }
+            },
         });
     });
 
@@ -2457,9 +2507,8 @@ jQuery(function ($) {
             `,
             showConfirmButton: false,
             showCancelButton: true,
-            cancelButtonText: "Cancel"
+            cancelButtonText: "Cancel",
         });
-
     });
 
     $(document).on("click", ".btn-downloadFile-modal", function () {
@@ -2475,7 +2524,7 @@ jQuery(function ($) {
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Ya, hapus",
-            confirmButtonColor: "#dc3545"
+            confirmButtonColor: "#dc3545",
         }).then((result) => {
             if (!result.isConfirmed) return;
 
@@ -2483,7 +2532,9 @@ jQuery(function ($) {
                 url: "/CreateSPPB/deleteDokumentasi/" + selectedNoSppb,
                 type: "DELETE",
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr("content")
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
                 },
                 success: function (res) {
                     console.log(res);
@@ -2499,11 +2550,9 @@ jQuery(function ($) {
                     console.log(xhr.status);
                     console.log(xhr.responseText);
                     Swal.fire("Error", "Terjadi kesalahan server", "error");
-                }
+                },
             });
-
         });
-
     });
 
     //#endregion

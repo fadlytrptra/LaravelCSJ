@@ -53,7 +53,7 @@
 <input type="hidden" id="no_sppb_revisi" value="{{ $noSppbRevisi ?? '' }}">
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-10 RDZMobilePaddingLR0">
+        <div class="col-md-12 RDZMobilePaddingLR0">
             <button class="acs-icon-btn acs-add-btn acs-float" data-bs-toggle="modal" data-bs-target="#modalSPPB"
                 data-typeForm="tambah" id="buttonTambahSPPB">
                 <div class="acs-add-icon"></div>
@@ -67,6 +67,7 @@
                             <tr>
                                 <th>Nomor SPPB</th>
                                 <th>Nama Supplier</th>
+                                <th>Keterangan Order</th>
                                 <th>Tanggal SPPB</th>
                                 <th>Actions</th>
                             </tr>
