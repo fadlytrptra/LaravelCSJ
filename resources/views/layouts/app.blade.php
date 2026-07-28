@@ -58,14 +58,15 @@
                     </a>
 
                     <!--Informasi-->
-                    @if(request()->is('home'))
+                    @if (request()->is('home'))
                         <div class="dropdown d-inline-block">
                             <button class="menu-navbar dropdown-toggle" data-bs-toggle="dropdown">
                                 Informasi
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPengumuman">
+                                    <button class="dropdown-item" data-bs-toggle="modal"
+                                        data-bs-target="#modalPengumuman">
                                         ANNOUNCEMENT
                                     </button>
                                 </li>
@@ -75,13 +76,14 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalIntercom">
+                                    <button class="dropdown-item" data-bs-toggle="modal"
+                                        data-bs-target="#modalIntercom">
                                         INTERCOM
                                     </button>
                                 </li>
                             </ul>
                         </div>
-                        @endif
+                    @endif
 
                     @guest
                     @else
@@ -157,102 +159,103 @@
             </main>
         </div>
 
-        @if(request()->is('home'))
-        {{-- ================= MODAL PENGUMUMAN ================= --}}
-        <div class="modal fade" id="modalPengumuman" tabindex="-1">
-            <div class="modal-dialog modal-xxl modal-dialog-scrollable">
-                <div class="modal-content announcement-modal">
+        @if (request()->is('home'))
+            {{-- ================= MODAL PENGUMUMAN ================= --}}
+            <div class="modal fade" id="modalPengumuman" tabindex="-1">
+                <div class="modal-dialog modal-xxl modal-dialog-scrollable">
+                    <div class="modal-content announcement-modal">
 
-                    <div class="modal-header position-relative">
-                        <h5 class="modal-title w-100 text-center m-0">📢 PENGUMUMAN</h5>
+                        <div class="modal-header position-relative">
+                            <h5 class="modal-title w-100 text-center m-0">📢 PENGUMUMAN</h5>
 
-                        <button
-                            type="button"
-                            class="btn-close-custom"
-                            data-bs-dismiss="modal"
-                            aria-label="Close">
+                            <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
 
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                width="22"
-                                height="22"
-                                fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
-                            </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z">
+                                    </path>
+                                </svg>
 
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-
-                        <div class="announcement-list">
-                            @forelse ($pengumuman ?? [] as $p)
-                            <div class="announcement-item">
-                                <div class="announcement-header">
-                                    <div class="announcement-title">
-                                        <b>{{ strtoupper($p->judul_pesan) }}</b>
-                                    </div>
-                                    <div class="announcement-meta">
-                                        ID: {{ $p->id }}
-                                    </div>
-                                </div>
-
-                                <div class="announcement-meta">
-                                    Mulai berlaku dari
-                                    {{ \Carbon\Carbon::parse($p->wkt_tulis)->format('d M Y') }}
-                                    sampai
-                                    {{ \Carbon\Carbon::parse($p->tgl_akhir)->format('d M Y') }}
-                                </div>
-                                <div class="announcement-meta">
-                                    Pengirim : {{ $p->penulis }}
-                                </div>
-                                <div class="announcement-content">
-                                    {!! nl2br(e($p->isi_pesan)) !!}
-                                </div>
-                            </div>
-
-                            @empty
-                            <div class="text-center py-5 text-muted">
-                                Tidak ada pengumuman saat ini
-                            </div>
-                            @endforelse
+                            </button>
                         </div>
-                    </div>
 
-                    <!-- Floating Add Button di dalam modal -->
-                    <button
-                        class="fab-button"
-                        onclick="openTambahPengumuman()">
+                        <div class="modal-body">
+
+                            <div class="announcement-list">
+                                @forelse ($pengumuman ?? [] as $p)
+                                    <div class="announcement-item">
+                                        <div class="announcement-header">
+                                            <div class="announcement-title">
+                                                <b>{{ strtoupper($p->judul_pesan) }}</b>
+                                            </div>
+                                            <div class="announcement-meta">
+                                                ID: {{ $p->id }}
+                                            </div>
+                                        </div>
+
+                                        <div class="announcement-meta">
+                                            Mulai berlaku dari
+                                            {{ \Carbon\Carbon::parse($p->wkt_tulis)->format('d M Y') }}
+                                            sampai
+                                            {{ \Carbon\Carbon::parse($p->tgl_akhir)->format('d M Y') }}
+                                        </div>
+                                        <div class="announcement-meta">
+                                            Pengirim : {{ $p->penulis }}
+                                        </div>
+                                        <div class="announcement-content">
+                                            {!! nl2br(e($p->isi_pesan)) !!}
+                                        </div>
+                                        @if (!empty($p->lampiran))
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    onclick="window.open('{{ route('pengumuman.lampiran', $p->id) }}', '_blank')">
+                                                    <i class="fa fa-paperclip"></i> Lampiran
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                @empty
+                                    <div class="text-center py-5 text-muted">
+                                        Tidak ada pengumuman saat ini
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        <!-- Floating Add Button di dalam modal -->
+                        <button class="fab-button" onclick="openTambahPengumuman()">
                             +
-                    </button>
+                        </button>
 
+                    </div>
                 </div>
             </div>
-        </div>
         @endif
 
-        @if(request()->is('home'))
+        @if (request()->is('home'))
             <!-- Bootstrap -->
             <script src="{{ asset('js/bootstrap@5.0.2.min.js') }}"></script>
 
             <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const pengumumanEl = document.getElementById('modalPengumuman');
+                document.addEventListener("DOMContentLoaded", function() {
+                    const pengumumanEl = document.getElementById('modalPengumuman');
 
-                if(pengumumanEl){
-                    const pengumumanModal = new bootstrap.Modal(pengumumanEl);
-                    pengumumanModal.show();
-                }
+                    if (pengumumanEl) {
+                        const pengumumanModal = new bootstrap.Modal(pengumumanEl);
+                        pengumumanModal.show();
+                    }
 
-                // FIX: hapus backdrop yang tertinggal
-                document.addEventListener('hidden.bs.modal', function () {
-                    document.querySelectorAll('.modal-backdrop').forEach(function(el){
-                        el.remove();
+                    // FIX: hapus backdrop yang tertinggal
+                    document.addEventListener('hidden.bs.modal', function() {
+                        document.querySelectorAll('.modal-backdrop').forEach(function(el) {
+                            el.remove();
+                        });
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
                     });
-                    document.body.classList.remove('modal-open');
-                    document.body.style.overflow = '';
                 });
-            });
             </script>
         @endif
 
@@ -266,62 +269,63 @@
             });
         </script>
 
-         <script>
-            function openTambahPengumuman(){
+        <script>
+            function openTambahPengumuman() {
                 let pengumumanEl = document.getElementById('modalPengumuman');
                 let tambahEl = document.getElementById('tambahPengumumanModal');
                 let modalPengumuman = bootstrap.Modal.getInstance(pengumumanEl);
 
                 // tunggu modal pertama benar-benar tertutup
-                pengumumanEl.addEventListener('hidden.bs.modal', function () {
+                pengumumanEl.addEventListener('hidden.bs.modal', function() {
                     let modalTambah = new bootstrap.Modal(tambahEl);
                     modalTambah.show();
-                }, { once:true });
+                }, {
+                    once: true
+                });
                 modalPengumuman.hide();
             }
 
             // ketika modal tambah ditutup → kembali ke modal pengumuman
-            document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function() {
                 let tambahModal = document.getElementById("tambahPengumumanModal");
                 let pengumumanModal = document.getElementById("modalPengumuman");
 
-                if(tambahModal){
-                    tambahModal.addEventListener("hidden.bs.modal", function () {
+                if (tambahModal) {
+                    tambahModal.addEventListener("hidden.bs.modal", function() {
                         let modal = new bootstrap.Modal(pengumumanModal);
                         modal.show();
                     });
                 }
             });
-
         </script>
 
         <style>
-            .btn-close-custom{
-                position:absolute;
-                right:15px;
-                top:50%;
-                transform:translateY(-50%);
-                border:none;
-                background:none;
-                padding:10px;
-                cursor:pointer;
+            .btn-close-custom {
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                border: none;
+                background: none;
+                padding: 10px;
+                cursor: pointer;
             }
 
-            .btn-close-custom svg{
-                color:#333;
+            .btn-close-custom svg {
+                color: #333;
             }
 
-            .btn-close-custom:hover svg{
-                color:#dc3545;
+            .btn-close-custom:hover svg {
+                color: #dc3545;
             }
         </style>
 
-          <!-- Announcement -->
+        <!-- Announcement -->
         <link href="{{ asset('css/home.css') }}" rel="stylesheet">
 
         @auth
-        @include('modalTambahPengumuman')
-        @include('modalIntercom')
+            @include('modalTambahPengumuman')
+            @include('modalIntercom')
         @endauth
     </body>
 

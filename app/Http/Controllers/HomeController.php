@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
@@ -29,21 +30,28 @@ class HomeController extends Controller
 
         $now = Carbon::now('Asia/Jakarta');
 
-        // ambil pengumuman yang belum expired
-        // $pengumuman = DB::connection('ConnEDPKrr')
-        //     ->table('Pengumuman')
-        //     ->where('tgl_awal', '<=', $now)
-        //     ->where('tgl_akhir', '>=', $now)
-        //     ->orderByDesc('wkt_tulis')
-        //     ->get();
-        $pengumuman = [];
+        try {
+            // ambil pengumuman yang belum expired
+            $pengumuman = DB::connection('ConnEDPKrr')
+                ->table('Pengumuman')
+                ->where('tgl_awal', '<=', $now)
+                ->where('tgl_akhir', '>=', $now)
+                ->orderByDesc('wkt_tulis')
+                ->get();
 
-        // $users = DB::connection('ConnEDPKrr')
-        //     ->table('UserMaster')
-        //     ->select('NomorUser', 'NamaUser')
-        //     ->orderBy('NamaUser')
-        //     ->get();
-        $users = [];
+            $users = DB::connection('ConnEDPKrr')
+                ->table('UserMaster')
+                ->select('NomorUser', 'NamaUser')
+                ->orderBy('NamaUser')
+                ->get();
+        } catch (\Exception $e) {
+            // Jika koneksi gagal atau database tidak dapat diakses
+            $pengumuman = collect();
+            $users = collect();
+
+            // Optional: simpan log
+            // Log::error('Gagal koneksi ConnEDPKrr: ' . $e->getMessage());
+        }
         return view('home', compact('AccessProgram', 'pengumuman', 'users'));
     }
 
@@ -58,15 +66,77 @@ class HomeController extends Controller
         DB::connection('ConnEDPKrr')->table('Pengumuman')->insert([
             'tgl_awal' => Carbon::today(),
             'tgl_akhir' => Carbon::parse($request->tgl_akhir)
-                ->setTime(23,59,59)
+                ->setTime(23, 59, 59)
                 ->format('Y-m-d H:i:s'),
             'penulis' => Auth::user()->NamaUser,
             'wkt_tulis' => Carbon::now('Asia/Jakarta'),
             'judul_pesan' => strtoupper($request->judul_pesan),
-            'isi_pesan' => $request->isi_pesan
+            'isi_pesan' => $request->isi_pesan,
+            'wa_pengumuman' => $request->grup_pengumuman == 1 ? 1 : 0,
+            'wa_staff' => $request->grup_staff == 1 ? 1 : 0,
+            'lampiran' => $request->lampiran,
         ]);
 
-        return back()->with('status','Pengumuman berhasil dibuat');
+        if ($request->grup_pengumuman == 1) {
+            $response = Http::withHeaders([
+                'Authorization' => env('WA_TOKEN')
+            ])->post('https://api.fonnte.com/send', [
+                        'target' => '120363039436451185@g.us',
+                        'message' => "*PENGUMUMAN*\n\n"
+                            . strtoupper($request->judul_pesan)
+                            . "\n\n"
+                            . $request->isi_pesan
+                            . ($request->lampiran !== null && $request->lampiran !== ''
+                                ? "\n(Pengumuman ini memiliki lampiran yang dapat dilihat di website KRR)"
+                                : "")
+                            . "\n\nPenulis: "
+                            . Auth::user()->NamaUser
+                            . "\n\n_Pesan ini terkirim otomatis menggunakan website KRR_",
+                    ]);
+        }
+
+        if ($request->grup_staff == 1) {
+            $response = Http::withHeaders([
+                'Authorization' => env('WA_TOKEN')
+            ])->post('https://api.fonnte.com/send', [
+                        'target' => '120363044087527441@g.us',
+                        'message' => "*PENGUMUMAN*\n\n"
+                            . strtoupper($request->judul_pesan)
+                            . "\n\n"
+                            . $request->isi_pesan
+                            . ($request->lampiran !== null && $request->lampiran !== ''
+                                ? "\n(Pengumuman ini memiliki lampiran yang dapat dilihat di website KRR)"
+                                : "")
+                            . "\n\nPenulis: "
+                            . Auth::user()->NamaUser
+                            . "\n\n_Pesan ini terkirim otomatis menggunakan website KRR_",
+                    ]);
+        }
+
+        return back()->with('status', 'Pengumuman berhasil dibuat');
+    }
+
+    public function lampiran($id)
+    {
+        $data = DB::connection('ConnEDPKrr')
+            ->table('Pengumuman')
+            ->where('id', $id)
+            ->first();
+
+        abort_if(!$data || empty($data->lampiran), 404);
+
+        $lampiran = $data->lampiran;
+
+        // Ambil mime type
+        preg_match('/^data:(.*?);base64,/', $lampiran, $matches);
+        $mime = $matches[1] ?? 'application/octet-stream';
+
+        // Ambil isi base64 tanpa prefix
+        $base64 = preg_replace('/^data:.*?;base64,/', '', $lampiran);
+
+        return response(base64_decode($base64))
+            ->header('Content-Type', $mime)
+            ->header('Content-Disposition', 'inline');
     }
 
     public function Sales()

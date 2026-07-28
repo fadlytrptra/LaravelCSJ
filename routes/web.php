@@ -77,6 +77,8 @@ Route::get('/login', 'App\Http\Controllers\LoginController@index')->name('login'
 Route::post('Register', 'App\Http\Controllers\LoginController@Register')->name('register');
 Route::post('login', 'App\Http\Controllers\LoginController@login');
 Route::post('/logout', 'App\Http\Controllers\LoginController@logout')->name('logout');
+Route::get('/pengumuman/lampiran/{id}', [HomeController::class, 'lampiran'])
+    ->name('pengumuman.lampiran');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
