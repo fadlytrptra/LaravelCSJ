@@ -244,32 +244,7 @@ class CreateSPPBController extends Controller
                  * =========================
                  */
                 if (!$No_sppb) {
-                    // === BUAT SPPB BARU ===
-                    $year = date("Y");
-                    $yearShort = date("y");
-
-                    $counter = DB::connection('ConnPurchase')->select(
-                        'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
-                        [0, $year]
-                    );
-
-                    if (count($counter) < 1) {
-                        DB::connection('ConnPurchase')->statement(
-                            'EXEC SP_4384_PRG_Maintenance_Counter_SPPB @XKode = ?, @XTahun = ?',
-                            [2, $year]
-                        );
-                        $sppbCounter = 1;
-                    } else {
-                        $sppbCounter = $counter[0]->SPPB + 1;
-                    }
-
-                    DB::connection('ConnPurchase')->statement(
-                        'EXEC SP_4384_PRG_Maintenance_Counter_SPPB
-                        @XKode = ?, @XTahun = ?, @XSPPB = ?',
-                        [1, $year, $sppbCounter]
-                    );
-
-                    $No_sppb = 'PO-' . $yearShort . 'CSJ' . str_pad($sppbCounter, 4, '0', STR_PAD_LEFT);
+                    $No_sppb = $this->generateNoSppbBaru();
                 }
 
                 /**
@@ -305,6 +280,7 @@ class CreateSPPBController extends Controller
                         ]
                     );
                 }
+
                 DB::connection('ConnPurchase')->table('YTRANSBL')
                     ->where('No_sppb', $No_sppb)
                     ->update([

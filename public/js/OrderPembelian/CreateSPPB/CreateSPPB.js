@@ -2030,6 +2030,7 @@ jQuery(function ($) {
             " | " +
             sppb_payments.value;
 
+        console.log("nomorSPPB sebelum save =", nomorSPPB);
         $.ajax({
             url: "/CreateSPPB",
             method: "POST",
