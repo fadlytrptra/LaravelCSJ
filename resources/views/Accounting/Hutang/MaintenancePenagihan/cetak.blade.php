@@ -157,7 +157,7 @@
                     </tr>
                     @php
                         $total = collect($dataCetak)->sum(function ($item) {
-                            return number_format((float) $item->Harga_Terbayar, 2, '.', ',');
+                            return (float) $item->Harga_Terbayar;
                         });
                     @endphp
                     <tr>
