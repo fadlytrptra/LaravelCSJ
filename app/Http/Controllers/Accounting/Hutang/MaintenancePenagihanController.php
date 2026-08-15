@@ -387,6 +387,13 @@ class MaintenancePenagihanController extends Controller
                 $idDivisi,
                 $nomorSPPB
             ]);
+            return response()->json([
+                'idDivisi' => $idDivisi,
+                'nomorSPPB' => $nomorSPPB,
+                'idSupplier' => $idSupplier,
+                'jumlahData' => count($dataSPPB),
+                'dataSPPB' => $dataSPPB
+            ]);
 
             if (count($dataSPPB) > 0) {
 
