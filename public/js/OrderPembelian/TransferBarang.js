@@ -456,12 +456,14 @@ jQuery(function ($) {
                                     .DataTable()
                                     .row(".selected")
                                     .data();
+
                                 if (!selectedData) {
                                     Swal.showValidationMessage(
-                                        "Please select a row"
+                                        "Silakan pilih tujuan terlebih dahulu"
                                     );
                                     return false;
                                 }
+
                                 return selectedData;
                             },
                             width: "40%",
@@ -522,37 +524,73 @@ jQuery(function ($) {
                             },
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                const filteredData = data.filter(
-                                    (item) =>
-                                        item.IdSubkelompok ==
-                                        result.value.IdSubkelompok
-                                );
-                                terima_divisi.value = filteredData[0].NamaDivisi; // prettier-ignore
-                                terima_objek.value = filteredData[0].NamaObjek;
-                                terima_kelompok.value = filteredData[0].NamaKelompok; // prettier-ignore
-                                terima_kodeBarang.value = filteredData[0].KodeBarang; // prettier-ignore
+
+                                const selectedData = result.value;
+
+                                console.log("DATA YANG DIPILIH:", selectedData);
+
+                                terima_divisi.value = selectedData.NamaDivisi;
+                                terima_objek.value = selectedData.NamaObjek;
+                                terima_kelompok.value = selectedData.NamaKelompok;
+                                terima_kodeBarang.value = selectedData.KodeBarang;
                                 terima_PIB.value = rowData[16];
-                                terima_kelompokUtama.value = filteredData[0].NamaKelompokUtama; // prettier-ignore
-                                terima_subKelompok.value = filteredData[0].NamaSubKelompok; // prettier-ignore
-                                terima_idSubKelompok.value = filteredData[0].IdSubkelompok; // prettier-ignore
-                                terima_idType.value = filteredData[0].IdType;
-                                terima_namaType.value = filteredData[0].NamaType; // prettier-ignore
+
+                                terima_kelompokUtama.value =
+                                    selectedData.NamaKelompokUtama;
+
+                                terima_subKelompok.value =
+                                    selectedData.NamaSubKelompok;
+
+                                terima_idSubKelompok.value =
+                                    selectedData.IdSubkelompok;
+
+                                terima_idType.value =
+                                    selectedData.IdType;
+
+                                terima_namaType.value =
+                                    selectedData.NamaType;
+
                                 terima_qtyPesan.value = rowData[5];
                                 terima_satQtyPesan.value = rowData[6];
+
                                 terima_qtyTerima.value = rowData[11];
                                 terima_satQtyTerima.value = rowData[6];
-                                terima_saldoAkhirPrimer.value = numeral(filteredData[0].SaldoPrimer).format("0,0"); // prettier-ignore
-                                terima_satSaldoAkhirPrimer.value = filteredData[0].Primer.trim(); // prettier-ignore
-                                terima_saldoAkhirSekunder.value = numeral(filteredData[0].SaldoSekunder).format("0,0"); // prettier-ignore
-                                terima_satSaldoAkhirSekunder.value = filteredData[0].Sekunder.trim(); // prettier-ignore
-                                terima_saldoAkhirTritier.value = numeral(filteredData[0].SaldoTritier).format("0,0"); // prettier-ignore
-                                terima_satSaldoAkhirTritier.value = filteredData[0].Tritier.trim(); // prettier-ignore
-                                terima_satJumlahTerimaPrimer.value = filteredData[0].Primer.trim(); // prettier-ignore
-                                terima_satJumlahTerimaSekunder.value = filteredData[0].Sekunder.trim(); // prettier-ignore
-                                terima_satJumlahTerimaTritier.value = filteredData[0].Tritier.trim(); // prettier-ignore
-                                terima_noSatPrimer.value = filteredData[0].UnitPrimer; // prettier-ignore
-                                terima_noSatSekunder.value = filteredData[0].UnitSekunder; // prettier-ignore
-                                terima_noSatTritier.value = filteredData[0].UnitTritier; // prettier-ignore
+
+                                terima_saldoAkhirPrimer.value =
+                                    numeral(selectedData.SaldoPrimer).format("0,0");
+
+                                terima_satSaldoAkhirPrimer.value =
+                                    selectedData.Primer?.trim() ?? "";
+
+                                terima_saldoAkhirSekunder.value =
+                                    numeral(selectedData.SaldoSekunder).format("0,0");
+
+                                terima_satSaldoAkhirSekunder.value =
+                                    selectedData.Sekunder?.trim() ?? "";
+
+                                terima_saldoAkhirTritier.value =
+                                    numeral(selectedData.SaldoTritier).format("0,0");
+
+                                terima_satSaldoAkhirTritier.value =
+                                    selectedData.Tritier?.trim() ?? "";
+
+                                terima_satJumlahTerimaPrimer.value =
+                                    selectedData.Primer?.trim() ?? "";
+
+                                terima_satJumlahTerimaSekunder.value =
+                                    selectedData.Sekunder?.trim() ?? "";
+
+                                terima_satJumlahTerimaTritier.value =
+                                    selectedData.Tritier?.trim() ?? "";
+
+                                terima_noSatPrimer.value =
+                                    selectedData.UnitPrimer;
+
+                                terima_noSatSekunder.value =
+                                    selectedData.UnitSekunder;
+
+                                terima_noSatTritier.value =
+                                    selectedData.UnitTritier;
 
                                 if (
                                     terima_satJumlahTerimaPrimer.value.toLowerCase() ==
@@ -561,6 +599,7 @@ jQuery(function ($) {
                                     terima_jumlahTerimaPrimer.value = 0;
                                     terima_jumlahTerimaPrimer.readOnly = true;
                                 }
+
                                 if (
                                     terima_satJumlahTerimaSekunder.value.toLowerCase() ==
                                     "null"
@@ -571,15 +610,13 @@ jQuery(function ($) {
                                     terima_jumlahTerimaSekunder.value =
                                         numeral(rowData[11]).value() / 25;
                                 }
-                                terima_jumlahTerimaTritier.value = numeral(
-                                    rowData[11]
-                                ).value();
+
+                                terima_jumlahTerimaTritier.value =
+                                    numeral(rowData[11]).value();
 
                                 if (!terima_jumlahTerimaPrimer.readOnly) {
                                     terima_jumlahTerimaPrimer.select();
-                                } else if (
-                                    !terima_jumlahTerimaSekunder.readOnly
-                                ) {
+                                } else if (!terima_jumlahTerimaSekunder.readOnly) {
                                     terima_jumlahTerimaSekunder.select();
                                 } else {
                                     terima_jumlahTerimaTritier.select();
