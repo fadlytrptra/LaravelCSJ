@@ -25,11 +25,14 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>Surat Jalan</th>
+                                <th>IDHeader</th>
                                 <th>Tanggal </th>
                                 <th>Customer</th>
                                 <th>Expeditor</th>
                                 <th>Kendaraan</th>
-                                <th>IDHeader</th>
+                                <th>Quantity</th>
+                                <th>Satuan</th>
+                                <th>Harga Satuan</th>
                                 {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
@@ -43,12 +46,21 @@
                                             class="DetailKirim"
                                             style="color: #3490dc; cursor: pointer;">{{ $item->IDPengiriman }}</a>
                                     </td>
+                                    <td class="RDZPaddingTable RDZCenterTable">{{ $item->IdHeaderKirim }}</td>
                                     <td class="RDZPaddingTable RDZCenterTable">
                                         {{ date('m-d-Y', strtotime($item->Tanggal)) }}</td>
                                     <td class="RDZPaddingTable RDZCenterTable">{{ $item->NamaCust }}</td>
                                     <td class="RDZPaddingTable RDZCenterTable">{{ $item->NamaExpeditor }}</td>
                                     <td class="RDZPaddingTable RDZCenterTable">{{ $item->TrukNopol }}</td>
-                                    <td class="RDZPaddingTable RDZCenterTable">{{ $item->IdHeaderKirim }}</td>
+                                    <td class="RDZPaddingTable RDZCenterTable">
+                                        {{ number_format((float) $item->Qty, 2, '.', ',') }}
+                                    </td>
+                                    <td class="RDZPaddingTable RDZCenterTable">
+                                        {{ $item->Satuan }}
+                                    </td>
+                                    <td class="RDZPaddingTable RDZCenterTable">
+                                        {{ number_format((float) $item->HargaSatuan, 2, '.', ',') }}
+                                    </td>
                                     {{-- <td class="acs-td-button">
                                             <form onsubmit="return confirm('Apakah Anda Yakin ?');"
                                                 action="{{ url('SuratJalanManager/' . $item->IdHeaderKirim . '/up') }}"

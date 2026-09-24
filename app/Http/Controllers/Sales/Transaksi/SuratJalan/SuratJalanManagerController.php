@@ -14,6 +14,41 @@ class SuratJalanManagerController extends Controller
     public function index()
     {
         $data = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_HEADERKIRIM_BLMACC');
+        // Ambil semua IdHeaderKirim dari hasil SP
+        $idHeaderKirim = collect($data)
+            ->pluck('IdHeaderKirim')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // Ambil Qty, HargaSatuan, Satuan
+        $detailPengiriman = DB::connection('ConnSales')
+            ->table('T_DetailPengiriman as TDP')
+            ->join(
+                'T_DetailPesanan as TDPesanan',
+                'TDP.IDSuratPesanan',
+                '=',
+                'TDPesanan.IDSuratPesanan'
+            )
+            ->select(
+                'TDP.IDHeaderKirim',
+                'TDPesanan.Qty',
+                'TDPesanan.HargaSatuan',
+                'TDPesanan.Satuan'
+            )
+            ->whereIn('TDP.IDHeaderKirim', $idHeaderKirim)
+            ->get()
+            ->keyBy('IDHeaderKirim');
+
+        foreach ($data as $item) {
+
+            $detail = $detailPengiriman->get($item->IdHeaderKirim);
+
+            $item->Qty = $detail->Qty ?? 0;
+            $item->HargaSatuan = $detail->HargaSatuan ?? 0;
+            $item->Satuan = trim($detail->Satuan ?? '-');
+        }
         $access = (new HakAksesController)->HakAksesFiturMaster('Sales');
         // dd($LoadHeaderPengiriman);
         return view('Sales.Transaksi.SuratJalan.AccPermohonan', compact('data', 'access'));

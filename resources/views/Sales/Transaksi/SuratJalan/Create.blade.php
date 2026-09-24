@@ -130,10 +130,12 @@
                                                 <tr>
                                                     <th>No. DO</th>
                                                     <th>No. Trans</th>
+                                                    <th>IdTransTmp</th>
                                                     <th>Surat Pesanan</th>
                                                     <th>Kode Barang</th>
-                                                    <th>IdTransTmp</th>
                                                     <th>Qty</th>
+                                                    <th>Satuan</th>
+                                                    <th>Harga Satuan</th>
                                                 </tr>
                                             </thead>
                                         </table>

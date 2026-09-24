@@ -15,6 +15,34 @@ class SuratPesananManagerController extends Controller
     public function index()
     {
         $data = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_HEADER_PESANAN_BLMACC @Kode = ?', [2]);
+        // Ambil semua ID Surat Pesanan
+        $idSuratPesanan = collect($data)
+            ->pluck('IDSuratPesanan')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // Ambil Qty, HargaSatuan, dan Satuan dari T_DetailPesanan
+        $detailPesanan = DB::connection('ConnSales')
+            ->table('T_DetailPesanan')
+            ->select(
+                'IDSuratPesanan',
+                'Qty',
+                'HargaSatuan',
+                'Satuan'
+            )
+            ->whereIn('IDSuratPesanan', $idSuratPesanan)
+            ->get()
+            ->keyBy('IDSuratPesanan');
+
+        // Gabungkan ke data header
+        foreach ($data as $item) {
+            $detail = $detailPesanan->get($item->IDSuratPesanan);
+            $item->Qty = $detail->Qty ?? 0;
+            $item->HargaSatuan = $detail->HargaSatuan ?? 0;
+            $item->Satuan = trim($detail->Satuan ?? '-');
+        }
         $jenis_sp = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SP @Kode = ?', [1]);
         $list_customer = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_ALL_CUSTOMER @Kode = ?', [1]);
         $list_sales = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SALES');
@@ -25,7 +53,8 @@ class SuratPesananManagerController extends Controller
         $list_sp = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_SP_BLM_ACC');
         $user = trim(Auth::user()->NomorUser);
         $access = (new HakAksesController)->HakAksesFiturMaster('Sales');
-        return view('Sales.Transaksi.SuratPesanan.AccManager', compact('data', 'access', 'jenis_sp', 'list_customer', 'list_sales', 'jenis_bayar', 'jenis_brg', 'kategori_utama', 'list_satuan', 'list_sp', 'user'));
+
+        return view('Sales.Transaksi.SuratPesanan.AccManager', compact('data','access','jenis_sp','list_customer','list_sales','jenis_bayar','jenis_brg','kategori_utama','list_satuan','list_sp','user'));
     }
 
     //Show the form for creating a new resource.

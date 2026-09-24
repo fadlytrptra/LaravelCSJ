@@ -58,13 +58,16 @@
                                 <th>Nomor PO</th>
                                 <th>Nomor PI</th>
                                 <th>Nama Sales</th>
+                                <th>Quantity</th>
+                                <th>Satuan</th>
+                                <th>Harga Satuan</th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
                     @php
-                        $canApprove = in_array(trim($user), ['adam', 'rudy']);
+                        $canApprove = in_array(trim($user), ['christo', 'rudy']);
                     @endphp
                     <button class="btn btn-sm btn-success"
                         @unless ($canApprove) style="display:none" @endunless

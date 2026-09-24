@@ -51,7 +51,34 @@ class SuratJalanController extends Controller
 
     public function getDataDeliveryOrder($deliveryOrder)
     {
-        $dataDeliveryOrder = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_KODEBARANG_DO @IdDO = ?', [$deliveryOrder]);
+        $dataDeliveryOrder = DB::connection('ConnSales')
+            ->select(
+                'exec SP_1273_PRG_LIST_KODEBARANG_DO @IdDO = ?',
+                [$deliveryOrder]
+            );
+
+        foreach ($dataDeliveryOrder as $item) {
+
+            $detailPesanan = DB::connection('ConnSales')
+                ->table('T_DeliveryOrder as DO')
+                ->join(
+                    'T_DetailPesanan as DP',
+                    'DO.IDPesanan',
+                    '=',
+                    'DP.IDPesanan'
+                )
+                ->select(
+                    'DP.HargaSatuan',
+                    'DP.Satuan'
+                )
+                ->where('DO.IDDO', $deliveryOrder)
+                ->where('DP.IDBarang', $item->IDBarang)
+                ->first();
+
+            $item->HargaSatuan = $detailPesanan->HargaSatuan ?? 0;
+            $item->Satuan = trim($detailPesanan->Satuan ?? '-');
+        }
+
         return response()->json($dataDeliveryOrder);
     }
 

@@ -59,6 +59,23 @@ class SuratPesananDirekturController extends Controller
             $idJenisSP = $request->idJenisSP;
             $dataSuratPesanan = DB::connection('ConnSales')
                 ->select('exec SP_1273_PRG_LIST_SP_ACC_DIREKTUR @IDJnsSuratPesanan = ?, @XKode = ?', [$idJenisSP, 1]);
+            // tambah get data Qty, Harga Satuan, dan Satuan
+            foreach ($dataSuratPesanan as $item) {
+                $detail = DB::connection('ConnSales')
+                    ->table('T_DetailPesanan as DP')
+                    ->select(
+                        'DP.Qty',
+                        'DP.HargaSatuan',
+                        'DP.Satuan'
+                    )
+                    ->where('DP.IDSuratPesanan', $item->IDSuratPesanan)
+                    ->first();
+
+                $item->Qty = $detail->Qty ?? 0;
+                $item->HargaSatuan = $detail->HargaSatuan ?? 0;
+                $item->Satuan = trim($detail->Satuan ?? '-');
+            }
+
             return response()->json($dataSuratPesanan, 200);
         } else if ($id == 'getDetailSP') {
             $no_spValue = $request->no_spValue;

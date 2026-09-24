@@ -161,6 +161,9 @@ jQuery(function ($) {
                                 suratPesanan.NO_PO,
                                 suratPesanan.NO_PI,
                                 suratPesanan.NamaSales,
+                                numeral(suratPesanan.Qty ?? 0).format("0,0.00"),
+                                suratPesanan.Satuan ?? "-",
+                                numeral(suratPesanan.HargaSatuan ?? 0).format("0,0.00")
                             ])
                             .draw();
                     });

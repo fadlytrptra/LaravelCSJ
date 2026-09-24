@@ -79,6 +79,9 @@ const table_listJual = $("#table_listJual").DataTable({
 });
 const table = document.getElementById("list_view");
 
+let hargaSatuanDO = 0;
+let satuanDO = "-";
+
 //#endregion
 
 //#region input filter
@@ -164,9 +167,11 @@ nomor_do.addEventListener("change", function () {
         .then((response) => response.json())
         .then((options) => {
             // console.log(options);
-            hidden_kodeBarang.value = options[0].IDBarang;
             hidden_transTmp.value = options[0].IdTransTmp;
+            hidden_kodeBarang.value = options[0].IDBarang;
             hidden_qty.value = numeral(options[0].QtyTritier).format("0,0");
+            satuanDO = (options[0].Satuan ?? "-").trim();
+            hargaSatuanDO = options[0].HargaSatuan ?? 0;
         });
 });
 
@@ -384,10 +389,12 @@ add_item.addEventListener("click", function () {
             nomor_do.options[nomor_do.selectedIndex].value,
             // uraian.value,
             "",
+            hidden_transTmp.value,
             surat_pesanan.options[surat_pesanan.selectedIndex].text,
             hidden_kodeBarang.value,
-            hidden_transTmp.value,
             hidden_qty.value,
+            satuanDO,
+            numeral(hargaSatuanDO).format("0,0.00")
         ];
         funcInsertRow(arraydata);
         funcClearDataInput();
@@ -455,7 +462,7 @@ function funcInsertRow(array) {
 
             // add the "highlighted" class to all input elements in the row
             let selectedRow = table.querySelector("tr.highlighted");
-            let selectedOption = selectedRow.cells[4].querySelector("input");
+            let selectedOption = selectedRow.cells[2].querySelector("input");
 
             // Get the text content of the selected option
             var selectedText = selectedOption.value;
