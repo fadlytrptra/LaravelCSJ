@@ -13,8 +13,8 @@ class SuratJalanManagerController extends Controller
     //Display a listing of the resource.
     public function index()
     {
-        $data = db::connection('ConnSales')->select('exec SP_1273_PRG_LIST_HEADERKIRIM_BLMACC');
-        // Ambil semua IdHeaderKirim dari hasil SP
+        $data = DB::connection('ConnSales')->select('exec SP_1273_PRG_LIST_HEADERKIRIM_BLMACC');
+
         $idHeaderKirim = collect($data)
             ->pluck('IdHeaderKirim')
             ->filter()
@@ -22,35 +22,24 @@ class SuratJalanManagerController extends Controller
             ->values()
             ->toArray();
 
-        // Ambil Qty, HargaSatuan, Satuan
-        $detailPengiriman = DB::connection('ConnSales')
+        $detailPesanan = DB::connection('ConnSales')
             ->table('T_DetailPengiriman as TDP')
-            ->join(
-                'T_DetailPesanan as TDPesanan',
-                'TDP.IDSuratPesanan',
-                '=',
-                'TDPesanan.IDSuratPesanan'
-            )
-            ->select(
-                'TDP.IDHeaderKirim',
-                'TDPesanan.Qty',
-                'TDPesanan.HargaSatuan',
-                'TDPesanan.Satuan'
-            )
+            ->join('T_DeliveryOrder as TDO','TDP.IDDO','=','TDO.IDDO')
+            ->join('T_DetailPesanan as TDPesanan','TDO.IDPesanan','=','TDPesanan.IDPesanan')
+            ->select('TDP.IDHeaderKirim','TDPesanan.Qty','TDPesanan.HargaSatuan','TDPesanan.Satuan')
             ->whereIn('TDP.IDHeaderKirim', $idHeaderKirim)
             ->get()
             ->keyBy('IDHeaderKirim');
 
         foreach ($data as $item) {
-
-            $detail = $detailPengiriman->get($item->IdHeaderKirim);
-
+            $detail = $detailPesanan->get($item->IdHeaderKirim);
             $item->Qty = $detail->Qty ?? 0;
             $item->HargaSatuan = $detail->HargaSatuan ?? 0;
             $item->Satuan = trim($detail->Satuan ?? '-');
         }
+
         $access = (new HakAksesController)->HakAksesFiturMaster('Sales');
-        // dd($LoadHeaderPengiriman);
+
         return view('Sales.Transaksi.SuratJalan.AccPermohonan', compact('data', 'access'));
     }
 
