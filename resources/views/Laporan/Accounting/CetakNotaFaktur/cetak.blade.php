@@ -82,6 +82,10 @@
                         Bank OCBC Cab. Pemuda, Surabaya<br />
                         a/c: 050.800.525.037<br />
                         a/n: PT. CAHAYA SANTOSO JAYA
+                    @elseif ($bank == 'CIMB')
+                        Bank CIMB Niaga Cab. Mayjend Sungkono, Surabaya
+                        a/c: 802.220.003.300
+                        a/n: PT.CAHAYA SANTOSO JAYA
                     @endif
                 </span>
             </div>
