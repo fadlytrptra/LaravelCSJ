@@ -83,8 +83,8 @@
                         a/c: 050.800.525.037<br />
                         a/n: PT. CAHAYA SANTOSO JAYA
                     @elseif ($bank == 'CIMB')
-                        Bank CIMB Niaga Cab. Mayjend Sungkono, Surabaya
-                        a/c: 802.220.003.300
+                        Bank CIMB Niaga Cab. Mayjend Sungkono, Surabaya<br />
+                        a/c: 802.220.003.300<br />
                         a/n: PT.CAHAYA SANTOSO JAYA
                     @endif
                 </span>
