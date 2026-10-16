@@ -56,21 +56,60 @@ class CetakNotaFakturController extends Controller
             $jenisCetak = $request->input('jenisCetak');
             $bank = $request->input('bank');
             $idPenagihan = $request->input('idPenagihan');
+            $nilaiBlmPajak = 0;
+            $idPenagihan = $request->input('idPenagihan');
+            $nilaiBlmPajak = 0;
+
             if ($jenisCetak == 'NotaFaktur') {
                 $dataCetak = DB::connection('ConnAccounting')
                     ->select(
-                        'SELECT * FROM vw_prg_cetak_Penagihan_SJ WHERE Id_Penagihan = ?',
+                        'SELECT *
+                        FROM vw_prg_cetak_Penagihan_SJ
+                        WHERE Id_Penagihan = ?',
                         [$idPenagihan]
                     );
+
+                $hasilNilai = DB::connection('ConnAccounting')->selectOne(
+                    'SELECT Nilai_blm_Pajak, Nilai_Penagihan
+                    FROM dbo.T_PENAGIHAN_SJ
+                    WHERE Id_Penagihan = ?',
+                    [$idPenagihan]
+                );
+
+                $nilaiBlmPajak = (float) ($hasilNilai->Nilai_blm_Pajak ?? 0);
+
             } else if ($jenisCetak == 'Tunai') {
                 $dataCetak = DB::connection('ConnAccounting')
                     ->select(
-                        'SELECT * FROM vw_prg_Cetak_Penagihan_SP WHERE Id_Penagihan = ?',
+                        'SELECT *
+                        FROM vw_prg_Cetak_Penagihan_SP
+                        WHERE Id_Penagihan = ?',
                         [$idPenagihan]
                     );
+
+                $hasilNilai = DB::connection('ConnAccounting')->selectOne(
+                    'SELECT Nilai_blm_Pajak, Nilai_Penagihan
+                    FROM dbo.T_PENAGIHAN_SJ
+                    WHERE Id_Penagihan = ?',
+                    [$idPenagihan]
+                );
+
+                $nilaiBlmPajak = (float) ($hasilNilai->Nilai_blm_Pajak ?? 0);
+
+                $nilaiBlmPajak = $hasilNilai->Nilai_blm_Pajak ?? 0;
             }
-            // dd($dataCetak);
-            return view('Laporan.Accounting.CetakNotaFaktur.cetak', compact('dataCetak', 'ttd', 'jenisCetak', 'bank', 'idPenagihan'));
+
+            return view(
+                'Laporan.Accounting.CetakNotaFaktur.cetak',
+                compact(
+                    'dataCetak',
+                    'ttd',
+                    'jenisCetak',
+                    'bank',
+                    'idPenagihan',
+                    'nilaiBlmPajak'
+                )
+            );
         }
     }
 
