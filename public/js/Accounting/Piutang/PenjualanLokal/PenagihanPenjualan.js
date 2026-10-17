@@ -128,6 +128,62 @@ $(document).ready(function () {
     btn_isi.focus();
 
     let tableData = [];
+
+
+    function hitungRingkasanPenagihan() {
+        // Total seluruh Nilai Penagihan pada tabel Surat Jalan
+        const totalSuratJalan = table_atas
+            .rows()
+            .data()
+            .toArray()
+            .reduce((sum, row) => {
+                return sum + (numeral(row[4]).value() || 0);
+            }, 0);
+
+        // Total seluruh Jumlah UM pada tabel Uang Muka
+        const totalUangMuka = table_bawah
+            .rows()
+            .data()
+            .toArray()
+            .reduce((sum, row) => {
+                return sum + (numeral(row[1]).value() || 0);
+            }, 0);
+
+        // Nilai Penagihan = Total Surat Jalan - Total Uang Muka
+        const nilaiPenagihanBersih = totalSuratJalan - totalUangMuka;
+
+        // Perhitungan DPP, PPN, dan Total
+        const dppNilaiLain = (nilaiPenagihanBersih * 11) / 12;
+        const nilaiPPN = (dppNilaiLain * 12) / 100;
+        const nilaiTotal = nilaiPenagihanBersih + nilaiPPN;
+
+        nilaiPenagihan.value = numeral(
+            nilaiPenagihanBersih
+        ).format("0,0.00");
+
+        nilaiUangMuka.value = numeral(
+            totalUangMuka
+        ).format("0,0.00");
+
+        dpp_nilaiLain.value = numeral(
+            dppNilaiLain
+        ).format("0,0.00");
+
+        nilai_ppn.value = numeral(
+            nilaiPPN
+        ).format("0,0.00");
+
+        nilai_total.value = numeral(
+            nilaiTotal
+        ).format("0,0.00");
+
+        if (idMataUang.value == "1") {
+            terbilang.value = convertNumberToWordsRupiah(nilaiTotal);
+        } else {
+            terbilang.value = convertNumberToWordsDollar(nilaiTotal);
+        }
+    }
+
     tanggal.addEventListener("input", function () {
         const selectedDate = new Date(this.value);
         penagihanPajak.valueAsDate = selectedDate;
@@ -253,7 +309,7 @@ $(document).ready(function () {
         }
 
         // Nilai Penagihan Ditambah PPN
-        TNilaiPenagihan -= TNilaiUM;
+        // TNilaiPenagihan -= TNilaiUM;
 
         // Handle customer type and PPN
         if (
@@ -504,15 +560,15 @@ $(document).ready(function () {
         }
     });
 
+
     btn_simpanM.addEventListener("click", async function (event) {
         event.preventDefault();
 
-        // Get the data from table_item
+        // Ambil data dari tabel detail barang
         const table_item = $("#table_item").DataTable();
         const rows = table_item.rows().data();
-        console.log(rows);
 
-        rows.each(function (rowData, index) {
+        rows.each(function (rowData) {
             const newRow = {
                 Id_Detail: tableData.length + 1,
                 surat_jalan: surat_jalan.value,
@@ -524,11 +580,9 @@ $(document).ready(function () {
             };
 
             tableData.push(newRow);
-            console.log(tableData);
 
+            // Tambahkan item ke tabel Surat Jalan
             if ($.fn.DataTable.isDataTable("#table_atas")) {
-                var table_atas = $("#table_atas").DataTable();
-
                 table_atas.row
                     .add([
                         newRow.Id_Detail,
@@ -544,87 +598,17 @@ $(document).ready(function () {
             }
         });
 
-        const totalPelunasan = table_atas
-            .rows()
-            .data()
-            .toArray()
-            .reduce((sum, row) => {
-                let jumlahUang = numeral(row[4]).value();
-                return sum + parseFloat(jumlahUang);
-            }, 0);
+        // Hitung ulang ringkasan setelah item ditambahkan
+        hitungRingkasanPenagihan();
 
-
-        const dataUM = tableData.filter(
-            (row) => row.no_penagihanUM
-        );
-
-        let nilaiBlmPajak;
-        let nilaiPenagihanAkhir;
-        let dppNilaiLain;
-        let nilaiPPN;
-        let nilaiTotal;
-
-        if (dataUM.length > 0) {
-            // Ambil Nilai_blm_Pajak dari T_PENAGIHAN_SJ
-            nilaiBlmPajak = dataUM.reduce((sum, row) => {
-                return sum + (numeral(row.nilai_BLM_PAJAK).value() || 0);
-            }, 0);
-
-            // Ambil Nilai_Penagihan dari T_PENAGIHAN_SJ
-            nilaiPenagihanAkhir = dataUM.reduce((sum, row) => {
-                return sum + (Number(row.Nilai_Penagihan) || 0);
-            }, 0);
-
-            dppNilaiLain = (nilaiBlmPajak * 11) / 12;
-
-            // PPN = Nilai_Penagihan - Nilai_blm_Pajak
-            nilaiPPN = nilaiPenagihanAkhir - nilaiBlmPajak;
-
-            nilaiTotal = nilaiPenagihanAkhir;
-
-            nilaiPenagihan.value = numeral(
-                nilaiBlmPajak
-            ).format("0,0.00");
-
-            nilaiUangMuka.value = numeral(0).format("0,0.00");
-
-        } else {
-            // Pertahankan perhitungan lama jika tidak ada Uang Muka
-            nilaiBlmPajak = totalPelunasan;
-            dppNilaiLain = (totalPelunasan * 11) / 12;
-            nilaiPPN = (dppNilaiLain * 12) / 100;
-            nilaiTotal = totalPelunasan + nilaiPPN;
-
-            nilaiPenagihan.value = numeral(
-                totalPelunasan
-            ).format("0,0.00");
-
-            nilaiUangMuka.value = numeral(0).format("0,0.00");
-        }
-
-        dpp_nilaiLain.value = numeral(
-            dppNilaiLain
-        ).format("0,0.00");
-
-        nilai_ppn.value = numeral(
-            nilaiPPN
-        ).format("0,0.00");
-
-        nilai_total.value = numeral(
-            nilaiTotal
-        ).format("0,0.00");
-
-        terbilang.value = convertNumberToWordsRupiah(
-            nilaiTotal
-        );
-
-
+        // Tutup modal
         btn_keluarM.click();
 
         setTimeout(() => {
             btn_dokumen.focus();
         }, 300);
     });
+
 
     btn_lihatItem.addEventListener("click", async function (event) {
         event.preventDefault();
@@ -743,20 +727,22 @@ $(document).ready(function () {
             tableData = tableData.filter((row) => row.Id_Detail !== rowData[0]);
             console.log(tableData);
 
-            const totalPelunasan = table_atas
-                .rows()
-                .data()
-                .toArray()
-                .reduce((sum, row) => {
-                    let jumlahUang = row[4].replace(/,/g, "");
-                    return sum + parseInt(jumlahUang);
-                }, 0);
-            console.log(totalPelunasan);
 
-            nilaiPenagihan.value = totalPelunasan.toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
+            hitungRingkasanPenagihan();
+            // const totalPelunasan = table_atas
+            //     .rows()
+            //     .data()
+            //     .toArray()
+            //     .reduce((sum, row) => {
+            //         let jumlahUang = row[4].replace(/,/g, "");
+            //         return sum + parseInt(jumlahUang);
+            //     }, 0);
+            // console.log(totalPelunasan);
+
+            // nilaiPenagihan.value = totalPelunasan.toLocaleString("en-US", {
+            //     minimumFractionDigits: 2,
+            //     maximumFractionDigits: 2,
+            // });
         } else {
             Swal.fire({
                 icon: "info",
@@ -789,20 +775,12 @@ $(document).ready(function () {
             );
             console.log(tableData);
 
-            const totalPelunasanUM = table_bawah
-                .rows()
-                .data()
-                .toArray()
-                .reduce((sum, row) => {
-                    let jumlahUangUM = row[1].replace(/,/g, "");
-                    return sum + parseInt(jumlahUangUM);
-                }, 0);
-            console.log(totalPelunasanUM);
+            hitungRingkasanPenagihan();
 
-            nilaiUangMuka.value = totalPelunasanUM.toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
+            // nilaiUangMuka.value = totalPelunasanUM.toLocaleString("en-US", {
+            //     minimumFractionDigits: 2,
+            //     maximumFractionDigits: 2,
+            // });
         } else {
             Swal.fire({
                 icon: "info",
@@ -1706,23 +1684,15 @@ $(document).ready(function () {
                             .draw();
                     }
 
-                    const totalPelunasanUM = table_bawah
-                        .rows()
-                        .data()
-                        .toArray()
-                        .reduce((sum, row) => {
-                            let jumlahUangUM = row[1].replace(/,/g, "");
-                            return sum + parseInt(jumlahUangUM);
-                        }, 0);
-                    console.log(totalPelunasanUM);
+                    hitungRingkasanPenagihan();
 
-                    nilaiUangMuka.value = totalPelunasanUM.toLocaleString(
-                        "en-US",
-                        {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        },
-                    );
+                    // nilaiUangMuka.value = totalPelunasanUM.toLocaleString(
+                    //     "en-US",
+                    //     {
+                    //         minimumFractionDigits: 2,
+                    //         maximumFractionDigits: 2,
+                    //     },
+                    // );
                 }
             });
         } catch (error) {
