@@ -463,21 +463,51 @@ class PenagihanPenjualanController extends Controller
             }
 
             return datatables($response)->make(true);
-        } else if ($id == 'getTagihanDP') {
-            $suratPesanan = $request->input('no_sp');
 
-            $results = DB::connection('ConnAccounting')
-                ->select('exec SP_1273_PRG_LIST_TAGIHAN_DP_1 @SuratPesanan = ?', [$suratPesanan]);
+            } else if ($id == 'getTagihanDP') {
+                $suratPesanan = $request->input('no_sp');
 
-            $response = [];
-            foreach ($results as $row) {
-                $response[] = [
-                    'Id_Penagihan' => $row->Id_Penagihan,
-                    'nilai_BLM_PAJAK' => $row->nilai_BLM_PAJAK,
-                ];
-            }
+                $results = DB::connection('ConnAccounting')
+                    ->select(
+                        'exec SP_1273_PRG_LIST_TAGIHAN_DP_1 @SuratPesanan = ?',
+                        [$suratPesanan]
+                    );
 
-            return datatables($response)->make(true);
+                $ids = collect($results)
+                    ->map(fn($row) => trim((string) $row->Id_Penagihan))
+                    ->all();
+
+                $headerById = collect();
+
+                if (!empty($ids)) {
+                    $headerById = DB::connection('ConnAccounting')
+                        ->table('T_PENAGIHAN_SJ')
+                        ->whereIn('Id_Penagihan', $ids)
+                        ->get([
+                            'Id_Penagihan',
+                            'Nilai_blm_Pajak',
+                            'Nilai_Penagihan'
+                        ])
+                        ->keyBy(fn($row) => trim((string) $row->Id_Penagihan));
+                }
+
+                $response = [];
+
+                foreach ($results as $row) {
+                    $id = trim((string) $row->Id_Penagihan);
+                    $header = $headerById->get($id);
+
+                    $response[] = [
+                        'Id_Penagihan' => $id,
+                        'nilai_BLM_PAJAK' =>
+                            $header->Nilai_blm_Pajak ?? $row->nilai_BLM_PAJAK,
+                        'Nilai_Penagihan' =>
+                            $header->Nilai_Penagihan ?? 0,
+                    ];
+                }
+
+                return datatables($response)->make(true);
+
         } else if ($id == 'getSuratJalan') {
             // Menjalankan stored procedure 'SP_1486_ACC_LIST_PENGIRIMAN'
             $kode = 1;
@@ -544,6 +574,13 @@ class PenagihanPenjualanController extends Controller
                     [2, $sSuratJalan, $sIdCust, $sSuratPesanan]
                 );
             // dd($results);
+            // dd([
+            //     'request' => $request->all(),
+            //     'surat_jalan' => $sSuratJalan,
+            //     'id_customer' => $sIdCust,
+            //     'no_sp' => $sSuratPesanan,
+            //     'results' => $results,
+            // ]);
             // Initialize variables
             $response = [];
             $total = 0;

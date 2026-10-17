@@ -553,15 +553,72 @@ $(document).ready(function () {
                 return sum + parseFloat(jumlahUang);
             }, 0);
 
-        let dppNilaiLain = (totalPelunasan * 11) / 12;
-        let nilaiPPN = (dppNilaiLain * 12) / 100;
-        let nilaiTotal = totalPelunasan + nilaiPPN;
-        nilaiPenagihan.value = numeral(totalPelunasan).format("0,0.00");
-        nilaiUangMuka.value = 0;
-        dpp_nilaiLain.value = numeral(dppNilaiLain).format("0,0.00");
-        nilai_ppn.value = numeral(nilaiPPN).format("0,0.00");
-        nilai_total.value = numeral(nilaiTotal).format("0,0.00");
-        terbilang.value = convertNumberToWordsRupiah(nilaiTotal);
+
+        const dataUM = tableData.filter(
+            (row) => row.no_penagihanUM
+        );
+
+        let nilaiBlmPajak;
+        let nilaiPenagihanAkhir;
+        let dppNilaiLain;
+        let nilaiPPN;
+        let nilaiTotal;
+
+        if (dataUM.length > 0) {
+            // Ambil Nilai_blm_Pajak dari T_PENAGIHAN_SJ
+            nilaiBlmPajak = dataUM.reduce((sum, row) => {
+                return sum + (numeral(row.nilai_BLM_PAJAK).value() || 0);
+            }, 0);
+
+            // Ambil Nilai_Penagihan dari T_PENAGIHAN_SJ
+            nilaiPenagihanAkhir = dataUM.reduce((sum, row) => {
+                return sum + (Number(row.Nilai_Penagihan) || 0);
+            }, 0);
+
+            dppNilaiLain = (nilaiBlmPajak * 11) / 12;
+
+            // PPN = Nilai_Penagihan - Nilai_blm_Pajak
+            nilaiPPN = nilaiPenagihanAkhir - nilaiBlmPajak;
+
+            nilaiTotal = nilaiPenagihanAkhir;
+
+            nilaiPenagihan.value = numeral(
+                nilaiBlmPajak
+            ).format("0,0.00");
+
+            nilaiUangMuka.value = numeral(0).format("0,0.00");
+
+        } else {
+            // Pertahankan perhitungan lama jika tidak ada Uang Muka
+            nilaiBlmPajak = totalPelunasan;
+            dppNilaiLain = (totalPelunasan * 11) / 12;
+            nilaiPPN = (dppNilaiLain * 12) / 100;
+            nilaiTotal = totalPelunasan + nilaiPPN;
+
+            nilaiPenagihan.value = numeral(
+                totalPelunasan
+            ).format("0,0.00");
+
+            nilaiUangMuka.value = numeral(0).format("0,0.00");
+        }
+
+        dpp_nilaiLain.value = numeral(
+            dppNilaiLain
+        ).format("0,0.00");
+
+        nilai_ppn.value = numeral(
+            nilaiPPN
+        ).format("0,0.00");
+
+        nilai_total.value = numeral(
+            nilaiTotal
+        ).format("0,0.00");
+
+        terbilang.value = convertNumberToWordsRupiah(
+            nilaiTotal
+        );
+
+
         btn_keluarM.click();
 
         setTimeout(() => {
@@ -1628,8 +1685,11 @@ $(document).ready(function () {
                     const newRow = {
                         no_penagihanUM: no_penagihanUM.value,
                         nilai_BLM_PAJAK: numeral(
-                            selectedRow.nilai_BLM_PAJAK.trim(),
+                            selectedRow.nilai_BLM_PAJAK
                         ).format("0,0.00"),
+                        Nilai_Penagihan: numeral(
+                            selectedRow.Nilai_Penagihan
+                        ).value() || 0,
                     };
 
                     tableData.push(newRow);
