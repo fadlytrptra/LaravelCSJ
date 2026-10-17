@@ -111,20 +111,23 @@
                 $nilaiUM = (float) ($dataCetak[0]->Nilai_UM ?? 0);
                 $nilaiPenagihan = (float) ($dataCetak[0]->Nilai_Penagihan ?? 0);
 
-                $nilaiBlmPajak = (float) ($nilaiBlmPajak ?? 0);
+                // Khusus untuk total harga jual barang
+                $totalHargaJual = 0;
 
+                foreach ($dataCetak as $item) {
+                    $totalHargaJual += (float) $item->Jml
+                        * (float) $item->HargaSatuan;
+                }
+
+                $nilaiBlmPajak = (float) ($nilaiBlmPajak ?? 0);
                 $ppn = (float) ($dataCetak[0]->PersenPPN ?? 0);
+
                 if ($ppn > 1) {
                     $ppn = $ppn / 100;
                 }
 
-                // DPP berdasarkan Nilai_blm_Pajak
                 $dpp = $nilaiBlmPajak * 11 / 12;
-
-                // Pajak = Nilai_Penagihan - Nilai_blm_Pajak
                 $pajak = $nilaiPenagihan - $nilaiBlmPajak;
-
-                // Total penagihan
                 $terbayar = $nilaiPenagihan;
 
                 $tglPenagihan = $dataCetak[0]->Tgl_Penagihan;
@@ -140,7 +143,7 @@
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
             <div style="left: 17.35cm;top: 20.65cm; position: absolute;font-size:12px;width: 2.3cm;text-align: right;">
-                {{ number_format((float) $nilaiBlmPajak, 2, '.', ',') }}
+                {{ number_format((float) $totalHargaJual, 2, '.', ',') }}
             </div>
             <div style="left: 16.75cm;top: 21.25cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
