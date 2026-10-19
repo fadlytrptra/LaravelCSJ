@@ -122,38 +122,32 @@
                 }
 
                 if ($jenisCetak === 'NotaFaktur') {
-                    // NotaFaktur: tampilkan harga jual dan UM.
+                    // NotaFaktur: total harga jual dikurangi UM.
                     $nilaiBarisPertama = $totalHargaJual;
                     $nilaiUMTampil = $nilaiUM;
 
-                    // Dasar penagihan = harga jual - UM.
                     $dasarPenagihan = max(
                         0,
                         $totalHargaJual - $nilaiUM
                     );
-                } else {
-                    // Tunai: harga jual dikurangi nilai penyesuaian Rp55.000.
-                    $nilaiBarisPertama = max(
-                        0,
-                        $totalHargaJual - $nilaiBlmPajak
-                    );
 
-                    // Tunai tidak menampilkan UM.
+                } else {
+                    // Tunai: gunakan Nilai_blm_Pajak langsung.
+                    $nilaiBarisPertama = $nilaiBlmPajak;
                     $nilaiUMTampil = 0;
 
-                    $dasarPenagihan = $nilaiBarisPertama;
+                    $dasarPenagihan = $nilaiBlmPajak;
                 }
 
-                // Hitung DPP Nilai Lain dan PPN.
+                // Hitung DPP Nilai Lain.
                 if (abs($ppn - 0.12) < 0.000001) {
                     $dpp = $dasarPenagihan * 11 / 12;
                 } else {
                     $dpp = $dasarPenagihan;
                 }
 
+                // Hitung PPN dan total penagihan.
                 $pajak = round($dpp * $ppn, 2);
-
-                // Total = dasar penagihan + PPN.
                 $terbayar = round($dasarPenagihan + $pajak, 2);
 
                 // Jatuh tempo.
