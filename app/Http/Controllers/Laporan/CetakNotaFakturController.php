@@ -51,13 +51,13 @@ class CetakNotaFakturController extends Controller
                 ->get();
 
             return datatables($dataPenagihan)->make(true);
-        } else if ($id == 'print') {
+        }
+        else if ($id == 'print') {
             $ttd = $request->input('ttd');
             $jenisCetak = $request->input('jenisCetak');
             $bank = $request->input('bank');
             $idPenagihan = $request->input('idPenagihan');
-            $nilaiBlmPajak = 0;
-            $idPenagihan = $request->input('idPenagihan');
+
             $nilaiBlmPajak = 0;
 
             if ($jenisCetak == 'NotaFaktur') {
@@ -69,16 +69,7 @@ class CetakNotaFakturController extends Controller
                         [$idPenagihan]
                     );
 
-                $hasilNilai = DB::connection('ConnAccounting')->selectOne(
-                    'SELECT Nilai_blm_Pajak, Nilai_Penagihan
-                    FROM dbo.T_PENAGIHAN_SJ
-                    WHERE Id_Penagihan = ?',
-                    [$idPenagihan]
-                );
-
-                $nilaiBlmPajak = (float) ($hasilNilai->Nilai_blm_Pajak ?? 0);
-
-            } else if ($jenisCetak == 'Tunai') {
+            } elseif ($jenisCetak == 'Tunai') {
                 $dataCetak = DB::connection('ConnAccounting')
                     ->select(
                         'SELECT *
@@ -111,6 +102,7 @@ class CetakNotaFakturController extends Controller
                 )
             );
         }
+
     }
 
     public function edit($id)

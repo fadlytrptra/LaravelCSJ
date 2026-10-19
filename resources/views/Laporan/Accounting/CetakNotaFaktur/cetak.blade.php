@@ -107,43 +107,73 @@
 
                 $jatuhTempo = date('d/m/Y', strtotime("+{$syaratBayar} days", strtotime($tglPenagihan)));
             @endphp --}}
+
             @php
+                // Total harga jual barang yang sudah dihitung dalam foreach.
+                $totalHargaJual = (float) ($total ?? 0);
+
                 $nilaiUM = (float) ($dataCetak[0]->Nilai_UM ?? 0);
-                $nilaiPenagihan = (float) ($dataCetak[0]->Nilai_Penagihan ?? 0);
-
-                // Khusus untuk total harga jual barang
-                $totalHargaJual = 0;
-
-                foreach ($dataCetak as $item) {
-                    $totalHargaJual += (float) $item->Jml
-                        * (float) $item->HargaSatuan;
-                }
-
                 $nilaiBlmPajak = (float) ($nilaiBlmPajak ?? 0);
-                $ppn = (float) ($dataCetak[0]->PersenPPN ?? 0);
+
+                $ppn = (float) ($dataCetak[0]->PersenPPN ?? 0.12);
 
                 if ($ppn > 1) {
-                    $ppn = $ppn / 100;
+                    $ppn /= 100;
                 }
 
-                $dpp = $nilaiBlmPajak * 11 / 12;
-                $pajak = $nilaiPenagihan - $nilaiBlmPajak;
-                $terbayar = $nilaiPenagihan;
+                if ($jenisCetak === 'NotaFaktur') {
+                    // NotaFaktur: tampilkan harga jual dan UM.
+                    $nilaiBarisPertama = $totalHargaJual;
+                    $nilaiUMTampil = $nilaiUM;
 
+                    // Dasar penagihan = harga jual - UM.
+                    $dasarPenagihan = max(
+                        0,
+                        $totalHargaJual - $nilaiUM
+                    );
+                } else {
+                    // Tunai: harga jual dikurangi nilai penyesuaian Rp55.000.
+                    $nilaiBarisPertama = max(
+                        0,
+                        $totalHargaJual - $nilaiBlmPajak
+                    );
+
+                    // Tunai tidak menampilkan UM.
+                    $nilaiUMTampil = 0;
+
+                    $dasarPenagihan = $nilaiBarisPertama;
+                }
+
+                // Hitung DPP Nilai Lain dan PPN.
+                if (abs($ppn - 0.12) < 0.000001) {
+                    $dpp = $dasarPenagihan * 11 / 12;
+                } else {
+                    $dpp = $dasarPenagihan;
+                }
+
+                $pajak = round($dpp * $ppn, 2);
+
+                // Total = dasar penagihan + PPN.
+                $terbayar = round($dasarPenagihan + $pajak, 2);
+
+                // Jatuh tempo.
                 $tglPenagihan = $dataCetak[0]->Tgl_Penagihan;
                 $syaratBayar = (int) ($dataCetak[0]->SyaratBayar ?? 0);
 
                 $jatuhTempo = date(
                     'd/m/Y',
-                    strtotime("+{$syaratBayar} days", strtotime($tglPenagihan))
+                    strtotime(
+                        "+{$syaratBayar} days",
+                        strtotime($tglPenagihan)
+                    )
                 );
             @endphp
 
             <div style="left: 16.75cm;top: 20.65cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
-            <div style="left: 17.35cm;top: 20.65cm; position: absolute;font-size:12px;width: 2.3cm;text-align: right;">
-                {{ number_format((float) $totalHargaJual, 2, '.', ',') }}
+            <div style="left: 17.35cm; top: 20.65cm; position: absolute; font-size: 12px; width: 2.3cm; text-align: right;">
+                {{ number_format($nilaiBarisPertama, 2, '.', ',') }}
             </div>
             <div style="left: 16.75cm;top: 21.25cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
@@ -155,8 +185,8 @@
             <div style="left: 16.75cm;top: 21.85cm; position: absolute;font-size:12px;">
                 {{ $dataCetak[0]->Symbol2 }}
             </div>
-            <div style="left: 17.35cm;top: 21.85cm; position: absolute;font-size:12px;width: 2.3cm;text-align: right;">
-                {{ number_format($nilaiUM, 2, '.', ',') }}
+            <div style="left: 17.35cm; top: 21.85cm; position: absolute; font-size: 12px; width: 2.3cm; text-align: right;">
+                {{ number_format($nilaiUMTampil, 2, '.', ',') }}
             </div>
             <div style="left: 4.5cm;top: 22.45cm; position: absolute;font-size:12px;">
                 Nilai Lain
