@@ -579,6 +579,7 @@ class MaintenanceBKMPenagihanController extends Controller
                     'BCA1' => 'Id_BKM_BCA_Rp',
                     'BCA$' => 'Id_BKM_BCA_$',
                     'OCBC' => 'Id_BKM_OCBC_Rp',
+                    'CIMB' => 'Id_BKM_CIMB_Rp',
                 ];
 
                 $column = $columnMap[$bankCode] ?? null;
@@ -613,6 +614,13 @@ class MaintenanceBKMPenagihanController extends Controller
 
 
                 $idBKM = $bankCode . $periode . '-' . $noUrut;
+                // dd([
+                //     'bankCode' => $bankCode,
+                //     'periode' => $periode,
+                //     'column' => $column ?? null,
+                //     'noUrut' => $noUrut,
+                //     'Id_BKM' => $idBKM,
+                // ]);
 
                 // dd($idBKM);
 
