@@ -36,6 +36,13 @@ class SuratJalanManagerController extends Controller
             $item->Qty = $detail->Qty ?? 0;
             $item->HargaSatuan = $detail->HargaSatuan ?? 0;
             $item->Satuan = trim($detail->Satuan ?? '-');
+
+             $detailKirim = DB::connection('ConnSales')->select(
+                'exec SP_1273_PRG_LIST_DETAILKIRIM_BLMACC @IDHeaderKirim = ?',
+                [$item->IdHeaderKirim]
+            );
+
+            $item->QtyTritier = $detailKirim[0]->QtyTritier ?? 0;
         }
 
         $access = (new HakAksesController)->HakAksesFiturMaster('Sales');

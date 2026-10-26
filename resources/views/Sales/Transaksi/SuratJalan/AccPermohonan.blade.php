@@ -53,7 +53,7 @@
                                     <td class="RDZPaddingTable RDZCenterTable">{{ $item->NamaExpeditor }}</td>
                                     <td class="RDZPaddingTable RDZCenterTable">{{ $item->TrukNopol }}</td>
                                     <td class="RDZPaddingTable RDZCenterTable">
-                                        {{ number_format((float) $item->Qty, 2, '.', ',') }}
+                                        {{ number_format((float) $item->QtyTritier, 2, '.', ',') }}
                                     </td>
                                     <td class="RDZPaddingTable RDZCenterTable">
                                         {{ $item->Satuan }}
