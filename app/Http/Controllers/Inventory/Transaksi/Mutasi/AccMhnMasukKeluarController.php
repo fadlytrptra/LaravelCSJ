@@ -123,59 +123,143 @@ class AccMhnMasukKeluarController extends Controller
     //Update the specified resource in storage.
     public function update(Request $request, $id)
     {
+        if ($id !== 'accMutasi') {
+            return response()->json([
+                'error' => 'Proses tidak dikenali.'
+            ], 400);
+        }
+
         $penerima = $request->input('penerima');
-        $idTransaksi = $request->input('idTransaksi');
-        $idType = $request->input('idType');
-        $checked = $request->input('checked');
-        $primer = $request->input('primer');
-        $sekunder = $request->input('sekunder');
-        $tritier = $request->input('tritier');
-        $noPIB = $request->input('noPIB');
+        $idTransaksi = $request->input('idTransaksi', []);
+        $idType = $request->input('idType', []);
+        $mutasi = $request->input('mutasi');
+        $primer = $request->input('primer', []);
+        $sekunder = $request->input('sekunder', []);
+        $tritier = $request->input('tritier', []);
+        $noPIB = $request->input('noPIB', []);
+
+        if (!in_array($mutasi, ['MASUK', 'KELUAR'], true)) {
+            return response()->json([
+                'error' => 'Jenis mutasi tidak valid.'
+            ], 422);
+        }
+
+        if (empty($idTransaksi)) {
+            return response()->json([
+                'error' => 'Tidak ada transaksi yang dipilih.'
+            ], 422);
+        }
+
         $responses = [];
 
-        if ($id === 'accMutasi') {
-            try {
-                foreach ($idTransaksi as $index => $transaksi) {
-                    $type = $idType[$index];
-                    $primerValue = $primer[$index];
-                    $sekunderValue = $sekunder[$index];
-                    $tritierValue = $tritier[$index];
-                    $noPIB = $noPIB[$index];
-                    // Proses
-                    $proses = DB::connection('ConnInventory')->select(
-                        'exec SP_1273_PRG_check_penyesuaian_transaksi @idtype = ?, @idtypetransaksi = ?',
-                        [$type, $transaksi]
+        try {
+            foreach ($idTransaksi as $index => $transaksi) {
+
+                $type = $idType[$index] ?? null;
+                $primerValue = $primer[$index] ?? null;
+                $sekunderValue = $sekunder[$index] ?? null;
+                $tritierValue = $tritier[$index] ?? null;
+                $noPIBValue = $noPIB[$index] ?? null;
+
+                if (
+                    $type === null ||
+                    $primerValue === null ||
+                    $sekunderValue === null ||
+                    $tritierValue === null ||
+                    $noPIBValue === null
+                ) {
+                    throw new \Exception(
+                        "Data transaksi {$transaksi} tidak lengkap."
+                    );
+                }
+
+                // Periksa transaksi penyesuaian
+                $proses = DB::connection('ConnInventory')->select(
+                    'exec SP_1273_PRG_check_penyesuaian_transaksi
+                        @idtype = ?, @idtypetransaksi = ?',
+                    [$type, $transaksi]
+                );
+
+                $jumlah = (int) ($proses[0]->jumlah ?? 0);
+
+                if ($jumlah > 0) {
+                    return response()->json([
+                        'warning' => 'Tidak Bisa DiAcc! Karena ada Transaksi Penyesuaian yang belum di-ACC untuk type ' . $transaksi
+                    ], 200);
+                }
+
+                if ($mutasi === 'MASUK') {
+
+                    DB::connection('ConnInventory')->statement(
+                        'exec SP_1273_PRG_PROSES_ACC_MUTASI_MASUK
+                            @IdTransaksi = ?,
+                            @idPenerima = ?,
+                            @JumlahMasukPrimer = ?,
+                            @JumlahMasukSekunder = ?,
+                            @JumlahMasukTritier = ?,
+                            @NoPIB = ?',
+                        [
+                            $transaksi,
+                            $penerima,
+                            $primerValue,
+                            $sekunderValue,
+                            $tritierValue,
+                            $noPIBValue
+                        ]
                     );
 
-                    $jumlah = (int) $proses[0]->jumlah;
+                } else {
 
-                    if ($jumlah > 0) {
-                        return response()->json(['warning' => 'Tidak Bisa DiAcc !!!. Karena Ada Transaksi Penyesuaian yang Belum Diacc untuk type ' . $transaksi], 200);
-                    } else {
-                        if ($checked == 'true') {
-                            DB::connection('ConnInventory')->statement(
-                                'exec SP_1273_PRG_PROSES_ACC_MUTASI_MASUK @IdTransaksi = ?, @idPenerima = ?, @JumlahMasukPrimer = ?,@JumlahMasukSekunder = ?, @JumlahMasukTritier = ?, @NoPIB = ?',
-                                [$transaksi, $penerima, $primerValue, $sekunderValue, $tritierValue, $noPIB]
-                            );
-                            $responses[] = 'Data ' . $transaksi . ' sudah disimpan';
-                        } else if ($checked == 'false') {
-                            DB::connection('ConnInventory')->statement(
-                                'exec SP_1273_PRG_PROSES_ACC_MUTASI_KELUAR @IdTransaksi = ?, @idPenerima = ?, @JumlahKeluarPrimer = ?,@JumlahKeluarSekunder = ?, @JumlahKeluarTritier = ?, @NoPIB = ?',
-                                [$transaksi, $penerima, $primerValue, $sekunderValue, $tritierValue, $noPIB]
-                            );
-                            $responses[] = 'Data ' . $transaksi . ' sudah disimpan';
-                        }
+                    DB::connection('ConnInventory')->statement(
+                        'exec SP_1273_PRG_PROSES_ACC_MUTASI_KELUAR
+                            @IdTransaksi = ?,
+                            @idPenerima = ?,
+                            @JumlahKeluarPrimer = ?,
+                            @JumlahKeluarSekunder = ?,
+                            @JumlahKeluarTritier = ?,
+                            @NoPIB = ?',
+                        [
+                            $transaksi,
+                            $penerima,
+                            $primerValue,
+                            $sekunderValue,
+                            $tritierValue,
+                            $noPIBValue
+                        ]
+                    );
+                    // Periksa apakah transaksi benar-benar sudah diproses
+                    $cekStatus = DB::connection('ConnInventory')
+                        ->table('Tmp_Transaksi')
+                        ->where('IdTransaksi', $transaksi)
+                        ->value('Status');
+
+                    if ((int) $cekStatus !== 1) {
+                        throw new \Exception(
+                            "Transaksi {$transaksi} belum berhasil diproses. Status masih {$cekStatus}."
+                        );
                     }
                 }
 
-                $responseText = implode('<br>', $responses);
-                // dd($responseText);
-                return response()->json(['success' => $responseText], 200);
-            } catch (\Exception $e) {
-                return response()->json(['error' => 'Data gagal diACC'], 500);
+                $responses[] = 'Data ' . $transaksi . ' sudah diproses';
             }
+
+            return response()->json([
+                'success' => implode('<br>', $responses)
+            ], 200);
+
+        } catch (\Exception $e) {
+
+            \Log::error('ACC Mutasi gagal', [
+                'message' => $e->getMessage(),
+                'transaksi' => $transaksi ?? null,
+            ]);
+
+            return response()->json([
+                'error' => 'Data gagal di-ACC: ' . $e->getMessage()
+            ], 500);
         }
     }
+
 
     //Remove the specified resource from storage.
     public function destroy(Request $request)

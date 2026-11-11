@@ -281,7 +281,7 @@ $(document).ready(function () {
         var primer = formatNumber($(this).data("primer"));
         var sekunder = formatNumber($(this).data("sekunder"));
         var tritier = formatNumber($(this).data("tritier"));
-        var nopib = formatNumber($(this).data("nopib"));
+        var nopib = String($(this).attr("data-NoPIB") ?? "").trim();
         console.log($(this).data());
 
 
@@ -642,14 +642,15 @@ btn_objek.addEventListener("click", function (e) {
 
 // button proses event listener
 btn_proses.addEventListener("click", function () {
-    if (selectedData.length === 0 || selectedData.idTransaksi.length === 0) {
+
+    if (selectedData.idTransaksi.length === 0) {
         Swal.fire({
             icon: "warning",
             title: "Pilih dulu datanya !!",
             returnFocus: false,
         });
+        return;
     }
-
     // btn_objek.disabled = true;
     console.log(selectedData);
 
@@ -664,7 +665,7 @@ btn_proses.addEventListener("click", function () {
             sekunder: selectedData.sekunder,
             tritier: selectedData.tritier,
             noPIB: selectedData.NoPIB,
-            checked: masuk.checked,
+            mutasi: masuk.checked ? 'MASUK' : 'KELUAR',
             penerima: user.value,
         },
         success: function (response) {
